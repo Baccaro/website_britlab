@@ -36,3 +36,27 @@ npm run dev
 ```sh
 npm run build
 ```
+
+## Docker
+
+### Development with hot reload
+
+```sh
+docker compose up --build web
+```
+
+Open [http://localhost:5173](http://localhost:5173).
+
+### Production with Nginx
+
+```sh
+docker compose up --build production
+```
+
+Open [http://localhost:8080](http://localhost:8080).
+
+Stop the containers with:
+
+```sh
+docker compose down
+```
