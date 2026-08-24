@@ -1,0 +1,324 @@
+<!--<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="/icono_brit.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vite App</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
+-->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Laboratorio del Sanatorio Britanico</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,0..200"
+    rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Manrope', 'sans-serif'],
+          },
+          colors: {
+            brit: {
+              teal: '#57BEC2',
+              'teal-dark': '#48A0A4',
+              gray: '#8B8B8B',
+              dark: '#333333'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style data-purpose="custom-styles">
+    /* Utility for background image overlay */
+    .bg-hero-overlay {
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3)), url('/lab_horizontal.png') center/cover;
+    }
+
+    /* Input placeholder styling */
+    .input-search::placeholder {
+      color: #57BEC2;
+      opacity: 0.8;
+    }
+
+    .hero-background {
+      background-image: url('/lab_horizontal.png');
+      background-size: cover;
+      background-position: center center;
+    }
+
+    .institutional-anchor {
+      scroll-margin-top: 110px;
+    }
+
+    .institutional-anchor:target {
+      outline: 3px solid rgba(87, 190, 194, 0.35);
+      outline-offset: -3px;
+    }
+
+    .site-nav a:hover {
+      background-color: transparent;
+    }
+
+    .site-logo:hover {
+      background-color: transparent;
+    }
+  </style>
+</head>
+
+<body class="font-sans text-brit-dark antialiased bg-white flex flex-col min-h-screen">
+  <!-- BEGIN: MainHeader -->
+  <header class="w-full bg-white shadow-sm z-50 relative py-4 px-6 md:px-12 flex items-center justify-between">
+    <!-- Logo Area -->
+    <div class="flex items-center gap-2">
+      <a aria-label="Ir al inicio" class="site-logo inline-flex" href="/">
+        <img alt="BritLab Logo" class="h-10 object-contain my-auto"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA0WjXA0NFl6g8sg3U8gena_jy7KcHV4TxUNJ8GEa3CTK9O7VroYojm90ltBLEdfZgclCynvKjn2hCep0Cbu-9qXs6HRijOjdI2yd9N49iipoPlTlmeq3kLjNqaNCqCw-D9diEZfQT-30sqZuoeQkT1VA-b8cYghdp7hhIuRj4r7cz_pHqhKXsjfpJK9pI-R73tbI6A2njlQ3pk8unapnXPRxB0xJAfMpp_ZKWpPVJiCtkRH6rv3GJNQKYWIHlbrAOQcY">
+      </a>
+    </div>
+    <!-- Navigation Links -->
+    <nav class="site-nav hidden lg:flex items-center gap-8 text-lg font-bold text-black">
+      <div class="relative group">
+        <a class="text-black hover:text-brit-teal transition-colors inline-flex items-center gap-1 py-2" href="/institucional">
+          Institucional
+          <span aria-hidden="true" class="text-xs transition-transform group-hover:rotate-180">▾</span>
+        </a>
+        <div class="absolute left-0 top-[calc(100%-1px)] hidden group-hover:block group-focus-within:block min-w-52 z-[60]">
+          <div class="bg-white rounded-lg shadow-xl border border-gray-100 py-2">
+            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/institucional#historia">Historia</a>
+            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/institucional#mision">Misión</a>
+            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/institucional#equipo">Equipo</a>
+            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/institucional#calidad">Calidad y Acreditaciones</a>
+          </div>
+        </div>
+      </div>
+      <div class="relative group">
+        <a class="text-black hover:text-brit-teal transition-colors inline-flex items-center gap-1 py-2" href="/servicios">
+          Servicios
+          <span aria-hidden="true" class="text-xs transition-transform group-hover:rotate-180">▾</span>
+        </a>
+        <div class="absolute left-0 top-[calc(100%-1px)] hidden group-hover:block group-focus-within:block min-w-52 z-[60]">
+          <div class="bg-white rounded-lg shadow-xl border border-gray-100 py-2">
+            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/servicios#britlab">BritLAB</a>
+            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/servicios#britgen">BritGEN</a>
+            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/servicios#tecnologia">Tecnología e Innovación</a>
+            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/servicios#docencia">Docencia e Investigación</a>
+            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/servicios#trabaja">Trabajá con Nosotros</a>
+          </div>
+        </div>
+      </div>      
+      <a class="text-black hover:text-brit-teal transition-colors" href="/noticias">Noticias</a>
+      <a class="text-black hover:text-brit-teal transition-colors" href="/pacientes">Pacientes</a>
+    </nav>
+    <!-- Action Area -->
+    <div class="flex items-center gap-4 md:gap-12">
+      <button
+        class="bg-brit-teal hover:bg-brit-teal-dark text-white font-bold py-2.5 px-6 rounded-full transition-colors flex items-center gap-2">
+        Pregunta a <span class="font-extrabold">BritIA</span>
+      </button>
+      <div class="w-10 h-10 hidden md:block">
+        <img alt="BritLab Icon" class="w-full h-full object-contain" src="icono_brit.svg">
+      </div>
+    </div>
+  </header>
+  <div class="bg-brit-teal/40 relative z-40 w-[95%] max-w-5xl mx-auto h-[6px]"></div>
+  <!-- END: MainHeader -->
+  <!-- BEGIN: MainContent -->
+  <main class="flex-grow relative flex flex-col">
+    <!-- Hero Section -->
+    <section class="hero-background relative w-screen max-w-none self-center h-[600px] md:h-[700px] flex flex-col items-center pt-8 bg-gray-200 justify-between">
+      <!-- Overlay to ensure text readability if needed, though design looks relatively clear -->
+      <div class="absolute inset-0 bg-black/10"></div>
+      <!-- Partners Bar -->
+      <div
+        class="relative z-10 w-[95%] max-w-5xl bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg py-4 px-8 flex justify-center items-center mt-[-40px]">
+        <!-- Using SVG document directly for the partners bar -->
+        <img alt="Sanatorio Británico Partners" class="w-full h-full object-contain mx-auto" src="barra_brit.svg">
+      </div>
+      <!-- Hero Headline -->
+      <div class="relative z-10 text-center px-4 flex-grow flex items-center">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight drop-shadow-md">
+          Laboratorio del Sanatorio Británico.
+        </h1>
+      </div>
+      <!-- Chatbot Interface Widget -->
+      <div
+        class="relative z-20 w-[95%] max-w-4xl bg-white/95 backdrop-blur-md rounded-t-3xl shadow-2xl p-6 md:p-10 -mb-6 transform translate-y-12">
+        <!-- Chatbot Greeting -->
+        <div class="flex items-center justify-center gap-4 mb-8">
+          <div class="w-14 h-14 bg-brit-teal rounded-full flex items-center justify-center shadow-inner">
+            <!-- Placeholder for AI avatar icon if needed, currently just a teal circle in design -->
+          </div>
+          <div>
+            <h2 class="text-xl md:text-2xl font-bold text-gray-800">Hola, Soy <span class="text-brit-teal">BritIA</span>
+            </h2>
+            <p class="text-gray-500 text-sm md:text-base">¿Como puedo ayudarte?</p>
+          </div>
+        </div>
+        <!-- Search Input -->
+        <div class="relative w-full mb-8">
+          <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+            <svg class="w-5 h-5 text-brit-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"
+                stroke-width="2"></path>
+            </svg>
+          </div>
+          <input
+            class="input-search w-full py-4 pl-12 pr-16 border-2 border-brit-teal rounded-full text-brit-teal focus:outline-none focus:ring-2 focus:ring-brit-teal-dark bg-white font-medium shadow-sm"
+            placeholder="Ingrese su consulta para asistirlo al instante..." type="text">
+          <button
+            class="absolute inset-y-0 right-2 my-auto h-10 w-10 bg-brit-teal hover:bg-brit-teal-dark text-white rounded-full flex items-center justify-center transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" stroke-linecap="round" stroke-linejoin="round"
+                stroke-width="2"></path>
+            </svg>
+          </button>
+        </div>
+        <!-- Quick Action Buttons -->
+        <div class="flex flex-wrap justify-center gap-3 md:gap-4">
+          <button
+            class="bg-white border border-gray-200 hover:border-brit-teal text-gray-600 hover:text-brit-teal font-medium py-2 px-5 rounded-full text-sm transition-all shadow-sm">
+            Quiero un Turno
+          </button>
+          <button
+            class="bg-white border border-gray-200 hover:border-brit-teal text-gray-600 hover:text-brit-teal font-medium py-2 px-5 rounded-full text-sm transition-all shadow-sm">
+            Horarios de Visita
+          </button>
+          <button
+            class="bg-white border border-gray-200 hover:border-brit-teal text-gray-600 hover:text-brit-teal font-medium py-2 px-5 rounded-full text-sm transition-all shadow-sm">
+            Afiliarme a Británica Salud
+          </button>
+          <button
+            class="bg-white border border-gray-200 hover:border-brit-teal text-gray-600 hover:text-brit-teal font-medium py-2 px-5 rounded-full text-sm transition-all shadow-sm">
+            Preparación para estudios
+          </button>
+        </div>
+      </div>
+    </section>
+    <div id="app"></div>
+    <!-- Bottom blue line accent -->
+  </main>
+  <!-- END: MainContent -->
+  <!-- Footer Section -->
+  <footer class="w-full mt-auto">
+    <!-- Newsletter Bar -->
+    <div class="bg-brit-teal py-8 px-6 md:px-12">
+      <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+        <h3 class="text-white text-2xl font-bold">Newsletter</h3>
+        <form class="flex flex-grow max-w-2xl w-full flex-wrap sm:flex-nowrap gap-4" action="#" method="post">
+          <input class="flex-grow px-6 py-3 rounded-full border-none focus:ring-2 focus:ring-white/50 text-gray-700"
+            placeholder="Ingrese su correo electrónico" type="email">
+          <button
+            class="bg-white text-brit-teal font-bold px-8 py-3 rounded-full hover:bg-gray-100 transition-colors">Subscribirme</button>
+        </form>
+      </div>
+    </div>
+    <!-- Main Footer Content -->
+    <div class="bg-white py-16 px-6 md:px-12">
+      <div class="max-w-6xl mx-auto">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-6 lg:gap-x-8 gap-y-12 mb-16">
+          <!-- Logo and Contact -->
+          <div class="min-w-0">
+            <img alt="BritLab Logo" class="h-12 object-contain mb-6"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj3jdxMM4UyflXypLBpVD6gbpm58-X-exf23eTthaeFGdzcySfcBMomTpfolGjenXg-cZ4u0SXrlLkZiy-XD8SbAaX4h1vN4qbWrP_tgp-dCp1TpN2_K-EVgQaiK5AA3GVuNVZ2LaxrOsLhITqyM-mHCzBkKH2kmPurQxVlAIc1SzqWEwL1OgyT494Jq_4kv7z1cd9um_8iFR0O93nY4Q4gfovUCWBI2OWSLKVcvrrT4upEJ5NXpP4q9sizuEjz0nGszk">
+            <div class="text-gray-500 text-sm space-y-1">
+              <p class="">Paraguay 40, S2000 Rosario, Santa Fe.</p>
+              <p class="">Teléfono: 341 420 5500.</p>
+              <p class="">info@britlab.com.ar</p>
+            </div>
+          </div>
+          <!-- Links Columns -->
+          <div class="min-w-0">
+            <h4 class="font-bold text-gray-800 mb-6 text-sm uppercase tracking-wider">Inicio</h4>
+            <ul class="text-black text-sm space-y-3">
+            </ul>
+          </div>
+          <div class="min-w-0">
+            <h4 class="font-bold text-gray-800 mb-6 text-sm uppercase tracking-wider">INSTITUCIÓN</h4>
+            <ul class="text-black text-sm space-y-3">
+              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/institucional#historia">Historia.</a></li>
+              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/institucional#mision">Misión.</a></li>
+              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/institucional#equipo">Equipo.</a></li>
+              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/institucional#calidad">Calidad y Acreditaciones.</a></li>
+            </ul>
+          </div>
+          <div class="min-w-0">
+            <h4 class="font-bold text-gray-800 mb-6 text-sm uppercase tracking-wider">SERVICIOS</h4>
+            <ul class="text-black text-sm space-y-3">
+              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/servicios#britlab">BritLAB.</a></li>
+              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/servicios#britgen">BritGEN.</a></li>
+              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/servicios#tecnologia">Tecnología e Innovación.</a></li>
+            </ul>
+          </div>          
+          <div class="min-w-0">
+            <h4 class="font-bold text-gray-800 mb-6 text-sm uppercase tracking-wider">NOTICIAS</h4>
+            <a class="text-black hover:text-brit-teal transition-colors text-sm break-words" href="/noticias">Ver noticias.</a>
+          </div>
+          <div class="min-w-0">
+            <h4 class="font-bold text-gray-800 mb-6 text-sm uppercase tracking-wider">PACIENTES</h4>
+            <a class="text-black hover:text-brit-teal transition-colors text-sm break-words" href="/pacientes">Información para pacientes.</a>
+            <div class="flex flex-nowrap items-center gap-4 mt-8 whitespace-nowrap">
+              <a aria-label="Instagram" class="text-black hover:text-brit-teal transition-colors" href="https://www.instagram.com/" rel="noopener noreferrer" target="_blank" title="Instagram">
+                <svg aria-hidden="true" class="w-6 h-6 shrink-0 fill-current" viewBox="0 0 24 24">
+                  <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Zm5 3.5A4.5 4.5 0 1 1 12 16.5 4.5 4.5 0 0 1 12 7.5Zm0 2A2.5 2.5 0 1 0 12 14.5 2.5 2.5 0 0 0 12 9.5ZM17.5 6a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 17.5 6Z" />
+                </svg>
+              </a>
+              <a aria-label="Facebook" class="text-black hover:text-brit-teal transition-colors" href="https://www.facebook.com/" rel="noopener noreferrer" target="_blank" title="Facebook">
+                <svg aria-hidden="true" class="w-6 h-6 shrink-0 fill-current" viewBox="0 0 24 24">
+                  <path d="M13.5 21v-8h2.75l.5-3h-3.25V8.06c0-.87.24-1.46 1.5-1.46h1.6V3.91A21.2 21.2 0 0 0 14.27 3C11.85 3 10.2 4.48 10.2 7.2V10H7.5v3h2.7v8h3.3Z" />
+                </svg>
+              </a>
+              <a aria-label="LinkedIn" class="text-black hover:text-brit-teal transition-colors" href="https://www.linkedin.com/" rel="noopener noreferrer" target="_blank" title="LinkedIn">
+                <svg aria-hidden="true" class="w-6 h-6 shrink-0 fill-current" viewBox="0 0 24 24">
+                  <path d="M5.2 3.5A2.2 2.2 0 1 1 5.2 7.9a2.2 2.2 0 0 1 0-4.4ZM3.4 9h3.6v11.5H3.4V9Zm5.8 0h3.45v1.57h.05c.48-.9 1.65-1.85 3.4-1.85 3.64 0 4.31 2.4 4.31 5.52v6.26h-3.6v-5.55c0-1.32-.03-3.02-1.84-3.02-1.84 0-2.12 1.44-2.12 2.92v5.65H9.2V9Z" />
+                </svg>
+              </a>
+              <a aria-label="YouTube" class="text-black hover:text-brit-teal transition-colors" href="https://www.youtube.com/" rel="noopener noreferrer" target="_blank" title="YouTube">
+                <svg aria-hidden="true" class="w-6 h-6 shrink-0 fill-current" viewBox="0 0 24 24">
+                  <path d="M21.58 7.19a2.96 2.96 0 0 0-2.08-2.08C17.67 4.6 12 4.6 12 4.6s-5.67 0-7.5.51a2.96 2.96 0 0 0-2.08 2.08C1.91 9.02 1.91 12 1.91 12s0 2.98.51 4.81a2.96 2.96 0 0 0 2.08 2.08c1.83.51 7.5.51 7.5.51s5.67 0 7.5-.51a2.96 2.96 0 0 0 2.08-2.08c.51-1.83.51-4.81.51-4.81s0-2.98-.51-4.81ZM10 15.5v-7l6 3.5-6 3.5Z" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        <!-- Copyright -->
+        <div class="pt-8 border-t border-gray-100 text-gray-400 text-xs font-medium border-t-2">
+          Copyright 2026 © BritLab
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- Accessibility Widget (Floating) -->
+  <button aria-label="Opciones de accesibilidad"
+    class="fixed bottom-6 right-6 w-14 h-14 bg-brit-teal hover:bg-brit-teal-dark text-white rounded-full shadow-lg flex items-center justify-center z-50 transition-colors">
+    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm7 11h-4v6h-6v-6H5v-2h14v2z">
+      </path>
+    </svg>
+  </button>
+
+  <script type="module" src="/src/main.js"></script>
+
+
+</body>
+
+</html>
