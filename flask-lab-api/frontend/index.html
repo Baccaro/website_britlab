@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Gestión de Laboratorio Clinical API</title>
+  <!-- Google Fonts: Hanken Grotesk -->
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap"
+    rel="stylesheet" />
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      corePlugins: {
+        preflight: false,
+      },
+      theme: {
+        extend: {
+          "colors": {
+            "surface-variant": "#d8e3fb",
+            "inverse-on-surface": "#ecf1ff",
+            "tertiary-fixed-dim": "#b9c8de",
+            "secondary-container": "#9af2ba",
+            "surface-container-high": "#dee8ff",
+            "secondary-fixed-dim": "#81d9a2",
+            "surface-dim": "#cfdaf2",
+            "tertiary": "#516072",
+            "on-secondary": "#ffffff",
+            "outline-variant": "#bbc9cd",
+            "success-teal": "#0d9488",
+            "on-primary-fixed": "#001f25",
+            "on-background": "#111c2d",
+            "surface-container-low": "#f0f3ff",
+            "on-primary-fixed-variant": "#004e5a",
+            "inverse-primary": "#2fd9f4",
+            "on-tertiary": "#ffffff",
+            "outline": "#6c797d",
+            "primary-fixed": "#a2eeff",
+            "on-primary-container": "#005763",
+            "background": "#f9f9ff",
+            "on-error": "#ffffff",
+            "primary-container": "#22d3ee",
+            "on-surface-variant": "#3c494c",
+            "sanatorio-green": "#006b3f",
+            "error-container": "#ffdad6",
+            "error-red": "#ef4444",
+            "error": "#ba1a1a",
+            "secondary": "#046d40",
+            "secondary-fixed": "#9df5bd",
+            "surface-container-lowest": "#ffffff",
+            "surface-container": "#e7eeff",
+            "tertiary-fixed": "#d4e4fa",
+            "surface-container-highest": "#d8e3fb",
+            "on-tertiary-fixed-variant": "#39485a",
+            "on-primary": "#ffffff",
+            "on-secondary-fixed": "#002110",
+            "surface": "#f9f9ff",
+            "on-tertiary-container": "#415062",
+            "on-error-container": "#93000a",
+            "primary": "#006877",
+            "on-secondary-container": "#0e7144",
+            "on-secondary-fixed-variant": "#00522f",
+            "surface-bright": "#f9f9ff",
+            "tertiary-container": "#b3c2d8",
+            "primary-fixed-dim": "#2fd9f4",
+            "on-surface": "#111c2d",
+            "surface-tint": "#006877",
+            "on-tertiary-fixed": "#0d1c2d",
+            "britlab-gray": "#929295",
+            "clinical-bg": "#f8fafc",
+            "inverse-surface": "#263143"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "sans": ["Hanken Grotesk", "sans-serif"]
+          }
+        },
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #f8fafc;
+      font-family: 'Hanken Grotesk', sans-serif;
+    }
+
+    /* Contenedor sin scroll horizontal */
+    .table-container-fixed {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      border: 1px solid #e2e8f0;
+      overflow-x: hidden;
+      /* Garantiza que NO haya desplazamiento lateral */
+      width: 100%;
+    }
+
+    /* Forzar distribución fija de la tabla */
+    .table-fixed-layout {
+      table-layout: fixed;
+      width: 100%;
+      margin-bottom: 0;
+    }
+
+    /* Ajuste fino de celdas para optimizar espacio */
+    .table-fixed-layout th,
+    .table-fixed-layout td {
+      padding: 0.45rem 0.3rem !important;
+      font-size: 0.75rem;
+      /* Tamaño de fuente compacto (12px) */
+      vertical-align: middle;
+      border-bottom-color: #e2e8f0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .table-dark th {
+      background-color: #006877 !important;
+      color: #ffffff !important;
+      font-weight: 600;
+      border-bottom: none;
+    }
+
+    .table-hover tbody tr:hover {
+      background-color: #f0f3ff;
+    }
+
+    /* Inputs súper compactos para edición en línea */
+    .input-compact {
+      font-size: 0.72rem;
+      padding: 0.15rem 0.25rem;
+      height: 26px;
+      width: 100%;
+    }
+
+    /* Ajustes visuales de badges y botones pequeños */
+    .badge-xs {
+      font-size: 0.68rem;
+      padding: 0.2em 0.4em;
+    }
+
+    .btn-xs {
+      padding: 0.15rem 0.35rem;
+      font-size: 0.75rem;
+      line-height: 1;
+      border-radius: 4px;
+    }
+
+    /* Layout topbar + sidebar lateral + contenido */
+    .app-shell {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .sidebar {
+      width: 250px;
+      flex-shrink: 0;
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      padding: 1rem 0.75rem 2rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      transition: width .18s ease;
+    }
+
+    .sidebar.collapsed {
+      width: 64px;
+      padding-left: 0.4rem;
+      padding-right: 0.4rem;
+    }
+
+    .sidebar-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: #929295;
+      padding: 0.25rem 0.4rem;
+      margin-bottom: 0.25rem;
+      border-radius: 6px;
+    }
+
+    .sidebar-toggle:hover {
+      background: #f0f3ff;
+      color: #006877;
+    }
+
+    .sidebar.collapsed .sidebar-toggle {
+      justify-content: center;
+    }
+
+    .sidebar.collapsed .sidebar-group-title,
+    .sidebar.collapsed .sidebar-link .link-label {
+      display: none;
+    }
+
+    .sidebar.collapsed .sidebar-link {
+      justify-content: center;
+      padding: 0.55rem;
+    }
+
+    .sidebar-group-title {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #929295;
+      font-weight: 700;
+      padding: 0.9rem 0.6rem 0.4rem;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      width: 100%;
+      text-align: left;
+      padding: 0.55rem 0.65rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #111c2d;
+      border: 1px solid transparent;
+      margin-bottom: 2px;
+      background: transparent;
+      transition: all .15s ease;
+    }
+
+    .sidebar-link:hover {
+      background: #f0f3ff;
+      border-color: #d8e3fb;
+    }
+
+    .sidebar-link.active {
+      background: #006b3f;
+      color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, .08);
+    }
+
+    .sidebar-link .bi {
+      font-size: 1rem;
+      width: 1.1rem;
+      text-align: center;
+    }
+
+    .app-content {
+      flex: 1;
+      min-width: 0;
+      padding: 1.25rem 1.5rem 2.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .app-shell {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .sidebar-group-title {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <!-- Navbar -->
+    <nav class="bg-white mb-6 shadow-sm border-b border-surface-variant">
+      <div class="container-fluid px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-4">
+          <img alt="Sanatorio Británico" class="h-10 object-contain"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8xjJ6dJRSLRqt7KpYtEpbz7Gh2PWgyJUdtyTzFH-v9uJDhLskF5kdd21XrWw0IH6pe_CyvdbVHVIAwOYaYfLJIXcw9N_OLSidR66D8ARKIULP_I68ylkIQO5vjPAVIJBIy_7aMTj_u6_-njf2z5pqj6ZW9-t-hpkWer-ohlfI_WjkoGXsfBE9zNJizKcgb2Czsn6Kr4aWF1_DGKMzcbWVXgYQrBnlWgaE76HTgG9FXxyFbz63URtfyjA2Oz-puz5kkw" />
+          <div class="h-8 w-px bg-outline-variant hidden md:block"></div>
+        </div>
+        <div class="flex items-center">
+          <img alt="BritLab" class="h-8 object-contain"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-sRnXcbyd0lFrERDFL59G_q9tKiXtrfjo_3L2GsAKmESNCrlOi1HbGk58SYrR7NlL5rBoNtoIWmQ7LfL4w5iMngrkVj6qtp2G_W7z74-xJ1CSAmUfw3ksN1O3ni1wpHPNZV2eHxiMLPpiqYj-XsxI5RSLM6Jw_W_U8RN_ZvfaugFtBqwUxGhZijcQDhcfD-riV9ZtrOpwOi5s-AY8TEnM0c27BvKvQQNVnkVLEqIROTcirLrgTOScVE3yi9Dt0S4d4g" />
+        </div>
+      </div>
+    </nav>
+
+    <div class="app-shell">
+      <!-- Sidebar lateral -->
+      <aside :class="['sidebar', sidebarCollapsed ? 'collapsed' : '']">
+        <button :title="sidebarCollapsed ? 'Expandir menú' : 'Minimizar menú'" @click="toggleSidebar"
+          class="sidebar-toggle">
+          <i :class="['bi', sidebarCollapsed ? 'bi-layout-sidebar-inset' : 'bi-layout-sidebar-inset-reverse']"></i>
+        </button>
+
+        <div class="sidebar-group-title">Consulta</div>
+        <button :class="['sidebar-link', currentView === 'indicaciones' ? 'active' : '']"
+          :title="sidebarCollapsed ? 'Estudios' : ''"
+          @click="switchToIndicaciones">
+          <i class="bi bi-file-earmark-medical"></i> <span class="link-label">Estudios</span>
+        </button>
+
+        <div class="sidebar-group-title">Entidades (CRUD)</div>
+        <button :class="['sidebar-link', (currentView === 'crud' && currentEntityKey === key) ? 'active' : '']"
+          :key="key" :title="sidebarCollapsed ? entity.label : ''"
+          @click="switchCrudEntity(key)" v-for="[key, entity] in sidebarEntities">
+          <i :class="['bi', entity.icon]"></i> <span class="link-label">{{ entity.label }}</span>
+        </button>
+      </aside>
+
+      <!-- Contenido principal -->
+      <main class="app-content">
+        <!-- Alertas -->
+        <div :class="['alert', 'alert-' + alert.type, 'alert-dismissible', 'fade', 'show', 'rounded-lg shadow-sm']"
+          role="alert" v-if="alert.message">
+          {{ alert.message }}
+          <button @click="alert.message = ''" class="btn-close" type="button"></button>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- VISTA 1: TABLA DE ESTUDIOS E INDICACIONES POR DERIVANTE    -->
+        <!-- ========================================================= -->
+        <div v-if="currentView === 'indicaciones'">
+        <div class="bg-white rounded-xl shadow-sm border border-outline-variant p-4 mb-4">
+          <h5 class="text-lg font-bold text-primary mb-1 flex items-center">
+            <i class="bi bi-search me-2 text-primary-container"></i>Consulta y Edición de Estudios por Derivante
+          </h5>
+          <p class="text-on-surface-variant text-xs mb-4">Selecciona un cliente/derivante para consultar y editar el
+            catálogo de análisis autorizados.</p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="block text-xs font-semibold text-on-surface mb-1">Seleccionar Derivante:</label>
+              <select @change="onDerivanteSelectorChange"
+                class="form-select form-select-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
+                v-model="selectedDerivanteId">
+                <option :value="null">-- Seleccione un Derivante --</option>
+                <option :value="ALL_ESTUDIOS">Todos los Estudios (catálogo maestro)</option>
+                <optgroup label="Derivantes">
+                  <option :key="d.id" :value="d.id" v-for="d in derivantesList">
+                    {{ d.descripcion }}
+                  </option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="col-md-6" v-if="selectedDerivanteId && !isAllEstudiosMode">
+              <label class="block text-xs font-semibold text-on-surface mb-1">Buscar Estudio:</label>
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-surface-container border-outline-variant text-primary"><i
+                    class="bi bi-search"></i></span>
+                <input
+                  class="form-control rounded-e-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
+                  placeholder="Buscar por nombre, código hexalis o nemónico..." type="text" v-model="searchQuery" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3" v-if="selectedDerivanteId && !isAllEstudiosMode">
+          <h4 class="mb-0 text-primary font-bold text-xl">Estudios de {{ fkLabel('derivantes', selectedDerivanteId) }}</h4>
+          <button @click="openNewEstudioForDerivante"
+            class="btn btn-primary bg-primary border-primary shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors rounded-lg px-3 py-1.5 text-sm">
+            <i class="bi bi-plus-lg me-1"></i> Nuevo Estudio
+          </button>
+        </div>
+
+        <!-- Tabla Ajustada Fija al 100% Sin Scroll Horizontal -->
+        <div class="table-container-fixed mb-4" v-if="!isAllEstudiosMode">
+          <table class="table table-hover table-fixed-layout">
+            <thead class="table-dark">
+              <tr>
+                <th style="width: 7%;">Nemónico</th>
+                <th style="width: 6.5%;">Paridad</th>
+                <th style="width: 6%;">Cód. Hex.</th>
+                <th style="width: 12%;">Estudio</th>
+                <th style="width: 7%;">Método</th>
+                <th style="width: 7%;">Pre-analítico</th>
+                <th style="width: 7%;">Muestra</th>
+                <th style="width: 8%;">Val. Ref.</th>
+                <th class="text-center" style="width: 4%;">Dem.</th>
+                <th class="text-center" style="width: 6%;">Estado</th>
+                <th style="width: 6%;">Cód. Lab.</th>
+                <th style="width: 6%;">Revisor</th>
+                <th style="width: 9%;">Indicaciones</th>
+                <th style="width: 8.5%;">Observaciones</th>
+                <th class="text-center" style="width: 6%;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Spinner de carga -->
+              <tr v-if="loadingIndicaciones">
+                <td class="text-center py-5" colspan="15">
+                  <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
+                  <p class="mt-2 text-on-surface-variant font-medium text-xs mb-0">Cargando estudios del derivante...
+                  </p>
+                </td>
+              </tr>
+              <!-- Estado Vacío: Sin Derivante -->
+              <tr v-else-if="!selectedDerivanteId">
+                <td class="text-center text-on-surface-variant py-5" colspan="15">
+                  <i class="bi bi-arrow-up-circle text-3xl d-block mb-2 text-primary-container"></i>
+                  <span class="font-medium text-xs">Selecciona un derivante del menú desplegable superior para cargar
+                    sus estudios.</span>
+                </td>
+              </tr>
+              <!-- Estado Vacío: Sin Estudios -->
+              <tr v-else-if="filteredEstudios.length === 0">
+                <td class="text-center text-on-surface-variant py-5" colspan="15">
+                  <i class="bi bi-exclamation-triangle text-3xl d-block mb-2 text-warning"></i>
+                  <span class="font-medium text-xs">No se encontraron estudios para el derivante seleccionado.</span>
+                </td>
+              </tr>
+              <!-- Lista de Estudios -->
+              <tr :key="item.id" v-else v-for="item in filteredEstudios">
+                <td :title="item.nemonico_datatech" class="font-semibold text-primary">{{ item.nemonico_datatech ||
+                  '-' }}</td>
+                <td :title="item.paridad_datatech_hexalis" class="text-on-surface-variant">{{
+                  item.paridad_datatech_hexalis || '-' }}</td>
+                <td :title="item.codigo_hexalis"><strong>{{ item.codigo_hexalis || '-' }}</strong></td>
+                <td :title="item.estudio_descripcion" class="font-medium">{{ item.estudio_descripcion || '-' }}</td>
+                <td :title="item.metodo" class="text-on-surface-variant">{{ item.metodo || '-' }}</td>
+                <td :title="item.preanalitico" class="text-on-surface-variant">{{ item.preanalitico || '-' }}</td>
+                <td :title="item.muestra" class="text-on-surface-variant">{{ item.muestra || '-' }}</td>
+                <td :title="item.valor_referencia" class="text-on-surface-variant">{{ item.valor_referencia || '-'
+                  }}</td>
+                <td class="text-center font-medium">{{ item.dias_demora ?? '-' }}</td>
+                <td class="text-center">
+                  <span
+                    :class="['badge rounded-pill badge-xs', item.estado === 'listo' || item.estado === 'verificado' ? 'bg-success-teal' : 'bg-tertiary']">
+                    {{ item.estado || '-' }}
+                  </span>
+                </td>
+                <td :title="item.codigo_laboratorio" class="text-on-surface-variant">{{ item.codigo_laboratorio || '-'
+                  }}</td>
+                <td :title="item.revisor" class="text-on-surface-variant">{{ item.revisor || '-' }}</td>
+                <td class="text-on-surface-variant">
+                  <a :href="item.indicaciones" v-if="item.indicaciones && item.indicaciones.startsWith('http')"
+                    target="_blank" rel="noopener" title="Ver modelo de informe">
+                    <i class="bi bi-box-arrow-up-right"></i> Ver informe
+                  </a>
+                  <span :title="item.indicaciones" v-else>{{ item.indicaciones || '-' }}</span>
+                </td>
+                <td :title="item.observacion" class="text-on-surface-variant">{{ item.observacion || '-' }}</td>
+                <td class="text-center">
+                  <button @click="editEstudioDerivante(item)"
+                    class="btn btn-xs btn-outline-primary border-primary text-primary hover:bg-primary hover:text-white"
+                    title="Editar">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========================================================= -->
+      <!-- VISTA 2: ABMs STANDARD (también se usa para "Todos los Estudios" -->
+      <!-- dentro de Indicaciones por Derivante)                          -->
+      <!-- ========================================================= -->
+      <div v-if="currentView === 'crud' || isAllEstudiosMode">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4 class="mb-0 text-primary font-bold text-xl">{{ currentEntity.label }}</h4>
+          <button @click="openModal('create')" v-if="!isAllEstudiosMode"
+            class="btn btn-primary bg-primary border-primary shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors rounded-lg px-3 py-1.5 text-sm">
+            <i class="bi bi-plus-lg me-1"></i> Nuevo {{ currentEntity.singular }}
+          </button>
+        </div>
+        <div class="table-container-fixed mb-4">
+          <table class="table table-hover table-fixed-layout" v-if="!loading && items.length > 0">
+            <thead class="table-dark">
+              <tr>
+                <th :key="col.field" v-for="col in currentEntity.columns">{{ col.label }}</th>
+                <th class="text-center" style="width: 80px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr :key="item.id" v-for="item in items">
+                <td :key="col.field" v-for="col in currentEntity.columns">
+                  <span class="text-on-surface font-medium" :title="fkLabel(col.ref, item[col.field]) || item[col.field]"
+                    v-if="col.type === 'fk'">{{ fkLabel(col.ref, item[col.field]) || '-' }}</span>
+                  <span class="text-on-surface font-medium" :title="item[col.field]" v-else>{{ item[col.field] ?? '-' }}</span>
+                </td>
+                <td class="text-center">
+                  <div class="d-flex justify-content-center gap-1">
+                    <button @click="openModal('edit', item)" class="btn btn-xs btn-outline-primary border-primary text-primary hover:bg-primary hover:text-white" title="Editar">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button @click="deleteItem(item.id)" class="btn btn-xs btn-outline-danger" title="Eliminar">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="text-center my-5" v-if="loading">
+            <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
+            <p class="mt-2 text-on-surface-variant font-medium text-xs">Cargando registros...</p>
+          </div>
+          <div class="text-center py-5 text-on-surface-variant" v-if="!loading && items.length === 0">
+            <i class="bi bi-inbox text-4xl d-block mb-2 text-tertiary-fixed-dim"></i>
+            <span class="font-medium text-sm">No hay registros disponibles en esta sección.</span>
+          </div>
+        </div>
+        <!-- Paginación -->
+        <nav
+          class="d-flex justify-content-between align-items-center bg-white p-3 rounded-lg border border-outline-variant shadow-sm"
+          v-if="pagination.total_pages > 1">
+          <span class="text-on-surface-variant text-xs font-medium">Mostrando página {{ pagination.page }} de {{
+            pagination.total_pages }} (Total: {{ pagination.total }} registros)</span>
+          <ul class="pagination pagination-sm mb-0">
+            <li :class="['page-item', pagination.page === 1 ? 'disabled' : '']">
+              <button @click="changePage(pagination.page - 1)"
+                class="page-link text-primary border-outline-variant">Anterior</button>
+            </li>
+            <li :class="['page-item', pagination.page === pagination.total_pages ? 'disabled' : '']">
+              <button @click="changePage(pagination.page + 1)"
+                class="page-link text-primary border-outline-variant">Siguiente</button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      </main>
+    </div>
+
+    <!-- Modal Formulario -->
+    <div aria-hidden="true" class="modal fade" id="crudModal" tabindex="-1">
+      <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg rounded-xl">
+          <div class="modal-header bg-surface-container-low border-b border-outline-variant rounded-t-xl">
+            <h5 class="modal-title font-bold text-primary text-base">{{ modalMode === 'create' ? 'Nuevo' : 'Editar' }}
+              {{
+              modalEntity ? modalEntity.singular : '' }}</h5>
+            <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+          </div>
+          <div class="modal-body p-4">
+            <form @submit.prevent="saveItem">
+              <div class="row g-3">
+                <div :key="col.field" class="col-md-6" v-for="col in (modalEntity ? modalEntity.fields : [])">
+                  <label class="form-label text-xs font-semibold text-on-surface mb-1">{{ col.label }}</label>
+                  <input :required="col.required" :type="col.type"
+                    class="form-control form-control-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
+                    v-if="col.type === 'text' || col.type === 'number' || col.type === 'date'"
+                    v-model="formData[col.field]" />
+                  <textarea
+                    class="form-control form-control-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
+                    rows="3" v-else-if="col.type === 'textarea'" v-model="formData[col.field]"></textarea>
+                  <select :required="col.required"
+                    class="form-select form-select-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
+                    v-else-if="col.type === 'select'" v-model="formData[col.field]">
+                    <option :key="o" :value="o" v-for="o in col.options">{{ o }}</option>
+                  </select>
+                  <template v-else-if="col.type === 'fk'">
+                    <input :list="'dl_' + col.field" :required="col.required && !(col.field === 'id_estudio' && needsNewEstudio)"
+                      :value="fkText[col.field]"
+                      @input="onFkInput(col.field, col.ref, $event.target.value)"
+                      class="form-control form-control-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
+                      placeholder="Escribí para buscar..." type="text" />
+                    <datalist :id="'dl_' + col.field">
+                      <option :key="opt.id" :value="fkLabel(col.ref, opt.id)" v-for="opt in refData[col.ref]"></option>
+                    </datalist>
+                    <div v-if="col.field === 'id_estudio' && needsNewEstudio" class="text-xs mt-1 text-primary">
+                      No existe ese Estudio: se va a crear uno nuevo con este nombre.
+                    </div>
+                    <div :class="formData[col.field] ? 'text-success-teal' : 'text-britlab-gray'" class="text-xs mt-1" v-else>
+                      {{ formData[col.field] ? ('Seleccionado: #' + formData[col.field]) : (col.required ? 'Elegí una opción de la lista' : 'Vacío (opcional)') }}
+                    </div>
+                    <div class="mt-2" v-if="col.field === 'id_estudio' && needsNewEstudio">
+                      <label class="form-label text-xs font-semibold text-on-surface mb-1">Código Hexalis del Estudio nuevo</label>
+                      <input class="form-control form-control-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
+                        placeholder="Ej: 660352" required type="text" v-model="newEstudioCodigo" />
+                    </div>
+                  </template>
+                </div>
+              </div>
+              <div class="mt-4 text-end pt-3 border-t border-outline-variant">
+                <button class="btn btn-sm btn-light border-outline-variant text-on-surface me-2 rounded-lg px-3"
+                  data-bs-dismiss="modal" type="button">Cancelar</button>
+                <button class="btn btn-sm btn-primary bg-primary border-primary shadow-sm rounded-lg px-3"
+                  type="submit">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>

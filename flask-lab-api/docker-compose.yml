@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_lab_db
+    restart: always
+    environment:
+      POSTGRES_USER: flask_user
+      POSTGRES_PASSWORD: flask_password
+      POSTGRES_DB: lab_db
+    ports:
+      - "5433:5432"
+    # Sin volumen persistente en /var/lib/postgresql/data: al recrear el
+    # contenedor (down + up, o up --force-recreate) Postgres arranca con el
+    # directorio de datos vacío y vuelve a correr el dump de abajo, así que
+    # cada build queda con el esquema y los datos actualizados.
+    volumes:
+      - ../database/britlab_test_dump.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U flask_user -d lab_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    container_name: flask_lab_api
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://flask_user:flask_password@db:5432/lab_db
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    container_name: vue_lab_frontend
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - web
