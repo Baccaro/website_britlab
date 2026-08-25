@@ -9,7 +9,13 @@ export default defineConfig({
   plugins: [
     vue(),
     vueDevTools(),
-  ],
+  ], server: {
+    host: '0.0.0.0', // Permite que Docker exponga el servidor fuera del contenedor
+    port: 5173,
+    allowedHosts: [
+      'public.britlab.com.ar',
+    ],
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
