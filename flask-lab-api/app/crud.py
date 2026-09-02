@@ -21,7 +21,7 @@ def _commit_or_400():
 
 def make_crud_blueprint(name, url_prefix, model, create_schema, update_schema, out_schema, order_by='id'):
     """Fábrica de Blueprints CRUD genéricos (list/get/create/update/delete) para
-    las tablas maestras simples del esquema (derivante, estudio, metodo, muestra,
+    las tablas maestras simples del esquema (colega, estudio, metodo, muestra,
     preanalitico, sector, valor_estudio_sector)."""
     bp = Blueprint(name, __name__, url_prefix=url_prefix)
 

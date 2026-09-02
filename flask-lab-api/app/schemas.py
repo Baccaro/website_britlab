@@ -11,17 +11,17 @@ class PaginatedResponse(BaseModel, Generic[T]):
     total_pages: int
     items: List[T]
 
-# --- Derivante ---
-class DerivanteBase(BaseModel):
+# --- Colega ---
+class ColegaBase(BaseModel):
     descripcion: str
 
-class DerivanteCreate(DerivanteBase):
+class ColegaCreate(ColegaBase):
     pass
 
-class DerivanteUpdate(BaseModel):
+class ColegaUpdate(BaseModel):
     descripcion: Optional[str] = None
 
-class DerivanteOut(DerivanteBase):
+class ColegaOut(ColegaBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
 
@@ -123,8 +123,8 @@ class ValorEstudioSectorOut(ValorEstudioSectorBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
 
-# --- Estudio Derivante ---
-class EstudioDerivanteBase(BaseModel):
+# --- Estudio Colega ---
+class EstudioColegaBase(BaseModel):
     nemonico_datatech: str
     paridad_datatech_hexalis: Optional[str] = 'pendiente'
     id_estudio: int
@@ -132,7 +132,8 @@ class EstudioDerivanteBase(BaseModel):
     id_preanalitico: Optional[int] = None
     id_muestra: Optional[int] = None
     id_sector_laboratorio: Optional[int] = None
-    indicaciones: Optional[str] = None
+    indicaciones_pacientes: Optional[str] = None
+    indicaciones_colega: Optional[str] = None
     valor_referencia: Optional[str] = None
     dias_demora: Optional[int] = 0
     estado: Optional[str] = 'pendiente'
@@ -140,12 +141,12 @@ class EstudioDerivanteBase(BaseModel):
     version: Optional[int] = 1
     revisor: str
     observacion: Optional[str] = None
-    derivante_id: int
+    colega_id: int
 
-class EstudioDerivanteCreate(EstudioDerivanteBase):
+class EstudioColegaCreate(EstudioColegaBase):
     pass
 
-class EstudioDerivanteUpdate(BaseModel):
+class EstudioColegaUpdate(BaseModel):
     nemonico_datatech: Optional[str] = None
     paridad_datatech_hexalis: Optional[str] = None
     id_estudio: Optional[int] = None
@@ -153,7 +154,8 @@ class EstudioDerivanteUpdate(BaseModel):
     id_preanalitico: Optional[int] = None
     id_muestra: Optional[int] = None
     id_sector_laboratorio: Optional[int] = None
-    indicaciones: Optional[str] = None
+    indicaciones_pacientes: Optional[str] = None
+    indicaciones_colega: Optional[str] = None
     valor_referencia: Optional[str] = None
     dias_demora: Optional[int] = None
     estado: Optional[str] = None
@@ -161,10 +163,216 @@ class EstudioDerivanteUpdate(BaseModel):
     version: Optional[int] = None
     revisor: Optional[str] = None
     observacion: Optional[str] = None
-    derivante_id: Optional[int] = None
+    colega_id: Optional[int] = None
 
-class EstudioDerivanteOut(EstudioDerivanteBase):
+class EstudioColegaOut(EstudioColegaBase):
     id: int
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+# --- Catálogos de Muestras estructuradas (todos son "id + nombre") ---
+class TipoMuestraBase(BaseModel):
+    nombre: str
+
+class TipoMuestraCreate(TipoMuestraBase):
+    pass
+
+class TipoMuestraUpdate(BaseModel):
+    nombre: Optional[str] = None
+
+class TipoMuestraOut(TipoMuestraBase):
+    id: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class AditivoBase(BaseModel):
+    nombre: str
+
+class AditivoCreate(AditivoBase):
+    pass
+
+class AditivoUpdate(BaseModel):
+    nombre: Optional[str] = None
+
+class AditivoOut(AditivoBase):
+    id: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class UnidadMedidaBase(BaseModel):
+    nombre: str
+
+class UnidadMedidaCreate(UnidadMedidaBase):
+    pass
+
+class UnidadMedidaUpdate(BaseModel):
+    nombre: Optional[str] = None
+
+class UnidadMedidaOut(UnidadMedidaBase):
+    id: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class RecipienteBase(BaseModel):
+    nombre: str
+
+class RecipienteCreate(RecipienteBase):
+    pass
+
+class RecipienteUpdate(BaseModel):
+    nombre: Optional[str] = None
+
+class RecipienteOut(RecipienteBase):
+    id: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ModalidadRecoleccionBase(BaseModel):
+    nombre: str
+
+class ModalidadRecoleccionCreate(ModalidadRecoleccionBase):
+    pass
+
+class ModalidadRecoleccionUpdate(BaseModel):
+    nombre: Optional[str] = None
+
+class ModalidadRecoleccionOut(ModalidadRecoleccionBase):
+    id: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TecnicaRecoleccionBase(BaseModel):
+    nombre: str
+
+class TecnicaRecoleccionCreate(TecnicaRecoleccionBase):
+    pass
+
+class TecnicaRecoleccionUpdate(BaseModel):
+    nombre: Optional[str] = None
+
+class TecnicaRecoleccionOut(TecnicaRecoleccionBase):
+    id: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ConservacionBase(BaseModel):
+    nombre: str
+
+class ConservacionCreate(ConservacionBase):
+    pass
+
+class ConservacionUpdate(BaseModel):
+    nombre: Optional[str] = None
+
+class ConservacionOut(ConservacionBase):
+    id: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class CondicionEspecialBase(BaseModel):
+    nombre: str
+
+class CondicionEspecialCreate(CondicionEspecialBase):
+    pass
+
+class CondicionEspecialUpdate(BaseModel):
+    nombre: Optional[str] = None
+
+class CondicionEspecialOut(CondicionEspecialBase):
+    id: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class PrioridadEnvioBase(BaseModel):
+    nombre: str
+
+class PrioridadEnvioCreate(PrioridadEnvioBase):
+    pass
+
+class PrioridadEnvioUpdate(BaseModel):
+    nombre: Optional[str] = None
+
+class PrioridadEnvioOut(PrioridadEnvioBase):
+    id: int
+    model_config = ConfigDict(from_attributes=True)
+
+# --- Estudio Colega Muestra ---
+class EstudioColegaMuestraBase(BaseModel):
+    id_estudio_colega: int
+    id_tipo_muestra: int
+    id_aditivo: Optional[int] = None
+    volumen: Optional[float] = None
+    id_unidad_medida: Optional[int] = None
+    id_recipiente: Optional[int] = None
+    id_modalidad_recoleccion: Optional[int] = None
+    id_tecnica_recoleccion: Optional[int] = None
+    id_conservacion: Optional[int] = None
+    id_condicion_especial: Optional[int] = None
+    id_prioridad_envio: Optional[int] = None
+    orden: Optional[int] = 1
+    observacion: Optional[str] = None
+
+class EstudioColegaMuestraCreate(EstudioColegaMuestraBase):
+    pass
+
+class EstudioColegaMuestraUpdate(BaseModel):
+    id_estudio_colega: Optional[int] = None
+    id_tipo_muestra: Optional[int] = None
+    id_aditivo: Optional[int] = None
+    volumen: Optional[float] = None
+    id_unidad_medida: Optional[int] = None
+    id_recipiente: Optional[int] = None
+    id_modalidad_recoleccion: Optional[int] = None
+    id_tecnica_recoleccion: Optional[int] = None
+    id_conservacion: Optional[int] = None
+    id_condicion_especial: Optional[int] = None
+    id_prioridad_envio: Optional[int] = None
+    orden: Optional[int] = None
+    observacion: Optional[str] = None
+
+class EstudioColegaMuestraOut(EstudioColegaMuestraBase):
+    id: int
+    created_at: Optional[datetime] = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+# --- Estudio Colega Muestra Alternativa ---
+class EstudioColegaMuestraAlternativaBase(BaseModel):
+    id_estudio_colega_muestra: int
+    id_tipo_muestra: int
+    id_aditivo: Optional[int] = None
+    volumen: Optional[float] = None
+    id_unidad_medida: Optional[int] = None
+    id_recipiente: Optional[int] = None
+    id_modalidad_recoleccion: Optional[int] = None
+    id_tecnica_recoleccion: Optional[int] = None
+    id_conservacion: Optional[int] = None
+    id_condicion_especial: Optional[int] = None
+    id_prioridad_envio: Optional[int] = None
+    orden: Optional[int] = 1
+    observacion: Optional[str] = None
+
+class EstudioColegaMuestraAlternativaCreate(EstudioColegaMuestraAlternativaBase):
+    pass
+
+class EstudioColegaMuestraAlternativaUpdate(BaseModel):
+    id_estudio_colega_muestra: Optional[int] = None
+    id_tipo_muestra: Optional[int] = None
+    id_aditivo: Optional[int] = None
+    volumen: Optional[float] = None
+    id_unidad_medida: Optional[int] = None
+    id_recipiente: Optional[int] = None
+    id_modalidad_recoleccion: Optional[int] = None
+    id_tecnica_recoleccion: Optional[int] = None
+    id_conservacion: Optional[int] = None
+    id_condicion_especial: Optional[int] = None
+    id_prioridad_envio: Optional[int] = None
+    orden: Optional[int] = None
+    observacion: Optional[str] = None
+
+class EstudioColegaMuestraAlternativaOut(EstudioColegaMuestraAlternativaBase):
+    id: int
+    created_at: Optional[datetime] = None
     model_config = ConfigDict(from_attributes=True)

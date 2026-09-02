@@ -1,11 +1,85 @@
 const { createApp, ref, computed, onMounted } = Vue;
 
-// Opción especial del selector de derivante que muestra el catálogo completo de Estudios
+// Opción especial del selector de colega que muestra el catálogo completo de Estudios
 const ALL_ESTUDIOS = '__ALL_ESTUDIOS__';
 
-// Entidades del sidebar (todas menos 'estudios', que solo se accede desde
-// el selector de "Indicaciones por Derivante" eligiendo "Todos los Estudios")
-const SIDEBAR_ENTITY_KEYS = ['derivantes', 'metodos', 'muestras', 'preanaliticos', 'sectores', 'valores_estudio_sector', 'estudio_derivante'];
+// Entidades con botón propio en la barra de navegación superior.
+const TOP_NAV_ENTITY_KEYS = ['colegas', 'metodos', 'preanaliticos'];
+
+// Catálogos de Muestras: quedan agrupados en el dropdown "Muestras" de la
+// barra de navegación superior (mismas opciones que tenía antes en el sidebar).
+const MUESTRAS_CATALOGO_KEYS = ['tipos_muestra', 'aditivos', 'unidades_medida', 'recipientes',
+  'modalidades_recoleccion', 'tecnicas_recoleccion', 'conservaciones', 'condiciones_especiales', 'prioridades_envio'];
+
+// Clase de color del chip de colega en "Todos los Estudios", según el estado
+// del registro estudio_colega en ese colega.
+const ESTADO_CHIP_CLASS = {
+  listo: 'bg-success-teal',
+  verificado: 'bg-success-teal',
+  pendiente: 'bg-tertiary',
+  revisar: 'bg-warning text-dark'
+};
+
+// Campos de una muestra estructurada (o de una alternativa suya: misma forma),
+// en el orden en que se muestran en el formulario. 'volumen' no es un catálogo
+// (no tiene 'ref'), el resto son selects contra una tabla de referencia.
+const MUESTRA_CAMPOS = [
+  { field: 'id_tipo_muestra', ref: 'tipos_muestra', label: 'Tipo de Muestra', required: true, type: 'select' },
+  { field: 'id_aditivo', ref: 'aditivos', label: 'Aditivo', type: 'select' },
+  { field: 'volumen', label: 'Volumen', type: 'number' },
+  { field: 'id_unidad_medida', ref: 'unidades_medida', label: 'Unidad de Medida', type: 'select' },
+  { field: 'id_recipiente', ref: 'recipientes', label: 'Recipiente', type: 'select' },
+  { field: 'id_modalidad_recoleccion', ref: 'modalidades_recoleccion', label: 'Modalidad de Recolección', type: 'select' },
+  { field: 'id_tecnica_recoleccion', ref: 'tecnicas_recoleccion', label: 'Técnica de Recolección', type: 'select' },
+  { field: 'id_conservacion', ref: 'conservaciones', label: 'Conservación / Temperatura', type: 'select' },
+  { field: 'id_condicion_especial', ref: 'condiciones_especiales', label: 'Condición Especial', type: 'select' },
+  { field: 'id_prioridad_envio', ref: 'prioridades_envio', label: 'Prioridad / Envío', type: 'select' }
+];
+
+// Secciones desplegables del formulario de "Estudio x Colega". 'muestras' no
+// lleva 'fields': esa sección se arma aparte (ver muestrasForm más abajo).
+const ESTUDIO_COLEGA_SECCIONES = [
+  {
+    key: 'general', title: 'Datos Generales',
+    desc: 'Identificación del estudio y su clasificación general.',
+    fields: ['id_estudio', 'nemonico_datatech', 'colega_id', 'id_metodo', 'id_sector_laboratorio', 'paridad_datatech_hexalis', 'estado']
+  },
+  { key: 'muestras', title: 'Muestras', desc: 'Una o varias muestras admitidas, cada una con su recolección y conservación.' },
+  {
+    key: 'preanalitico', title: 'Pre-analítico e Indicaciones',
+    desc: 'Preparación previa, valores de referencia e indicaciones.',
+    fields: ['id_preanalitico', 'valor_referencia', 'indicaciones_pacientes', 'indicaciones_colega']
+  },
+  {
+    key: 'procesamiento', title: 'Procesamiento y Tiempos',
+    desc: 'Demora, código propio del laboratorio y control de versión.',
+    fields: ['dias_demora', 'codigo_laboratorio', 'version', 'revisor']
+  }
+];
+
+let _muestraKeySeq = 0;
+const nextMuestraKey = () => `m${_muestraKeySeq++}`;
+
+// Columnas disponibles en la tabla "Estudios por Colega" (para el selector de
+// columnas visibles). El usuario puede ocultar cualquiera menos las fijas.
+const INDICACIONES_COLUMNAS = [
+  { field: 'nemonico_datatech', label: 'Nemónico' },
+  { field: 'paridad_datatech_hexalis', label: 'Paridad' },
+  { field: 'codigo_hexalis', label: 'Cód. Hex.' },
+  { field: 'estudio_descripcion', label: 'Estudio' },
+  { field: 'metodo', label: 'Método' },
+  { field: 'preanalitico', label: 'Pre-analítico' },
+  { field: 'muestra', label: 'Muestra' },
+  { field: 'valor_referencia', label: 'Val. Ref.' },
+  { field: 'dias_demora', label: 'Dem.' },
+  { field: 'estado', label: 'Estado' },
+  { field: 'codigo_laboratorio', label: 'Cód. Lab.' },
+  { field: 'revisor', label: 'Revisor' },
+  { field: 'indicaciones_pacientes', label: 'Ind. Pacientes' },
+  { field: 'indicaciones_colega', label: 'Ind. Colega' },
+  { field: 'observacion', label: 'Observaciones' }
+];
+const INDICACIONES_COLUMNAS_DEFAULT = INDICACIONES_COLUMNAS.map(c => c.field);
 
 createApp({
   setup() {
@@ -14,7 +88,6 @@ createApp({
     // Estado Navegación / Vistas
     const currentView = ref('indicaciones'); // 'crud' | 'indicaciones'
     const currentEntityKey = ref('estudios');
-    const sidebarCollapsed = ref(localStorage.getItem('britlab_sidebar_collapsed') === '1');
 
     // Estado CRUD Generico
     const items = ref([]);
@@ -23,27 +96,65 @@ createApp({
     const modalMode = ref('create');
     // Qué definición de entidad usa el modal actualmente abierto y adónde hay
     // que refrescar al guardar (puede diferir de currentEntityKey/currentView
-    // cuando se edita un Estudio x Derivante desde la vista de Indicaciones).
+    // cuando se edita un Estudio x Colega desde la vista de Estudios por Colega).
     const modalEntityKey = ref('estudios');
     const modalContext = ref('crud'); // 'crud' | 'indicaciones'
     let modalInstance = null;
+    // Secciones desplegables abiertas/cerradas del formulario de Estudio x Colega
+    const sectionsOpen = ref(Object.fromEntries(ESTUDIO_COLEGA_SECCIONES.map(s => [s.key, true])));
+    const toggleSection = (key) => { sectionsOpen.value[key] = !sectionsOpen.value[key]; };
+    const fieldsForSection = (sectionKey) => {
+      const section = ESTUDIO_COLEGA_SECCIONES.find(s => s.key === sectionKey);
+      if (!section || !section.fields) return [];
+      return section.fields
+        .map(fieldName => entities.estudio_colega.fields.find(f => f.field === fieldName))
+        .filter(Boolean);
+    };
 
     const alert = ref({ message: '', type: 'success' });
     const pagination = ref({ page: 1, limit: 50, total: 0, total_pages: 1 });
 
-    // Estado Específico Vista "Estudios por Derivante"
-    const selectedDerivanteId = ref(null);
-    const derivanteEstudios = ref([]);
+    // Estado Específico Vista "Estudios por Colega". Por defecto siempre
+    // arranca en "Todos los Estudios" (catálogo maestro deduplicado).
+    const selectedColegaId = ref(ALL_ESTUDIOS);
+    const colegaEstudios = ref([]);
     const loadingIndicaciones = ref(false);
     const searchQuery = ref('');
+    const todosEstudios = ref([]);
+    const loadingTodosEstudios = ref(false);
+    // Filtro por estado (compartido entre "Todos los Estudios" y la tabla de
+    // un colega puntual) y toggle para ver solo los estudios en conflicto.
+    const estadoFiltro = ref(null);
+    const soloConflictos = ref(false);
+    const toggleEstadoFiltro = (estado) => {
+      estadoFiltro.value = estadoFiltro.value === estado ? null : estado;
+    };
+    const toggleSoloConflictos = () => { soloConflictos.value = !soloConflictos.value; };
+    const expandedRows = ref(new Set());
+    const rowMuestrasCache = ref({});
+    const rowMuestrasLoading = ref(new Set());
+    const showColumnPicker = ref(false);
+    const visibleColumns = ref(new Set(
+      JSON.parse(localStorage.getItem('britlab_columnas_indicaciones') || 'null') || INDICACIONES_COLUMNAS_DEFAULT
+    ));
+
+    const toggleColumn = (field) => {
+      const next = new Set(visibleColumns.value);
+      if (next.has(field)) next.delete(field); else next.add(field);
+      visibleColumns.value = next;
+      localStorage.setItem('britlab_columnas_indicaciones', JSON.stringify([...next]));
+    };
+
+    const visibleColumnasList = computed(() => INDICACIONES_COLUMNAS.filter(c => visibleColumns.value.has(c.field)));
 
     const ESTADOS_REGISTRO = ['listo', 'pendiente', 'revisar', 'verificado'];
     const ESTADOS_PARIDAD = ['listo', 'pendiente', 'revisar', 'inactivo', 'discontinuado'];
 
     // Listas maestras cacheadas para armar los selectores de claves foráneas
-    // (id_estudio, derivante_id, id_metodo, id_muestra, id_preanalitico, id_sector_laboratorio)
     const refData = ref({
-      estudios: [], derivantes: [], metodos: [], muestras: [], preanaliticos: [], sectores: [], valores_estudio_sector: []
+      estudios: [], colegas: [], metodos: [], muestras: [], preanaliticos: [], sectores: [], valores_estudio_sector: [],
+      tipos_muestra: [], aditivos: [], unidades_medida: [], recipientes: [], modalidades_recoleccion: [],
+      tecnicas_recoleccion: [], conservaciones: [], condiciones_especiales: [], prioridades_envio: []
     });
     // Texto mostrado en los inputs con autocompletado (datalist) del modal, por campo
     const fkText = ref({});
@@ -53,7 +164,7 @@ createApp({
 
     const REF_LABEL = {
       estudios: e => `${e.codigo_hexalis} — ${e.descripcion}`,
-      derivantes: d => d.descripcion,
+      colegas: d => d.descripcion,
       metodos: m => m.nombre,
       muestras: m => m.nombre,
       preanaliticos: p => p.nombre,
@@ -62,29 +173,37 @@ createApp({
         const est = refData.value.estudios.find(e => e.id === v.id_estudio);
         const nombre = est ? est.descripcion : `#${v.id_estudio}`;
         return `${nombre} - Posición Informe: ${v.posicion_informe}`;
-      }
+      },
+      tipos_muestra: x => x.nombre,
+      aditivos: x => x.nombre,
+      unidades_medida: x => x.nombre,
+      recipientes: x => x.nombre,
+      modalidades_recoleccion: x => x.nombre,
+      tecnicas_recoleccion: x => x.nombre,
+      conservaciones: x => x.nombre,
+      condiciones_especiales: x => x.nombre,
+      prioridades_envio: x => x.nombre
+    };
+
+    // endpoint de la API para cada clave de refData
+    const REF_ENDPOINT = {
+      estudios: 'estudios', colegas: 'colegas', metodos: 'metodos', muestras: 'muestras',
+      preanaliticos: 'preanaliticos', sectores: 'sectores', valores_estudio_sector: 'valores-estudio-sector',
+      tipos_muestra: 'tipos-muestra', aditivos: 'aditivos', unidades_medida: 'unidades-medida',
+      recipientes: 'recipientes', modalidades_recoleccion: 'modalidades-recoleccion',
+      tecnicas_recoleccion: 'tecnicas-recoleccion', conservaciones: 'conservaciones',
+      condiciones_especiales: 'condiciones-especiales', prioridades_envio: 'prioridades-envio'
     };
 
     const fetchRefData = async () => {
+      const keys = Object.keys(REF_ENDPOINT);
       try {
-        const [est, der, met, mue, pre, sec, ves] = await Promise.all([
-          axios.get(`${API_BASE}/estudios`, { params: { limit: 3000 } }),
-          axios.get(`${API_BASE}/derivantes`, { params: { limit: 500 } }),
-          axios.get(`${API_BASE}/metodos`, { params: { limit: 1000 } }),
-          axios.get(`${API_BASE}/muestras`, { params: { limit: 1000 } }),
-          axios.get(`${API_BASE}/preanaliticos`, { params: { limit: 500 } }),
-          axios.get(`${API_BASE}/sectores`, { params: { limit: 500 } }),
-          axios.get(`${API_BASE}/valores-estudio-sector`, { params: { limit: 3000 } })
-        ]);
-        refData.value = {
-          estudios: est.data.items,
-          derivantes: der.data.items,
-          metodos: met.data.items,
-          muestras: mue.data.items,
-          preanaliticos: pre.data.items,
-          sectores: sec.data.items,
-          valores_estudio_sector: ves.data.items
-        };
+        const responses = await Promise.all(
+          keys.map(k => axios.get(`${API_BASE}/${REF_ENDPOINT[k]}`, { params: { limit: 3000 } }))
+        );
+        const nuevo = {};
+        keys.forEach((k, i) => { nuevo[k] = responses[i].data.items; });
+        refData.value = nuevo;
       } catch (err) {
         showAlert('No se pudieron cargar los datos de referencia (FKs)', 'danger');
       }
@@ -122,10 +241,10 @@ createApp({
           { field: 'descripcion', label: 'Descripción del Estudio', type: 'textarea', required: true }
         ]
       },
-      derivantes: {
-        label: 'Derivantes',
-        singular: 'Derivante',
-        endpoint: 'derivantes',
+      colegas: {
+        label: 'Colegas',
+        singular: 'Colega',
+        endpoint: 'colegas',
         icon: 'bi-building',
         columns: [
           { field: 'descripcion', label: 'Descripción' }
@@ -207,16 +326,88 @@ createApp({
           { field: 'rango', label: 'Rango', type: 'text' }
         ]
       },
-      estudio_derivante: {
-        label: 'Estudio x Derivante',
-        singular: 'Registro Estudio x Derivante',
-        endpoint: 'estudio-derivante',
+      tipos_muestra: {
+        label: 'Tipos de Muestra',
+        singular: 'Tipo de Muestra',
+        endpoint: 'tipos-muestra',
+        icon: 'bi-droplet-half',
+        columns: [{ field: 'nombre', label: 'Nombre' }],
+        fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
+      },
+      aditivos: {
+        label: 'Aditivos',
+        singular: 'Aditivo',
+        endpoint: 'aditivos',
+        icon: 'bi-eyedropper',
+        columns: [{ field: 'nombre', label: 'Nombre' }],
+        fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
+      },
+      unidades_medida: {
+        label: 'Unidades de Medida',
+        singular: 'Unidad de Medida',
+        endpoint: 'unidades-medida',
+        icon: 'bi-rulers',
+        columns: [{ field: 'nombre', label: 'Nombre' }],
+        fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
+      },
+      recipientes: {
+        label: 'Recipientes',
+        singular: 'Recipiente',
+        endpoint: 'recipientes',
+        icon: 'bi-cup-straw',
+        columns: [{ field: 'nombre', label: 'Nombre' }],
+        fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
+      },
+      modalidades_recoleccion: {
+        label: 'Modalidades de Recolección',
+        singular: 'Modalidad de Recolección',
+        endpoint: 'modalidades-recoleccion',
+        icon: 'bi-calendar-check',
+        columns: [{ field: 'nombre', label: 'Nombre' }],
+        fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
+      },
+      tecnicas_recoleccion: {
+        label: 'Técnicas de Recolección',
+        singular: 'Técnica de Recolección',
+        endpoint: 'tecnicas-recoleccion',
+        icon: 'bi-tools',
+        columns: [{ field: 'nombre', label: 'Nombre' }],
+        fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
+      },
+      conservaciones: {
+        label: 'Conservación / Temperatura',
+        singular: 'Conservación',
+        endpoint: 'conservaciones',
+        icon: 'bi-thermometer-snow',
+        columns: [{ field: 'nombre', label: 'Nombre' }],
+        fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
+      },
+      condiciones_especiales: {
+        label: 'Condiciones Especiales',
+        singular: 'Condición Especial',
+        endpoint: 'condiciones-especiales',
+        icon: 'bi-exclamation-diamond',
+        columns: [{ field: 'nombre', label: 'Nombre' }],
+        fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
+      },
+      prioridades_envio: {
+        label: 'Prioridad / Envío',
+        singular: 'Prioridad de Envío',
+        endpoint: 'prioridades-envio',
+        icon: 'bi-truck',
+        columns: [{ field: 'nombre', label: 'Nombre' }],
+        fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
+      },
+      estudio_colega: {
+        label: 'Estudio x Colega',
+        singular: 'Registro Estudio x Colega',
+        endpoint: 'estudio-colega',
         icon: 'bi-diagram-3',
         columns: [
           { field: 'id', label: 'ID' },
           { field: 'nemonico_datatech', label: 'Nemónico' },
           { field: 'id_estudio', label: 'Estudio', type: 'fk', ref: 'estudios' },
-          { field: 'derivante_id', label: 'Derivante', type: 'fk', ref: 'derivantes' },
+          { field: 'colega_id', label: 'Colega', type: 'fk', ref: 'colegas' },
           { field: 'estado', label: 'Estado' },
           { field: 'paridad_datatech_hexalis', label: 'Paridad' },
           { field: 'revisor', label: 'Revisor' }
@@ -224,15 +415,15 @@ createApp({
         fields: [
           { field: 'nemonico_datatech', label: 'Nemónico Datatech', type: 'text', required: true },
           { field: 'id_estudio', label: 'Estudio', type: 'fk', ref: 'estudios', required: true, allowCreateNew: true },
-          { field: 'derivante_id', label: 'Derivante', type: 'fk', ref: 'derivantes', required: true },
+          { field: 'colega_id', label: 'Colega', type: 'fk', ref: 'colegas', required: true },
           { field: 'id_metodo', label: 'Método', type: 'fk', ref: 'metodos' },
           { field: 'id_preanalitico', label: 'Pre-analítico', type: 'fk', ref: 'preanaliticos' },
-          { field: 'id_muestra', label: 'Muestra', type: 'fk', ref: 'muestras' },
           { field: 'id_sector_laboratorio', label: 'Valor Estudio-Sector', type: 'fk', ref: 'valores_estudio_sector' },
           { field: 'paridad_datatech_hexalis', label: 'Paridad Datatech-Hexalis', type: 'select', options: ESTADOS_PARIDAD, default: 'pendiente' },
           { field: 'estado', label: 'Estado', type: 'select', options: ESTADOS_REGISTRO, default: 'pendiente' },
           { field: 'valor_referencia', label: 'Valor de Referencia', type: 'textarea' },
-          { field: 'indicaciones', label: 'Indicaciones', type: 'textarea' },
+          { field: 'indicaciones_pacientes', label: 'Indicaciones Pacientes', type: 'textarea' },
+          { field: 'indicaciones_colega', label: 'Indicaciones Colega', type: 'textarea' },
           { field: 'dias_demora', label: 'Días de Demora', type: 'number', default: 0 },
           { field: 'codigo_laboratorio', label: 'Código del Laboratorio', type: 'text' },
           { field: 'version', label: 'Versión', type: 'number', default: 1 },
@@ -242,23 +433,56 @@ createApp({
       }
     };
 
-    const sidebarEntities = SIDEBAR_ENTITY_KEYS.map(key => [key, entities[key]]);
+    const topNavEntities = TOP_NAV_ENTITY_KEYS.map(key => [key, entities[key]]);
+    const muestrasCatalogoEntities = MUESTRAS_CATALOGO_KEYS.map(key => [key, entities[key]]);
 
     const currentEntity = computed(() => entities[currentEntityKey.value]);
     const modalEntity = computed(() => entities[modalEntityKey.value]);
-    const isAllEstudiosMode = computed(() => currentView.value === 'indicaciones' && selectedDerivanteId.value === ALL_ESTUDIOS);
+    const isAllEstudiosMode = computed(() => currentView.value === 'indicaciones' && selectedColegaId.value === ALL_ESTUDIOS);
+    const muestrasDropdownActive = computed(() => currentView.value === 'crud' && MUESTRAS_CATALOGO_KEYS.includes(currentEntityKey.value));
 
-    // Filtro reactivo para la búsqueda de estudios por derivante
+    // Filtro reactivo para la búsqueda + filtro de estado de estudios por colega
     const filteredEstudios = computed(() => {
-      if (!searchQuery.value) return derivanteEstudios.value;
-      const q = searchQuery.value.toLowerCase().trim();
-      return derivanteEstudios.value.filter(e => {
-        const nombre = (e.estudio_descripcion || '').toLowerCase();
-        const codigo = (e.codigo_hexalis || '').toLowerCase();
-        const nemonico = (e.nemonico_datatech || '').toLowerCase();
-        return nombre.includes(q) || codigo.includes(q) || nemonico.includes(q);
-      });
+      let lista = colegaEstudios.value;
+      if (estadoFiltro.value) lista = lista.filter(e => e.estado === estadoFiltro.value);
+      if (searchQuery.value) {
+        const q = searchQuery.value.toLowerCase().trim();
+        lista = lista.filter(e => {
+          const nombre = (e.estudio_descripcion || '').toLowerCase();
+          const codigo = (e.codigo_hexalis || '').toLowerCase();
+          const nemonico = (e.nemonico_datatech || '').toLowerCase();
+          return nombre.includes(q) || codigo.includes(q) || nemonico.includes(q);
+        });
+      }
+      return lista;
     });
+
+    // Un estudio está "en conflicto" cuando figura como 'listo' (activo) en
+    // más de un colega a la vez: normalmente debería estar activo en uno solo.
+    const esEstudioConflictivo = (e) => e.colegas.filter(c => c.estado === 'listo').length >= 2;
+    const estudiosConConflicto = computed(() => todosEstudios.value.filter(esEstudioConflictivo));
+    const estadoChipClass = (estado) => ESTADO_CHIP_CLASS[estado] || 'bg-tertiary';
+
+    // Filtro reactivo para "Todos los Estudios": conflictos, estado y búsqueda.
+    // Cuando hay un estado elegido, sólo quedan los estudios con al menos un
+    // colega en ese estado (los chips que no matchean se ocultan en el template).
+    const filteredTodosEstudios = computed(() => {
+      let lista = soloConflictos.value ? estudiosConConflicto.value : todosEstudios.value;
+      if (estadoFiltro.value) lista = lista.filter(e => e.colegas.some(c => c.estado === estadoFiltro.value));
+      if (searchQuery.value) {
+        const q = searchQuery.value.toLowerCase().trim();
+        lista = lista.filter(e => {
+          const nombre = (e.estudio_descripcion || '').toLowerCase();
+          const codigo = (e.codigo_hexalis || '').toLowerCase();
+          return nombre.includes(q) || codigo.includes(q);
+        });
+      }
+      return lista;
+    });
+
+    // Chips a mostrar en la fila de un estudio: si hay filtro de estado activo,
+    // sólo los colegas que matchean (para no mezclar estados en la vista filtrada).
+    const chipsDeEstudio = (e) => estadoFiltro.value ? e.colegas.filter(c => c.estado === estadoFiltro.value) : e.colegas;
 
     // Métodos CRUD Genericos
     const fetchItems = async (page = 1) => {
@@ -287,43 +511,91 @@ createApp({
       fetchItems(1);
     };
 
+    // El botón "Estudios" de la barra superior siempre vuelve al catálogo
+    // maestro "Todos los Estudios", sin recordar el último colega elegido.
     const switchToIndicaciones = () => {
       currentView.value = 'indicaciones';
+      searchQuery.value = '';
+      estadoFiltro.value = null;
+      soloConflictos.value = false;
+      selectedColegaId.value = ALL_ESTUDIOS;
+      fetchTodosEstudios();
     };
 
-    const toggleSidebar = () => {
-      sidebarCollapsed.value = !sidebarCollapsed.value;
-      localStorage.setItem('britlab_sidebar_collapsed', sidebarCollapsed.value ? '1' : '0');
-    };
-
-    // Métodos Vista "Estudios por Derivante"
-    const fetchEstudiosPorDerivante = async () => {
-      if (!selectedDerivanteId.value) {
-        derivanteEstudios.value = [];
+    // Métodos Vista "Estudios por Colega"
+    const fetchEstudiosPorColega = async () => {
+      if (!selectedColegaId.value) {
+        colegaEstudios.value = [];
         return;
       }
       loadingIndicaciones.value = true;
+      expandedRows.value = new Set();
       try {
-        const res = await axios.get(`${API_BASE}/estudio-derivante/derivante/${selectedDerivanteId.value}`);
-        derivanteEstudios.value = res.data;
+        const res = await axios.get(`${API_BASE}/estudio-colega/colega/${selectedColegaId.value}`);
+        colegaEstudios.value = res.data;
       } catch (err) {
-        showAlert('Error al consultar los estudios asignados al derivante', 'danger');
-        derivanteEstudios.value = [];
+        showAlert('Error al consultar los estudios asignados al colega', 'danger');
+        colegaEstudios.value = [];
       } finally {
         loadingIndicaciones.value = false;
       }
     };
 
-    // Al cambiar el selector: "Todos los Estudios" reutiliza el ABM de Estudios,
-    // cualquier otra opción consulta los estudios asignados a ese derivante.
-    const onDerivanteSelectorChange = () => {
+    // Al cambiar el selector: "Todos los Estudios" trae el catálogo maestro
+    // deduplicado por código hexalis, cualquier otra opción consulta los
+    // estudios asignados a ese colega puntual.
+    const onColegaSelectorChange = () => {
       searchQuery.value = '';
-      if (selectedDerivanteId.value === ALL_ESTUDIOS) {
-        currentEntityKey.value = 'estudios';
-        fetchItems(1);
+      estadoFiltro.value = null;
+      soloConflictos.value = false;
+      if (selectedColegaId.value === ALL_ESTUDIOS) {
+        fetchTodosEstudios();
         return;
       }
-      fetchEstudiosPorDerivante();
+      fetchEstudiosPorColega();
+    };
+
+    const fetchTodosEstudios = async () => {
+      loadingTodosEstudios.value = true;
+      try {
+        const res = await axios.get(`${API_BASE}/estudio-colega/todos`);
+        todosEstudios.value = res.data;
+      } catch (err) {
+        showAlert('Error al consultar el catálogo de estudios', 'danger');
+        todosEstudios.value = [];
+      } finally {
+        loadingTodosEstudios.value = false;
+      }
+    };
+
+    // --- Filas desplegables de la tabla de Estudios por Colega ---
+    const toggleRowExpand = (item) => {
+      const next = new Set(expandedRows.value);
+      if (next.has(item.id)) {
+        next.delete(item.id);
+      } else {
+        next.add(item.id);
+        if (!rowMuestrasCache.value[item.id]) {
+          fetchRowMuestras(item.id);
+        }
+      }
+      expandedRows.value = next;
+    };
+
+    const fetchRowMuestras = async (idEstudioColega) => {
+      const loadingSet = new Set(rowMuestrasLoading.value);
+      loadingSet.add(idEstudioColega);
+      rowMuestrasLoading.value = loadingSet;
+      try {
+        const res = await axios.get(`${API_BASE}/estudio-colega-muestra/estudio-colega/${idEstudioColega}`);
+        rowMuestrasCache.value = { ...rowMuestrasCache.value, [idEstudioColega]: res.data };
+      } catch (err) {
+        rowMuestrasCache.value = { ...rowMuestrasCache.value, [idEstudioColega]: [] };
+      } finally {
+        const doneSet = new Set(rowMuestrasLoading.value);
+        doneSet.delete(idEstudioColega);
+        rowMuestrasLoading.value = doneSet;
+      }
     };
 
     const changePage = (page) => {
@@ -352,32 +624,185 @@ createApp({
         }
       });
       newEstudioCodigo.value = '';
+      Object.keys(sectionsOpen.value).forEach(k => { sectionsOpen.value[k] = true; });
+
+      // Sub-sección de Muestras estructuradas: se editan en un buffer local y
+      // se guardan (create/update/delete) recién cuando se guarda el formulario.
+      muestrasEliminadas.value = [];
+      alternativasEliminadas.value = [];
+      if (modalEntityKey.value === 'estudio_colega' && mode === 'edit') {
+        fetchMuestrasDeEstudioColega(formData.value.id);
+      } else {
+        muestrasForm.value = [];
+      }
+
       modalInstance.show();
     };
 
-    // Abre el mismo modal de "Estudio x Derivante" pero desde la tabla de
-    // Indicaciones por Derivante: trae el registro completo (con los ids de
-    // FK reales) porque esa tabla solo tiene los nombres ya resueltos.
-    const editEstudioDerivante = async (item) => {
+    // --- Muestras estructuradas (1..N por Estudio x Colega). Cada muestra, a
+    // su vez, puede tener 1..N alternativas propias (nivel anidado, no una
+    // lista plana). Todo se edita en memoria y se persiste recién al Guardar. ---
+    const muestrasForm = ref([]);
+    const muestrasLoading = ref(false);
+    const muestrasEliminadas = ref([]); // ids de estudio_colega_muestra ya existentes a borrar
+    const alternativasEliminadas = ref([]); // ids de alternativas ya existentes a borrar
+
+    const blankCampos = () => {
+      const row = { volumen: null };
+      MUESTRA_CAMPOS.forEach(c => { if (c.field !== 'volumen') row[c.field] = null; });
+      return row;
+    };
+
+    const blankMuestraRow = (orden) => ({
+      _key: nextMuestraKey(), _isNew: true, id: null, orden, observacion: null,
+      alternativas: [], ...blankCampos()
+    });
+
+    const blankAlternativaRow = (orden) => ({
+      _key: nextMuestraKey(), _isNew: true, id: null, orden, observacion: null,
+      ...blankCampos()
+    });
+
+    const copiarCampos = (origen, destino) => {
+      MUESTRA_CAMPOS.forEach(c => { destino[c.field] = origen[c.field]; });
+      destino.observacion = origen.observacion;
+    };
+
+    const fetchMuestrasDeEstudioColega = async (idEstudioColega) => {
+      muestrasLoading.value = true;
       try {
-        const res = await axios.get(`${API_BASE}/estudio-derivante/${item.id}`);
-        openModal('edit', res.data, { entityKey: 'estudio_derivante', context: 'indicaciones' });
+        const res = await axios.get(`${API_BASE}/estudio-colega-muestra/estudio-colega/${idEstudioColega}`);
+        muestrasForm.value = res.data.map(m => ({
+          ...m,
+          _key: nextMuestraKey(),
+          _isNew: false,
+          alternativas: (m.alternativas || []).map(a => ({ ...a, _key: nextMuestraKey(), _isNew: false }))
+        }));
+      } catch (err) {
+        showAlert('No se pudieron cargar las muestras de este estudio', 'danger');
+        muestrasForm.value = [];
+      } finally {
+        muestrasLoading.value = false;
+      }
+    };
+
+    const addMuestraRow = () => {
+      muestrasForm.value.push(blankMuestraRow(muestrasForm.value.length + 1));
+    };
+
+    const duplicateMuestraRow = (idx) => {
+      const copia = blankMuestraRow(muestrasForm.value.length + 1);
+      copiarCampos(muestrasForm.value[idx], copia);
+      muestrasForm.value.splice(idx + 1, 0, copia);
+      renumerar(muestrasForm.value);
+    };
+
+    const removeMuestraRow = (idx) => {
+      const row = muestrasForm.value[idx];
+      if (!row._isNew && row.id) muestrasEliminadas.value.push(row.id);
+      muestrasForm.value.splice(idx, 1);
+      renumerar(muestrasForm.value);
+    };
+
+    const moveMuestraRow = (idx, dir) => {
+      const target = idx + dir;
+      if (target < 0 || target >= muestrasForm.value.length) return;
+      const arr = muestrasForm.value;
+      [arr[idx], arr[target]] = [arr[target], arr[idx]];
+      renumerar(arr);
+    };
+
+    // --- Alternativas de una muestra puntual (anidadas dentro de ella) ---
+    const addAlternativaRow = (muestraIdx) => {
+      const alts = muestrasForm.value[muestraIdx].alternativas;
+      alts.push(blankAlternativaRow(alts.length + 1));
+    };
+
+    const duplicateAlternativaRow = (muestraIdx, altIdx) => {
+      const alts = muestrasForm.value[muestraIdx].alternativas;
+      const copia = blankAlternativaRow(alts.length + 1);
+      copiarCampos(alts[altIdx], copia);
+      alts.splice(altIdx + 1, 0, copia);
+      renumerar(alts);
+    };
+
+    const removeAlternativaRow = (muestraIdx, altIdx) => {
+      const alts = muestrasForm.value[muestraIdx].alternativas;
+      const row = alts[altIdx];
+      if (!row._isNew && row.id) alternativasEliminadas.value.push(row.id);
+      alts.splice(altIdx, 1);
+      renumerar(alts);
+    };
+
+    const moveAlternativaRow = (muestraIdx, altIdx, dir) => {
+      const alts = muestrasForm.value[muestraIdx].alternativas;
+      const target = altIdx + dir;
+      if (target < 0 || target >= alts.length) return;
+      [alts[altIdx], alts[target]] = [alts[target], alts[altIdx]];
+      renumerar(alts);
+    };
+
+    const renumerar = (arr) => { arr.forEach((row, i) => { row.orden = i + 1; }); };
+
+    const persistMuestras = async (idEstudioColega) => {
+      // 1. Borrados primero (alternativas sueltas, y muestras completas que
+      // arrastran en cascada del lado del server sus propias alternativas).
+      await Promise.all(alternativasEliminadas.value.map(id =>
+        axios.delete(`${API_BASE}/estudio-colega-muestra-alternativa/${id}`)));
+      await Promise.all(muestrasEliminadas.value.map(id =>
+        axios.delete(`${API_BASE}/estudio-colega-muestra/${id}`)));
+
+      // 2. Alta/edición: secuencial porque las alternativas nuevas necesitan
+      // el id real de su muestra (que para una muestra nueva recién se sabe
+      // después de crearla).
+      for (const m of muestrasForm.value) {
+        const payload = { id_estudio_colega: idEstudioColega, orden: m.orden, observacion: m.observacion };
+        MUESTRA_CAMPOS.forEach(c => { payload[c.field] = m[c.field]; });
+
+        let muestraId = m.id;
+        if (m._isNew) {
+          const res = await axios.post(`${API_BASE}/estudio-colega-muestra`, payload);
+          muestraId = res.data.id;
+        } else {
+          await axios.put(`${API_BASE}/estudio-colega-muestra/${m.id}`, payload);
+        }
+
+        for (const a of m.alternativas) {
+          const altPayload = { id_estudio_colega_muestra: muestraId, orden: a.orden, observacion: a.observacion };
+          MUESTRA_CAMPOS.forEach(c => { altPayload[c.field] = a[c.field]; });
+          if (a._isNew) {
+            await axios.post(`${API_BASE}/estudio-colega-muestra-alternativa`, altPayload);
+          } else {
+            await axios.put(`${API_BASE}/estudio-colega-muestra-alternativa/${a.id}`, altPayload);
+          }
+        }
+      }
+      delete rowMuestrasCache.value[idEstudioColega];
+    };
+
+    // Abre el mismo modal de "Estudio x Colega" pero desde la tabla de
+    // Estudios por Colega: trae el registro completo (con los ids de FK
+    // reales) porque esa tabla solo tiene los nombres ya resueltos.
+    const editEstudioColega = async (item, context = 'indicaciones') => {
+      try {
+        const res = await axios.get(`${API_BASE}/estudio-colega/${item.id}`);
+        openModal('edit', res.data, { entityKey: 'estudio_colega', context });
       } catch (err) {
         showAlert('No se pudo cargar el registro para editar', 'danger');
       }
     };
 
-    // "Nuevo Estudio" dentro de un derivante puntual: crea un registro de
-    // Estudio x Derivante con el derivante ya elegido (el usuario solo busca
-    // el Estudio existente a asignar).
-    const openNewEstudioForDerivante = () => {
-      openModal('create', null, { entityKey: 'estudio_derivante', context: 'indicaciones' });
-      formData.value.derivante_id = selectedDerivanteId.value;
-      fkText.value.derivante_id = fkLabel('derivantes', selectedDerivanteId.value) || '';
+    // "Nuevo Estudio" dentro de un colega puntual: crea un registro de
+    // Estudio x Colega con el colega ya elegido (el usuario solo busca el
+    // Estudio existente a asignar).
+    const openNewEstudioForColega = () => {
+      openModal('create', null, { entityKey: 'estudio_colega', context: 'indicaciones' });
+      formData.value.colega_id = selectedColegaId.value;
+      fkText.value.colega_id = fkLabel('colegas', selectedColegaId.value) || '';
     };
 
     // El picker de Estudio tiene texto tipeado que no matchea ninguna opción
-    // existente: hay que crear el Estudio antes de guardar el Estudio x Derivante.
+    // existente: hay que crear el Estudio antes de guardar el Estudio x Colega.
     const needsNewEstudio = computed(() =>
       modalEntity.value && modalEntity.value.fields.some(f => f.field === 'id_estudio' && f.allowCreateNew) &&
       !!fkText.value.id_estudio && !formData.value.id_estudio
@@ -397,16 +822,29 @@ createApp({
           });
           formData.value.id_estudio = nuevoEstudio.data.id;
         }
+        if (modalEntityKey.value === 'estudio_colega' && muestrasForm.value.some(
+          m => !m.id_tipo_muestra || m.alternativas.some(a => !a.id_tipo_muestra)
+        )) {
+          showAlert('Todas las muestras y sus alternativas necesitan un Tipo de Muestra', 'danger');
+          return;
+        }
+        let savedId = formData.value.id;
         if (modalMode.value === 'create') {
-          await axios.post(`${API_BASE}/${entity.endpoint}`, formData.value);
+          const res = await axios.post(`${API_BASE}/${entity.endpoint}`, formData.value);
+          savedId = res.data.id;
           showAlert(`${entity.singular} creado correctamente`);
         } else {
           await axios.put(`${API_BASE}/${entity.endpoint}/${formData.value.id}`, formData.value);
           showAlert(`${entity.singular} actualizado correctamente`);
         }
+        if (modalEntityKey.value === 'estudio_colega') {
+          await persistMuestras(savedId);
+        }
         modalInstance.hide();
         if (modalContext.value === 'indicaciones') {
-          fetchEstudiosPorDerivante();
+          fetchEstudiosPorColega();
+        } else if (modalContext.value === 'todos_estudios') {
+          fetchTodosEstudios();
         } else {
           fetchItems(pagination.value.page);
         }
@@ -449,17 +887,19 @@ createApp({
         modalInstance = new bootstrap.Modal(modalEl);
       }
       await fetchRefData();
+      fetchTodosEstudios();
     });
 
     return {
       currentView,
       entities,
-      sidebarEntities,
+      topNavEntities,
+      muestrasCatalogoEntities,
+      muestrasDropdownActive,
       currentEntityKey,
       currentEntity,
       modalEntity,
-      sidebarCollapsed,
-      toggleSidebar,
+      modalEntityKey,
       items,
       loading,
       formData,
@@ -472,25 +912,60 @@ createApp({
       onFkInput,
       newEstudioCodigo,
       needsNewEstudio,
-      derivantesList: computed(() => refData.value.derivantes),
+      colegasList: computed(() => refData.value.colegas),
       ALL_ESTUDIOS,
       isAllEstudiosMode,
-      selectedDerivanteId,
-      derivanteEstudios,
+      selectedColegaId,
+      colegaEstudios,
       loadingIndicaciones,
       searchQuery,
       filteredEstudios,
+      todosEstudios,
+      loadingTodosEstudios,
+      filteredTodosEstudios,
+      estudiosConConflicto,
+      esEstudioConflictivo,
+      estadoChipClass,
+      estadoFiltro,
+      toggleEstadoFiltro,
+      soloConflictos,
+      toggleSoloConflictos,
+      chipsDeEstudio,
       ESTADOS_REGISTRO,
       ESTADOS_PARIDAD,
       switchCrudEntity,
       switchToIndicaciones,
-      onDerivanteSelectorChange,
-      editEstudioDerivante,
-      openNewEstudioForDerivante,
+      onColegaSelectorChange,
+      editEstudioColega,
+      openNewEstudioForColega,
       changePage,
       openModal,
       saveItem,
-      deleteItem
+      deleteItem,
+      MUESTRA_CAMPOS,
+      ESTUDIO_COLEGA_SECCIONES,
+      sectionsOpen,
+      toggleSection,
+      fieldsForSection,
+      muestrasForm,
+      muestrasLoading,
+      addMuestraRow,
+      duplicateMuestraRow,
+      removeMuestraRow,
+      moveMuestraRow,
+      addAlternativaRow,
+      duplicateAlternativaRow,
+      removeAlternativaRow,
+      moveAlternativaRow,
+      INDICACIONES_COLUMNAS,
+      visibleColumns,
+      visibleColumnasList,
+      toggleColumn,
+      showColumnPicker,
+      expandedRows,
+      toggleRowExpand,
+      rowMuestrasCache,
+      rowMuestrasLoading
     };
   }
 }).mount('#app');

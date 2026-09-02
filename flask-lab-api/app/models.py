@@ -2,8 +2,8 @@ from app.database import db
 from datetime import datetime
 
 
-class Derivante(db.Model):
-    __tablename__ = 'derivante'
+class Colega(db.Model):
+    __tablename__ = 'colega'
     __table_args__ = {'schema': 'public'}
 
     id = db.Column(db.Integer, primary_key=True)
@@ -70,8 +70,8 @@ class ValorEstudioSector(db.Model):
     sector = db.relationship('Sector')
 
 
-class EstudioDerivante(db.Model):
-    __tablename__ = 'estudio_derivante'
+class EstudioColega(db.Model):
+    __tablename__ = 'estudio_colega'
     __table_args__ = {'schema': 'public'}
 
     id = db.Column(db.Integer, primary_key=True)
@@ -84,7 +84,8 @@ class EstudioDerivante(db.Model):
     id_preanalitico = db.Column(db.Integer, db.ForeignKey('public.preanalitico.id', ondelete='SET NULL'), nullable=True)
     id_muestra = db.Column(db.Integer, db.ForeignKey('public.muestra.id', ondelete='SET NULL'), nullable=True)
     id_sector_laboratorio = db.Column(db.Integer, db.ForeignKey('public.valor_estudio_sector.id', ondelete='SET NULL'), nullable=True)
-    indicaciones = db.Column(db.Text, nullable=True)
+    indicaciones_pacientes = db.Column(db.Text, nullable=True)
+    indicaciones_colega = db.Column(db.Text, nullable=True)
     valor_referencia = db.Column(db.Text, nullable=True)
     dias_demora = db.Column(db.Integer, default=0)
     estado = db.Column(db.String(20), nullable=False, default='pendiente')
@@ -94,11 +95,152 @@ class EstudioDerivante(db.Model):
     observacion = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    derivante_id = db.Column(db.Integer, db.ForeignKey('public.derivante.id', ondelete='RESTRICT'), nullable=False)
+    colega_id = db.Column(db.Integer, db.ForeignKey('public.colega.id', ondelete='RESTRICT'), nullable=False)
 
     estudio = db.relationship('Estudio')
     metodo = db.relationship('Metodo')
     preanalitico = db.relationship('Preanalitico')
     muestra = db.relationship('Muestra')
     sector_laboratorio = db.relationship('ValorEstudioSector')
-    derivante = db.relationship('Derivante')
+    colega = db.relationship('Colega')
+
+
+# --- Muestras estructuradas (1..N por estudio_colega) ------------------------
+# Aditivo respecto del modelo anterior: 'muestra' / 'estudio_colega.id_muestra'
+# se mantienen tal cual; esto es una capacidad nueva.
+
+class TipoMuestra(db.Model):
+    __tablename__ = 'tipo_muestra'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(150), unique=True, nullable=False)
+
+
+class Aditivo(db.Model):
+    __tablename__ = 'aditivo'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), unique=True, nullable=False)
+
+
+class UnidadMedida(db.Model):
+    __tablename__ = 'unidad_medida'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(50), unique=True, nullable=False)
+
+
+class Recipiente(db.Model):
+    __tablename__ = 'recipiente'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), unique=True, nullable=False)
+
+
+class ModalidadRecoleccion(db.Model):
+    __tablename__ = 'modalidad_recoleccion'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(150), unique=True, nullable=False)
+
+
+class TecnicaRecoleccion(db.Model):
+    __tablename__ = 'tecnica_recoleccion'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(150), unique=True, nullable=False)
+
+
+class Conservacion(db.Model):
+    __tablename__ = 'conservacion'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), unique=True, nullable=False)
+
+
+class CondicionEspecial(db.Model):
+    __tablename__ = 'condicion_especial'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), unique=True, nullable=False)
+
+
+class PrioridadEnvio(db.Model):
+    __tablename__ = 'prioridad_envio'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), unique=True, nullable=False)
+
+
+class EstudioColegaMuestra(db.Model):
+    __tablename__ = 'estudio_colega_muestra'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_estudio_colega = db.Column(db.Integer, db.ForeignKey('public.estudio_colega.id', ondelete='CASCADE'), nullable=False)
+    id_tipo_muestra = db.Column(db.Integer, db.ForeignKey('public.tipo_muestra.id'), nullable=False)
+    id_aditivo = db.Column(db.Integer, db.ForeignKey('public.aditivo.id', ondelete='SET NULL'), nullable=True)
+    volumen = db.Column(db.Numeric(10, 2), nullable=True)
+    id_unidad_medida = db.Column(db.Integer, db.ForeignKey('public.unidad_medida.id', ondelete='SET NULL'), nullable=True)
+    id_recipiente = db.Column(db.Integer, db.ForeignKey('public.recipiente.id', ondelete='SET NULL'), nullable=True)
+    id_modalidad_recoleccion = db.Column(db.Integer, db.ForeignKey('public.modalidad_recoleccion.id', ondelete='SET NULL'), nullable=True)
+    id_tecnica_recoleccion = db.Column(db.Integer, db.ForeignKey('public.tecnica_recoleccion.id', ondelete='SET NULL'), nullable=True)
+    id_conservacion = db.Column(db.Integer, db.ForeignKey('public.conservacion.id', ondelete='SET NULL'), nullable=True)
+    id_condicion_especial = db.Column(db.Integer, db.ForeignKey('public.condicion_especial.id', ondelete='SET NULL'), nullable=True)
+    id_prioridad_envio = db.Column(db.Integer, db.ForeignKey('public.prioridad_envio.id', ondelete='SET NULL'), nullable=True)
+    orden = db.Column(db.Integer, nullable=False, default=1)
+    observacion = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    tipo_muestra = db.relationship('TipoMuestra')
+    aditivo = db.relationship('Aditivo')
+    unidad_medida = db.relationship('UnidadMedida')
+    recipiente = db.relationship('Recipiente')
+    modalidad_recoleccion = db.relationship('ModalidadRecoleccion')
+    tecnica_recoleccion = db.relationship('TecnicaRecoleccion')
+    conservacion = db.relationship('Conservacion')
+    condicion_especial = db.relationship('CondicionEspecial')
+    prioridad_envio = db.relationship('PrioridadEnvio')
+    alternativas = db.relationship('EstudioColegaMuestraAlternativa', order_by='EstudioColegaMuestraAlternativa.orden')
+
+
+class EstudioColegaMuestraAlternativa(db.Model):
+    """Alternativa de una muestra puntual (no del estudio_colega directamente):
+    un estudio tiene N muestras, y cada muestra puede tener N alternativas."""
+    __tablename__ = 'estudio_colega_muestra_alternativa'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_estudio_colega_muestra = db.Column(db.Integer, db.ForeignKey('public.estudio_colega_muestra.id', ondelete='CASCADE'), nullable=False)
+    id_tipo_muestra = db.Column(db.Integer, db.ForeignKey('public.tipo_muestra.id'), nullable=False)
+    id_aditivo = db.Column(db.Integer, db.ForeignKey('public.aditivo.id', ondelete='SET NULL'), nullable=True)
+    volumen = db.Column(db.Numeric(10, 2), nullable=True)
+    id_unidad_medida = db.Column(db.Integer, db.ForeignKey('public.unidad_medida.id', ondelete='SET NULL'), nullable=True)
+    id_recipiente = db.Column(db.Integer, db.ForeignKey('public.recipiente.id', ondelete='SET NULL'), nullable=True)
+    id_modalidad_recoleccion = db.Column(db.Integer, db.ForeignKey('public.modalidad_recoleccion.id', ondelete='SET NULL'), nullable=True)
+    id_tecnica_recoleccion = db.Column(db.Integer, db.ForeignKey('public.tecnica_recoleccion.id', ondelete='SET NULL'), nullable=True)
+    id_conservacion = db.Column(db.Integer, db.ForeignKey('public.conservacion.id', ondelete='SET NULL'), nullable=True)
+    id_condicion_especial = db.Column(db.Integer, db.ForeignKey('public.condicion_especial.id', ondelete='SET NULL'), nullable=True)
+    id_prioridad_envio = db.Column(db.Integer, db.ForeignKey('public.prioridad_envio.id', ondelete='SET NULL'), nullable=True)
+    orden = db.Column(db.Integer, nullable=False, default=1)
+    observacion = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    tipo_muestra = db.relationship('TipoMuestra')
+    aditivo = db.relationship('Aditivo')
+    unidad_medida = db.relationship('UnidadMedida')
+    recipiente = db.relationship('Recipiente')
+    modalidad_recoleccion = db.relationship('ModalidadRecoleccion')
+    tecnica_recoleccion = db.relationship('TecnicaRecoleccion')
+    conservacion = db.relationship('Conservacion')
+    condicion_especial = db.relationship('CondicionEspecial')
+    prioridad_envio = db.relationship('PrioridadEnvio')

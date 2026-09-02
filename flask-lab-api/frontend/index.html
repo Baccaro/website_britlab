@@ -5,10 +5,10 @@
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>Gestión de Laboratorio Clinical API</title>
-  <!-- Google Fonts: Hanken Grotesk -->
+  <!-- Google Fonts: Inter (con fallback a fuentes del sistema) -->
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
     rel="stylesheet" />
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -85,7 +85,7 @@
             "full": "9999px"
           },
           "fontFamily": {
-            "sans": ["Hanken Grotesk", "sans-serif"]
+            "sans": ["Inter", "Segoe UI", "Roboto", "Arial", "sans-serif"]
           }
         },
       }
@@ -94,7 +94,7 @@
   <style>
     body {
       background-color: #f8fafc;
-      font-family: 'Hanken Grotesk', sans-serif;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
     }
 
     /* Contenedor sin scroll horizontal */
@@ -126,6 +126,29 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    /* Tabla que se ajusta al ancho de su contenido en vez de repartir el
+       espacio en columnas fijas: evita blancos sin sentido en columnas
+       cortas, y trunca (con "..." y tooltip) las columnas de texto largo
+       en vez de estirar toda la tabla. Scrollea horizontal si no entra. */
+    .table-auto-layout {
+      table-layout: auto;
+      width: auto;
+      min-width: 100%;
+      margin-bottom: 0;
+    }
+
+    .table-auto-layout th,
+    .table-auto-layout td {
+      padding: 0.45rem 0.6rem;
+      font-size: 0.75rem;
+      vertical-align: middle;
+      border-bottom-color: #e2e8f0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 260px;
     }
 
     .table-dark th {
@@ -160,144 +183,91 @@
       border-radius: 4px;
     }
 
-    /* Layout topbar + sidebar lateral + contenido */
-    .app-shell {
-      display: flex;
-      align-items: flex-start;
+    /* Modal ancho para el editor de Estudio x Colega: casi todo el ancho de
+       pantalla para que entren las secciones con claridad, pero dejando
+       margen visible a los costados para que se note que sigue siendo un modal. */
+    .modal-wide-editor {
+      max-width: 95vw;
+      width: 95vw;
     }
 
-    .sidebar {
-      width: 250px;
-      flex-shrink: 0;
-      background: #ffffff;
-      border-right: 1px solid #e2e8f0;
-      padding: 1rem 0.75rem 2rem;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      transition: width .18s ease;
-    }
-
-    .sidebar.collapsed {
-      width: 64px;
-      padding-left: 0.4rem;
-      padding-right: 0.4rem;
-    }
-
-    .sidebar-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      width: 100%;
+    .section-toggle {
       background: transparent;
       border: none;
-      color: #929295;
-      padding: 0.25rem 0.4rem;
-      margin-bottom: 0.25rem;
-      border-radius: 6px;
-    }
-
-    .sidebar-toggle:hover {
-      background: #f0f3ff;
-      color: #006877;
-    }
-
-    .sidebar.collapsed .sidebar-toggle {
-      justify-content: center;
-    }
-
-    .sidebar.collapsed .sidebar-group-title,
-    .sidebar.collapsed .sidebar-link .link-label {
-      display: none;
-    }
-
-    .sidebar.collapsed .sidebar-link {
-      justify-content: center;
-      padding: 0.55rem;
-    }
-
-    .sidebar-group-title {
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #929295;
-      font-weight: 700;
-      padding: 0.9rem 0.6rem 0.4rem;
-    }
-
-    .sidebar-link {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
       width: 100%;
-      text-align: left;
-      padding: 0.55rem 0.65rem;
+    }
+
+    .section-toggle:hover {
+      background: #f0f3ff;
+    }
+
+    /* Botones de navegación en la barra superior (reemplazan al sidebar) */
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.5rem 0.85rem;
       border-radius: 8px;
       font-weight: 600;
       font-size: 0.85rem;
       color: #111c2d;
       border: 1px solid transparent;
-      margin-bottom: 2px;
       background: transparent;
       transition: all .15s ease;
+      white-space: nowrap;
     }
 
-    .sidebar-link:hover {
+    .nav-btn:hover {
       background: #f0f3ff;
       border-color: #d8e3fb;
     }
 
-    .sidebar-link.active {
+    .nav-btn.active {
       background: #006b3f;
       color: #ffffff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, .08);
-    }
-
-    .sidebar-link .bi {
-      font-size: 1rem;
-      width: 1.1rem;
-      text-align: center;
     }
 
     .app-content {
-      flex: 1;
-      min-width: 0;
       padding: 1.25rem 1.5rem 2.5rem;
-    }
-
-    @media (max-width: 900px) {
-      .app-shell {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-        height: auto;
-        position: static;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.35rem;
-        border-right: none;
-        border-bottom: 1px solid #e2e8f0;
-      }
-
-      .sidebar-group-title {
-        width: 100%;
-      }
     }
   </style>
 </head>
 
 <body>
   <div id="app">
-    <!-- Navbar -->
+    <!-- Navbar (incluye la navegación principal, antes en un sidebar lateral) -->
     <nav class="bg-white mb-6 shadow-sm border-b border-surface-variant">
-      <div class="container-fluid px-4 py-3 flex justify-between items-center">
-        <div class="flex items-center gap-4">
+      <div class="container-fluid px-4 py-3 flex justify-between items-center flex-wrap gap-3">
+        <div class="flex items-center gap-4 flex-wrap">
           <img alt="Sanatorio Británico" class="h-10 object-contain"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8xjJ6dJRSLRqt7KpYtEpbz7Gh2PWgyJUdtyTzFH-v9uJDhLskF5kdd21XrWw0IH6pe_CyvdbVHVIAwOYaYfLJIXcw9N_OLSidR66D8ARKIULP_I68ylkIQO5vjPAVIJBIy_7aMTj_u6_-njf2z5pqj6ZW9-t-hpkWer-ohlfI_WjkoGXsfBE9zNJizKcgb2Czsn6Kr4aWF1_DGKMzcbWVXgYQrBnlWgaE76HTgG9FXxyFbz63URtfyjA2Oz-puz5kkw" />
           <div class="h-8 w-px bg-outline-variant hidden md:block"></div>
+          <ul class="nav gap-1 mb-0 flex-wrap">
+            <li class="nav-item">
+              <button :class="['nav-btn', currentView === 'indicaciones' ? 'active' : '']" @click="switchToIndicaciones" type="button">
+                <i class="bi bi-file-earmark-medical me-1"></i>Estudios
+              </button>
+            </li>
+            <li class="nav-item" :key="key" v-for="[key, entity] in topNavEntities">
+              <button :class="['nav-btn', (currentView === 'crud' && currentEntityKey === key) ? 'active' : '']"
+                @click="switchCrudEntity(key)" type="button">
+                <i :class="['bi', entity.icon, 'me-1']"></i>{{ entity.label }}
+              </button>
+            </li>
+            <li class="nav-item dropdown">
+              <button :class="['nav-btn dropdown-toggle', muestrasDropdownActive ? 'active' : '']"
+                data-bs-toggle="dropdown" type="button">
+                <i class="bi bi-droplet me-1"></i>Muestras
+              </button>
+              <ul class="dropdown-menu shadow-sm">
+                <li :key="key" v-for="[key, entity] in muestrasCatalogoEntities">
+                  <button class="dropdown-item" :class="(currentView === 'crud' && currentEntityKey === key) ? 'active' : ''"
+                    @click="switchCrudEntity(key)" type="button">
+                    <i :class="['bi', entity.icon, 'me-2']"></i>{{ entity.label }}
+                  </button>
+                </li>
+              </ul>
+            </li>
+          </ul>
         </div>
         <div class="flex items-center">
           <img alt="BritLab" class="h-8 object-contain"
@@ -306,29 +276,7 @@
       </div>
     </nav>
 
-    <div class="app-shell">
-      <!-- Sidebar lateral -->
-      <aside :class="['sidebar', sidebarCollapsed ? 'collapsed' : '']">
-        <button :title="sidebarCollapsed ? 'Expandir menú' : 'Minimizar menú'" @click="toggleSidebar"
-          class="sidebar-toggle">
-          <i :class="['bi', sidebarCollapsed ? 'bi-layout-sidebar-inset' : 'bi-layout-sidebar-inset-reverse']"></i>
-        </button>
-
-        <div class="sidebar-group-title">Consulta</div>
-        <button :class="['sidebar-link', currentView === 'indicaciones' ? 'active' : '']"
-          :title="sidebarCollapsed ? 'Estudios' : ''"
-          @click="switchToIndicaciones">
-          <i class="bi bi-file-earmark-medical"></i> <span class="link-label">Estudios</span>
-        </button>
-
-        <div class="sidebar-group-title">Entidades (CRUD)</div>
-        <button :class="['sidebar-link', (currentView === 'crud' && currentEntityKey === key) ? 'active' : '']"
-          :key="key" :title="sidebarCollapsed ? entity.label : ''"
-          @click="switchCrudEntity(key)" v-for="[key, entity] in sidebarEntities">
-          <i :class="['bi', entity.icon]"></i> <span class="link-label">{{ entity.label }}</span>
-        </button>
-      </aside>
-
+    <div>
       <!-- Contenido principal -->
       <main class="app-content">
         <!-- Alertas -->
@@ -339,31 +287,31 @@
         </div>
 
         <!-- ========================================================= -->
-        <!-- VISTA 1: TABLA DE ESTUDIOS E INDICACIONES POR DERIVANTE    -->
+        <!-- VISTA 1: TABLA DE ESTUDIOS POR COLEGA                       -->
         <!-- ========================================================= -->
         <div v-if="currentView === 'indicaciones'">
         <div class="bg-white rounded-xl shadow-sm border border-outline-variant p-4 mb-4">
           <h5 class="text-lg font-bold text-primary mb-1 flex items-center">
-            <i class="bi bi-search me-2 text-primary-container"></i>Consulta y Edición de Estudios por Derivante
+            <i class="bi bi-search me-2 text-primary-container"></i>Consulta y Edición de Estudios por Colega
           </h5>
-          <p class="text-on-surface-variant text-xs mb-4">Selecciona un cliente/derivante para consultar y editar el
+          <p class="text-on-surface-variant text-xs mb-4">Selecciona un colega para consultar y editar el
             catálogo de análisis autorizados.</p>
           <div class="row g-3">
             <div class="col-md-6">
-              <label class="block text-xs font-semibold text-on-surface mb-1">Seleccionar Derivante:</label>
-              <select @change="onDerivanteSelectorChange"
+              <label class="block text-xs font-semibold text-on-surface mb-1">Seleccionar Colega:</label>
+              <select @change="onColegaSelectorChange"
                 class="form-select form-select-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
-                v-model="selectedDerivanteId">
-                <option :value="null">-- Seleccione un Derivante --</option>
+                v-model="selectedColegaId">
+                <option :value="null">-- Seleccione un Colega --</option>
                 <option :value="ALL_ESTUDIOS">Todos los Estudios (catálogo maestro)</option>
-                <optgroup label="Derivantes">
-                  <option :key="d.id" :value="d.id" v-for="d in derivantesList">
+                <optgroup label="Colegas">
+                  <option :key="d.id" :value="d.id" v-for="d in colegasList">
                     {{ d.descripcion }}
                   </option>
                 </optgroup>
               </select>
             </div>
-            <div class="col-md-6" v-if="selectedDerivanteId && !isAllEstudiosMode">
+            <div class="col-md-6" v-if="selectedColegaId">
               <label class="block text-xs font-semibold text-on-surface mb-1">Buscar Estudio:</label>
               <div class="input-group input-group-sm">
                 <span class="input-group-text bg-surface-container border-outline-variant text-primary"><i
@@ -376,112 +324,282 @@
           </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mb-3" v-if="selectedDerivanteId && !isAllEstudiosMode">
-          <h4 class="mb-0 text-primary font-bold text-xl">Estudios de {{ fkLabel('derivantes', selectedDerivanteId) }}</h4>
-          <button @click="openNewEstudioForDerivante"
-            class="btn btn-primary bg-primary border-primary shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors rounded-lg px-3 py-1.5 text-sm">
-            <i class="bi bi-plus-lg me-1"></i> Nuevo Estudio
+        <div class="d-flex justify-content-between align-items-center mb-3" v-if="selectedColegaId && !isAllEstudiosMode">
+          <h4 class="mb-0 text-primary font-bold text-xl">Estudios de {{ fkLabel('colegas', selectedColegaId) }}</h4>
+          <div class="d-flex gap-2 position-relative">
+            <button @click="showColumnPicker = !showColumnPicker"
+              class="btn btn-sm btn-light border-outline-variant text-on-surface rounded-lg px-3">
+              <i class="bi bi-layout-three-columns me-1"></i> Columnas
+            </button>
+            <div class="position-absolute end-0 top-100 mt-1 bg-white border border-outline-variant rounded-lg shadow-lg p-2"
+              style="z-index: 20; min-width: 220px;" v-if="showColumnPicker">
+              <div class="form-check" :key="col.field" v-for="col in INDICACIONES_COLUMNAS">
+                <input :checked="visibleColumns.has(col.field)" :id="'colchk_' + col.field" @change="toggleColumn(col.field)"
+                  class="form-check-input" type="checkbox" />
+                <label :for="'colchk_' + col.field" class="form-check-label text-xs">{{ col.label }}</label>
+              </div>
+            </div>
+            <button @click="openNewEstudioForColega"
+              class="btn btn-primary bg-primary border-primary shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors rounded-lg px-3 py-1.5 text-sm">
+              <i class="bi bi-plus-lg me-1"></i> Nuevo Estudio
+            </button>
+          </div>
+        </div>
+
+        <!-- Filtro por estado: compartido entre "Todos los Estudios" y la tabla de un colega -->
+        <div class="d-flex align-items-center gap-2 mb-3 flex-wrap" v-if="selectedColegaId">
+          <span class="text-xs font-semibold text-on-surface-variant">Filtrar por estado:</span>
+          <button :key="est" v-for="est in ESTADOS_REGISTRO" @click="toggleEstadoFiltro(est)"
+            :class="['badge rounded-pill badge-xs border-0', estadoChipClass(est), estadoFiltro && estadoFiltro !== est ? 'opacity-50' : '']"
+            style="cursor: pointer; padding: .35em .7em;" type="button">
+            {{ est }}
+          </button>
+          <button @click="estadoFiltro = null" class="btn btn-xs btn-light border" type="button" v-if="estadoFiltro">
+            <i class="bi bi-x-lg me-1"></i>Quitar filtro
           </button>
         </div>
 
-        <!-- Tabla Ajustada Fija al 100% Sin Scroll Horizontal -->
-        <div class="table-container-fixed mb-4" v-if="!isAllEstudiosMode">
-          <table class="table table-hover table-fixed-layout">
-            <thead class="table-dark">
-              <tr>
-                <th style="width: 7%;">Nemónico</th>
-                <th style="width: 6.5%;">Paridad</th>
-                <th style="width: 6%;">Cód. Hex.</th>
-                <th style="width: 12%;">Estudio</th>
-                <th style="width: 7%;">Método</th>
-                <th style="width: 7%;">Pre-analítico</th>
-                <th style="width: 7%;">Muestra</th>
-                <th style="width: 8%;">Val. Ref.</th>
-                <th class="text-center" style="width: 4%;">Dem.</th>
-                <th class="text-center" style="width: 6%;">Estado</th>
-                <th style="width: 6%;">Cód. Lab.</th>
-                <th style="width: 6%;">Revisor</th>
-                <th style="width: 9%;">Indicaciones</th>
-                <th style="width: 8.5%;">Observaciones</th>
-                <th class="text-center" style="width: 6%;">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Spinner de carga -->
-              <tr v-if="loadingIndicaciones">
-                <td class="text-center py-5" colspan="15">
-                  <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
-                  <p class="mt-2 text-on-surface-variant font-medium text-xs mb-0">Cargando estudios del derivante...
-                  </p>
-                </td>
-              </tr>
-              <!-- Estado Vacío: Sin Derivante -->
-              <tr v-else-if="!selectedDerivanteId">
-                <td class="text-center text-on-surface-variant py-5" colspan="15">
-                  <i class="bi bi-arrow-up-circle text-3xl d-block mb-2 text-primary-container"></i>
-                  <span class="font-medium text-xs">Selecciona un derivante del menú desplegable superior para cargar
-                    sus estudios.</span>
-                </td>
-              </tr>
-              <!-- Estado Vacío: Sin Estudios -->
-              <tr v-else-if="filteredEstudios.length === 0">
-                <td class="text-center text-on-surface-variant py-5" colspan="15">
-                  <i class="bi bi-exclamation-triangle text-3xl d-block mb-2 text-warning"></i>
-                  <span class="font-medium text-xs">No se encontraron estudios para el derivante seleccionado.</span>
-                </td>
-              </tr>
-              <!-- Lista de Estudios -->
-              <tr :key="item.id" v-else v-for="item in filteredEstudios">
-                <td :title="item.nemonico_datatech" class="font-semibold text-primary">{{ item.nemonico_datatech ||
-                  '-' }}</td>
-                <td :title="item.paridad_datatech_hexalis" class="text-on-surface-variant">{{
-                  item.paridad_datatech_hexalis || '-' }}</td>
-                <td :title="item.codigo_hexalis"><strong>{{ item.codigo_hexalis || '-' }}</strong></td>
-                <td :title="item.estudio_descripcion" class="font-medium">{{ item.estudio_descripcion || '-' }}</td>
-                <td :title="item.metodo" class="text-on-surface-variant">{{ item.metodo || '-' }}</td>
-                <td :title="item.preanalitico" class="text-on-surface-variant">{{ item.preanalitico || '-' }}</td>
-                <td :title="item.muestra" class="text-on-surface-variant">{{ item.muestra || '-' }}</td>
-                <td :title="item.valor_referencia" class="text-on-surface-variant">{{ item.valor_referencia || '-'
-                  }}</td>
-                <td class="text-center font-medium">{{ item.dias_demora ?? '-' }}</td>
-                <td class="text-center">
-                  <span
-                    :class="['badge rounded-pill badge-xs', item.estado === 'listo' || item.estado === 'verificado' ? 'bg-success-teal' : 'bg-tertiary']">
-                    {{ item.estado || '-' }}
+        <!-- ===================== Todos los Estudios (catálogo maestro, sin repetirse por código hexalis) ===================== -->
+        <template v-if="isAllEstudiosMode">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0 text-primary font-bold text-xl">Todos los Estudios</h4>
+            <span class="text-on-surface-variant text-xs">{{ filteredTodosEstudios.length }} de {{ todosEstudios.length }} estudios</span>
+          </div>
+
+          <div class="alert alert-warning rounded-lg shadow-sm mb-3 text-xs" role="alert" v-if="estudiosConConflicto.length">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+              <div>
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>{{ estudiosConConflicto.length }}</strong> estudio(s) figuran "listo" (activo) en más de un colega al mismo tiempo<span v-if="!soloConflictos">:</span>
+                <template v-if="!soloConflictos">
+                  <span :key="e.codigo_hexalis" v-for="(e, i) in estudiosConConflicto">
+                    <strong>{{ e.codigo_hexalis }}</strong> ({{ e.estudio_descripcion }})<span v-if="i < estudiosConConflicto.length - 1">, </span>
                   </span>
-                </td>
-                <td :title="item.codigo_laboratorio" class="text-on-surface-variant">{{ item.codigo_laboratorio || '-'
-                  }}</td>
-                <td :title="item.revisor" class="text-on-surface-variant">{{ item.revisor || '-' }}</td>
-                <td class="text-on-surface-variant">
-                  <a :href="item.indicaciones" v-if="item.indicaciones && item.indicaciones.startsWith('http')"
-                    target="_blank" rel="noopener" title="Ver modelo de informe">
-                    <i class="bi bi-box-arrow-up-right"></i> Ver informe
-                  </a>
-                  <span :title="item.indicaciones" v-else>{{ item.indicaciones || '-' }}</span>
-                </td>
-                <td :title="item.observacion" class="text-on-surface-variant">{{ item.observacion || '-' }}</td>
-                <td class="text-center">
-                  <button @click="editEstudioDerivante(item)"
-                    class="btn btn-xs btn-outline-primary border-primary text-primary hover:bg-primary hover:text-white"
-                    title="Editar">
-                    <i class="bi bi-pencil"></i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                </template>
+              </div>
+              <button @click="toggleSoloConflictos" class="btn btn-xs btn-outline-dark flex-shrink-0" type="button">
+                {{ soloConflictos ? 'Ver todos los estudios' : 'Ver estos estudios' }}
+              </button>
+            </div>
+          </div>
+
+          <div class="table-container-fixed mb-4">
+            <div class="overflow-auto">
+              <table class="table table-hover table-auto-layout">
+                <thead class="table-dark">
+                  <tr>
+                    <th>Cód. Hexalis</th>
+                    <th>Estudio</th>
+                    <th>Colegas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-if="loadingTodosEstudios">
+                    <td class="text-center py-5" colspan="3">
+                      <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
+                      <p class="mt-2 text-on-surface-variant font-medium text-xs mb-0">Cargando catálogo de estudios...</p>
+                    </td>
+                  </tr>
+                  <tr v-else-if="filteredTodosEstudios.length === 0">
+                    <td class="text-center text-on-surface-variant py-5" colspan="3">
+                      <i class="bi bi-exclamation-triangle text-3xl d-block mb-2 text-warning"></i>
+                      <span class="font-medium text-xs">No se encontraron estudios.</span>
+                    </td>
+                  </tr>
+                  <tr :key="e.codigo_hexalis" :class="esEstudioConflictivo(e) ? 'table-warning' : ''"
+                    v-else v-for="e in filteredTodosEstudios">
+                    <td><strong>{{ e.codigo_hexalis }}</strong></td>
+                    <td class="font-medium" style="white-space: normal;">{{ e.estudio_descripcion }}</td>
+                    <td style="white-space: normal;">
+                      <span class="text-on-surface-variant text-xs" v-if="!chipsDeEstudio(e).length">Sin colegas asignados</span>
+                      <button :key="c.id_estudio_colega" v-else v-for="c in chipsDeEstudio(e)"
+                        @click="editEstudioColega({ id: c.id_estudio_colega }, 'todos_estudios')"
+                        :class="['badge rounded-pill badge-xs me-1 mb-1 border-0', estadoChipClass(c.estado)]"
+                        :title="c.colega_descripcion + ' — ' + (c.estado || 'sin estado')"
+                        style="cursor: pointer;" type="button">
+                        {{ c.colega_descripcion }}
+                        <i class="bi bi-exclamation-triangle-fill ms-1" v-if="esEstudioConflictivo(e) && c.estado === 'listo'"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </template>
+
+        <!-- Tabla de ancho automático según contenido, con scroll horizontal propio -->
+        <div class="table-container-fixed mb-4" v-if="!isAllEstudiosMode">
+          <div class="overflow-auto">
+            <table class="table table-hover table-auto-layout">
+              <thead class="table-dark">
+                <tr>
+                  <th style="width: 2rem;"></th>
+                  <th :key="col.field" v-for="col in visibleColumnasList">{{ col.label }}</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Spinner de carga -->
+                <tr v-if="loadingIndicaciones">
+                  <td class="text-center py-5" :colspan="visibleColumnasList.length + 2">
+                    <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
+                    <p class="mt-2 text-on-surface-variant font-medium text-xs mb-0">Cargando estudios del colega...
+                    </p>
+                  </td>
+                </tr>
+                <!-- Estado Vacío: Sin Colega -->
+                <tr v-else-if="!selectedColegaId">
+                  <td class="text-center text-on-surface-variant py-5" :colspan="visibleColumnasList.length + 2">
+                    <i class="bi bi-arrow-up-circle text-3xl d-block mb-2 text-primary-container"></i>
+                    <span class="font-medium text-xs">Selecciona un colega del menú desplegable superior para cargar
+                      sus estudios.</span>
+                  </td>
+                </tr>
+                <!-- Estado Vacío: Sin Estudios -->
+                <tr v-else-if="filteredEstudios.length === 0">
+                  <td class="text-center text-on-surface-variant py-5" :colspan="visibleColumnasList.length + 2">
+                    <i class="bi bi-exclamation-triangle text-3xl d-block mb-2 text-warning"></i>
+                    <span class="font-medium text-xs">No se encontraron estudios para el colega seleccionado.</span>
+                  </td>
+                </tr>
+                <!-- Lista de Estudios (fila resumen + fila desplegable de detalle) -->
+                <template :key="item.id" v-else v-for="item in filteredEstudios">
+                  <tr @click="toggleRowExpand(item)" class="cursor-pointer" style="cursor: pointer;">
+                    <td class="text-center">
+                      <i :class="['bi', expandedRows.has(item.id) ? 'bi-chevron-down' : 'bi-chevron-right']"></i>
+                    </td>
+                    <td :key="col.field" v-for="col in visibleColumnasList">
+                      <span :class="['badge rounded-pill badge-xs', item.estado === 'listo' || item.estado === 'verificado' ? 'bg-success-teal' : 'bg-tertiary']"
+                        v-if="col.field === 'estado'">{{ item.estado || '-' }}</span>
+                      <a :href="item[col.field]" @click.stop target="_blank" rel="noopener" title="Ver modelo de informe"
+                        v-else-if="(col.field === 'indicaciones_pacientes' || col.field === 'indicaciones_colega') && item[col.field] && item[col.field].startsWith('http')">
+                        <i class="bi bi-box-arrow-up-right"></i> Ver informe
+                      </a>
+                      <strong :title="item[col.field]" v-else-if="col.field === 'codigo_hexalis'">{{ item[col.field] || '-' }}</strong>
+                      <span :title="item[col.field]" class="font-medium" v-else-if="col.field === 'estudio_descripcion'">{{ item[col.field] || '-' }}</span>
+                      <span :title="item[col.field]" class="font-semibold text-primary" v-else-if="col.field === 'nemonico_datatech'">{{ item[col.field] || '-' }}</span>
+                      <span :title="item[col.field]" v-else>{{ item[col.field] ?? '-' }}</span>
+                    </td>
+                    <td class="text-center">
+                      <button @click.stop="editEstudioColega(item)"
+                        class="btn btn-xs btn-outline-primary border-primary text-primary hover:bg-primary hover:text-white"
+                        title="Editar">
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- Fila de detalle desplegable -->
+                  <tr v-if="expandedRows.has(item.id)">
+                    <td :colspan="visibleColumnasList.length + 2" class="bg-surface-container-low p-0">
+                      <div class="row g-3 p-3">
+                        <!-- Información General -->
+                        <div class="col-md-4">
+                          <div class="bg-white border border-outline-variant rounded-lg p-3 h-100">
+                            <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">INFORMACIÓN GENERAL</h6>
+                            <dl class="mb-0 text-xs">
+                              <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Nemónico</dt><dd class="mb-0 font-medium">{{ item.nemonico_datatech || '-' }}</dd></div>
+                              <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Cód. Hexalis</dt><dd class="mb-0 font-medium">{{ item.codigo_hexalis || '-' }}</dd></div>
+                              <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Cód. Laboratorio</dt><dd class="mb-0 font-medium">{{ item.codigo_laboratorio || '-' }}</dd></div>
+                              <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Método</dt><dd class="mb-0 font-medium">{{ item.metodo || '-' }}</dd></div>
+                              <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Demora</dt><dd class="mb-0 font-medium">{{ item.dias_demora ?? '-' }} días</dd></div>
+                              <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Revisor</dt><dd class="mb-0 font-medium">{{ item.revisor || '-' }}</dd></div>
+                            </dl>
+                          </div>
+                        </div>
+
+                        <!-- Muestras Admitidas -->
+                        <div class="col-md-4">
+                          <div class="bg-white border border-outline-variant rounded-lg p-3 h-100">
+                            <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">MUESTRAS ADMITIDAS</h6>
+                            <div class="text-center py-3" v-if="rowMuestrasLoading.has(item.id)">
+                              <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
+                            </div>
+                            <p class="text-on-surface-variant text-xs mb-0" v-else-if="!(rowMuestrasCache[item.id] || []).length">
+                              Sin muestras estructuradas cargadas.
+                            </p>
+                            <div :key="m.id" class="border border-outline-variant rounded-lg p-2 mb-2"
+                              v-else v-for="(m, idx) in (rowMuestrasCache[item.id] || [])">
+                              <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="font-bold text-xs">Muestra {{ idx + 1 }}: {{ m.tipo_muestra || '-' }}</span>
+                              </div>
+                              <dl class="mb-0 text-xs">
+                                <div class="d-flex justify-content-between py-1" v-if="m.volumen"><dt class="text-on-surface-variant">Volumen</dt><dd class="mb-0">{{ m.volumen }} {{ m.unidad_medida || '' }}</dd></div>
+                                <div class="d-flex justify-content-between py-1" v-if="m.aditivo"><dt class="text-on-surface-variant">Aditivo</dt><dd class="mb-0">{{ m.aditivo }}</dd></div>
+                                <div class="d-flex justify-content-between py-1" v-if="m.recipiente"><dt class="text-on-surface-variant">Recipiente</dt><dd class="mb-0">{{ m.recipiente }}</dd></div>
+                                <div class="d-flex justify-content-between py-1" v-if="m.conservacion"><dt class="text-on-surface-variant">Conservación</dt><dd class="mb-0">{{ m.conservacion }}</dd></div>
+                                <div class="d-flex justify-content-between py-1" v-if="m.modalidad_recoleccion"><dt class="text-on-surface-variant">Modalidad</dt><dd class="mb-0">{{ m.modalidad_recoleccion }}</dd></div>
+                                <div class="d-flex justify-content-between py-1" v-if="m.tecnica_recoleccion"><dt class="text-on-surface-variant">Técnica</dt><dd class="mb-0">{{ m.tecnica_recoleccion }}</dd></div>
+                                <div class="d-flex justify-content-between py-1" v-if="m.condicion_especial"><dt class="text-on-surface-variant">Condición</dt><dd class="mb-0">{{ m.condicion_especial }}</dd></div>
+                                <div class="d-flex justify-content-between py-1" v-if="m.prioridad_envio"><dt class="text-on-surface-variant">Prioridad</dt><dd class="mb-0">{{ m.prioridad_envio }}</dd></div>
+                              </dl>
+                              <div :key="a.id" class="border-top border-outline-variant mt-2 pt-2 ps-2" v-for="(a, aidx) in (m.alternativas || [])">
+                                <span class="badge rounded-pill badge-xs bg-tertiary mb-1">Alternativa {{ aidx + 1 }}: {{ a.tipo_muestra || '-' }}</span>
+                                <dl class="mb-0 text-xs">
+                                  <div class="d-flex justify-content-between py-1" v-if="a.volumen"><dt class="text-on-surface-variant">Volumen</dt><dd class="mb-0">{{ a.volumen }} {{ a.unidad_medida || '' }}</dd></div>
+                                  <div class="d-flex justify-content-between py-1" v-if="a.aditivo"><dt class="text-on-surface-variant">Aditivo</dt><dd class="mb-0">{{ a.aditivo }}</dd></div>
+                                  <div class="d-flex justify-content-between py-1" v-if="a.recipiente"><dt class="text-on-surface-variant">Recipiente</dt><dd class="mb-0">{{ a.recipiente }}</dd></div>
+                                  <div class="d-flex justify-content-between py-1" v-if="a.conservacion"><dt class="text-on-surface-variant">Conservación</dt><dd class="mb-0">{{ a.conservacion }}</dd></div>
+                                  <div class="d-flex justify-content-between py-1" v-if="a.modalidad_recoleccion"><dt class="text-on-surface-variant">Modalidad</dt><dd class="mb-0">{{ a.modalidad_recoleccion }}</dd></div>
+                                  <div class="d-flex justify-content-between py-1" v-if="a.tecnica_recoleccion"><dt class="text-on-surface-variant">Técnica</dt><dd class="mb-0">{{ a.tecnica_recoleccion }}</dd></div>
+                                  <div class="d-flex justify-content-between py-1" v-if="a.condicion_especial"><dt class="text-on-surface-variant">Condición</dt><dd class="mb-0">{{ a.condicion_especial }}</dd></div>
+                                  <div class="d-flex justify-content-between py-1" v-if="a.prioridad_envio"><dt class="text-on-surface-variant">Prioridad</dt><dd class="mb-0">{{ a.prioridad_envio }}</dd></div>
+                                </dl>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Pre-analítico e Indicaciones -->
+                        <div class="col-md-4">
+                          <div class="bg-white border border-outline-variant rounded-lg p-3 h-100">
+                            <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">PRE-ANALÍTICO E INDICACIONES</h6>
+                            <dl class="mb-0 text-xs">
+                              <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Pre-analítico</dt><dd class="mb-0 font-medium">{{ item.preanalitico || '-' }}</dd></div>
+                              <div class="d-flex justify-content-between py-1">
+                                <dt class="text-on-surface-variant">Val. referencia</dt>
+                                <dd class="mb-0">
+                                  <a :href="item.valor_referencia" target="_blank" rel="noopener" v-if="item.valor_referencia && item.valor_referencia.startsWith('http')">Ver detalle</a>
+                                  <span class="font-medium" v-else>{{ item.valor_referencia || '-' }}</span>
+                                </dd>
+                              </div>
+                              <div class="d-flex justify-content-between py-1">
+                                <dt class="text-on-surface-variant">Ind. Pacientes</dt>
+                                <dd class="mb-0">
+                                  <a :href="item.indicaciones_pacientes" target="_blank" rel="noopener" v-if="item.indicaciones_pacientes && item.indicaciones_pacientes.startsWith('http')">Ver informe</a>
+                                  <span class="font-medium" v-else>{{ item.indicaciones_pacientes || '-' }}</span>
+                                </dd>
+                              </div>
+                              <div class="d-flex justify-content-between py-1">
+                                <dt class="text-on-surface-variant">Ind. Colega</dt>
+                                <dd class="mb-0">
+                                  <a :href="item.indicaciones_colega" target="_blank" rel="noopener" v-if="item.indicaciones_colega && item.indicaciones_colega.startsWith('http')">Ver informe</a>
+                                  <span class="font-medium" v-else>{{ item.indicaciones_colega || '-' }}</span>
+                                </dd>
+                              </div>
+                              <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Observaciones</dt><dd class="mb-0 font-medium">{{ item.observacion || '-' }}</dd></div>
+                            </dl>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <!-- ========================================================= -->
-      <!-- VISTA 2: ABMs STANDARD (también se usa para "Todos los Estudios" -->
-      <!-- dentro de Indicaciones por Derivante)                          -->
+      <!-- VISTA 2: ABMs STANDARD (Colegas, Métodos, Pre-analíticos, catálogos -->
+      <!-- de Muestras, y demás entidades sin botón propio en la barra)       -->
       <!-- ========================================================= -->
-      <div v-if="currentView === 'crud' || isAllEstudiosMode">
+      <div v-if="currentView === 'crud'">
         <div class="d-flex justify-content-between align-items-center mb-4">
           <h4 class="mb-0 text-primary font-bold text-xl">{{ currentEntity.label }}</h4>
-          <button @click="openModal('create')" v-if="!isAllEstudiosMode"
+          <button @click="openModal('create')"
             class="btn btn-primary bg-primary border-primary shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors rounded-lg px-3 py-1.5 text-sm">
             <i class="bi bi-plus-lg me-1"></i> Nuevo {{ currentEntity.singular }}
           </button>
@@ -546,7 +664,7 @@
 
     <!-- Modal Formulario -->
     <div aria-hidden="true" class="modal fade" id="crudModal" tabindex="-1">
-      <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+      <div :class="['modal-dialog', 'modal-dialog-centered', 'modal-dialog-scrollable', modalEntityKey === 'estudio_colega' ? 'modal-wide-editor' : 'modal-xl']">
         <div class="modal-content border-0 shadow-lg rounded-xl">
           <div class="modal-header bg-surface-container-low border-b border-outline-variant rounded-t-xl">
             <h5 class="modal-title font-bold text-primary text-base">{{ modalMode === 'create' ? 'Nuevo' : 'Editar' }}
@@ -556,7 +674,177 @@
           </div>
           <div class="modal-body p-4">
             <form @submit.prevent="saveItem">
-              <div class="row g-3">
+
+              <!-- ===================== ESTUDIO x COLEGA: formulario por secciones ===================== -->
+              <template v-if="modalEntityKey === 'estudio_colega'">
+                <div :key="section.key" class="border border-outline-variant rounded-lg mb-3 overflow-hidden"
+                  v-for="section in ESTUDIO_COLEGA_SECCIONES">
+                  <button @click="toggleSection(section.key)" class="section-toggle d-flex justify-content-between align-items-center p-3" type="button">
+                    <span class="text-start">
+                      <span class="d-block font-bold text-primary">{{ section.title }}</span>
+                      <span class="d-block text-xs text-on-surface-variant">{{ section.desc }}</span>
+                    </span>
+                    <i :class="['bi', sectionsOpen[section.key] ? 'bi-chevron-up' : 'bi-chevron-down']"></i>
+                  </button>
+
+                  <div class="p-3 border-t border-outline-variant" v-if="sectionsOpen[section.key]">
+                    <!-- Sección Muestras: editor de N muestras con alternativas y orden -->
+                    <template v-if="section.key === 'muestras'">
+                      <div class="d-flex justify-content-between align-items-center mb-3">
+                        <p class="text-on-surface-variant text-xs mb-0">Las muestras se guardan junto con el resto del formulario, al hacer clic en "Guardar".</p>
+                        <button @click="addMuestraRow" class="btn btn-sm btn-outline-primary border-primary text-primary rounded-lg" type="button">
+                          <i class="bi bi-plus-lg me-1"></i>Agregar Muestra
+                        </button>
+                      </div>
+
+                      <div class="text-center py-3" v-if="muestrasLoading">
+                        <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
+                      </div>
+                      <p class="text-on-surface-variant text-xs" v-else-if="!muestrasForm.length">
+                        Todavía no se cargó ninguna muestra para este estudio.
+                      </p>
+
+                      <div :key="m._key" class="border border-outline-variant rounded-lg p-3 mb-3 bg-surface-container-low"
+                        v-for="(m, idx) in muestrasForm">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                          <span class="font-bold text-sm">Muestra {{ idx + 1 }}</span>
+                          <div class="d-flex gap-1">
+                            <button :disabled="idx === 0" @click="moveMuestraRow(idx, -1)" class="btn btn-xs btn-light border" title="Subir" type="button">
+                              <i class="bi bi-arrow-up"></i>
+                            </button>
+                            <button :disabled="idx === muestrasForm.length - 1" @click="moveMuestraRow(idx, 1)" class="btn btn-xs btn-light border" title="Bajar" type="button">
+                              <i class="bi bi-arrow-down"></i>
+                            </button>
+                            <button @click="duplicateMuestraRow(idx)" class="btn btn-xs btn-light border" title="Duplicar" type="button">
+                              <i class="bi bi-copy"></i>
+                            </button>
+                            <button @click="removeMuestraRow(idx)" class="btn btn-xs btn-outline-danger" title="Quitar" type="button">
+                              <i class="bi bi-trash"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="row g-2">
+                          <div :key="c.field" class="col-md-3" v-for="c in MUESTRA_CAMPOS">
+                            <label class="form-label text-xs font-semibold text-on-surface mb-1">{{ c.label }}{{ c.required ? ' *' : '' }}</label>
+                            <select :required="c.required" class="form-select form-select-sm rounded-lg border-outline-variant"
+                              v-if="c.type === 'select'" v-model="m[c.field]">
+                              <option :value="null" v-if="!c.required">-- Ninguno --</option>
+                              <option :key="opt.id" :value="opt.id" v-for="opt in refData[c.ref]">{{ opt.nombre }}</option>
+                            </select>
+                            <input class="form-control form-control-sm rounded-lg border-outline-variant" step="0.01"
+                              type="number" v-else v-model.number="m[c.field]" />
+                          </div>
+                          <div class="col-md-6">
+                            <label class="form-label text-xs font-semibold text-on-surface mb-1">Observación específica de esta muestra</label>
+                            <input class="form-control form-control-sm rounded-lg border-outline-variant"
+                              placeholder="Ej: separar suero antes de enviar" type="text" v-model="m.observacion" />
+                          </div>
+                        </div>
+
+                        <!-- Alternativas de ESTA muestra: subcategoría anidada, no una muestra nueva -->
+                        <div class="mt-3 ps-3 border-start border-outline-variant" v-if="m.alternativas.length">
+                          <div :key="a._key" class="border border-outline-variant rounded-lg p-3 mb-2 bg-white"
+                            v-for="(a, aidx) in m.alternativas">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                              <span class="font-bold text-sm">
+                                <span class="badge rounded-pill badge-xs bg-tertiary me-1">Alternativa</span>
+                                Alternativa {{ aidx + 1 }} de Muestra {{ idx + 1 }}
+                              </span>
+                              <div class="d-flex gap-1">
+                                <button :disabled="aidx === 0" @click="moveAlternativaRow(idx, aidx, -1)" class="btn btn-xs btn-light border" title="Subir" type="button">
+                                  <i class="bi bi-arrow-up"></i>
+                                </button>
+                                <button :disabled="aidx === m.alternativas.length - 1" @click="moveAlternativaRow(idx, aidx, 1)" class="btn btn-xs btn-light border" title="Bajar" type="button">
+                                  <i class="bi bi-arrow-down"></i>
+                                </button>
+                                <button @click="duplicateAlternativaRow(idx, aidx)" class="btn btn-xs btn-light border" title="Duplicar" type="button">
+                                  <i class="bi bi-copy"></i>
+                                </button>
+                                <button @click="removeAlternativaRow(idx, aidx)" class="btn btn-xs btn-outline-danger" title="Quitar" type="button">
+                                  <i class="bi bi-trash"></i>
+                                </button>
+                              </div>
+                            </div>
+                            <div class="row g-2">
+                              <div :key="c.field" class="col-md-3" v-for="c in MUESTRA_CAMPOS">
+                                <label class="form-label text-xs font-semibold text-on-surface mb-1">{{ c.label }}{{ c.required ? ' *' : '' }}</label>
+                                <select :required="c.required" class="form-select form-select-sm rounded-lg border-outline-variant"
+                                  v-if="c.type === 'select'" v-model="a[c.field]">
+                                  <option :value="null" v-if="!c.required">-- Ninguno --</option>
+                                  <option :key="opt.id" :value="opt.id" v-for="opt in refData[c.ref]">{{ opt.nombre }}</option>
+                                </select>
+                                <input class="form-control form-control-sm rounded-lg border-outline-variant" step="0.01"
+                                  type="number" v-else v-model.number="a[c.field]" />
+                              </div>
+                              <div class="col-md-6">
+                                <label class="form-label text-xs font-semibold text-on-surface mb-1">Observación específica de esta alternativa</label>
+                                <input class="form-control form-control-sm rounded-lg border-outline-variant"
+                                  placeholder="Ej: separar suero antes de enviar" type="text" v-model="a.observacion" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="mt-2 text-end">
+                          <button @click="addAlternativaRow(idx)" class="btn btn-xs btn-outline-primary border-primary text-primary rounded-lg" type="button">
+                            <i class="bi bi-plus-lg me-1"></i>Agregar Alternativa
+                          </button>
+                        </div>
+                      </div>
+                    </template>
+
+                    <!-- Resto de secciones: campos genéricos (texto/select/fk) -->
+                    <div class="row g-3" v-else>
+                      <div :key="col.field" class="col-md-6" v-for="col in fieldsForSection(section.key)">
+                        <label class="form-label text-xs font-semibold text-on-surface mb-1">{{ col.label }}</label>
+                        <input :required="col.required" :type="col.type"
+                          class="form-control form-control-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
+                          v-if="col.type === 'text' || col.type === 'number' || col.type === 'date'"
+                          v-model="formData[col.field]" />
+                        <textarea
+                          class="form-control form-control-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
+                          rows="3" v-else-if="col.type === 'textarea'" v-model="formData[col.field]"></textarea>
+                        <select :required="col.required"
+                          class="form-select form-select-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
+                          v-else-if="col.type === 'select'" v-model="formData[col.field]">
+                          <option :key="o" :value="o" v-for="o in col.options">{{ o }}</option>
+                        </select>
+                        <template v-else-if="col.type === 'fk'">
+                          <input :list="'dl_' + col.field" :required="col.required && !(col.field === 'id_estudio' && needsNewEstudio)"
+                            :value="fkText[col.field]"
+                            @input="onFkInput(col.field, col.ref, $event.target.value)"
+                            class="form-control form-control-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
+                            placeholder="Escribí para buscar..." type="text" />
+                          <datalist :id="'dl_' + col.field">
+                            <option :key="opt.id" :value="fkLabel(col.ref, opt.id)" v-for="opt in refData[col.ref]"></option>
+                          </datalist>
+                          <div v-if="col.field === 'id_estudio' && needsNewEstudio" class="text-xs mt-1 text-primary">
+                            No existe ese Estudio: se va a crear uno nuevo con este nombre.
+                          </div>
+                          <div :class="formData[col.field] ? 'text-success-teal' : 'text-britlab-gray'" class="text-xs mt-1" v-else>
+                            {{ formData[col.field] ? ('Seleccionado: #' + formData[col.field]) : (col.required ? 'Elegí una opción de la lista' : 'Vacío (opcional)') }}
+                          </div>
+                          <div class="mt-2" v-if="col.field === 'id_estudio' && needsNewEstudio">
+                            <label class="form-label text-xs font-semibold text-on-surface mb-1">Código Hexalis del Estudio nuevo</label>
+                            <input class="form-control form-control-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
+                              placeholder="Ej: 660352" required type="text" v-model="newEstudioCodigo" />
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Observaciones: textarea simple, no desplegable -->
+                <div class="mt-3">
+                  <label class="form-label text-xs font-semibold text-on-surface mb-1">Observaciones</label>
+                  <textarea class="form-control form-control-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
+                    rows="3" v-model="formData.observacion"></textarea>
+                </div>
+              </template>
+
+              <!-- ===================== Resto de entidades: formulario genérico simple ===================== -->
+              <div class="row g-3" v-else>
                 <div :key="col.field" class="col-md-6" v-for="col in (modalEntity ? modalEntity.fields : [])">
                   <label class="form-label text-xs font-semibold text-on-surface mb-1">{{ col.label }}</label>
                   <input :required="col.required" :type="col.type"
@@ -572,7 +860,7 @@
                     <option :key="o" :value="o" v-for="o in col.options">{{ o }}</option>
                   </select>
                   <template v-else-if="col.type === 'fk'">
-                    <input :list="'dl_' + col.field" :required="col.required && !(col.field === 'id_estudio' && needsNewEstudio)"
+                    <input :list="'dl_' + col.field" :required="col.required"
                       :value="fkText[col.field]"
                       @input="onFkInput(col.field, col.ref, $event.target.value)"
                       class="form-control form-control-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
@@ -580,20 +868,13 @@
                     <datalist :id="'dl_' + col.field">
                       <option :key="opt.id" :value="fkLabel(col.ref, opt.id)" v-for="opt in refData[col.ref]"></option>
                     </datalist>
-                    <div v-if="col.field === 'id_estudio' && needsNewEstudio" class="text-xs mt-1 text-primary">
-                      No existe ese Estudio: se va a crear uno nuevo con este nombre.
-                    </div>
-                    <div :class="formData[col.field] ? 'text-success-teal' : 'text-britlab-gray'" class="text-xs mt-1" v-else>
+                    <div :class="formData[col.field] ? 'text-success-teal' : 'text-britlab-gray'" class="text-xs mt-1">
                       {{ formData[col.field] ? ('Seleccionado: #' + formData[col.field]) : (col.required ? 'Elegí una opción de la lista' : 'Vacío (opcional)') }}
-                    </div>
-                    <div class="mt-2" v-if="col.field === 'id_estudio' && needsNewEstudio">
-                      <label class="form-label text-xs font-semibold text-on-surface mb-1">Código Hexalis del Estudio nuevo</label>
-                      <input class="form-control form-control-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
-                        placeholder="Ej: 660352" required type="text" v-model="newEstudioCodigo" />
                     </div>
                   </template>
                 </div>
               </div>
+
               <div class="mt-4 text-end pt-3 border-t border-outline-variant">
                 <button class="btn btn-sm btn-light border-outline-variant text-on-surface me-2 rounded-lg px-3"
                   data-bs-dismiss="modal" type="button">Cancelar</button>
