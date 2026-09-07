@@ -14,12 +14,14 @@ class PaginatedResponse(BaseModel, Generic[T]):
 # --- Colega ---
 class ColegaBase(BaseModel):
     descripcion: str
+    es_propio: Optional[bool] = False
 
 class ColegaCreate(ColegaBase):
     pass
 
 class ColegaUpdate(BaseModel):
     descripcion: Optional[str] = None
+    es_propio: Optional[bool] = None
 
 class ColegaOut(ColegaBase):
     id: int

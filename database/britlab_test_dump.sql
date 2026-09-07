@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict G0lnEAjAbhx6Z8njaPOeea3d9mTzM9gLZohlmZnOo6Lv29abbwdLjnIYZWA6wpb
+\restrict 4OletR0tGoYQc1lG1Y1g1oLVDHqoU03LuPP6fX1nwgB5dwX7z2YnAhflWeXN4zT
 
 -- Dumped from database version 14.24 (Ubuntu 14.24-0ubuntu0.22.04.1)
 -- Dumped by pg_dump version 14.24 (Ubuntu 14.24-0ubuntu0.22.04.1)
@@ -46,6 +46,8 @@ ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra_alternativa DROP CONSTR
 ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra_alternativa DROP CONSTRAINT IF EXISTS ecma_id_conservacion_fkey;
 ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra_alternativa DROP CONSTRAINT IF EXISTS ecma_id_condicion_especial_fkey;
 ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra_alternativa DROP CONSTRAINT IF EXISTS ecma_id_aditivo_fkey;
+ALTER TABLE IF EXISTS ONLY public.estudio_colega_modelo DROP CONSTRAINT IF EXISTS ecm_id_estudio_colega_fkey;
+DROP INDEX IF EXISTS public.idx_ecm_id_estudio_colega;
 ALTER TABLE IF EXISTS ONLY public.valor_estudio_sector DROP CONSTRAINT IF EXISTS valor_estudio_sector_pkey;
 ALTER TABLE IF EXISTS ONLY public.valor_estudio_sector DROP CONSTRAINT IF EXISTS uq_estudio_sector_posicion;
 ALTER TABLE IF EXISTS ONLY public.unidad_medida DROP CONSTRAINT IF EXISTS unidad_medida_pkey;
@@ -72,6 +74,7 @@ ALTER TABLE IF EXISTS ONLY public.estudio DROP CONSTRAINT IF EXISTS estudio_pkey
 ALTER TABLE IF EXISTS ONLY public.estudio_colega DROP CONSTRAINT IF EXISTS estudio_colega_pkey;
 ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra DROP CONSTRAINT IF EXISTS estudio_colega_muestra_pkey;
 ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra_alternativa DROP CONSTRAINT IF EXISTS estudio_colega_muestra_alternativa_pkey;
+ALTER TABLE IF EXISTS ONLY public.estudio_colega_modelo DROP CONSTRAINT IF EXISTS estudio_colega_modelo_pkey;
 ALTER TABLE IF EXISTS ONLY public.estudio DROP CONSTRAINT IF EXISTS estudio_codigo_hexalis_key;
 ALTER TABLE IF EXISTS ONLY public.conservacion DROP CONSTRAINT IF EXISTS conservacion_pkey;
 ALTER TABLE IF EXISTS ONLY public.conservacion DROP CONSTRAINT IF EXISTS conservacion_nombre_key;
@@ -93,6 +96,7 @@ ALTER TABLE IF EXISTS public.modalidad_recoleccion ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.metodo ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.estudio_colega_muestra_alternativa ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.estudio_colega_muestra ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.estudio_colega_modelo ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.estudio_colega ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.estudio ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE IF EXISTS public.conservacion ALTER COLUMN id DROP DEFAULT;
@@ -126,6 +130,8 @@ DROP SEQUENCE IF EXISTS public.estudio_colega_muestra_id_seq;
 DROP SEQUENCE IF EXISTS public.estudio_colega_muestra_alternativa_id_seq;
 DROP TABLE IF EXISTS public.estudio_colega_muestra_alternativa;
 DROP TABLE IF EXISTS public.estudio_colega_muestra;
+DROP SEQUENCE IF EXISTS public.estudio_colega_modelo_id_seq;
+DROP TABLE IF EXISTS public.estudio_colega_modelo;
 DROP SEQUENCE IF EXISTS public.estudio_colega_id_seq;
 DROP TABLE IF EXISTS public.estudio_colega;
 DROP TABLE IF EXISTS public.estudio;
@@ -159,7 +165,8 @@ CREATE TYPE public.estado_registro_enum AS ENUM (
     'listo',
     'pendiente',
     'revisar',
-    'verificado'
+    'verificado',
+    'borrador'
 );
 
 
@@ -203,7 +210,8 @@ ALTER SEQUENCE public.aditivo_id_seq OWNED BY public.aditivo.id;
 
 CREATE TABLE public.colega (
     id integer NOT NULL,
-    descripcion character varying(255) NOT NULL
+    descripcion character varying(255) NOT NULL,
+    es_propio boolean DEFAULT false NOT NULL
 );
 
 
@@ -338,6 +346,40 @@ CREATE SEQUENCE public.estudio_colega_id_seq
 --
 
 ALTER SEQUENCE public.estudio_colega_id_seq OWNED BY public.estudio_colega.id;
+
+
+--
+-- Name: estudio_colega_modelo; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.estudio_colega_modelo (
+    id integer NOT NULL,
+    id_estudio_colega integer NOT NULL,
+    nombre_archivo character varying(255) NOT NULL,
+    contenido bytea NOT NULL,
+    tamanio_bytes integer NOT NULL,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+--
+-- Name: estudio_colega_modelo_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.estudio_colega_modelo_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: estudio_colega_modelo_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.estudio_colega_modelo_id_seq OWNED BY public.estudio_colega_modelo.id;
 
 
 --
@@ -860,6 +902,13 @@ ALTER TABLE ONLY public.estudio_colega ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
+-- Name: estudio_colega_modelo id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.estudio_colega_modelo ALTER COLUMN id SET DEFAULT nextval('public.estudio_colega_modelo_id_seq'::regclass);
+
+
+--
 -- Name: estudio_colega_muestra id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -967,23 +1016,23 @@ COPY public.aditivo (id, nombre) FROM stdin;
 -- Data for Name: colega; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.colega (id, descripcion) FROM stdin;
-49	BRITLAB
-50	IICT (A)
-51	LABMED (B)
-52	TURNER (C)
-53	SEMIR (D)
-54	CIBIC (E)
-55	IBC (F)
-56	IDYMIC (G)
-57	HEMOTERAPIA SB (H)
-58	CEREMIC (J)
-59	CEMAR (I)
-60	LAHT-K
-61	LAHT-F
-62	FBA
-63	BMSB
-64	MICROBIOLOGIA
+COPY public.colega (id, descripcion, es_propio) FROM stdin;
+50	IICT (A)	f
+51	LABMED (B)	f
+52	TURNER (C)	f
+53	SEMIR (D)	f
+54	CIBIC (E)	f
+55	IBC (F)	f
+56	IDYMIC (G)	f
+57	HEMOTERAPIA SB (H)	f
+58	CEREMIC (J)	f
+59	CEMAR (I)	f
+60	LAHT-K	f
+61	LAHT-F	f
+62	FBA	f
+63	BMSB	f
+64	MICROBIOLOGIA	f
+49	BRITLAB	t
 \.
 
 
@@ -2493,6 +2542,14 @@ COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_
 
 
 --
+-- Data for Name: estudio_colega_modelo; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.estudio_colega_modelo (id, id_estudio_colega, nombre_archivo, contenido, tamanio_bytes, created_at) FROM stdin;
+\.
+
+
+--
 -- Data for Name: estudio_colega_muestra; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -3716,7 +3773,7 @@ SELECT pg_catalog.setval('public.aditivo_id_seq', 5, true);
 -- Name: colega_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.colega_id_seq', 64, true);
+SELECT pg_catalog.setval('public.colega_id_seq', 65, true);
 
 
 --
@@ -3738,6 +3795,13 @@ SELECT pg_catalog.setval('public.conservacion_id_seq', 5, true);
 --
 
 SELECT pg_catalog.setval('public.estudio_colega_id_seq', 2979, true);
+
+
+--
+-- Name: estudio_colega_modelo_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.estudio_colega_modelo_id_seq', 2, true);
 
 
 --
@@ -3800,7 +3864,7 @@ SELECT pg_catalog.setval('public.prioridad_envio_id_seq', 3, true);
 -- Name: recipiente_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.recipiente_id_seq', 4, true);
+SELECT pg_catalog.setval('public.recipiente_id_seq', 5, true);
 
 
 --
@@ -3900,6 +3964,14 @@ ALTER TABLE ONLY public.conservacion
 
 ALTER TABLE ONLY public.estudio
     ADD CONSTRAINT estudio_codigo_hexalis_key UNIQUE (codigo_hexalis);
+
+
+--
+-- Name: estudio_colega_modelo estudio_colega_modelo_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.estudio_colega_modelo
+    ADD CONSTRAINT estudio_colega_modelo_pkey PRIMARY KEY (id);
 
 
 --
@@ -4108,6 +4180,21 @@ ALTER TABLE ONLY public.valor_estudio_sector
 
 ALTER TABLE ONLY public.valor_estudio_sector
     ADD CONSTRAINT valor_estudio_sector_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: idx_ecm_id_estudio_colega; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_ecm_id_estudio_colega ON public.estudio_colega_modelo USING btree (id_estudio_colega);
+
+
+--
+-- Name: estudio_colega_modelo ecm_id_estudio_colega_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.estudio_colega_modelo
+    ADD CONSTRAINT ecm_id_estudio_colega_fkey FOREIGN KEY (id_estudio_colega) REFERENCES public.estudio_colega(id) ON DELETE CASCADE;
 
 
 --
@@ -4338,5 +4425,5 @@ ALTER TABLE ONLY public.valor_estudio_sector
 -- PostgreSQL database dump complete
 --
 
-\unrestrict G0lnEAjAbhx6Z8njaPOeea3d9mTzM9gLZohlmZnOo6Lv29abbwdLjnIYZWA6wpb
+\unrestrict 4OletR0tGoYQc1lG1Y1g1oLVDHqoU03LuPP6fX1nwgB5dwX7z2YnAhflWeXN4zT
 

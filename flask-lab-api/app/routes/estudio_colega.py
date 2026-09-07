@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.crud import _commit_or_400
 from app.database import db
-from app.models import EstudioColega, Estudio, Colega, Metodo, Muestra, Preanalitico, ValorEstudioSector, EstudioColegaMuestra
+from app.models import EstudioColega, Estudio, Colega, Metodo, Muestra, Preanalitico, ValorEstudioSector, EstudioColegaMuestra, EstudioColegaModelo
 from app.schemas import EstudioColegaCreate, EstudioColegaUpdate, EstudioColegaOut
 from app.utils import paginate_query
 from pydantic import ValidationError
@@ -111,51 +111,25 @@ def delete_item(id):
     return jsonify({"message": f"Registro {id} eliminado correctamente"}), 200
 
 
-@bp.route('/todos', methods=['GET'])
-def get_todos_los_estudios():
-    """Catálogo maestro de Estudios (uno por código hexalis, sin repetirse),
-    con los colegas donde cada uno está autorizado como lista liviana para
-    mostrar como chips en el front, sin pedidos extra por estudio."""
-    resultados = (
-        db.session.query(Estudio, EstudioColega, Colega)
-        .outerjoin(EstudioColega, EstudioColega.id_estudio == Estudio.id)
-        .outerjoin(Colega, EstudioColega.colega_id == Colega.id)
-        .order_by(Estudio.codigo_hexalis.asc())
-        .all()
-    )
-    agrupado = {}
-    for estudio, reg, colega in resultados:
-        entry = agrupado.setdefault(estudio.codigo_hexalis, {
-            'id_estudio': estudio.id,
-            'codigo_hexalis': estudio.codigo_hexalis,
-            'estudio_descripcion': estudio.descripcion,
-            'colegas': []
-        })
-        if reg is not None:
-            entry['colegas'].append({
-                'id_estudio_colega': reg.id,
-                'colega_id': colega.id,
-                'colega_descripcion': colega.descripcion,
-                'estado': reg.estado,
-            })
-    return jsonify(list(agrupado.values())), 200
-
-
-@bp.route('/colega/<int:colega_id>', methods=['GET'])
-def get_estudios_por_colega(colega_id):
-    resultados = (
-        db.session.query(EstudioColega, Estudio)
+def _listar_estudios_colega(colega_id=None):
+    """Registros Estudio x Colega, opcionalmente filtrados a un colega. Sin
+    filtro trae TODOS los colegas sin deduplicar: si un estudio está
+    autorizado en 2 colegas aparece 2 veces, una por cada uno (nunca se
+    combina en una sola fila)."""
+    query = (
+        db.session.query(EstudioColega, Estudio, Colega)
         .join(Estudio, EstudioColega.id_estudio == Estudio.id)
+        .join(Colega, EstudioColega.colega_id == Colega.id)
         .outerjoin(Metodo, EstudioColega.id_metodo == Metodo.id)
         .outerjoin(Muestra, EstudioColega.id_muestra == Muestra.id)
         .outerjoin(Preanalitico, EstudioColega.id_preanalitico == Preanalitico.id)
         .outerjoin(ValorEstudioSector, EstudioColega.id_sector_laboratorio == ValorEstudioSector.id)
-        .filter(EstudioColega.colega_id == colega_id)
-        .order_by(Estudio.descripcion.asc())
-        .all()
     )
+    if colega_id is not None:
+        query = query.filter(EstudioColega.colega_id == colega_id)
+    resultados = query.order_by(Estudio.descripcion.asc(), Colega.descripcion.asc()).all()
 
-    ids_regs = [reg.id for reg, _ in resultados]
+    ids_regs = [reg.id for reg, _, _ in resultados]
     muestras_por_registro = {}
     if ids_regs:
         muestras_query = (
@@ -166,8 +140,18 @@ def get_estudios_por_colega(colega_id):
         for m in muestras_query.all():
             muestras_por_registro.setdefault(m.id_estudio_colega, []).append(m)
 
+    modelos_por_registro = {}
+    if ids_regs:
+        conteos = (
+            db.session.query(EstudioColegaModelo.id_estudio_colega, db.func.count(EstudioColegaModelo.id))
+            .filter(EstudioColegaModelo.id_estudio_colega.in_(ids_regs))
+            .group_by(EstudioColegaModelo.id_estudio_colega)
+            .all()
+        )
+        modelos_por_registro = dict(conteos)
+
     respuesta = []
-    for reg, estudio in resultados:
+    for reg, estudio, colega in resultados:
         muestras_texto = '; '.join(
             _componer_texto_muestra(m) for m in muestras_por_registro.get(reg.id, [])
         ) or None
@@ -175,6 +159,9 @@ def get_estudios_por_colega(colega_id):
         respuesta.append({
             'id': reg.id,
             'estudio_id': estudio.id,
+            'colega_id': colega.id,
+            'colega_descripcion': colega.descripcion,
+            'colega_es_propio': colega.es_propio,
             'nemonico_datatech': reg.nemonico_datatech,
             'paridad_datatech_hexalis': reg.paridad_datatech_hexalis,
             'codigo_hexalis': estudio.codigo_hexalis,
@@ -182,8 +169,10 @@ def get_estudios_por_colega(colega_id):
             'metodo': reg.metodo.nombre if reg.metodo else None,
             'preanalitico': reg.preanalitico.nombre if reg.preanalitico else None,
             'muestra': muestras_texto,
+            'muestra_count': len(muestras_por_registro.get(reg.id, [])),
             'indicaciones_pacientes': reg.indicaciones_pacientes,
             'indicaciones_colega': reg.indicaciones_colega,
+            'modelos_count': modelos_por_registro.get(reg.id, 0),
             'valor_referencia': reg.valor_referencia,
             'dias_demora': reg.dias_demora,
             'estado': reg.estado,
@@ -196,4 +185,14 @@ def get_estudios_por_colega(colega_id):
             'rango': reg.sector_laboratorio.rango if reg.sector_laboratorio else None,
         })
 
-    return jsonify(respuesta), 200
+    return respuesta
+
+
+@bp.route('/todos', methods=['GET'])
+def get_todos_los_estudios():
+    return jsonify(_listar_estudios_colega()), 200
+
+
+@bp.route('/colega/<int:colega_id>', methods=['GET'])
+def get_estudios_por_colega(colega_id):
+    return jsonify(_listar_estudios_colega(colega_id)), 200

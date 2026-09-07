@@ -8,6 +8,7 @@ class Colega(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     descripcion = db.Column(db.String(255), nullable=False)
+    es_propio = db.Column(db.Boolean, nullable=False, default=False)
 
 
 class Estudio(db.Model):
@@ -244,3 +245,17 @@ class EstudioColegaMuestraAlternativa(db.Model):
     conservacion = db.relationship('Conservacion')
     condicion_especial = db.relationship('CondicionEspecial')
     prioridad_envio = db.relationship('PrioridadEnvio')
+
+
+class EstudioColegaModelo(db.Model):
+    """Modelo de informe (PDF) que el colega adjunta a un Estudio x Colega:
+    1..N por registro, guardados como bytea en la BD."""
+    __tablename__ = 'estudio_colega_modelo'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_estudio_colega = db.Column(db.Integer, db.ForeignKey('public.estudio_colega.id', ondelete='CASCADE'), nullable=False)
+    nombre_archivo = db.Column(db.String(255), nullable=False)
+    contenido = db.Column(db.LargeBinary, nullable=False)
+    tamanio_bytes = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

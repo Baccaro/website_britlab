@@ -11,49 +11,64 @@ const TOP_NAV_ENTITY_KEYS = ['colegas', 'metodos', 'preanaliticos'];
 const MUESTRAS_CATALOGO_KEYS = ['tipos_muestra', 'aditivos', 'unidades_medida', 'recipientes',
   'modalidades_recoleccion', 'tecnicas_recoleccion', 'conservaciones', 'condiciones_especiales', 'prioridades_envio'];
 
-// Clase de color del chip de colega en "Todos los Estudios", según el estado
-// del registro estudio_colega en ese colega.
+// Clase de color del badge de estado, tanto en los filtros como en la
+// columna "Estado" de la tabla.
 const ESTADO_CHIP_CLASS = {
   listo: 'bg-success-teal',
   verificado: 'bg-success-teal',
   pendiente: 'bg-tertiary',
-  revisar: 'bg-warning text-dark'
+  revisar: 'bg-warning text-dark',
+  borrador: 'bg-white text-on-surface-variant border border-outline-variant'
 };
+
 
 // Campos de una muestra estructurada (o de una alternativa suya: misma forma),
 // en el orden en que se muestran en el formulario. 'volumen' no es un catálogo
-// (no tiene 'ref'), el resto son selects contra una tabla de referencia.
+// (no tiene 'ref'); el resto son "combo": input autocompletable contra una
+// tabla de referencia, con opción de crear un valor nuevo si no existe.
 const MUESTRA_CAMPOS = [
-  { field: 'id_tipo_muestra', ref: 'tipos_muestra', label: 'Tipo de Muestra', required: true, type: 'select' },
-  { field: 'id_aditivo', ref: 'aditivos', label: 'Aditivo', type: 'select' },
+  { field: 'id_tipo_muestra', ref: 'tipos_muestra', label: 'Tipo de Muestra', required: true, type: 'combo' },
+  { field: 'id_aditivo', ref: 'aditivos', label: 'Aditivo', type: 'combo' },
   { field: 'volumen', label: 'Volumen', type: 'number' },
-  { field: 'id_unidad_medida', ref: 'unidades_medida', label: 'Unidad de Medida', type: 'select' },
-  { field: 'id_recipiente', ref: 'recipientes', label: 'Recipiente', type: 'select' },
-  { field: 'id_modalidad_recoleccion', ref: 'modalidades_recoleccion', label: 'Modalidad de Recolección', type: 'select' },
-  { field: 'id_tecnica_recoleccion', ref: 'tecnicas_recoleccion', label: 'Técnica de Recolección', type: 'select' },
-  { field: 'id_conservacion', ref: 'conservaciones', label: 'Conservación / Temperatura', type: 'select' },
-  { field: 'id_condicion_especial', ref: 'condiciones_especiales', label: 'Condición Especial', type: 'select' },
-  { field: 'id_prioridad_envio', ref: 'prioridades_envio', label: 'Prioridad / Envío', type: 'select' }
+  { field: 'id_unidad_medida', ref: 'unidades_medida', label: 'Unidad de Medida', type: 'combo' },
+  { field: 'id_recipiente', ref: 'recipientes', label: 'Recipiente', type: 'combo' },
+  { field: 'id_modalidad_recoleccion', ref: 'modalidades_recoleccion', label: 'Modalidad de Recolección', type: 'combo' },
+  { field: 'id_tecnica_recoleccion', ref: 'tecnicas_recoleccion', label: 'Técnica de Recolección', type: 'combo' },
+  { field: 'id_conservacion', ref: 'conservaciones', label: 'Conservación / Temperatura', type: 'combo' },
+  { field: 'id_condicion_especial', ref: 'condiciones_especiales', label: 'Condición Especial', type: 'combo' },
+  { field: 'id_prioridad_envio', ref: 'prioridades_envio', label: 'Prioridad / Envío', type: 'combo' }
 ];
 
 // Secciones desplegables del formulario de "Estudio x Colega". 'muestras' no
 // lleva 'fields': esa sección se arma aparte (ver muestrasForm más abajo).
 const ESTUDIO_COLEGA_SECCIONES = [
   {
-    key: 'general', title: 'Datos Generales',
-    desc: 'Identificación del estudio y su clasificación general.',
-    fields: ['id_estudio', 'nemonico_datatech', 'colega_id', 'id_metodo', 'id_sector_laboratorio', 'paridad_datatech_hexalis', 'estado']
+    key: 'general', title: 'Identificación',
+    desc: 'Estudio, laboratorio procesante, área y método.',
+    fields: ['id_estudio', 'colega_id', 'id_sector_laboratorio', 'id_metodo']
   },
   { key: 'muestras', title: 'Muestras', desc: 'Una o varias muestras admitidas, cada una con su recolección y conservación.' },
   {
     key: 'preanalitico', title: 'Pre-analítico e Indicaciones',
-    desc: 'Preparación previa, valores de referencia e indicaciones.',
-    fields: ['id_preanalitico', 'valor_referencia', 'indicaciones_pacientes', 'indicaciones_colega']
+    desc: 'Preparación previa, valores de referencia e indicaciones al paciente.',
+    fields: ['id_preanalitico', 'valor_referencia', 'indicaciones_pacientes']
+  },
+  {
+    key: 'indicaciones_colega', title: 'Indicaciones al Profesional / Derivante',
+    desc: 'Indicaciones para el colega y modelos de informe (PDF) adjuntos.',
+    fields: ['indicaciones_colega']
   },
   {
     key: 'procesamiento', title: 'Procesamiento y Tiempos',
-    desc: 'Demora, código propio del laboratorio y control de versión.',
-    fields: ['dias_demora', 'codigo_laboratorio', 'version', 'revisor']
+    desc: 'Demora y observaciones operativas.',
+    fields: ['dias_demora', 'observaciones_operativas']
+  },
+  {
+    key: 'paridad_publicacion', title: 'Paridad y Publicación',
+    desc: 'Identificadores del registro, estado y visibilidad.',
+    // 'codigo_hexalis' no es un campo propio (pertenece al Estudio elegido):
+    // se muestra aparte, de sólo lectura, antes de estos campos.
+    fields: ['nemonico_datatech', 'tharsis', 'codigo_laboratorio', 'estado', 'habilitar_ia', 'habilitar_web']
   }
 ];
 
@@ -61,27 +76,32 @@ let _muestraKeySeq = 0;
 const nextMuestraKey = () => `m${_muestraKeySeq++}`;
 
 // Columnas disponibles en la tabla "Estudios por Colega" (para el selector de
-// columnas visibles). El usuario puede ocultar cualquiera menos las fijas.
+// columnas visibles). Las primeras 10 son las que se muestran por defecto,
+// en el orden pedido; el resto queda disponible para activar desde "Columnas".
 const INDICACIONES_COLUMNAS = [
-  { field: 'nemonico_datatech', label: 'Nemónico' },
-  { field: 'paridad_datatech_hexalis', label: 'Paridad' },
-  { field: 'codigo_hexalis', label: 'Cód. Hex.' },
   { field: 'estudio_descripcion', label: 'Estudio' },
+  { field: 'codigo_hexalis', label: 'Cód. Hex.' },
+  { field: 'nemonico_datatech', label: 'Nemónico' },
+  { field: 'colega_descripcion', label: 'Procesador' },
   { field: 'metodo', label: 'Método' },
-  { field: 'preanalitico', label: 'Pre-analítico' },
   { field: 'muestra', label: 'Muestra' },
-  { field: 'valor_referencia', label: 'Val. Ref.' },
   { field: 'dias_demora', label: 'Dem.' },
+  { field: 'indicaciones_pacientes', label: 'Ind. Paciente' },
+  { field: 'indicaciones_colega', label: 'Modelo Colega' },
   { field: 'estado', label: 'Estado' },
+  { field: 'paridad_datatech_hexalis', label: 'Paridad' },
+  { field: 'preanalitico', label: 'Pre-analítico' },
+  { field: 'valor_referencia', label: 'Val. Ref.' },
   { field: 'codigo_laboratorio', label: 'Cód. Lab.' },
   { field: 'revisor', label: 'Revisor' },
-  { field: 'indicaciones_pacientes', label: 'Ind. Pacientes' },
-  { field: 'indicaciones_colega', label: 'Ind. Colega' },
   { field: 'observacion', label: 'Observaciones' }
 ];
-const INDICACIONES_COLUMNAS_DEFAULT = INDICACIONES_COLUMNAS.map(c => c.field);
+const INDICACIONES_COLUMNAS_DEFAULT = [
+  'estudio_descripcion', 'codigo_hexalis', 'nemonico_datatech', 'colega_descripcion', 'metodo',
+  'muestra', 'dias_demora', 'indicaciones_pacientes', 'indicaciones_colega', 'estado'
+];
 
-createApp({
+const app = createApp({
   setup() {
     const API_BASE = '/api';
 
@@ -94,11 +114,9 @@ createApp({
     const loading = ref(false);
     const formData = ref({});
     const modalMode = ref('create');
-    // Qué definición de entidad usa el modal actualmente abierto y adónde hay
-    // que refrescar al guardar (puede diferir de currentEntityKey/currentView
-    // cuando se edita un Estudio x Colega desde la vista de Estudios por Colega).
+    // Qué definición de entidad usa el modal genérico actualmente abierto
+    // (Estudio x Colega no usa este modal: tiene su propia pantalla completa).
     const modalEntityKey = ref('estudios');
-    const modalContext = ref('crud'); // 'crud' | 'indicaciones'
     let modalInstance = null;
     // Secciones desplegables abiertas/cerradas del formulario de Estudio x Colega
     const sectionsOpen = ref(Object.fromEntries(ESTUDIO_COLEGA_SECCIONES.map(s => [s.key, true])));
@@ -115,13 +133,14 @@ createApp({
     const pagination = ref({ page: 1, limit: 50, total: 0, total_pages: 1 });
 
     // Estado Específico Vista "Estudios por Colega". Por defecto siempre
-    // arranca en "Todos los Estudios" (catálogo maestro deduplicado).
+    // arranca en "Todos los Estudios": la misma lista sirve para ese modo
+    // (todos los registros, de todos los colegas, sin deduplicar) y para un
+    // colega puntual (filtrados por colega_id) — la diferencia está sólo en
+    // qué pide fetchEstudiosPorColega().
     const selectedColegaId = ref(ALL_ESTUDIOS);
     const colegaEstudios = ref([]);
     const loadingIndicaciones = ref(false);
     const searchQuery = ref('');
-    const todosEstudios = ref([]);
-    const loadingTodosEstudios = ref(false);
     // Filtro por estado (compartido entre "Todos los Estudios" y la tabla de
     // un colega puntual) y toggle para ver solo los estudios en conflicto.
     const estadoFiltro = ref(null);
@@ -147,7 +166,7 @@ createApp({
 
     const visibleColumnasList = computed(() => INDICACIONES_COLUMNAS.filter(c => visibleColumns.value.has(c.field)));
 
-    const ESTADOS_REGISTRO = ['listo', 'pendiente', 'revisar', 'verificado'];
+    const ESTADOS_REGISTRO = ['listo', 'pendiente', 'revisar', 'verificado', 'borrador'];
     const ESTADOS_PARIDAD = ['listo', 'pendiente', 'revisar', 'inactivo', 'discontinuado'];
 
     // Listas maestras cacheadas para armar los selectores de claves foráneas
@@ -247,10 +266,12 @@ createApp({
         endpoint: 'colegas',
         icon: 'bi-building',
         columns: [
-          { field: 'descripcion', label: 'Descripción' }
+          { field: 'descripcion', label: 'Descripción' },
+          { field: 'es_propio', label: 'Propio del Sanatorio', type: 'boolean' }
         ],
         fields: [
-          { field: 'descripcion', label: 'Descripción / Laboratorio', type: 'text', required: true }
+          { field: 'descripcion', label: 'Descripción / Laboratorio', type: 'text', required: true },
+          { field: 'es_propio', label: '¿Es un laboratorio propio del Sanatorio Británico?', type: 'switch', default: false }
         ]
       },
       metodos: {
@@ -399,8 +420,8 @@ createApp({
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
       estudio_colega: {
-        label: 'Estudio x Colega',
-        singular: 'Registro Estudio x Colega',
+        label: 'Estudio x Laboratorio Procesante',
+        singular: 'Registro Estudio x Laboratorio Procesante',
         endpoint: 'estudio-colega',
         icon: 'bi-diagram-3',
         columns: [
@@ -415,19 +436,27 @@ createApp({
         fields: [
           { field: 'nemonico_datatech', label: 'Nemónico Datatech', type: 'text', required: true },
           { field: 'id_estudio', label: 'Estudio', type: 'fk', ref: 'estudios', required: true, allowCreateNew: true },
-          { field: 'colega_id', label: 'Colega', type: 'fk', ref: 'colegas', required: true },
+          { field: 'colega_id', label: 'Laboratorio Procesante', type: 'fk', ref: 'colegas', required: true },
           { field: 'id_metodo', label: 'Método', type: 'fk', ref: 'metodos' },
           { field: 'id_preanalitico', label: 'Pre-analítico', type: 'fk', ref: 'preanaliticos' },
-          { field: 'id_sector_laboratorio', label: 'Valor Estudio-Sector', type: 'fk', ref: 'valores_estudio_sector' },
+          { field: 'id_sector_laboratorio', label: 'Área', type: 'fk', ref: 'valores_estudio_sector' },
           { field: 'paridad_datatech_hexalis', label: 'Paridad Datatech-Hexalis', type: 'select', options: ESTADOS_PARIDAD, default: 'pendiente' },
           { field: 'estado', label: 'Estado', type: 'select', options: ESTADOS_REGISTRO, default: 'pendiente' },
           { field: 'valor_referencia', label: 'Valor de Referencia', type: 'textarea' },
-          { field: 'indicaciones_pacientes', label: 'Indicaciones Pacientes', type: 'textarea' },
-          { field: 'indicaciones_colega', label: 'Indicaciones Colega', type: 'textarea' },
+          { field: 'indicaciones_pacientes', label: 'Indicaciones Pacientes', type: 'richtext' },
+          { field: 'indicaciones_colega', label: 'Indicaciones Colega', type: 'richtext' },
           { field: 'dias_demora', label: 'Días de Demora', type: 'number', default: 0 },
-          { field: 'codigo_laboratorio', label: 'Código del Laboratorio', type: 'text' },
+          // Placeholder visual, sin backend todavía: no se persiste (el schema
+          // del servidor ignora cualquier campo que no reconoce).
+          { field: 'observaciones_operativas', label: 'Observaciones Operativas', type: 'textarea' },
+          { field: 'codigo_laboratorio', label: 'Código Laboratorio Procesante', type: 'text' },
+          // 'tharsis', 'habilitar_ia' y 'habilitar_web' son placeholders
+          // visuales de una futura integración: tampoco se persisten aún.
+          { field: 'tharsis', label: 'Tharsis', type: 'text' },
+          { field: 'habilitar_ia', label: '¿Habilitar para Asistente IA?', type: 'switch', default: false },
+          { field: 'habilitar_web', label: '¿Habilitar para Página Web?', type: 'switch', default: false },
           { field: 'version', label: 'Versión', type: 'number', default: 1 },
-          { field: 'revisor', label: 'Revisor', type: 'text', required: true },
+          { field: 'revisor', label: 'Revisor', type: 'text', required: true, default: 'Laboratorio SBLab' },
           { field: 'observacion', label: 'Observación', type: 'textarea' }
         ]
       }
@@ -441,9 +470,30 @@ createApp({
     const isAllEstudiosMode = computed(() => currentView.value === 'indicaciones' && selectedColegaId.value === ALL_ESTUDIOS);
     const muestrasDropdownActive = computed(() => currentView.value === 'crud' && MUESTRAS_CATALOGO_KEYS.includes(currentEntityKey.value));
 
-    // Filtro reactivo para la búsqueda + filtro de estado de estudios por colega
+    // Un estudio está "en conflicto" cuando figura como 'listo' (activo) en
+    // más de un colega a la vez: normalmente debería estar activo en uno solo.
+    // Se agrupa por código hexalis sobre la lista SIN filtrar (siempre refleja
+    // el estado real de los datos, more allá de qué esté filtrado en pantalla).
+    const gruposConflicto = computed(() => {
+      if (!isAllEstudiosMode.value) return [];
+      const porCodigo = {};
+      colegaEstudios.value.forEach(e => {
+        if (e.estado !== 'listo') return;
+        const grupo = (porCodigo[e.codigo_hexalis] = porCodigo[e.codigo_hexalis] || {
+          codigo_hexalis: e.codigo_hexalis, estudio_descripcion: e.estudio_descripcion, filas: []
+        });
+        grupo.filas.push(e);
+      });
+      return Object.values(porCodigo).filter(g => g.filas.length >= 2);
+    });
+    const filasConflicto = computed(() => gruposConflicto.value.flatMap(g => g.filas));
+    const codigosConConflicto = computed(() => new Set(gruposConflicto.value.map(g => g.codigo_hexalis)));
+    const filaEnConflicto = (e) => isAllEstudiosMode.value && codigosConConflicto.value.has(e.codigo_hexalis);
+    const estadoChipClass = (estado) => ESTADO_CHIP_CLASS[estado] || 'bg-tertiary';
+
+    // Filtro reactivo: conflictos (sólo en "Todos los Estudios"), estado y búsqueda.
     const filteredEstudios = computed(() => {
-      let lista = colegaEstudios.value;
+      let lista = soloConflictos.value ? filasConflicto.value : colegaEstudios.value;
       if (estadoFiltro.value) lista = lista.filter(e => e.estado === estadoFiltro.value);
       if (searchQuery.value) {
         const q = searchQuery.value.toLowerCase().trim();
@@ -456,33 +506,6 @@ createApp({
       }
       return lista;
     });
-
-    // Un estudio está "en conflicto" cuando figura como 'listo' (activo) en
-    // más de un colega a la vez: normalmente debería estar activo en uno solo.
-    const esEstudioConflictivo = (e) => e.colegas.filter(c => c.estado === 'listo').length >= 2;
-    const estudiosConConflicto = computed(() => todosEstudios.value.filter(esEstudioConflictivo));
-    const estadoChipClass = (estado) => ESTADO_CHIP_CLASS[estado] || 'bg-tertiary';
-
-    // Filtro reactivo para "Todos los Estudios": conflictos, estado y búsqueda.
-    // Cuando hay un estado elegido, sólo quedan los estudios con al menos un
-    // colega en ese estado (los chips que no matchean se ocultan en el template).
-    const filteredTodosEstudios = computed(() => {
-      let lista = soloConflictos.value ? estudiosConConflicto.value : todosEstudios.value;
-      if (estadoFiltro.value) lista = lista.filter(e => e.colegas.some(c => c.estado === estadoFiltro.value));
-      if (searchQuery.value) {
-        const q = searchQuery.value.toLowerCase().trim();
-        lista = lista.filter(e => {
-          const nombre = (e.estudio_descripcion || '').toLowerCase();
-          const codigo = (e.codigo_hexalis || '').toLowerCase();
-          return nombre.includes(q) || codigo.includes(q);
-        });
-      }
-      return lista;
-    });
-
-    // Chips a mostrar en la fila de un estudio: si hay filtro de estado activo,
-    // sólo los colegas que matchean (para no mezclar estados en la vista filtrada).
-    const chipsDeEstudio = (e) => estadoFiltro.value ? e.colegas.filter(c => c.estado === estadoFiltro.value) : e.colegas;
 
     // Métodos CRUD Genericos
     const fetchItems = async (page = 1) => {
@@ -519,10 +542,12 @@ createApp({
       estadoFiltro.value = null;
       soloConflictos.value = false;
       selectedColegaId.value = ALL_ESTUDIOS;
-      fetchTodosEstudios();
+      fetchEstudiosPorColega();
     };
 
-    // Métodos Vista "Estudios por Colega"
+    // Métodos Vista "Estudios por Colega": "Todos los Estudios" trae TODOS
+    // los registros de TODOS los colegas sin deduplicar (un estudio en 2
+    // colegas aparece 2 veces), cualquier otra opción filtra a ese colega puntual.
     const fetchEstudiosPorColega = async () => {
       if (!selectedColegaId.value) {
         colegaEstudios.value = [];
@@ -531,41 +556,24 @@ createApp({
       loadingIndicaciones.value = true;
       expandedRows.value = new Set();
       try {
-        const res = await axios.get(`${API_BASE}/estudio-colega/colega/${selectedColegaId.value}`);
+        const url = selectedColegaId.value === ALL_ESTUDIOS
+          ? `${API_BASE}/estudio-colega/todos`
+          : `${API_BASE}/estudio-colega/colega/${selectedColegaId.value}`;
+        const res = await axios.get(url);
         colegaEstudios.value = res.data;
       } catch (err) {
-        showAlert('Error al consultar los estudios asignados al colega', 'danger');
+        showAlert('Error al consultar los estudios', 'danger');
         colegaEstudios.value = [];
       } finally {
         loadingIndicaciones.value = false;
       }
     };
 
-    // Al cambiar el selector: "Todos los Estudios" trae el catálogo maestro
-    // deduplicado por código hexalis, cualquier otra opción consulta los
-    // estudios asignados a ese colega puntual.
     const onColegaSelectorChange = () => {
       searchQuery.value = '';
       estadoFiltro.value = null;
       soloConflictos.value = false;
-      if (selectedColegaId.value === ALL_ESTUDIOS) {
-        fetchTodosEstudios();
-        return;
-      }
       fetchEstudiosPorColega();
-    };
-
-    const fetchTodosEstudios = async () => {
-      loadingTodosEstudios.value = true;
-      try {
-        const res = await axios.get(`${API_BASE}/estudio-colega/todos`);
-        todosEstudios.value = res.data;
-      } catch (err) {
-        showAlert('Error al consultar el catálogo de estudios', 'danger');
-        todosEstudios.value = [];
-      } finally {
-        loadingTodosEstudios.value = false;
-      }
     };
 
     // --- Filas desplegables de la tabla de Estudios por Colega ---
@@ -598,16 +606,40 @@ createApp({
       }
     };
 
+    // --- Panel lateral (desde la derecha) para ver Indicaciones al Paciente
+    // o el Modelo de Informe del Colega (PDFs + indicaciones) de una fila,
+    // sin salir de la tabla. ---
+    const sidePanel = ref({ open: false, kind: null, item: null, modelos: [], loadingModelos: false });
+
+    const openIndicacionesPanel = (item) => {
+      sidePanel.value = { open: true, kind: 'paciente', item, modelos: [], loadingModelos: false };
+    };
+
+    const openModeloColegaPanel = async (item) => {
+      sidePanel.value = { open: true, kind: 'colega', item, modelos: [], loadingModelos: true };
+      try {
+        const res = await axios.get(`${API_BASE}/estudio-colega-modelo/estudio-colega/${item.id}`);
+        sidePanel.value.modelos = res.data;
+      } catch (err) {
+        sidePanel.value.modelos = [];
+      } finally {
+        sidePanel.value.loadingModelos = false;
+      }
+    };
+
+    const closeSidePanel = () => { sidePanel.value.open = false; };
+
     const changePage = (page) => {
       if (page >= 1 && page <= pagination.value.total_pages) {
         fetchItems(page);
       }
     };
 
-    const openModal = (mode, item = null, opts = {}) => {
+    // Modal genérico: usado por todas las entidades excepto Estudio x Colega,
+    // que tiene su propia pantalla completa (ver openEstudioColegaForm más abajo).
+    const openModal = (mode, item = null) => {
       modalMode.value = mode;
-      modalEntityKey.value = opts.entityKey || currentEntityKey.value;
-      modalContext.value = opts.context || 'crud';
+      modalEntityKey.value = currentEntityKey.value;
       if (mode === 'edit' && item) {
         formData.value = { ...item };
       } else {
@@ -623,19 +655,6 @@ createApp({
           fkText.value[f.field] = fkLabel(f.ref, formData.value[f.field]) || '';
         }
       });
-      newEstudioCodigo.value = '';
-      Object.keys(sectionsOpen.value).forEach(k => { sectionsOpen.value[k] = true; });
-
-      // Sub-sección de Muestras estructuradas: se editan en un buffer local y
-      // se guardan (create/update/delete) recién cuando se guarda el formulario.
-      muestrasEliminadas.value = [];
-      alternativasEliminadas.value = [];
-      if (modalEntityKey.value === 'estudio_colega' && mode === 'edit') {
-        fetchMuestrasDeEstudioColega(formData.value.id);
-      } else {
-        muestrasForm.value = [];
-      }
-
       modalInstance.show();
     };
 
@@ -649,7 +668,11 @@ createApp({
 
     const blankCampos = () => {
       const row = { volumen: null };
-      MUESTRA_CAMPOS.forEach(c => { if (c.field !== 'volumen') row[c.field] = null; });
+      MUESTRA_CAMPOS.forEach(c => {
+        if (c.field === 'volumen') return;
+        row[c.field] = null;
+        row['_text_' + c.field] = '';
+      });
       return row;
     };
 
@@ -664,8 +687,24 @@ createApp({
     });
 
     const copiarCampos = (origen, destino) => {
-      MUESTRA_CAMPOS.forEach(c => { destino[c.field] = origen[c.field]; });
+      MUESTRA_CAMPOS.forEach(c => {
+        destino[c.field] = origen[c.field];
+        if (c.field !== 'volumen') destino['_text_' + c.field] = origen['_text_' + c.field];
+      });
       destino.observacion = origen.observacion;
+    };
+
+    // El backend ya devuelve, junto a cada id, el nombre resuelto del catálogo
+    // (p.ej. 'id_tipo_muestra' + 'tipo_muestra'): se usa directo como texto
+    // inicial del combo, sin pedidos extra.
+    const labelKeyDeCombo = (field) => field.replace(/^id_/, '');
+
+    const conTextoDeCombos = (row) => {
+      const conTexto = { ...row };
+      MUESTRA_CAMPOS.forEach(c => {
+        if (c.field !== 'volumen') conTexto['_text_' + c.field] = row[labelKeyDeCombo(c.field)] || '';
+      });
+      return conTexto;
     };
 
     const fetchMuestrasDeEstudioColega = async (idEstudioColega) => {
@@ -673,16 +712,44 @@ createApp({
       try {
         const res = await axios.get(`${API_BASE}/estudio-colega-muestra/estudio-colega/${idEstudioColega}`);
         muestrasForm.value = res.data.map(m => ({
-          ...m,
+          ...conTextoDeCombos(m),
           _key: nextMuestraKey(),
           _isNew: false,
-          alternativas: (m.alternativas || []).map(a => ({ ...a, _key: nextMuestraKey(), _isNew: false }))
+          alternativas: (m.alternativas || []).map(a => ({ ...conTextoDeCombos(a), _key: nextMuestraKey(), _isNew: false }))
         }));
       } catch (err) {
         showAlert('No se pudieron cargar las muestras de este estudio', 'danger');
         muestrasForm.value = [];
       } finally {
         muestrasLoading.value = false;
+      }
+    };
+
+    // --- Combo autocompletable + "crear si no existe" para las dimensiones
+    // de una muestra (tipo, aditivo, unidad, etc.): igual idea que el picker
+    // de Estudio, pero generalizada a cualquier catálogo de 'nombre' simple. ---
+    const onComboInput = (row, campo, value) => {
+      row['_text_' + campo.field] = value;
+      const match = (refData.value[campo.ref] || []).find(o => o.nombre.trim().toLowerCase() === value.trim().toLowerCase());
+      row[campo.field] = match ? match.id : null;
+    };
+
+    const comboNeedsCreate = (row, campo) => {
+      const text = (row['_text_' + campo.field] || '').trim();
+      return !!text && !row[campo.field];
+    };
+
+    const crearValorCombo = async (row, campo) => {
+      const text = (row['_text_' + campo.field] || '').trim();
+      if (!text) return;
+      try {
+        const res = await axios.post(`${API_BASE}/${REF_ENDPOINT[campo.ref]}`, { nombre: text });
+        refData.value[campo.ref] = [...refData.value[campo.ref], res.data];
+        row[campo.field] = res.data.id;
+        row['_text_' + campo.field] = res.data.nombre;
+        showAlert(`"${res.data.nombre}" agregado a ${entities[campo.ref].label}`);
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo crear el valor'), 'danger');
       }
     };
 
@@ -780,25 +847,152 @@ createApp({
       delete rowMuestrasCache.value[idEstudioColega];
     };
 
-    // Abre el mismo modal de "Estudio x Colega" pero desde la tabla de
-    // Estudios por Colega: trae el registro completo (con los ids de FK
-    // reales) porque esa tabla solo tiene los nombres ya resueltos.
-    const editEstudioColega = async (item, context = 'indicaciones') => {
+    // --- Modelos de informe (PDF) del colega, 1..N por Estudio x Colega.
+    // Editando un registro ya guardado se suben al toque (requieren un
+    // id_estudio_colega real). Creando uno nuevo, todavía no existe ese id:
+    // los PDF elegidos se bufferan en memoria (como las muestras) y recién
+    // se suben al guardar, con el id real que devuelve la creación. ---
+    const modelosEstudio = ref([]);
+    const modelosLoading = ref(false);
+    const modeloSubiendo = ref(false);
+    const modelosPendientes = ref([]); // {_key, file} elegidos antes de guardar (modo "create")
+
+    const fetchModelosDeEstudioColega = async (idEstudioColega) => {
+      modelosLoading.value = true;
+      try {
+        const res = await axios.get(`${API_BASE}/estudio-colega-modelo/estudio-colega/${idEstudioColega}`);
+        modelosEstudio.value = res.data;
+      } catch (err) {
+        modelosEstudio.value = [];
+      } finally {
+        modelosLoading.value = false;
+      }
+    };
+
+    const subirModeloInmediato = async (file) => {
+      const fd = new FormData();
+      fd.append('id_estudio_colega', formData.value.id);
+      fd.append('archivo', file);
+      modeloSubiendo.value = true;
+      try {
+        await axios.post(`${API_BASE}/estudio-colega-modelo`, fd);
+        await fetchModelosDeEstudioColega(formData.value.id);
+        showAlert('PDF agregado correctamente');
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo subir el archivo'), 'danger');
+      } finally {
+        modeloSubiendo.value = false;
+      }
+    };
+
+    // Si el registro ya existe (edit) sube directo; si se está creando uno
+    // nuevo, lo guarda en el buffer para subirlo recién al guardar el formulario.
+    const onSeleccionarPdf = (event) => {
+      const file = event.target.files[0];
+      event.target.value = '';
+      if (!file) return;
+      if (!file.name.toLowerCase().endsWith('.pdf')) {
+        showAlert('Sólo se aceptan archivos PDF', 'danger');
+        return;
+      }
+      if (modalMode.value === 'edit') {
+        subirModeloInmediato(file);
+      } else {
+        modelosPendientes.value.push({ _key: nextMuestraKey(), file });
+      }
+    };
+
+    const quitarModeloPendiente = (item) => {
+      modelosPendientes.value = modelosPendientes.value.filter(m => m._key !== item._key);
+    };
+
+    const persistModelosPendientes = async (idEstudioColega) => {
+      for (const m of modelosPendientes.value) {
+        const fd = new FormData();
+        fd.append('id_estudio_colega', idEstudioColega);
+        fd.append('archivo', m.file);
+        await axios.post(`${API_BASE}/estudio-colega-modelo`, fd);
+      }
+      modelosPendientes.value = [];
+    };
+
+    const eliminarModelo = async (modelo) => {
+      if (!confirm(`¿Eliminar "${modelo.nombre_archivo}"?`)) return;
+      try {
+        await axios.delete(`${API_BASE}/estudio-colega-modelo/${modelo.id}`);
+        modelosEstudio.value = modelosEstudio.value.filter(m => m.id !== modelo.id);
+        showAlert('Archivo eliminado correctamente');
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo eliminar el archivo'), 'danger');
+      }
+    };
+
+    const urlDescargaModelo = (modelo) => `${API_BASE}/estudio-colega-modelo/${modelo.id}/descargar`;
+
+    // Estudio x Colega tiene su propia pantalla completa (no un modal): más
+    // espacio y claridad para un formulario con varias secciones y muestras.
+    const _prepareEstudioColegaForm = (mode, item) => {
+      modalMode.value = mode;
+      modalEntityKey.value = 'estudio_colega';
+      if (mode === 'edit' && item) {
+        formData.value = { ...item };
+      } else {
+        formData.value = {};
+        (entities.estudio_colega.fields || []).forEach(f => {
+          if (f.default !== undefined) formData.value[f.field] = f.default;
+        });
+      }
+      fkText.value = {};
+      (entities.estudio_colega.fields || []).forEach(f => {
+        if (f.type === 'fk') {
+          fkText.value[f.field] = fkLabel(f.ref, formData.value[f.field]) || '';
+        }
+      });
+      newEstudioCodigo.value = '';
+      Object.keys(sectionsOpen.value).forEach(k => { sectionsOpen.value[k] = true; });
+
+      // Sub-sección de Muestras estructuradas: se editan en un buffer local y
+      // se guardan (create/update/delete) recién cuando se guarda el formulario.
+      muestrasEliminadas.value = [];
+      alternativasEliminadas.value = [];
+      modelosPendientes.value = [];
+      if (mode === 'edit') {
+        fetchMuestrasDeEstudioColega(formData.value.id);
+        fetchModelosDeEstudioColega(formData.value.id);
+      } else {
+        muestrasForm.value = [];
+        modelosEstudio.value = [];
+      }
+    };
+
+    const openEstudioColegaForm = (mode, item = null) => {
+      _prepareEstudioColegaForm(mode, item);
+      currentView.value = 'estudio_colega_form';
+    };
+
+    const cancelEstudioColegaForm = () => { currentView.value = 'indicaciones'; };
+
+    // Abre la pantalla de "Estudio x Colega" desde la tabla de Estudios por
+    // Colega: trae el registro completo (con los ids de FK reales) porque
+    // esa tabla solo tiene los nombres ya resueltos.
+    const editEstudioColega = async (item) => {
       try {
         const res = await axios.get(`${API_BASE}/estudio-colega/${item.id}`);
-        openModal('edit', res.data, { entityKey: 'estudio_colega', context });
+        openEstudioColegaForm('edit', res.data);
       } catch (err) {
         showAlert('No se pudo cargar el registro para editar', 'danger');
       }
     };
 
-    // "Nuevo Estudio" dentro de un colega puntual: crea un registro de
-    // Estudio x Colega con el colega ya elegido (el usuario solo busca el
-    // Estudio existente a asignar).
+    // "Nuevo Estudio": disponible tanto con un colega puntual elegido (se
+    // precarga) como en "Todos los Estudios" (el usuario elige el Colega a
+    // mano en el propio formulario, ya que ahí no hay uno sólo preseleccionado).
     const openNewEstudioForColega = () => {
-      openModal('create', null, { entityKey: 'estudio_colega', context: 'indicaciones' });
-      formData.value.colega_id = selectedColegaId.value;
-      fkText.value.colega_id = fkLabel('colegas', selectedColegaId.value) || '';
+      openEstudioColegaForm('create');
+      if (selectedColegaId.value !== ALL_ESTUDIOS) {
+        formData.value.colega_id = selectedColegaId.value;
+        fkText.value.colega_id = fkLabel('colegas', selectedColegaId.value) || '';
+      }
     };
 
     // El picker de Estudio tiene texto tipeado que no matchea ninguna opción
@@ -807,6 +1001,14 @@ createApp({
       modalEntity.value && modalEntity.value.fields.some(f => f.field === 'id_estudio' && f.allowCreateNew) &&
       !!fkText.value.id_estudio && !formData.value.id_estudio
     );
+
+    // Código Hexalis del Estudio elegido: de sólo lectura en "Paridad y
+    // Publicación" (el dato pertenece al Estudio, no al registro Estudio x
+    // Laboratorio Procesante, así que no se edita acá).
+    const codigoHexalisSeleccionado = computed(() => {
+      const est = (refData.value.estudios || []).find(e => e.id === formData.value.id_estudio);
+      return est ? est.codigo_hexalis : '';
+    });
 
     const saveItem = async () => {
       const entity = modalEntity.value;
@@ -839,13 +1041,11 @@ createApp({
         }
         if (modalEntityKey.value === 'estudio_colega') {
           await persistMuestras(savedId);
-        }
-        modalInstance.hide();
-        if (modalContext.value === 'indicaciones') {
+          await persistModelosPendientes(savedId);
+          currentView.value = 'indicaciones';
           fetchEstudiosPorColega();
-        } else if (modalContext.value === 'todos_estudios') {
-          fetchTodosEstudios();
         } else {
+          modalInstance.hide();
           fetchItems(pagination.value.page);
         }
         // Las listas de referencia pueden haber cambiado (p.ej. se creó un Estudio nuevo)
@@ -887,7 +1087,7 @@ createApp({
         modalInstance = new bootstrap.Modal(modalEl);
       }
       await fetchRefData();
-      fetchTodosEstudios();
+      fetchEstudiosPorColega();
     });
 
     return {
@@ -912,6 +1112,7 @@ createApp({
       onFkInput,
       newEstudioCodigo,
       needsNewEstudio,
+      codigoHexalisSeleccionado,
       colegasList: computed(() => refData.value.colegas),
       ALL_ESTUDIOS,
       isAllEstudiosMode,
@@ -920,17 +1121,13 @@ createApp({
       loadingIndicaciones,
       searchQuery,
       filteredEstudios,
-      todosEstudios,
-      loadingTodosEstudios,
-      filteredTodosEstudios,
-      estudiosConConflicto,
-      esEstudioConflictivo,
+      gruposConflicto,
+      filaEnConflicto,
       estadoChipClass,
       estadoFiltro,
       toggleEstadoFiltro,
       soloConflictos,
       toggleSoloConflictos,
-      chipsDeEstudio,
       ESTADOS_REGISTRO,
       ESTADOS_PARIDAD,
       switchCrudEntity,
@@ -938,11 +1135,16 @@ createApp({
       onColegaSelectorChange,
       editEstudioColega,
       openNewEstudioForColega,
+      openEstudioColegaForm,
+      cancelEstudioColegaForm,
       changePage,
       openModal,
       saveItem,
       deleteItem,
       MUESTRA_CAMPOS,
+      onComboInput,
+      comboNeedsCreate,
+      crearValorCombo,
       ESTUDIO_COLEGA_SECCIONES,
       sectionsOpen,
       toggleSection,
@@ -965,7 +1167,69 @@ createApp({
       expandedRows,
       toggleRowExpand,
       rowMuestrasCache,
-      rowMuestrasLoading
+      rowMuestrasLoading,
+      API_BASE,
+      modelosEstudio,
+      modelosLoading,
+      modeloSubiendo,
+      modelosPendientes,
+      onSeleccionarPdf,
+      quitarModeloPendiente,
+      eliminarModelo,
+      urlDescargaModelo,
+      sidePanel,
+      openIndicacionesPanel,
+      openModeloColegaPanel,
+      closeSidePanel
     };
   }
-}).mount('#app');
+});
+
+// Editor de texto enriquecido (negrita, cursiva, listas) para Indicaciones
+// Paciente, Indicaciones Colega y Observaciones: un div contenteditable con
+// una mini barra de comandos, guardando el HTML resultante como texto plano
+// en el campo (las columnas ya son TEXT, sin cambios de esquema). Al pegar
+// contenido se descarta el formato de origen y se inserta como texto plano,
+// para no poder inyectar HTML/atributos ajenos vía el portapapeles.
+app.component('rich-editor', {
+  props: { modelValue: { type: String, default: '' }, placeholder: { type: String, default: '' } },
+  emits: ['update:modelValue'],
+  template: `
+    <div class="rich-editor">
+      <div class="rich-toolbar">
+        <button type="button" title="Negrita" @mousedown.prevent="exec('bold')"><i class="bi bi-type-bold"></i></button>
+        <button type="button" title="Cursiva" @mousedown.prevent="exec('italic')"><i class="bi bi-type-italic"></i></button>
+        <button type="button" title="Lista con viñetas" @mousedown.prevent="exec('insertUnorderedList')"><i class="bi bi-list-ul"></i></button>
+        <button type="button" title="Lista numerada" @mousedown.prevent="exec('insertOrderedList')"><i class="bi bi-list-ol"></i></button>
+      </div>
+      <div ref="editor" class="rich-content form-control form-control-sm" contenteditable="true"
+        :data-placeholder="placeholder" @input="onInput" @paste="onPaste"></div>
+    </div>
+  `,
+  mounted() {
+    this.$refs.editor.innerHTML = this.modelValue || '';
+  },
+  watch: {
+    modelValue(val) {
+      const el = this.$refs.editor;
+      if (el && el.innerHTML !== (val || '')) el.innerHTML = val || '';
+    }
+  },
+  methods: {
+    exec(cmd) {
+      this.$refs.editor.focus();
+      document.execCommand(cmd);
+      this.onInput();
+    },
+    onInput() {
+      this.$emit('update:modelValue', this.$refs.editor.innerHTML);
+    },
+    onPaste(e) {
+      e.preventDefault();
+      const texto = (e.clipboardData || window.clipboardData).getData('text/plain');
+      document.execCommand('insertText', false, texto);
+    }
+  }
+});
+
+app.mount('#app');

@@ -20,6 +20,7 @@ def create_app():
     from app.routes.tipos_muestra_estructurada import ALL_BLUEPRINTS as muestra_estructurada_bps
     from app.routes.estudio_colega_muestra import bp as estudio_colega_muestra_bp
     from app.routes.estudio_colega_muestra_alternativa import bp as estudio_colega_muestra_alternativa_bp
+    from app.routes.estudio_colega_modelo import bp as estudio_colega_modelo_bp
 
     app.register_blueprint(colegas_bp)
     app.register_blueprint(estudios_bp)
@@ -33,5 +34,6 @@ def create_app():
         app.register_blueprint(muestra_bp)
     app.register_blueprint(estudio_colega_muestra_bp)
     app.register_blueprint(estudio_colega_muestra_alternativa_bp)
+    app.register_blueprint(estudio_colega_modelo_bp)
 
     return app
