@@ -4,6 +4,7 @@ from app.database import db
 from app.models import EstudioColega, Estudio, Colega, Metodo, Muestra, Preanalitico, ValorEstudioSector, EstudioColegaMuestra, EstudioColegaModelo
 from app.schemas import EstudioColegaCreate, EstudioColegaUpdate, EstudioColegaOut
 from app.utils import paginate_query
+from app.auth import token_required, admin_required
 from pydantic import ValidationError
 
 bp = Blueprint('estudio_colega', __name__, url_prefix='/api/estudio-colega')
@@ -52,18 +53,21 @@ def _componer_texto_muestra(m):
 
 
 @bp.route('', methods=['GET'])
+@token_required
 def list_items():
     query = EstudioColega.query.order_by(EstudioColega.id.asc())
-    return paginate_query(query, EstudioColegaOut, default_limit=50)
+    return paginate_query(query, EstudioColegaOut, default_limit=25)
 
 
 @bp.route('/<int:id>', methods=['GET'])
+@token_required
 def get_item(id):
     item = EstudioColega.query.get_or_404(id)
     return jsonify(EstudioColegaOut.model_validate(item).model_dump(mode='json')), 200
 
 
 @bp.route('', methods=['POST'])
+@admin_required
 def create_item():
     try:
         data = EstudioColegaCreate(**(request.get_json() or {}))
@@ -78,6 +82,7 @@ def create_item():
 
 
 @bp.route('/<int:id>', methods=['PUT'])
+@admin_required
 def update_item(id):
     item = EstudioColega.query.get_or_404(id)
     payload = request.get_json() or {}
@@ -102,6 +107,7 @@ def update_item(id):
 
 
 @bp.route('/<int:id>', methods=['DELETE'])
+@admin_required
 def delete_item(id):
     item = EstudioColega.query.get_or_404(id)
     db.session.delete(item)
@@ -189,10 +195,12 @@ def _listar_estudios_colega(colega_id=None):
 
 
 @bp.route('/todos', methods=['GET'])
+@token_required
 def get_todos_los_estudios():
     return jsonify(_listar_estudios_colega()), 200
 
 
 @bp.route('/colega/<int:colega_id>', methods=['GET'])
+@token_required
 def get_estudios_por_colega(colega_id):
     return jsonify(_listar_estudios_colega(colega_id)), 200

@@ -8,7 +8,9 @@ CREATE TABLE public.colega (
 	id int4 GENERATED ALWAYS AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1 NO CYCLE) NOT NULL,
 	descripcion varchar(255) NOT NULL,
 	es_propio bool NOT NULL DEFAULT false,
-	CONSTRAINT colega_pkey PRIMARY KEY (id)
+	habilitado bool NOT NULL DEFAULT true,
+	CONSTRAINT colega_pkey PRIMARY KEY (id),
+	CONSTRAINT uq_colega_descripcion UNIQUE (descripcion)
 );
 
 
@@ -284,3 +286,47 @@ CREATE TABLE public.estudio_colega_modelo (
 	CONSTRAINT ecm_id_estudio_colega_fkey FOREIGN KEY (id_estudio_colega) REFERENCES public.estudio_colega(id) ON DELETE CASCADE
 );
 CREATE INDEX idx_ecm_id_estudio_colega ON public.estudio_colega_modelo (id_estudio_colega);
+
+-- public.usuario definition
+-- Cuentas de acceso al sistema. rol 'admin' = acceso total (incluye el panel
+-- de usuarios); rol 'user' = sólo lectura, acotado a lo que 'permisos'
+-- restrinja (NULL/vacío = puede ver todo).
+
+CREATE TABLE public.usuario (
+	id serial4 NOT NULL,
+	username varchar(50) NOT NULL,
+	nombre_completo varchar(150) NULL,
+	email varchar(255) NULL,
+	password_hash varchar(255) NOT NULL,
+	rol varchar(20) DEFAULT 'user' NOT NULL,
+	activo bool DEFAULT true NOT NULL,
+	permisos jsonb NULL,
+	created_at timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT usuario_pkey PRIMARY KEY (id),
+	CONSTRAINT usuario_username_key UNIQUE (username),
+	CONSTRAINT usuario_email_key UNIQUE (email),
+	CONSTRAINT chk_usuario_rol CHECK (rol IN ('admin', 'user'))
+);
+
+-- Seed inicial: nbojanich, ccarletti, rbaccaro (rol admin, contraseña
+-- admin123 hasheada con werkzeug generate_password_hash/scrypt) — ver
+-- migracion_usuarios.sql para los INSERT con los hashes.
+
+
+-- public.password_reset_token definition
+-- Token de un solo uso para "olvidé mi contraseña". Sin servicio de email
+-- configurado todavía, el link con este token se muestra en pantalla en vez
+-- de enviarse (ver app/routes/auth.py).
+
+CREATE TABLE public.password_reset_token (
+	id serial4 NOT NULL,
+	id_usuario int4 NOT NULL,
+	token varchar(255) NOT NULL,
+	expira timestamp NOT NULL,
+	usado bool DEFAULT false NOT NULL,
+	created_at timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT password_reset_token_pkey PRIMARY KEY (id),
+	CONSTRAINT password_reset_token_token_key UNIQUE (token),
+	CONSTRAINT prt_id_usuario_fkey FOREIGN KEY (id_usuario) REFERENCES public.usuario(id) ON DELETE CASCADE
+);
+CREATE INDEX idx_password_reset_token_usuario ON public.password_reset_token (id_usuario);

@@ -1,4 +1,4 @@
-const { createApp, ref, computed, onMounted } = Vue;
+const { createApp, ref, computed, watch, onMounted } = Vue;
 
 // Opción especial del selector de colega que muestra el catálogo completo de Estudios
 const ALL_ESTUDIOS = '__ALL_ESTUDIOS__';
@@ -15,7 +15,7 @@ const MUESTRAS_CATALOGO_KEYS = ['tipos_muestra', 'aditivos', 'unidades_medida', 
 // columna "Estado" de la tabla.
 const ESTADO_CHIP_CLASS = {
   listo: 'bg-success-teal',
-  verificado: 'bg-success-teal',
+  verificado: 'bg-blue-600',
   pendiente: 'bg-tertiary',
   revisar: 'bg-warning text-dark',
   borrador: 'bg-white text-on-surface-variant border border-outline-variant'
@@ -101,12 +101,179 @@ const INDICACIONES_COLUMNAS_DEFAULT = [
   'muestra', 'dias_demora', 'indicaciones_pacientes', 'indicaciones_colega', 'estado'
 ];
 
+// Tamaños de página disponibles para los listados paginados (Estudios,
+// Métodos, Tipos de Muestra, etc.): por defecto 25, con 50 y 100 como alternativas.
+const PAGE_SIZE_OPTIONS = [25, 50, 100];
+const AUTH_TOKEN_KEY = 'britlab_token';
+
 const app = createApp({
   setup() {
     const API_BASE = '/api';
 
+    // --- Autenticación: JWT guardado en localStorage, mandado en cada
+    // request via interceptor de axios. Sin usuario logueado no se pide
+    // ningún dato a la API (ver onMounted). ---
+    const authToken = ref(localStorage.getItem(AUTH_TOKEN_KEY) || '');
+    const currentUser = ref(null);
+    const authView = ref('login'); // 'login' | 'register' | 'forgot' | 'reset'
+    const authLoading = ref(false);
+    const authError = ref('');
+    const authForm = ref({ username: '', password: '', password2: '', nombre_completo: '', email: '' });
+    const forgotUsername = ref('');
+    const forgotResult = ref(null);
+    const resetForm = ref({ token: '', password: '', password2: '' });
+    const resetResult = ref('');
+
+    const isLoggedIn = computed(() => !!currentUser.value);
+    const isAdmin = computed(() => !!currentUser.value && currentUser.value.rol === 'admin');
+
+    // Permisos opt-out: null/vacío en cualquiera de las dos listas = sin
+    // restricción (ve todo). El admin sólo los acota explícitamente.
+    const misPermisos = computed(() => (currentUser.value && currentUser.value.permisos) || {});
+    const pantallaPermitida = (key) => {
+      const pantallas = misPermisos.value.pantallas;
+      return !pantallas || !pantallas.length || pantallas.includes(key);
+    };
+    const columnaOcultaPorPermiso = (field) => {
+      const ocultas = misPermisos.value.columnas_ocultas_estudios;
+      return !!(ocultas && ocultas.includes(field));
+    };
+
+    axios.interceptors.request.use((config) => {
+      if (authToken.value) config.headers.Authorization = `Bearer ${authToken.value}`;
+      return config;
+    });
+    axios.interceptors.response.use(
+      (res) => res,
+      (err) => {
+        if (err.response && err.response.status === 401 && currentUser.value) {
+          logout(true);
+        }
+        return Promise.reject(err);
+      }
+    );
+
+    const goToAuthView = (view) => {
+      authView.value = view;
+      authError.value = '';
+      forgotResult.value = null;
+      resetResult.value = '';
+    };
+
+    const afterLogin = async () => {
+      // Si a este usuario le restringieron la pantalla de Estudios, arranca
+      // en la primera pantalla que sí tenga permitida.
+      if (!pantallaPermitida('estudios')) {
+        const primeraPermitida = [...TOP_NAV_ENTITY_KEYS, ...MUESTRAS_CATALOGO_KEYS].find(pantallaPermitida);
+        if (primeraPermitida) {
+          currentView.value = 'crud';
+          currentEntityKey.value = primeraPermitida;
+        }
+      }
+      await fetchRefData();
+      if (currentView.value === 'indicaciones') fetchEstudiosPorColega();
+      else if (currentView.value === 'crud') fetchItems(1);
+    };
+
+    const login = async () => {
+      authError.value = '';
+      authLoading.value = true;
+      try {
+        const res = await axios.post(`${API_BASE}/auth/login`, {
+          username: authForm.value.username.trim(),
+          password: authForm.value.password,
+        });
+        authToken.value = res.data.token;
+        localStorage.setItem(AUTH_TOKEN_KEY, res.data.token);
+        currentUser.value = res.data.usuario;
+        authForm.value = { username: '', password: '', password2: '', nombre_completo: '', email: '' };
+        await afterLogin();
+      } catch (err) {
+        authError.value = apiErrorMessage(err, 'No se pudo iniciar sesión');
+      } finally {
+        authLoading.value = false;
+      }
+    };
+
+    const register = async () => {
+      authError.value = '';
+      if (authForm.value.password !== authForm.value.password2) {
+        authError.value = 'Las contraseñas no coinciden';
+        return;
+      }
+      authLoading.value = true;
+      try {
+        const res = await axios.post(`${API_BASE}/auth/register`, {
+          username: authForm.value.username.trim(),
+          password: authForm.value.password,
+          nombre_completo: authForm.value.nombre_completo.trim() || null,
+          email: authForm.value.email.trim() || null,
+        });
+        authToken.value = res.data.token;
+        localStorage.setItem(AUTH_TOKEN_KEY, res.data.token);
+        currentUser.value = res.data.usuario;
+        authForm.value = { username: '', password: '', password2: '', nombre_completo: '', email: '' };
+        await afterLogin();
+        showAlert('Cuenta creada correctamente.');
+      } catch (err) {
+        authError.value = apiErrorMessage(err, 'No se pudo completar el registro');
+      } finally {
+        authLoading.value = false;
+      }
+    };
+
+    const requestForgotPassword = async () => {
+      authError.value = '';
+      forgotResult.value = null;
+      if (!forgotUsername.value.trim()) {
+        authError.value = 'Ingresá tu usuario';
+        return;
+      }
+      authLoading.value = true;
+      try {
+        const res = await axios.post(`${API_BASE}/auth/forgot-password`, { username: forgotUsername.value.trim() });
+        forgotResult.value = res.data;
+      } catch (err) {
+        authError.value = apiErrorMessage(err, 'No se pudo procesar la solicitud');
+      } finally {
+        authLoading.value = false;
+      }
+    };
+
+    const submitResetPassword = async () => {
+      authError.value = '';
+      resetResult.value = '';
+      if (resetForm.value.password !== resetForm.value.password2) {
+        authError.value = 'Las contraseñas no coinciden';
+        return;
+      }
+      authLoading.value = true;
+      try {
+        await axios.post(`${API_BASE}/auth/reset-password`, {
+          token: resetForm.value.token.trim(),
+          password: resetForm.value.password,
+        });
+        resetResult.value = 'Contraseña actualizada correctamente. Ya podés iniciar sesión.';
+        resetForm.value = { token: '', password: '', password2: '' };
+        setTimeout(() => goToAuthView('login'), 2500);
+      } catch (err) {
+        authError.value = apiErrorMessage(err, 'No se pudo actualizar la contraseña');
+      } finally {
+        authLoading.value = false;
+      }
+    };
+
+    const logout = (expired = false) => {
+      authToken.value = '';
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      currentUser.value = null;
+      currentView.value = 'indicaciones';
+      goToAuthView('login');
+      if (expired) showAlert('Tu sesión expiró, iniciá sesión de nuevo', 'warning');
+    };
+
     // Estado Navegación / Vistas
-    const currentView = ref('indicaciones'); // 'crud' | 'indicaciones'
+    const currentView = ref('indicaciones'); // 'crud' | 'indicaciones' | 'admin_usuarios'
     const currentEntityKey = ref('estudios');
 
     // Estado CRUD Generico
@@ -164,7 +331,11 @@ const app = createApp({
       localStorage.setItem('britlab_columnas_indicaciones', JSON.stringify([...next]));
     };
 
-    const visibleColumnasList = computed(() => INDICACIONES_COLUMNAS.filter(c => visibleColumns.value.has(c.field)));
+    // Además del propio filtro de columnas del usuario, un admin puede haberle
+    // ocultado columnas puntuales desde el panel de usuarios (permisos.columnas_ocultas_estudios).
+    const visibleColumnasList = computed(() =>
+      INDICACIONES_COLUMNAS.filter(c => visibleColumns.value.has(c.field) && !columnaOcultaPorPermiso(c.field))
+    );
 
     const ESTADOS_REGISTRO = ['listo', 'pendiente', 'revisar', 'verificado', 'borrador'];
     const ESTADOS_PARIDAD = ['listo', 'pendiente', 'revisar', 'inactivo', 'discontinuado'];
@@ -265,9 +436,13 @@ const app = createApp({
         singular: 'Colega',
         endpoint: 'colegas',
         icon: 'bi-building',
+        searchable: true,
+        searchPlaceholder: 'Buscar por nombre de colega...',
+        hasEnableToggle: true,
         columns: [
           { field: 'descripcion', label: 'Descripción' },
-          { field: 'es_propio', label: 'Propio del Sanatorio', type: 'boolean' }
+          { field: 'es_propio', label: 'Propio del Sanatorio', type: 'boolean' },
+          { field: 'habilitado', label: 'Estado', type: 'estado-habilitado' }
         ],
         fields: [
           { field: 'descripcion', label: 'Descripción / Laboratorio', type: 'text', required: true },
@@ -279,6 +454,9 @@ const app = createApp({
         singular: 'Método',
         endpoint: 'metodos',
         icon: 'bi-box-seam',
+        searchable: true,
+        searchPlaceholder: 'Buscar por nombre de método...',
+        noDelete: true,
         columns: [
           { field: 'nombre', label: 'Nombre' },
           { field: 'descripcion', label: 'Descripción' }
@@ -352,6 +530,7 @@ const app = createApp({
         singular: 'Tipo de Muestra',
         endpoint: 'tipos-muestra',
         icon: 'bi-droplet-half',
+        noDelete: true,
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -360,6 +539,7 @@ const app = createApp({
         singular: 'Aditivo',
         endpoint: 'aditivos',
         icon: 'bi-eyedropper',
+        noDelete: true,
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -368,6 +548,7 @@ const app = createApp({
         singular: 'Unidad de Medida',
         endpoint: 'unidades-medida',
         icon: 'bi-rulers',
+        noDelete: true,
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -376,6 +557,7 @@ const app = createApp({
         singular: 'Recipiente',
         endpoint: 'recipientes',
         icon: 'bi-cup-straw',
+        noDelete: true,
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -384,6 +566,7 @@ const app = createApp({
         singular: 'Modalidad de Recolección',
         endpoint: 'modalidades-recoleccion',
         icon: 'bi-calendar-check',
+        noDelete: true,
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -392,6 +575,7 @@ const app = createApp({
         singular: 'Técnica de Recolección',
         endpoint: 'tecnicas-recoleccion',
         icon: 'bi-tools',
+        noDelete: true,
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -400,6 +584,7 @@ const app = createApp({
         singular: 'Conservación',
         endpoint: 'conservaciones',
         icon: 'bi-thermometer-snow',
+        noDelete: true,
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -408,6 +593,7 @@ const app = createApp({
         singular: 'Condición Especial',
         endpoint: 'condiciones-especiales',
         icon: 'bi-exclamation-diamond',
+        noDelete: true,
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -416,6 +602,7 @@ const app = createApp({
         singular: 'Prioridad de Envío',
         endpoint: 'prioridades-envio',
         icon: 'bi-truck',
+        noDelete: true,
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -464,6 +651,147 @@ const app = createApp({
 
     const topNavEntities = TOP_NAV_ENTITY_KEYS.map(key => [key, entities[key]]);
     const muestrasCatalogoEntities = MUESTRAS_CATALOGO_KEYS.map(key => [key, entities[key]]);
+    // Filtradas por permisos.pantallas del usuario logueado (ver más abajo,
+    // pantallaPermitida): separado de las listas de arriba porque Vue 3 no
+    // permite combinar v-for y v-if en el mismo elemento.
+    const topNavEntitiesVisibles = computed(() => topNavEntities.filter(([key]) => pantallaPermitida(key)));
+    const muestrasCatalogoEntitiesVisibles = computed(() => muestrasCatalogoEntities.filter(([key]) => pantallaPermitida(key)));
+
+    // "Pantallas" configurables desde el panel de usuarios (permisos.pantallas):
+    // Estudios + cada entidad con botón propio + cada catálogo de Muestras.
+    const PANTALLAS_DISPONIBLES = [
+      { key: 'estudios', label: 'Estudios' },
+      ...TOP_NAV_ENTITY_KEYS.map(k => ({ key: k, label: entities[k].label })),
+      ...MUESTRAS_CATALOGO_KEYS.map(k => ({ key: k, label: entities[k].label })),
+    ];
+
+    // --- Panel de administración de usuarios ---
+    const adminUsuarios = ref([]);
+    const adminUsuariosLoading = ref(false);
+    const adminUsuarioForm = ref({ username: '', password: '', nombre_completo: '', email: '', rol: 'user' });
+    const adminCreandoUsuario = ref(false);
+    const expandedUsuarioId = ref(null);
+    const permisosEditForm = ref({ pantallas: [], columnas_ocultas_estudios: [] });
+
+    const fetchAdminUsuarios = async () => {
+      adminUsuariosLoading.value = true;
+      try {
+        const res = await axios.get(`${API_BASE}/usuarios`);
+        adminUsuarios.value = res.data;
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudieron cargar los usuarios'), 'danger');
+      } finally {
+        adminUsuariosLoading.value = false;
+      }
+    };
+
+    const switchToAdminUsuarios = () => {
+      currentView.value = 'admin_usuarios';
+      expandedUsuarioId.value = null;
+      fetchAdminUsuarios();
+    };
+
+    const crearUsuarioAdmin = async () => {
+      if (!adminUsuarioForm.value.username.trim() || !adminUsuarioForm.value.password) {
+        showAlert('Usuario y contraseña son obligatorios', 'danger');
+        return;
+      }
+      adminCreandoUsuario.value = true;
+      try {
+        await axios.post(`${API_BASE}/usuarios`, {
+          username: adminUsuarioForm.value.username.trim(),
+          password: adminUsuarioForm.value.password,
+          nombre_completo: adminUsuarioForm.value.nombre_completo.trim() || null,
+          email: adminUsuarioForm.value.email.trim() || null,
+          rol: adminUsuarioForm.value.rol,
+        });
+        showAlert('Usuario creado correctamente');
+        adminUsuarioForm.value = { username: '', password: '', nombre_completo: '', email: '', rol: 'user' };
+        fetchAdminUsuarios();
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo crear el usuario'), 'danger');
+      } finally {
+        adminCreandoUsuario.value = false;
+      }
+    };
+
+    const toggleUsuarioActivo = async (usuario) => {
+      try {
+        await axios.put(`${API_BASE}/usuarios/${usuario.id}`, { activo: !usuario.activo });
+        showAlert(usuario.activo ? 'Usuario deshabilitado correctamente' : 'Usuario habilitado correctamente');
+        fetchAdminUsuarios();
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo cambiar el estado del usuario'), 'danger');
+      }
+    };
+
+    const cambiarRolUsuario = async (usuario, nuevoRol) => {
+      try {
+        await axios.put(`${API_BASE}/usuarios/${usuario.id}`, { rol: nuevoRol });
+        showAlert('Rol actualizado correctamente');
+        fetchAdminUsuarios();
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo cambiar el rol'), 'danger');
+      }
+    };
+
+    const resetearPasswordUsuario = async (usuario) => {
+      if (!confirm(`¿Resetear la contraseña de "${usuario.username}"? Se va a generar una contraseña provisoria.`)) return;
+      try {
+        const res = await axios.post(`${API_BASE}/usuarios/${usuario.id}/resetear-password`, {});
+        if (res.data.password_generada) {
+          alert(`Nueva contraseña provisoria para ${usuario.username}:\n\n${res.data.password_generada}\n\nCompartísela al usuario; puede cambiarla luego desde "Olvidé mi contraseña".`);
+        }
+        showAlert('Contraseña reseteada correctamente');
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo resetear la contraseña'), 'danger');
+      }
+    };
+
+    const toggleEditarPermisos = (usuario) => {
+      if (expandedUsuarioId.value === usuario.id) {
+        expandedUsuarioId.value = null;
+        return;
+      }
+      expandedUsuarioId.value = usuario.id;
+      const p = usuario.permisos || {};
+      permisosEditForm.value = {
+        pantallas: [...(p.pantallas || [])],
+        columnas_ocultas_estudios: [...(p.columnas_ocultas_estudios || [])],
+      };
+    };
+
+    const togglePermisoPantalla = (key) => {
+      const arr = permisosEditForm.value.pantallas;
+      const i = arr.indexOf(key);
+      if (i >= 0) arr.splice(i, 1); else arr.push(key);
+    };
+
+    const togglePermisoColumnaOculta = (field) => {
+      const arr = permisosEditForm.value.columnas_ocultas_estudios;
+      const i = arr.indexOf(field);
+      if (i >= 0) arr.splice(i, 1); else arr.push(field);
+    };
+
+    const guardarPermisosUsuario = async (usuario) => {
+      try {
+        const pantallas = permisosEditForm.value.pantallas.length ? permisosEditForm.value.pantallas : null;
+        const columnasOcultas = permisosEditForm.value.columnas_ocultas_estudios.length
+          ? permisosEditForm.value.columnas_ocultas_estudios : null;
+        const permisos = (pantallas || columnasOcultas)
+          ? { pantallas, columnas_ocultas_estudios: columnasOcultas }
+          : null;
+        await axios.put(`${API_BASE}/usuarios/${usuario.id}`, { permisos });
+        showAlert('Permisos actualizados correctamente');
+        expandedUsuarioId.value = null;
+        fetchAdminUsuarios();
+        if (currentUser.value && currentUser.value.id === usuario.id) {
+          currentUser.value = { ...currentUser.value, permisos };
+        }
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudieron guardar los permisos'), 'danger');
+      }
+    };
 
     const currentEntity = computed(() => entities[currentEntityKey.value]);
     const modalEntity = computed(() => entities[modalEntityKey.value]);
@@ -507,13 +835,52 @@ const app = createApp({
       return lista;
     });
 
+    // Paginado (client-side, ya que el filtrado por búsqueda/estado/conflictos
+    // también es client-side) del listado de "Estudios" (744 registros sin
+    // paginar era demasiado para una sola tabla). Tamaño de página elegible
+    // (25 por defecto, 50 o 100), recordado en localStorage.
+    const estudiosPorPagina = ref(Number(localStorage.getItem('britlab_estudios_por_pagina')) || 25);
+    const paginaEstudios = ref(1);
+    const totalPaginasEstudios = computed(() =>
+      Math.max(1, Math.ceil(filteredEstudios.value.length / estudiosPorPagina.value))
+    );
+    const estudiosPaginados = computed(() => {
+      const inicio = (paginaEstudios.value - 1) * estudiosPorPagina.value;
+      return filteredEstudios.value.slice(inicio, inicio + estudiosPorPagina.value);
+    });
+    const cambiarPaginaEstudios = (page) => {
+      if (page >= 1 && page <= totalPaginasEstudios.value) paginaEstudios.value = page;
+    };
+    const cambiarTamanioPaginaEstudios = (size) => {
+      estudiosPorPagina.value = Number(size);
+      localStorage.setItem('britlab_estudios_por_pagina', String(estudiosPorPagina.value));
+      paginaEstudios.value = 1;
+    };
+    // Cualquier cambio de filtro vuelve a la página 1 (si no, se podría quedar
+    // en una página que ya no existe con el nuevo resultado filtrado).
+    watch([searchQuery, estadoFiltro, soloConflictos, selectedColegaId], () => {
+      paginaEstudios.value = 1;
+    });
+
     // Métodos CRUD Genericos
+    const crudSearchQuery = ref('');
+    // Tamaño de página de los listados server-side (Métodos, Tipos de Muestra,
+    // etc.): mismo criterio que el de Estudios (25 por defecto, 50 o 100).
+    const crudPageSize = ref(Number(localStorage.getItem('britlab_crud_pagina_size')) || 25);
+    const cambiarTamanioPaginaCrud = (size) => {
+      crudPageSize.value = Number(size);
+      localStorage.setItem('britlab_crud_pagina_size', String(crudPageSize.value));
+      fetchItems(1);
+    };
+
     const fetchItems = async (page = 1) => {
       loading.value = true;
       try {
-        const response = await axios.get(`${API_BASE}/${currentEntity.value.endpoint}`, {
-          params: { page, limit: 50 }
-        });
+        const params = { page, limit: crudPageSize.value };
+        if (currentEntity.value.searchable && crudSearchQuery.value.trim()) {
+          params.q = crudSearchQuery.value.trim();
+        }
+        const response = await axios.get(`${API_BASE}/${currentEntity.value.endpoint}`, { params });
         items.value = response.data.items;
         pagination.value = {
           page: response.data.page,
@@ -528,15 +895,46 @@ const app = createApp({
       }
     };
 
+    const onCrudSearchInput = () => { fetchItems(1); };
+
     const switchCrudEntity = (key) => {
+      if (!pantallaPermitida(key)) return;
       currentView.value = 'crud';
       currentEntityKey.value = key;
+      crudSearchQuery.value = '';
       fetchItems(1);
+    };
+
+    // Habilitar/deshabilitar un colega en vez de borrarlo (borrarlo dejaría
+    // huérfanos sus estudios). Al deshabilitar, se ofrece pasar todos sus
+    // estudios a 'pendiente' para que dejen de figurar como vigentes.
+    const toggleColegaHabilitado = async (item) => {
+      try {
+        if (item.habilitado) {
+          if (!confirm(`¿Deshabilitar "${item.descripcion}"?`)) return;
+          const marcarPendiente = confirm(
+            `¿Pasar todos los estudios de "${item.descripcion}" a estado "pendiente"?\n\nAceptar: sí, marcarlos pendientes.\nCancelar: no, dejarlos como están.`
+          );
+          const res = await axios.post(`${API_BASE}/colegas/${item.id}/deshabilitar`, { marcar_pendiente: marcarPendiente });
+          showAlert(
+            marcarPendiente
+              ? `Colega deshabilitado. ${res.data.estudios_marcados_pendiente} estudio(s) pasaron a "pendiente".`
+              : 'Colega deshabilitado correctamente.'
+          );
+        } else {
+          await axios.post(`${API_BASE}/colegas/${item.id}/habilitar`);
+          showAlert('Colega habilitado correctamente.');
+        }
+        fetchItems(pagination.value.page);
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo cambiar el estado del colega'), 'danger');
+      }
     };
 
     // El botón "Estudios" de la barra superior siempre vuelve al catálogo
     // maestro "Todos los Estudios", sin recordar el último colega elegido.
     const switchToIndicaciones = () => {
+      if (!pantallaPermitida('estudios')) return;
       currentView.value = 'indicaciones';
       searchQuery.value = '';
       estadoFiltro.value = null;
@@ -927,7 +1325,24 @@ const app = createApp({
       }
     };
 
-    const urlDescargaModelo = (modelo) => `${API_BASE}/estudio-colega-modelo/${modelo.id}/descargar`;
+    // La descarga ahora requiere sesión (JWT en el header Authorization), así
+    // que un <a href> con navegación normal del browser no sirve (no manda el
+    // header): se pide como blob vía axios (que sí lo manda, por el
+    // interceptor) y se abre en una pestaña nueva ya con el PDF en memoria.
+    // La ventana se abre primero, en vacío, porque abrirla recién después del
+    // await la bloquearían varios browsers (ya no sería un gesto directo del usuario).
+    const abrirModelo = async (modelo) => {
+      const nuevaVentana = window.open('', '_blank');
+      try {
+        const res = await axios.get(`${API_BASE}/estudio-colega-modelo/${modelo.id}/descargar`, { responseType: 'blob' });
+        const blobUrl = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+        if (nuevaVentana) nuevaVentana.location.href = blobUrl;
+        else window.open(blobUrl, '_blank');
+      } catch (err) {
+        if (nuevaVentana) nuevaVentana.close();
+        showAlert(apiErrorMessage(err, 'No se pudo abrir el archivo'), 'danger');
+      }
+    };
 
     // Estudio x Colega tiene su propia pantalla completa (no un modal): más
     // espacio y claridad para un formulario con varias secciones y muestras.
@@ -1073,11 +1488,14 @@ const app = createApp({
     };
 
     // Traduce la respuesta de error de la API (validación de Pydantic o
-    // conflicto de integridad de la BD) a un mensaje legible.
+    // conflicto de integridad de la BD) a un mensaje legible. Nunca se
+    // muestra el detalle crudo de la base de datos (data.detail) en la web:
+    // sólo queda en la consola, por si hace falta para soporte.
     const apiErrorMessage = (err, fallback) => {
       const data = err.response?.data;
+      if (data?.detail) console.error('Detalle del error (no mostrado en la UI):', data.detail);
       if (Array.isArray(data)) return data.map(d => d.msg).join(' | ');
-      if (data?.error) return data.detail ? `${data.error} (${data.detail})` : data.error;
+      if (data?.error) return data.error;
       return fallback;
     };
 
@@ -1086,15 +1504,70 @@ const app = createApp({
       if (modalEl) {
         modalInstance = new bootstrap.Modal(modalEl);
       }
-      await fetchRefData();
-      fetchEstudiosPorColega();
+      // Sin token guardado, se queda en la pantalla de login sin pedir nada
+      // a la API. Con token, se valida contra /api/auth/me antes de cargar
+      // el resto de la app (puede haber expirado o el usuario fue deshabilitado).
+      if (authToken.value) {
+        try {
+          const res = await axios.get(`${API_BASE}/auth/me`);
+          currentUser.value = res.data;
+          await afterLogin();
+        } catch (err) {
+          authToken.value = '';
+          localStorage.removeItem(AUTH_TOKEN_KEY);
+        }
+      }
     });
 
     return {
+      // Autenticación
+      isLoggedIn,
+      isAdmin,
+      authView,
+      authLoading,
+      authError,
+      authForm,
+      forgotUsername,
+      forgotResult,
+      resetForm,
+      resetResult,
+      currentUser,
+      goToAuthView,
+      login,
+      register,
+      requestForgotPassword,
+      submitResetPassword,
+      logout,
+      pantallaPermitida,
+      // Panel de administración de usuarios
+      PANTALLAS_DISPONIBLES,
+      adminUsuarios,
+      adminUsuariosLoading,
+      adminUsuarioForm,
+      adminCreandoUsuario,
+      expandedUsuarioId,
+      permisosEditForm,
+      switchToAdminUsuarios,
+      crearUsuarioAdmin,
+      toggleUsuarioActivo,
+      cambiarRolUsuario,
+      resetearPasswordUsuario,
+      toggleEditarPermisos,
+      togglePermisoPantalla,
+      togglePermisoColumnaOculta,
+      guardarPermisosUsuario,
+      // Paginado: tamaño de página elegible
+      PAGE_SIZE_OPTIONS,
+      estudiosPorPagina,
+      cambiarTamanioPaginaEstudios,
+      crudPageSize,
+      cambiarTamanioPaginaCrud,
       currentView,
       entities,
       topNavEntities,
       muestrasCatalogoEntities,
+      topNavEntitiesVisibles,
+      muestrasCatalogoEntitiesVisibles,
       muestrasDropdownActive,
       currentEntityKey,
       currentEntity,
@@ -1121,6 +1594,10 @@ const app = createApp({
       loadingIndicaciones,
       searchQuery,
       filteredEstudios,
+      estudiosPaginados,
+      paginaEstudios,
+      totalPaginasEstudios,
+      cambiarPaginaEstudios,
       gruposConflicto,
       filaEnConflicto,
       estadoChipClass,
@@ -1141,6 +1618,9 @@ const app = createApp({
       openModal,
       saveItem,
       deleteItem,
+      crudSearchQuery,
+      onCrudSearchInput,
+      toggleColegaHabilitado,
       MUESTRA_CAMPOS,
       onComboInput,
       comboNeedsCreate,
@@ -1176,7 +1656,7 @@ const app = createApp({
       onSeleccionarPdf,
       quitarModeloPendiente,
       eliminarModelo,
-      urlDescargaModelo,
+      abrirModelo,
       sidePanel,
       openIndicacionesPanel,
       openModeloColegaPanel,

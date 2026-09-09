@@ -15,6 +15,7 @@ class PaginatedResponse(BaseModel, Generic[T]):
 class ColegaBase(BaseModel):
     descripcion: str
     es_propio: Optional[bool] = False
+    habilitado: Optional[bool] = True
 
 class ColegaCreate(ColegaBase):
     pass
@@ -22,6 +23,7 @@ class ColegaCreate(ColegaBase):
 class ColegaUpdate(BaseModel):
     descripcion: Optional[str] = None
     es_propio: Optional[bool] = None
+    habilitado: Optional[bool] = None
 
 class ColegaOut(ColegaBase):
     id: int
@@ -378,3 +380,48 @@ class EstudioColegaMuestraAlternativaOut(EstudioColegaMuestraAlternativaBase):
     id: int
     created_at: Optional[datetime] = None
     model_config = ConfigDict(from_attributes=True)
+
+
+# --- Usuario / autenticación ---
+class UsuarioBase(BaseModel):
+    username: str
+    nombre_completo: Optional[str] = None
+    email: Optional[str] = None
+    rol: str = 'user'
+    activo: Optional[bool] = True
+    permisos: Optional[dict] = None
+
+class UsuarioCreate(UsuarioBase):
+    password: str
+
+class UsuarioUpdate(BaseModel):
+    nombre_completo: Optional[str] = None
+    email: Optional[str] = None
+    rol: Optional[str] = None
+    activo: Optional[bool] = None
+    permisos: Optional[dict] = None
+
+class UsuarioOut(UsuarioBase):
+    id: int
+    created_at: Optional[datetime] = None
+    model_config = ConfigDict(from_attributes=True)
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+class RegistroRequest(BaseModel):
+    username: str
+    password: str
+    nombre_completo: Optional[str] = None
+    email: Optional[str] = None
+
+class OlvideContrasenaRequest(BaseModel):
+    username: str
+
+class ResetearContrasenaRequest(BaseModel):
+    token: str
+    password: str
+
+class AdminResetearContrasenaRequest(BaseModel):
+    password: Optional[str] = None

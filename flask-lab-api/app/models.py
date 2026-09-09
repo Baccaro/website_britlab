@@ -7,8 +7,12 @@ class Colega(db.Model):
     __table_args__ = {'schema': 'public'}
 
     id = db.Column(db.Integer, primary_key=True)
-    descripcion = db.Column(db.String(255), nullable=False)
+    descripcion = db.Column(db.String(255), unique=True, nullable=False)
     es_propio = db.Column(db.Boolean, nullable=False, default=False)
+    # No se borran colegas (quedarían huérfanos sus estudios): se habilitan o
+    # deshabilitan. Al deshabilitar, opcionalmente se pasan a 'pendiente' todos
+    # sus registros Estudio x Colega (ver routes/colegas.py).
+    habilitado = db.Column(db.Boolean, nullable=False, default=True)
 
 
 class Estudio(db.Model):
@@ -259,3 +263,39 @@ class EstudioColegaModelo(db.Model):
     contenido = db.Column(db.LargeBinary, nullable=False)
     tamanio_bytes = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class Usuario(db.Model):
+    """Cuenta de acceso al sistema. 'admin' tiene acceso total (incluye este
+    panel de usuarios); 'user' es de sólo lectura, acotado a las pantallas y
+    columnas de Estudios que 'permisos' le habilite (None/vacío = puede ver
+    todo, sólo restringe lo que el admin marque explícitamente)."""
+    __tablename__ = 'usuario'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    nombre_completo = db.Column(db.String(150), nullable=True)
+    email = db.Column(db.String(255), unique=True, nullable=True)
+    password_hash = db.Column(db.String(255), nullable=False)
+    rol = db.Column(db.String(20), nullable=False, default='user')
+    activo = db.Column(db.Boolean, nullable=False, default=True)
+    permisos = db.Column(db.JSON, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class PasswordResetToken(db.Model):
+    """Token de un solo uso para 'olvidé mi contraseña'. Sin un servicio de
+    email configurado todavía, el link con este token se muestra en pantalla
+    en vez de enviarse (ver routes/auth.py)."""
+    __tablename__ = 'password_reset_token'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='CASCADE'), nullable=False)
+    token = db.Column(db.String(255), unique=True, nullable=False)
+    expira = db.Column(db.DateTime, nullable=False)
+    usado = db.Column(db.Boolean, nullable=False, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    usuario = db.relationship('Usuario')

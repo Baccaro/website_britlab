@@ -2,10 +2,10 @@
 -- PostgreSQL database dump
 --
 
-\restrict 4OletR0tGoYQc1lG1Y1g1oLVDHqoU03LuPP6fX1nwgB5dwX7z2YnAhflWeXN4zT
+\restrict kc5JGf2udV7quEvQD3XT4mtjct2UAe3HZcytdRhzhptBJUXZv5KGnOh5OfxgGoK
 
--- Dumped from database version 14.24 (Ubuntu 14.24-0ubuntu0.22.04.1)
--- Dumped by pg_dump version 14.24 (Ubuntu 14.24-0ubuntu0.22.04.1)
+-- Dumped from database version 15.18
+-- Dumped by pg_dump version 15.18
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -18,132 +18,6 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-ALTER TABLE IF EXISTS ONLY public.valor_estudio_sector DROP CONSTRAINT IF EXISTS valor_estudio_sector_id_sector_fkey;
-ALTER TABLE IF EXISTS ONLY public.valor_estudio_sector DROP CONSTRAINT IF EXISTS valor_estudio_sector_id_estudio_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega DROP CONSTRAINT IF EXISTS fk_estudio_colega_colega;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega DROP CONSTRAINT IF EXISTS estudio_colega_id_sector_laboratorio_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega DROP CONSTRAINT IF EXISTS estudio_colega_id_preanalitico_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega DROP CONSTRAINT IF EXISTS estudio_colega_id_muestra_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega DROP CONSTRAINT IF EXISTS estudio_colega_id_metodo_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega DROP CONSTRAINT IF EXISTS estudio_colega_id_estudio_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra DROP CONSTRAINT IF EXISTS edm_id_unidad_medida_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra DROP CONSTRAINT IF EXISTS edm_id_tipo_muestra_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra DROP CONSTRAINT IF EXISTS edm_id_tecnica_recoleccion_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra DROP CONSTRAINT IF EXISTS edm_id_recipiente_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra DROP CONSTRAINT IF EXISTS edm_id_prioridad_envio_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra DROP CONSTRAINT IF EXISTS edm_id_modalidad_recoleccion_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra DROP CONSTRAINT IF EXISTS edm_id_estudio_colega_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra DROP CONSTRAINT IF EXISTS edm_id_conservacion_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra DROP CONSTRAINT IF EXISTS edm_id_condicion_especial_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra DROP CONSTRAINT IF EXISTS edm_id_aditivo_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra_alternativa DROP CONSTRAINT IF EXISTS ecma_id_unidad_medida_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra_alternativa DROP CONSTRAINT IF EXISTS ecma_id_tipo_muestra_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra_alternativa DROP CONSTRAINT IF EXISTS ecma_id_tecnica_recoleccion_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra_alternativa DROP CONSTRAINT IF EXISTS ecma_id_recipiente_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra_alternativa DROP CONSTRAINT IF EXISTS ecma_id_prioridad_envio_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra_alternativa DROP CONSTRAINT IF EXISTS ecma_id_modalidad_recoleccion_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra_alternativa DROP CONSTRAINT IF EXISTS ecma_id_estudio_colega_muestra_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra_alternativa DROP CONSTRAINT IF EXISTS ecma_id_conservacion_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra_alternativa DROP CONSTRAINT IF EXISTS ecma_id_condicion_especial_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra_alternativa DROP CONSTRAINT IF EXISTS ecma_id_aditivo_fkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_modelo DROP CONSTRAINT IF EXISTS ecm_id_estudio_colega_fkey;
-DROP INDEX IF EXISTS public.idx_ecm_id_estudio_colega;
-ALTER TABLE IF EXISTS ONLY public.valor_estudio_sector DROP CONSTRAINT IF EXISTS valor_estudio_sector_pkey;
-ALTER TABLE IF EXISTS ONLY public.valor_estudio_sector DROP CONSTRAINT IF EXISTS uq_estudio_sector_posicion;
-ALTER TABLE IF EXISTS ONLY public.unidad_medida DROP CONSTRAINT IF EXISTS unidad_medida_pkey;
-ALTER TABLE IF EXISTS ONLY public.unidad_medida DROP CONSTRAINT IF EXISTS unidad_medida_nombre_key;
-ALTER TABLE IF EXISTS ONLY public.tipo_muestra DROP CONSTRAINT IF EXISTS tipo_muestra_pkey;
-ALTER TABLE IF EXISTS ONLY public.tipo_muestra DROP CONSTRAINT IF EXISTS tipo_muestra_nombre_key;
-ALTER TABLE IF EXISTS ONLY public.tecnica_recoleccion DROP CONSTRAINT IF EXISTS tecnica_recoleccion_pkey;
-ALTER TABLE IF EXISTS ONLY public.tecnica_recoleccion DROP CONSTRAINT IF EXISTS tecnica_recoleccion_nombre_key;
-ALTER TABLE IF EXISTS ONLY public.sector DROP CONSTRAINT IF EXISTS sector_pkey;
-ALTER TABLE IF EXISTS ONLY public.sector DROP CONSTRAINT IF EXISTS sector_nombre_key;
-ALTER TABLE IF EXISTS ONLY public.recipiente DROP CONSTRAINT IF EXISTS recipiente_pkey;
-ALTER TABLE IF EXISTS ONLY public.recipiente DROP CONSTRAINT IF EXISTS recipiente_nombre_key;
-ALTER TABLE IF EXISTS ONLY public.prioridad_envio DROP CONSTRAINT IF EXISTS prioridad_envio_pkey;
-ALTER TABLE IF EXISTS ONLY public.prioridad_envio DROP CONSTRAINT IF EXISTS prioridad_envio_nombre_key;
-ALTER TABLE IF EXISTS ONLY public.preanalitico DROP CONSTRAINT IF EXISTS preanalitico_pkey;
-ALTER TABLE IF EXISTS ONLY public.preanalitico DROP CONSTRAINT IF EXISTS preanalitico_nombre_key;
-ALTER TABLE IF EXISTS ONLY public.muestra DROP CONSTRAINT IF EXISTS muestra_pkey;
-ALTER TABLE IF EXISTS ONLY public.muestra DROP CONSTRAINT IF EXISTS muestra_nombre_key;
-ALTER TABLE IF EXISTS ONLY public.modalidad_recoleccion DROP CONSTRAINT IF EXISTS modalidad_recoleccion_pkey;
-ALTER TABLE IF EXISTS ONLY public.modalidad_recoleccion DROP CONSTRAINT IF EXISTS modalidad_recoleccion_nombre_key;
-ALTER TABLE IF EXISTS ONLY public.metodo DROP CONSTRAINT IF EXISTS metodo_pkey;
-ALTER TABLE IF EXISTS ONLY public.metodo DROP CONSTRAINT IF EXISTS metodo_nombre_key;
-ALTER TABLE IF EXISTS ONLY public.estudio DROP CONSTRAINT IF EXISTS estudio_pkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega DROP CONSTRAINT IF EXISTS estudio_colega_pkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra DROP CONSTRAINT IF EXISTS estudio_colega_muestra_pkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_muestra_alternativa DROP CONSTRAINT IF EXISTS estudio_colega_muestra_alternativa_pkey;
-ALTER TABLE IF EXISTS ONLY public.estudio_colega_modelo DROP CONSTRAINT IF EXISTS estudio_colega_modelo_pkey;
-ALTER TABLE IF EXISTS ONLY public.estudio DROP CONSTRAINT IF EXISTS estudio_codigo_hexalis_key;
-ALTER TABLE IF EXISTS ONLY public.conservacion DROP CONSTRAINT IF EXISTS conservacion_pkey;
-ALTER TABLE IF EXISTS ONLY public.conservacion DROP CONSTRAINT IF EXISTS conservacion_nombre_key;
-ALTER TABLE IF EXISTS ONLY public.condicion_especial DROP CONSTRAINT IF EXISTS condicion_especial_pkey;
-ALTER TABLE IF EXISTS ONLY public.condicion_especial DROP CONSTRAINT IF EXISTS condicion_especial_nombre_key;
-ALTER TABLE IF EXISTS ONLY public.colega DROP CONSTRAINT IF EXISTS colega_pkey;
-ALTER TABLE IF EXISTS ONLY public.aditivo DROP CONSTRAINT IF EXISTS aditivo_pkey;
-ALTER TABLE IF EXISTS ONLY public.aditivo DROP CONSTRAINT IF EXISTS aditivo_nombre_key;
-ALTER TABLE IF EXISTS public.valor_estudio_sector ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.unidad_medida ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.tipo_muestra ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.tecnica_recoleccion ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.sector ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.recipiente ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.prioridad_envio ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.preanalitico ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.muestra ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.modalidad_recoleccion ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.metodo ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.estudio_colega_muestra_alternativa ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.estudio_colega_muestra ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.estudio_colega_modelo ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.estudio_colega ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.estudio ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.conservacion ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.condicion_especial ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.aditivo ALTER COLUMN id DROP DEFAULT;
-DROP SEQUENCE IF EXISTS public.valor_estudio_sector_id_seq;
-DROP VIEW IF EXISTS public.v_estudios_colegas;
-DROP TABLE IF EXISTS public.valor_estudio_sector;
-DROP SEQUENCE IF EXISTS public.unidad_medida_id_seq;
-DROP TABLE IF EXISTS public.unidad_medida;
-DROP SEQUENCE IF EXISTS public.tipo_muestra_id_seq;
-DROP TABLE IF EXISTS public.tipo_muestra;
-DROP SEQUENCE IF EXISTS public.tecnica_recoleccion_id_seq;
-DROP TABLE IF EXISTS public.tecnica_recoleccion;
-DROP SEQUENCE IF EXISTS public.sector_id_seq;
-DROP TABLE IF EXISTS public.sector;
-DROP SEQUENCE IF EXISTS public.recipiente_id_seq;
-DROP TABLE IF EXISTS public.recipiente;
-DROP SEQUENCE IF EXISTS public.prioridad_envio_id_seq;
-DROP TABLE IF EXISTS public.prioridad_envio;
-DROP SEQUENCE IF EXISTS public.preanalitico_id_seq;
-DROP TABLE IF EXISTS public.preanalitico;
-DROP SEQUENCE IF EXISTS public.muestra_id_seq;
-DROP TABLE IF EXISTS public.muestra;
-DROP SEQUENCE IF EXISTS public.modalidad_recoleccion_id_seq;
-DROP TABLE IF EXISTS public.modalidad_recoleccion;
-DROP SEQUENCE IF EXISTS public.metodo_id_seq;
-DROP TABLE IF EXISTS public.metodo;
-DROP SEQUENCE IF EXISTS public.estudio_id_seq;
-DROP SEQUENCE IF EXISTS public.estudio_colega_muestra_id_seq;
-DROP SEQUENCE IF EXISTS public.estudio_colega_muestra_alternativa_id_seq;
-DROP TABLE IF EXISTS public.estudio_colega_muestra_alternativa;
-DROP TABLE IF EXISTS public.estudio_colega_muestra;
-DROP SEQUENCE IF EXISTS public.estudio_colega_modelo_id_seq;
-DROP TABLE IF EXISTS public.estudio_colega_modelo;
-DROP SEQUENCE IF EXISTS public.estudio_colega_id_seq;
-DROP TABLE IF EXISTS public.estudio_colega;
-DROP TABLE IF EXISTS public.estudio;
-DROP SEQUENCE IF EXISTS public.conservacion_id_seq;
-DROP TABLE IF EXISTS public.conservacion;
-DROP SEQUENCE IF EXISTS public.condicion_especial_id_seq;
-DROP TABLE IF EXISTS public.condicion_especial;
-DROP TABLE IF EXISTS public.colega;
-DROP SEQUENCE IF EXISTS public.aditivo_id_seq;
-DROP TABLE IF EXISTS public.aditivo;
-DROP TYPE IF EXISTS public.estado_registro_enum;
-DROP TYPE IF EXISTS public.estado_paridad_enum;
 --
 -- Name: estado_paridad_enum; Type: TYPE; Schema: public; Owner: -
 --
@@ -211,7 +85,8 @@ ALTER SEQUENCE public.aditivo_id_seq OWNED BY public.aditivo.id;
 CREATE TABLE public.colega (
     id integer NOT NULL,
     descripcion character varying(255) NOT NULL,
-    es_propio boolean DEFAULT false NOT NULL
+    es_propio boolean DEFAULT false NOT NULL,
+    habilitado boolean DEFAULT true NOT NULL
 );
 
 
@@ -581,6 +456,40 @@ ALTER SEQUENCE public.muestra_id_seq OWNED BY public.muestra.id;
 
 
 --
+-- Name: password_reset_token; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.password_reset_token (
+    id integer NOT NULL,
+    id_usuario integer NOT NULL,
+    token character varying(255) NOT NULL,
+    expira timestamp without time zone NOT NULL,
+    usado boolean DEFAULT false NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: password_reset_token_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.password_reset_token_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: password_reset_token_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.password_reset_token_id_seq OWNED BY public.password_reset_token.id;
+
+
+--
 -- Name: preanalitico; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -792,6 +701,44 @@ ALTER SEQUENCE public.unidad_medida_id_seq OWNED BY public.unidad_medida.id;
 
 
 --
+-- Name: usuario; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.usuario (
+    id integer NOT NULL,
+    username character varying(50) NOT NULL,
+    nombre_completo character varying(150),
+    email character varying(255),
+    password_hash character varying(255) NOT NULL,
+    rol character varying(20) DEFAULT 'user'::character varying NOT NULL,
+    activo boolean DEFAULT true NOT NULL,
+    permisos jsonb,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    CONSTRAINT chk_usuario_rol CHECK (((rol)::text = ANY ((ARRAY['admin'::character varying, 'user'::character varying])::text[])))
+);
+
+
+--
+-- Name: usuario_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.usuario_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: usuario_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.usuario_id_seq OWNED BY public.usuario.id;
+
+
+--
 -- Name: valor_estudio_sector; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -944,6 +891,13 @@ ALTER TABLE ONLY public.muestra ALTER COLUMN id SET DEFAULT nextval('public.mues
 
 
 --
+-- Name: password_reset_token id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.password_reset_token ALTER COLUMN id SET DEFAULT nextval('public.password_reset_token_id_seq'::regclass);
+
+
+--
 -- Name: preanalitico id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -993,6 +947,13 @@ ALTER TABLE ONLY public.unidad_medida ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- Name: usuario id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.usuario ALTER COLUMN id SET DEFAULT nextval('public.usuario_id_seq'::regclass);
+
+
+--
 -- Name: valor_estudio_sector id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1016,23 +977,23 @@ COPY public.aditivo (id, nombre) FROM stdin;
 -- Data for Name: colega; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.colega (id, descripcion, es_propio) FROM stdin;
-50	IICT (A)	f
-51	LABMED (B)	f
-52	TURNER (C)	f
-53	SEMIR (D)	f
-54	CIBIC (E)	f
-55	IBC (F)	f
-56	IDYMIC (G)	f
-57	HEMOTERAPIA SB (H)	f
-58	CEREMIC (J)	f
-59	CEMAR (I)	f
-60	LAHT-K	f
-61	LAHT-F	f
-62	FBA	f
-63	BMSB	f
-64	MICROBIOLOGIA	f
-49	BRITLAB	t
+COPY public.colega (id, descripcion, es_propio, habilitado) FROM stdin;
+50	IICT (A)	f	t
+51	LABMED (B)	f	t
+52	TURNER (C)	f	t
+53	SEMIR (D)	f	t
+54	CIBIC (E)	f	t
+55	IBC (F)	f	t
+56	IDYMIC (G)	f	t
+57	HEMOTERAPIA SB (H)	f	t
+58	CEREMIC (J)	f	t
+59	CEMAR (I)	f	t
+60	LAHT-K	f	t
+61	LAHT-F	f	t
+63	BMSB	f	t
+64	MICROBIOLOGIA	f	t
+49	BRITLAB	t	t
+62	FBA	f	f
 \.
 
 
@@ -1397,6 +1358,7 @@ COPY public.estudio (id, codigo_hexalis, descripcion) FROM stdin;
 2526	666067	HERPES SIMPLEX 2, Ac. IgG ANTI
 2527	666076	HERPES SIMPLEX 2, Ac. IgM ANTI
 2528	666093	HERPES VIRUS 6 HUMAN, Ac. IgG (HHV6-IgG) ANTI
+2755	668990	SARAMPION, Ac. IgM ANTI
 2529	666096	HERPES VIRUS 6 HUMAN, Ac. IgM (HHV6-IgM) ANTI
 2530	660484	HIDATIDOSIS, Ac. IgG o TOTALES ANTI (IFI)
 2531	666173	HIDATIDOSIS, Ac. IgM ANTI (IFI)
@@ -1622,7 +1584,6 @@ COPY public.estudio (id, codigo_hexalis, descripcion) FROM stdin;
 2752	5290	SANGRE OCULTA EN MATERIA FECAL
 2753	660169	SANGRIA Y HOWELL, TIEMPOS
 2754	668982	SARAMPION, Ac. IgG ANTI
-2755	668990	SARAMPION, Ac. IgM ANTI
 2756	668999	SCLERODERMIA - SLC 70, Ac. ANTI
 2757	901	SCREENING NEONATAL
 2758	667775	SCREENING NEONATAL AMPLIADO - ESPECTROMETRIA MASA EN TANDEM
@@ -1794,750 +1755,750 @@ COPY public.estudio (id, codigo_hexalis, descripcion) FROM stdin;
 --
 
 COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, id_preanalitico, id_muestra, id_sector_laboratorio, indicaciones_pacientes, valor_referencia, dias_demora, estado, codigo_laboratorio, version, revisor, observacion, created_at, updated_at, colega_id, indicaciones_colega) FROM stdin;
-2235	ACLAC	listo	2206	533	\N	506	1787	\N	5.0 a 13.0 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2236	AC.BILIA	listo	2215	534	\N	507	1773	https://drive.google.com/file/d/1_fgh3wB_sUlK5aSYSdsQqZMjH6EhKY6u/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2237	ADD	listo	2220	535	76	508	1677	https://drive.google.com/file/d/1Y9at0TssujE3q5aoBi4-RCBvnPp44SK4/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2238	ALB	listo	2231	536	\N	507	1728	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2239	AFP	listo	2238	532	\N	507	1874	\N	0.89 a 8.78 ng/ml	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2240	AMLB	listo	2240	534	77	509	1706	https://drive.google.com/file/d/1CIlWvMYcwxaOHsr9qB5dInn5fMkODVH1/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2241	AM	listo	2241	534	\N	507	1705	\N	📋	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde AMILASEMIA	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2242	AMONIO	listo	2244	537	\N	510	1788	\N	18.00 a 72.00 μmol/l	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde AMONIO	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2243	LUPICO	listo	2246	538	\N	511	1634	https://drive.google.com/file/d/1s3JWP4brFW_na98PqGgNTvkodNt0EtqW/view?usp=sharing	Ver MODELO DE INFORME	2	listo	\N	1	Laboratorio SBLab	17/07/2026 Se modifican valores de referencia de KPTT.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2244	ASO	listo	2248	539	\N	512	1743	\N	0 a 200 UI/ml	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2245	AEP-NBU	listo	2249	532	\N	512	1881	ANTIGENO PROSTATICO ESPECÍFICO - PSA\nNo mantener relaciones sexuales 48 horas antes del análisis.\nNo realizar ejercicios físicos ni andar en bicicleta 48 horas antes del análisis.\nCenar de manera habitual y contar las horas de ayuno a partir de finalizada la cena.\nConcurrir al laboratorio con un período de ayuno de 8 horas y no más de 14 horas.\nNo fumar, ni beber café, té o mate . Puede beber agua durante el ayuno.\nInformar el nombre de los medicamentos que recibe.\nNOTA : \n1) si se ha realizado un tacto rectal, esperar 1 semana para realizar el análisis.\n2) se se ha realizado una biopsia rectal, cirugía de próstata o\ninfección urinaria, espere de 3 a 6 semanas para realizar el análisis.	0.00 a 4.00 ng/ml	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2246	AEP	listo	2250	532	\N	512	1882	ANTIGENO PROSTATICO ESPECÍFICO - PSA\nNo mantener relaciones sexuales 48 horas antes del análisis.\nNo realizar ejercicios físicos ni andar en bicicleta 48 horas antes del análisis.\nCenar de manera habitual y contar las horas de ayuno a partir de finalizada la cena.\nConcurrir al laboratorio con un período de ayuno de 8 horas y no más de 14 horas.\nNo fumar, ni beber café, té o mate . Puede beber agua durante el ayuno.\nInformar el nombre de los medicamentos que recibe.\nNOTA : \n1) si se ha realizado un tacto rectal, esperar 1 semana para realizar el análisis.\n2) se se ha realizado una biopsia rectal, cirugía de próstata o\ninfección urinaria, espere de 3 a 6 semanas para realizar el análisis.	0.00 a 4.00 ng/ml	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (duplicado en Datatech).	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2247	AEP-LNBU	listo	2251	532	\N	512	1884	https://drive.google.com/file/d/1wbP3sXx5PQk4Dcrrdj8GFXFq3Cq4kd3f/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (duplicado en Datatech). Evaluar el informe de la relacion Libre/Total. En otros sitiso se informa como porcentaje.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2248	AEPL	listo	2252	532	\N	512	1883	https://drive.google.com/file/d/1wbP3sXx5PQk4Dcrrdj8GFXFq3Cq4kd3f/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Evaluar el informe de la relacion Libre/Total. En otros sitios se informa como porcentaje.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2249	ATIII	listo	2256	540	\N	513	1637	\N	79.4 a 112.0 %	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2250	APOA	listo	2257	541	\N	507	1722	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2251	APOB	listo	2258	541	\N	507	1723	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2252	ATPO	listo	2262	532	\N	507	1805	\N	0.00 a 5.61 UI/ml	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2253	BETA-2	listo	2270	541	\N	507	1746	\N	0.97 a 2.64 mg/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2254	BICAR/SU	listo	2273	542	\N	506	1784	\N	21 a 24 mmol/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2255	BT	listo	2275	543	\N	507	1699	https://drive.google.com/file/d/1NJ5LBgTBvcKueuoC9jF6dYuzzSTMLIKl/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde BILIRRUBINA TOTAL Y FRACCIONADA	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2256	CA-125	listo	2291	532	\N	507	1879	\N	0 a 35 U/ml	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CA-125	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2257	CA15-3NB	listo	2292	532	\N	507	1875	\N	0.0 a 31.3 U/ml	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CA 15-3	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2258	CA19-9	listo	2294	532	\N	507	1876	\N	0 a 37 U/ml	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CA 19-9	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2259	CA19-9NB	listo	2293	532	\N	507	1877	\N	0 a 37 U/ml	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (duplicado en Datatech). Se modifico el nombre desde CA 19-9	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2260	CAO1	listo	2301	544	\N	514	1682	\N	-	1	listo	\N	1	Laboratorio SBLab	Establecer valores de referencia en base a la bibliografia	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2261	CAI	listo	2302	545	\N	506	1681	\N	4.52 a 5.20 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2262	CA	listo	2303	544	\N	507	1680	\N	📋	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CALCEMIA	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2263	CAO	listo	2304	544	78	515	1683	https://drive.google.com/file/d/1E7RcRxnHkK34XDTA-S-NOTlpZ_38yj5z/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CALCIURIA	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2264	CAUR	listo	2307	546	\N	516	1766	https://drive.google.com/file/d/1KtQQDApGy2yvlhyiBvhI3HQ58AVVVPCI/view?usp=sharing	-	8	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CALCULO URINARIO	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2265	CARBO	listo	2310	547	\N	506	1785	\N	0 a 3 %	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2266	CEA	listo	2330	532	\N	507	1873	\N	0 a 5 ng/ml	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CEA - ANTIGENO CARCINO EMBRIONARIO	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2267	CERU	listo	2333	548	\N	512	1774	\N	19 a 57 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2268	CETONE	listo	2334	549	\N	506	\N	\N	NEGATIVO	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2269	CETONU	listo	2335	549	\N	517	\N	\N	NO CONTIENE	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2270	CHAEIA	listo	2336	532	\N	507	1910	https://drive.google.com/file/d/1Anv0c1aA0e9sDVKhkj8EuNuohckvmWek/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CHAGAS-TRYPANOSOMA CRUZI (EIA)	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2271	CHAHAI	listo	2337	550	\N	512	1909	https://drive.google.com/file/d/16PvoRRhcd4w3nX1AN09RUxkFhXHuYN0a/view?usp=sharing	Ver MODELO DE INFORME	2	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CHAGAS-TRYPANOSOMA CRUZI (EIA)	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2272	ACITOG	listo	2355	532	\N	507	1929	https://drive.google.com/file/d/1P5AeTe0g9RS0U3s8w6ZBpKT1pdQBphCA/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	En Hexalis se informa Interpretacion y Concentración. En Datatech solo Concentración.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2273	ACITOM-N	listo	2356	532	\N	507	1928	https://drive.google.com/file/d/12-IFjKmCB65oKUHNiQi1Q6Ot-xz7p098/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2274	ACITOM	listo	2855	532	\N	507	\N	https://drive.google.com/file/d/12-IFjKmCB65oKUHNiQi1Q6Ot-xz7p098/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (duplicado en Datatech).	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2275	RCO	listo	2364	\N	\N	518	1632	\N	NORMORRETRACTIL	2	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (requiere procesamiento inmediato).	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2276	COAGU	listo	2365	538	79	519	1630	https://drive.google.com/file/d/15sE1OBVpUJ06b6KpehEYHaMl9214saEJ/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2277	HDL	listo	2367	551	\N	507	1716	https://drive.google.com/file/d/1RcywhFFAo5h0agQwWhHvEgdjj7NhkBHm/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2278	LDL	listo	2368	552	\N	507	1717	\N	0 a 100 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2279	C	listo	2369	553	\N	507	1715	\N	📋	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde COLESTEROLEMIA TOTAL	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2280	VLDL	listo	2371	554	\N	507	1719	\N	0 a 30 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2281	VLDL-NBU	listo	2370	554	\N	507	1720	\N	0 a 30 mg/dl	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (duplicado en Datatech).	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2282	LDL-NBU	listo	2372	552	\N	507	1718	\N	0 a 100 mg/dl	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (duplicado en Datatech).	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2283	CHE	listo	2373	555	\N	507	1704	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2284	C3	listo	2375	541	\N	507	1740	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2285	C4	listo	2376	541	\N	507	1741	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2286	TH50	listo	2377	556	\N	507	1742	\N	128 a 158 seg	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2287	COR	listo	2379	532	\N	507	1822	\N	3.7 a 19.4 µg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2288	COR-18	listo	2380	532	\N	507	\N	https://drive.google.com/file/d/1C9Mdn_3B1okuO8KtuDyARjrlAcBnbdEJ/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2289	COR-ES	listo	2387	532	\N	520	\N	\N	-	1	listo	\N	1	Hematologia SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2290	CPK	listo	2389	557	\N	507	1708	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2291	CKMBMASA	listo	2390	532	\N	507	1709	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2292	CRLB	listo	2391	558	77	521	1672	https://drive.google.com/file/d/10l4hwsn6cBMRcUv1iiWamiDauKb8iocX/view?usp=sharing	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2293	CRO1	listo	2392	558	\N	517	1673	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2294	CR	listo	2393	558	\N	507	1671	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2295	CRO	listo	2394	558	78	522	1674	https://drive.google.com/file/d/1kBfSsE1FL_tMffhZ7w8L_KaeazPq9E2Q/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2296	DCE	listo	2395	558	80	523	1675	https://drive.google.com/file/d/133MWK_W40_oxz70RYPvSoOg1a9dRvKib/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2297	CRIO	listo	2396	\N	\N	524	1622	\N	NO PRESENTA	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2298	CRIOGLO	listo	2397	\N	\N	512	1621	\N	NEGATIVO	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2299	DHEA	listo	2403	532	\N	507	1844	\N	📋	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde DHEA-S	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2300	TD-DIF	listo	2404	532	\N	507	2094	\N	10.00 a 20.00  µg/ml	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2301	DIMERO D	listo	2406	559	\N	513	1714	\N	0 a 198 ng/ml	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2302	DROGAS	listo	2411	560	\N	525	2105	https://drive.google.com/file/d/1HIFLcqA7ZS2AwIygOePTRhB2JBMjDSi3/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2303	AE-B	listo	2425	532	\N	507	1947	https://drive.google.com/file/d/12gQ2J6RWc4AHQowbxyRQ27wldHEH4qOH/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2304	AEBCM	listo	2426	532	\N	507	1946	https://drive.google.com/file/d/1IKmwTJoWbPgOTiOpJpPAFh-ArpZ_80K5/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	En Hexalis se informa Interpretacion y Relacion S/CO. En Datatech solo Resultado	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2305	E	listo	2430	561	\N	526	1623	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2306	EAB	listo	2432	562	\N	506	1781	https://drive.google.com/file/d/1I3cs6WMMnXiTmW5EG_6zwB4k8pcny9Wn/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2307	EABI	listo	2433	562	\N	506	1782	https://drive.google.com/file/d/1j5Vy-2v5Sh1Gwj7V7_qD6VIxWraXw-xL/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2308	E2	listo	2435	532	\N	507	1834	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2309	TLE2	listo	2438	\N	\N	527	1646	https://drive.google.com/file/d/11yzPKC1UmiYWe3fkamasfS4RuB-G2801/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Eliminar parte del texto en Datatech al cabo de 6 meses.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2310	TLE1	listo	2439	\N	\N	513	1647	https://drive.google.com/file/d/1Lj78uJcFtz8G8mCBFB1ooVPWcAEbkCpB/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Eliminar parte del texto en Datatech al cabo de 6 meses.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2311	FR	listo	2442	541	\N	512	1744	\N	0 a 30 UI/ml	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2312	FE	listo	2448	563	\N	507	1756	https://drive.google.com/file/d/1TxS3CEfcOQKu34F0s0wllMYCow3HQoSN/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2313	FERR	listo	2449	532	\N	507	1759	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2314	FIB	listo	2450	564	\N	513	1628	\N	180 a 350 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2315	FLA	listo	2452	565	\N	528	1618	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2316	FOH	listo	2454	566	\N	507	1698	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2317	P	listo	2455	567	\N	507	1684	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2318	PO	listo	2457	567	78	522	1686	https://drive.google.com/file/d/1snXSxwexxyHwpRjtD8iuAcn9SRIeAIMu/view?usp=sharing	400 a 1300 mg/24h	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2319	PO1	listo	2458	567	\N	529	1687	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2320	RTP	listo	2461	568	78	530	1685	https://drive.google.com/file/d/1YP-R9lXPxtnksW2HdpWPdpv4cSjDO2hq/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2321	FRUCTO	listo	2462	569	\N	507	1661	\N	205 a 285 ng/ml	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2322	FSH	listo	2463	532	\N	507	1832	https://drive.google.com/file/d/1i7xsbAK__EBb6O9DNsBCKqftBpNs_-Jq/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2323	GGT	listo	2468	570	\N	507	1701	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2324	GLOBTRAN	listo	2475	532	\N	507	1849	\N	📋	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde GLOBULINA TRANSPORTADORA DE HORMONAS SEXUALES	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2325	GB	listo	2476	565	\N	528	1617	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2326	GR	listo	2477	565	\N	528	1615	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2327	G	listo	2478	571	\N	507	1652	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2328	GCIR	listo	2479	572	\N	531	1653	\N	-	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (requiere procesamiento inmediato).	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2329	GPP	listo	2480	571	\N	532	1657	\N	0 a 140 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2330	GP120MIN	listo	2481	571	\N	532	1658	\N	0 a 140 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2331	GP180MIN	listo	2482	571	\N	533	1659	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2332	GP 30MIN	listo	2483	571	\N	534	1654	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2333	GP 60MIN	listo	2484	571	\N	535	1655	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2334	GP 90MIN	listo	2485	571	\N	536	1656	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2335	GLU	listo	2487	571	\N	529	1660	\N	1 a 15 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2336	HAM	listo	2490	535	\N	537	\N	https://drive.google.com/file/d/1efXWRupcji4zGH65b27PRBeqFA28fZ8C/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Revisar las unidades en Datatech y copiarlas en Hexalis	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2337	HAP	listo	2491	541	\N	507	1703	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2338	HE4	listo	2492	532	\N	512	1886	https://drive.google.com/file/d/1m-m1dREcdk96qMoioNp4GME9_Z-mOmOE/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2339	HU	listo	2496	573	\N	538	2179	https://drive.google.com/file/d/1rANbZ7_u-GAF0Bi1PEqjAenMtK5nT5Cx/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2340	HTO	listo	2497	565	\N	528	1614	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2341	HGL1	listo	2499	554	\N	526	1662	\N	4.0 a 5.7 %	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2342	HB	listo	2500	565	\N	528	1616	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2343	HC	listo	2501	565	\N	528	1613	https://drive.google.com/file/d/1VMpjj-wL2VHNlZnIqtlZMGCNOOnzAwKs/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2344	HS	listo	2502	565	\N	528	1612	https://drive.google.com/file/d/1gtL0udDrx2b7RwUMM59fkn3UtqP_wiBq/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2345	HEP	listo	2503	574	\N	539	1638	https://drive.google.com/file/d/12vuyipyf9oCk0ziTxGPmPtAn7igeRujz/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2346	HEPAG	listo	2504	532	\N	507	1918	https://drive.google.com/file/d/1pVj6H1sIMweJvlLPKtpzeNpH1wDpWbcr/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	El analisis solo tiene una determinacion RESULTADO CUALITATIVO, no se informa el INDEX	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2347	HEPAM	listo	2505	532	\N	507	1917	https://drive.google.com/file/d/1ov5UWKpqQ6u3SkLzPbNSaz7WKsW8WwLI/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Se informa el RESULTADO CUALITATIVO y el INDEX	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2348	HEPBCM	listo	2506	532	\N	512	1921	https://drive.google.com/file/d/1uw6stTy--duuNoz_zWB6hjjK5ypq3qIm/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Se incorpora la determinacion localmente.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2349	HEPBCTO	listo	2507	532	\N	507	1920	https://drive.google.com/file/d/1D3adyTg_VKGTjr6au_PWdHfjCL1metMm/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2350	HEPBSAC	listo	2509	532	\N	507	1923	https://drive.google.com/file/d/1QEygc_AnZknvDrRseqonSmIwJzQEZneS/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2351	HEPBSAG	listo	2512	532	\N	507	1919	https://drive.google.com/file/d/1SsBGibnTBBmbkprNbMvhl-tXe4los_jD/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2352	HEPCAC	listo	2515	532	\N	507	1927	https://drive.google.com/file/d/1eRoUvhO8JEsXMs7cNCG69JN_ZYl7Gxts/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2353	HEC1	listo	2521	575	\N	507	1700	https://drive.google.com/file/d/1UxZ_Hm154sUZt-hepXw9mmUu2-Qbj6gG/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2354	HERP1G	listo	2524	532	\N	507	1934	https://drive.google.com/file/d/1eBwCpR6V8naWlof0pKzk1qoZXYc4u3ex/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2355	HERP2G	listo	2526	532	\N	507	1936	https://drive.google.com/file/d/13QpqR-LssNJLYfMFoDz0tYRsNa9cNU5a/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2356	HIVEIA	listo	2541	532	\N	507	1915	https://drive.google.com/file/d/1k4uDLoJD6R8FfpVYHBa1_kJXQ9JaXD9l/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2357	TEST-HIV	listo	2542	576	\N	512	1916	https://drive.google.com/file/d/1nvDXnCSvNsq1Wtulr2RlKEgBV2rduY0Y/view?usp=sharing	NO REACTIVO	1	listo	\N	1	Laboratorio SBLab	Deberia incluir un comentario con las limitaciones del test.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2358	HOMA	listo	2547	\N	\N	507	1814	https://drive.google.com/file/d/1Ob47ohqbGYgbbRT1iddj1SJagTp906X_/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2359	HOMOC	listo	2548	532	\N	540	1726	https://drive.google.com/file/d/1WpvI6HK9IjMZl5EKXsUXERpIldhGv_Gs/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2360	HTLV I	listo	2550	532	\N	507	2007	https://drive.google.com/file/d/19z4ORDDhR2hZkZ6wvbcVsBVNO24K9YSC/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	En Datatech solo tiene la relacion S/CO, habria que incorporar la determinacion de interpretacion.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2361	HUD	listo	2552	577	\N	512	1896	https://drive.google.com/file/d/1wXsS4_Gpad3au4wfNXYBY5lqaX7FUx62/view?usp=sharing	Ver MODELO DE INFORME	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2362	IGA	listo	2590	541	\N	507	1730	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2363	IGAS	listo	2591	578	\N	541	1731	\N	📋	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2364	IGE	listo	2593	579	\N	507	1736	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2365	IGG	listo	2594	541	\N	507	1733	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2366	IGM	listo	2597	541	\N	507	1732	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2367	INS	listo	2598	532	\N	507	1807	\N	2.6 a 24.9 µmol/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2368	INSPP	listo	2599	532	\N	532	1811	\N	\N	1	listo	\N	1	Laboratorio SBLab	No tiene valores de referencia en Datatech	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2369	INSPP120	listo	2600	532	\N	532	1812	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2370	INSPP180	listo	2601	532	\N	533	1813	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2371	INS PP30	listo	2602	532	\N	534	1808	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2372	INS PP60	listo	2603	532	\N	535	1809	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2373	INS PP90	listo	2604	532	\N	536	1810	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2374	I/OA	listo	2610	580	\N	529	1692	https://drive.google.com/file/d/1C7spFtUzRHOKwWeB9FWh8x44zSM7-89Y/view?usp=sharing	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2375	I	listo	2611	580	\N	507	1690	https://drive.google.com/file/d/1Q8nfzOWCFdSOCKKDJ1zNhoATb_n74-kX/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2376	IOO	listo	2612	580	\N	542	1691	https://drive.google.com/file/d/1T6q-r2LD2QhEAwz2cBIWh6pyiOeJwct8/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2377	KPTT	listo	2618	538	\N	513	1626	\N	20.2 a 29.5 seg	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2378	CORRKPTT	listo	2619	538	\N	543	1627	https://drive.google.com/file/d/1Vs22PSGPgtAjTqlfmCa03t0llxLaYrrS/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2379	LDH	listo	2621	581	\N	507	1702	\N	125 a 220 U/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2380	LAZO	listo	2623	582	\N	\N	1633	\N	Hasta 5 petequias	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (requiere procesamiento local).	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2381	LEUCMF	listo	2625	573	\N	544	2169	\N	NO CONTIENE	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2382	LH	listo	2627	532	\N	507	1833	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2383	LIP	listo	2628	534	\N	507	1707	\N	0 a 64 U/l	1	listo	\N	1	Laboratorio SBLab	05/05/2025 Cambio en valores de referencia de 8 a 78 U/l a 0 a 64 U/l	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2384	LIPO	listo	2629	583	\N	507	1724	\N	0 a 30 µmol/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2385	L.C.R.	listo	2630	\N	\N	545	1791	https://drive.google.com/file/d/1nmnp5U1m4LC9Q-XVZ-txYz98olwKTmkb/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2386	PUNCION	listo	2631	\N	81	546	1790	https://drive.google.com/file/d/14XVx1fdTlfZW_bFGtcHMUppvI6LtXo2-/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2387	MGS	listo	2636	554	\N	507	1688	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2388	MGO	listo	2637	554	82	542	1689	https://drive.google.com/file/d/18pdNrcxxVmjgg67MpPpeI25h6swkE0ZK/view?usp=sharing	72.9 a 121.5 mg/24h	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2389	PPD	listo	2639	584	\N	\N	1898	https://drive.google.com/file/d/1dUIGvAX7ZwL3rAQo2a4cNhRKNBCZ5rgF/view?usp=sharing	Ver MODELO DE INFORME	4	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (requiere procesamiento local). No tiene valores de referencia en Datatech. Poner nota del estilo El test de tuberculina tiene diferente valor, de acuerdo al paciente en el cual sea aplicado, y los valores decorte deben ser tenidos en mente antes de solicitar el mismo (test de tuberculina dirigido)	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2390	MDRD-4	listo	2641	585	\N	507	\N	https://drive.google.com/file/d/1YVQvYKqMiNtSdELfFZ6U_IdD_Ubn2-ef/view?usp=sharing	MAYOR A 60 ml/min/1.73m2	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2391	META	listo	2644	562	\N	506	1786	\N	0.0 a 1.5 %	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2392	METO	listo	2649	532	83	547	2103	https://drive.google.com/file/d/1Vn3GBNGB1ipFpKjNPS7C8FANKGh3z9Iu/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Se modifica el codigo de 669044  a 667486 para hacerlo coincidir con el NBU	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2393	MICRO	listo	2650	541	\N	522	1664	https://drive.google.com/file/d/1bVQRly5CCKUbxmsWfJFuQ3d56QI1qtkj/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2394	A/C	listo	2651	586	\N	548	1665	https://drive.google.com/file/d/1FpRzIq1IB2L3t7Rky11ku-2Gd23p40kV/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2395	MOC	listo	2655	573	84	549	1793	https://drive.google.com/file/d/1yx4oqxLm5yBsJ3AOUTlkae1RKso_vriA/view?usp=sharing	Ver MODELO DE INFORME	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2396	MON	listo	2657	577	\N	512	1899	\N	NEGATIVO	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2397	NOTA	listo	2672	\N	\N	\N	\N	\N	\N	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2398	O	listo	2675	587	\N	550	2178	https://drive.google.com/file/d/1glSzmzj-XG7rCoQwktytYLbI64uhRcMg/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2399	OSMO/O	listo	2677	588	\N	522	1789	RECOLECCION ORINA DE 24 HORAS\n\nUtilizar recipiente limpio y seco.\n\nVaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a\nlas 8 horas o la hora que elija.\n\nAnotar la hora de descarte para tomarla como hora de inicio.\n\nRecolectar todas las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha.\n\nConservar en heladera. Y llevar al laboratorio lo antes posible. No perder ninguna muestra de orina.\n\nSi además se solicita en la misma orden médica ORINA COMPLETA, se debe recolectar la primera orina de la mañana del segundo día en un recipiente separado\ny notificar al técnico o administrativo.	50 a 1300 mOsm/kg	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2400	PTH	listo	2693	532	\N	551	1829	\N	15.0 a 68.3 pg/ml	1	listo	\N	1	Laboratorio SBLab	Etiqueta DATA: E2 EDTA(P)-PTH 20 / Etiqueta HEXA: 20- PLASMA CON EDTA	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2401	PTH-B	listo	2856	532	\N	551	\N	\N	-	1	listo	\N	1	Laboratorio SBLab	Etiqueta DATA: E56 EDTA(P)-BASAL 20 / Etiqueta HEXA: 20- PLASMA CON EDTA	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2402	PTH-M	listo	2857	532	\N	551	\N	\N	-	1	listo	\N	1	Laboratorio SBLab	Etiqueta DATA: E57 EDTA(P)-MOVIL 37 / Etiqueta HEXA: 37- PLASMA CON EDTA	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2403	PTH-PE	listo	2858	532	\N	551	\N	\N	-	1	listo	\N	1	Laboratorio SBLab	Etiqueta DATA: E58 EDTA(P)-POSTEX 38 / Etiqueta HEXA: 38- PLASMA CON EDTA	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2404	ANTI-CCP	listo	2701	532	\N	507	2041	\N	0 a 5  µmol/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2405	BNP	listo	2703	532	\N	552	1713	https://drive.google.com/file/d/13TlXGfuG6-iK7GwvO4MheFtL4hHJH8X0/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2406	PH LIQ	listo	2704	562	81	521	1783	https://drive.google.com/file/d/1LlxaWQQWu81qSpg4c3D4qfzqaBpt-KDJ/view?usp=sharing	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2407	PQ	listo	2707	565	\N	528	1619	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2408	PROCALCI	listo	2717	532	\N	507	1695	\N	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2409	PRG	listo	2718	532	\N	507	1837	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2410	PRL	listo	2719	532	\N	507	1838	PROLACTINA\nConcurrir al laboratorio entre las 8 y las 9:30 horas de la mañana, con un período de ayuno de 8 a 12 horas y con 2 horas de vigilia (despierto).\nCenar de manera habitual y contar las horas de ayuno a partir de finalizada la cena.\nNo superar las 14 horas de ayuno.\nNo realizar ejercicios físicos 24 horas antes del análisis.\nNo fumar, ni beber café, té o mate . Puede beber agua durante el ayuno.\nNo mantener relaciones sexuales 48 horas antes del análisis.\nInformar el nombre de los medicamentos que recibe.\nAntes de la extracción de sangre, deberá permanecer en el laboratorio, entre 20 y 30 minutos en reposo.\nMujeres, se aconseja realizar extracción de sangre entre el 3er y 5to día del ciclo.	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2411	POOL PRL	listo	2720	532	\N	553	1839	PROLACTINA\nConcurrir al laboratorio entre las 8 y las 9:30 horas de la mañana, con un período de ayuno de 8 a 12 horas y con 2 horas de vigilia (despierto).\nCenar de manera habitual y contar las horas de ayuno a partir de finalizada la cena.\nNo superar las 14 horas de ayuno.\nNo realizar ejercicios físicos 24 horas antes del análisis.\nNo fumar, ni beber café, té o mate . Puede beber agua durante el ayuno.\nNo mantener relaciones sexuales 48 horas antes del análisis.\nInformar el nombre de los medicamentos que recibe.\nAntes de la extracción de sangre, deberá permanecer en el laboratorio, entre 20 y 30 minutos en reposo.\nMujeres, se aconseja realizar extracción de sangre entre el 3er y 5to día del ciclo.\nSe tomarán tres muestras de sangre separadas 20 minutos entre sí.	📋	1	listo	\N	1	Laboratorio SBLab	Eliminar el texto en Datatech al cabo de 6 meses.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2412	PCR	listo	2721	541	\N	507	1694	\N	Hasta 0.5 mg/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2413	PC	listo	2722	589	\N	513	1635	\N	70 a 140 %	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2414	A/G	listo	2724	590	\N	507	1727	https://drive.google.com/file/d/1CI8ECRAPpxkB2IuMqvR84iPjnRpl8VR8/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2415	PT	listo	2725	591	\N	507	1729	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2416	PTO	listo	2729	579	82	522	1752	https://drive.google.com/file/d/12-N0Mc2BHe3ZMHVbFeJmZbUXpOrHXx3Y/view?usp=sharing	0.0 a 0.3 g/24h	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2417	PRO	listo	2730	579	\N	548	1753	\N	0.00 a 0.15 g/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2418	FIET	listo	2732	\N	\N	\N	\N	\N	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (requiere procesamiento inmediato).	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2419	REC TSH	listo	2734	532	\N	512	1801	\N	0 a  1.99 µmol/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2420	RPCA	listo	2739	592	\N	513	\N	https://drive.google.com/file/d/1X7UJuIp8E-lf742P4fOCjysC-FQ43x-o/view?usp=sharing	Ver MODELO DE INFORME	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2421	RET	listo	2741	565	\N	528	1620	https://drive.google.com/file/d/1A1Rb7mhbXndUbabrRO-s90PEdD80nyDt/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2422	RR	listo	2748	593	\N	512	1745	\N	NO REACTIVO - Título menor a 8	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2423	AARIGG	listo	2749	532	\N	507	1941	https://drive.google.com/file/d/1nuQ5Q5xM065QkyV369-yQl2QRM0LlvYp/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2424	AARIGM	listo	2750	532	\N	507	1940	https://drive.google.com/file/d/1mStuMTHMxpocjYK1rwkrsiOEMbnJFARH/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2425	SOMF	listo	2752	560	\N	544	2168	SANGRE OCULTA EN MATERIA FECAL\nPor Método Inmunocromatográfico\n\nMuestra :\nMateria fecal espontánea recolectada en recipiente suministrado por el\nlaboratorio. No se requiere la totalidad de la deposición, solo una porción.\nMantener en heladera hasta su  envío al laboratorio, el mismo día de la toma de muestra.	NEGATIVO	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2426	TC	listo	2753	594	85	554	1631	https://drive.google.com/file/d/1142WCrOmF-tL1IPsNEquY6wpCuFeoZsw/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2427	SUB	listo	2778	532	86	507	1853	https://drive.google.com/file/d/1JZ7qgrEhz2MtzIxOV1C4kzxnI-iCK_MY/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2428	DAP	listo	2779	595	86	507	1851	\N	NEGATIVO	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2429	GRAVI	listo	2780	595	86	529	1852	\N	NEGATIVO	1	listo	\N	1	Laboratorio SBLab	Se modifico nombre desde GRAVINDEX	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2430	TACRO	listo	2782	532	\N	528	2102	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2431	TES	listo	2785	532	\N	507	1845	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2432	TES-BIO	listo	2786	596	\N	507	1846	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2433	TESL	listo	2788	596	\N	507	1847	\N	\N	1	revisar	\N	1	Laboratorio SBLab	no sale valores de referencia ni modelo informe con el icono	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2434	TP	listo	2789	538	\N	513	1624	https://drive.google.com/file/d/1pkH2zjdp87rje0FORMSyhahrHGMO_qx5/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2435	TT	listo	2790	538	\N	513	1629	\N	17.4 a 26.0 s	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2436	TIROGLO	listo	2791	532	\N	507	1802	\N	3.68 a 64.15 µmol/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2437	ANTI-TG	listo	2793	532	\N	507	1804	\N	0 a 4.11 µmol/l	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde ANTITIROGLOBULINA	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2438	TSH	listo	2795	532	\N	507	1798	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2439	TSH30	listo	2796	532	\N	555	1799	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2440	TSH60	listo	2797	532	\N	556	1800	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2441	T4L	listo	2798	532	\N	507	1796	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2442	T4	listo	2799	532	\N	507	1797	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2443	TDM	listo	2800	\N	\N	\N	\N	\N	\N	0	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2444	TOXIGG	listo	2806	532	\N	507	1944	https://drive.google.com/file/d/1eGTcEt7YZcIfaPibCrflqmmAKl5SjZxB/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	El analisis solo tiene una determinacion en Datatech: RESULTADO CUANTITATIVO, no se informa la INTERPRETACION, deberia cambiarse agregando una determinacion	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2445	TOXIGM	listo	2808	532	\N	507	1943	https://drive.google.com/file/d/1Yaysn9mhIf8T3rhc0ixPkL7a0lXb9UTs/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Se informa el RESULTADO CUALITATIVO y el INDEX	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2446	CORRTP	listo	2809	538	\N	543	1625	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2447	TGO	listo	2810	597	\N	507	1696	\N	11 a 34 U/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2448	TGP	listo	2811	597	\N	507	1697	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2449	TRA	listo	2812	598	\N	507	1757	https://drive.google.com/file/d/1UCVpgwIjDcfgzPglyvD2s3EcKH4US8YO/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2450	SAT	listo	2813	599	\N	507	1758	https://drive.google.com/file/d/1v1CAjz1nf7XLSTIISNcqnxqPf5wukSl2/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2451	SYPHILIS	listo	2819	532	\N	507	\N	https://drive.google.com/file/d/1pt3Hv0rmhwlyvqTCPUAVdhbZ9UV_XpnL/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Hematologia SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2452	TGL	listo	2824	600	\N	507	1721	\N	60 a 150 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2453	T3LIBRE	listo	2825	532	\N	507	1794	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2454	T3	listo	2826	532	\N	507	1795	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2455	TPA	listo	2828	532	\N	507	1712	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2456	UREA	listo	2829	601	77	521	1668	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2457	U/OA	listo	2830	601	\N	529	1669	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2458	UO	listo	2831	601	78	542	1670	https://drive.google.com/file/d/1BTa2xbup9_zKAjw_A-AKUqlZ5Ic4_aP0/view?usp=sharing	25.6 a 42.8 g/24h	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2459	U	listo	2832	601	\N	507	1666	\N	16.6 a 48.5 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2460	UES	listo	2833	601	\N	557	1667	https://drive.google.com/file/d/1sSjGQdiQooW6lftf5WL-TofbMpWYdZsY/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2461	CLU	listo	2834	601	78	523	\N	https://drive.google.com/file/d/17dno8Acpuquf29lM0_AF6Iq0p2_1TOCf/view?usp=sharing	64 a 300 ml/min	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2462	AU	listo	2835	602	\N	507	1678	\N	📋	1	listo	\N	1	Laboratorio SBLab	En NBU es URICO, ACIDO	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2463	AUO	listo	2836	602	78	542	1679	https://drive.google.com/file/d/1J-fOjb-qvr7OmJ4ueUV-Mfp28Ope00gl/view?usp=sharing	250 a 750 mg/24h	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2464	VD/LCR	listo	2837	603	\N	545	1901	\N	NO REACTIVO	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2465	VD	listo	2838	603	\N	512	1900	\N	NO REACTIVO	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2466	VANCO	listo	2839	532	\N	507	2088	https://drive.google.com/file/d/1T9Ij2cul_eSFTwWAVh-JppDIfwWklkXH/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	16/07/2026 Se cambia el valor de referencia teraputico por pedido del Dr. Nannini	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2467	VIT B12	listo	2847	532	\N	507	1762	\N	187 a 883 µmol/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2468	VIT-D3	listo	2850	532	\N	507	1770	https://drive.google.com/file/d/12vH-wU8HiZQ-ifxZTr_dNeDvmrhW0RTQ/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2469	WID	listo	2853	577	\N	512	1897	https://drive.google.com/file/d/1hmDPFl3_McUy5vXGi5fXA8k6nbsZZdI8/view?usp=sharing	Ver MODELO DE INFORME	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	49	\N
-2470	BCR/ABL	listo	2859	\N	\N	\N	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2471	BCR-CUAN	listo	2266	604	81	558	2157	https://drive.google.com/file/d/1rUAUFHvvE6B1h7lhyOqcqOcVG2kDnWcO/view?usp=sharing	Ver MODELO DE INFORME	16	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2472	B2GLIG	listo	2268	605	\N	559	1641	https://drive.google.com/file/d/19e2yB7gk8ZNlEsW__OeNQ-swx7AzuKzT/view?usp=sharing	Ver MODELO DE INFORME	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2473	B2GLIM	listo	2269	605	\N	559	1640	https://drive.google.com/file/d/11Fjz_EzefOG-ZihSPelYzM4o0inBKbmB/view?usp=sharing	Ver MODELO DE INFORME	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2474	BICAR/OR	listo	2274	606	\N	560	\N	\N	Menor a 30.0 nmol/l	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2475	C L SUE	listo	2297	541	\N	559	1750	https://drive.google.com/file/d/11mS9jDOUXyZlm8njK7OdjlxOsbnEAYj0/view?usp=sharing	Ver MODELO DE INFORME	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2476	C L OR	listo	2298	548	82	561	\N	https://drive.google.com/file/d/1k9guDnVE7bEi9-n_CSaJJmjYQ9rfwJ4z/view?usp=sharing	Ver MODELO DE INFORME	7	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2477	IGVH	listo	2300	607	\N	562	2036	https://drive.google.com/file/d/1MP5xq8W8BKQI6JTEfy3DKrAE40iV2SqL/view?usp=sharing	-	16	listo	\N	1	Laboratorio SBLab	03/08/2026 Se termina de configurar el informe con resultados de paciente.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2478	CALPRO	listo	2308	605	\N	544	2177	\N	\N	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2479	ACARDIGG	listo	2311	605	\N	559	1643	https://drive.google.com/file/d/1albzAEkIb8Cmmge9ODOYaFr_pLpfa241/view?usp=sharing	Ver MODELO DE INFORME	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2480	ACARDIGM	listo	2312	605	\N	559	1642	https://drive.google.com/file/d/1ZFZIUtYe9l6i53ORfRw3AB55Z93uRlKw/view?usp=sharing	Ver MODELO DE INFORME	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2481	CD3/CD16	listo	2320	608	\N	526	2155	\N	\N	6	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2482	CD19	listo	2321	608	\N	563	2152	https://drive.google.com/file/d/1Aat-xeMhXnL7tmf9H_JAMR59q4rIvqaX/view?usp=sharing	Ver MODELO DE INFORME	6	listo	\N	1	Laboratorio SBLab	Se actualiza el modelo de informe segun lo que remite IICT.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2483	CD2	listo	2322	608	\N	563	2156	\N	\N	6	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2484	CD20	listo	2860	608	\N	564	\N	\N	\N	4	listo	\N	1	Laboratorio SBLab	Se transfiere derivacion de TURNER a IICT.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2485	CD25	listo	2323	608	\N	526	\N	https://drive.google.com/file/d/18LNgDkm8yojcj1OaBlAGBbU1WBrPDV4-/view?usp=sharing	Ver MODELO DE INFORME	6	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2486	LINFO NK	listo	2325	608	\N	563	2154	\N	\N	6	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2487	CD34	listo	2326	608	\N	563	2151	\N	\N	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2488	CD4	listo	2327	608	\N	563	2150	https://drive.google.com/file/d/10tO8tb5w4595dKMDni8nOur5kgnQ210Y/view?usp=sharing	Ver MODELO DE INFORME	11	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2489	CD56	listo	2328	608	\N	563	2153	https://drive.google.com/file/d/1F_uJ7evtGxjf__-E85b9ec9yj5XUJh61/view?usp=sharing	Ver MODELO DE INFORME	6	listo	\N	1	Laboratorio SBLab	Se actualiza el modelo de informe segun lo que remite IICT.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2490	CD8	listo	2329	608	\N	563	2149	\N	\N	11	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2491	CEPBA	pendiente	2861	607	\N	565	\N	\N	\N	21	listo	\N	1	Laboratorio SBLab	Revisar informe de 22I 330805 PISTONE, SANDRA para ver formato de estudio. Agregar al area general.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2492	CLAPG	listo	2341	605	\N	559	1960	\N	\N	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2493	CLAPM	listo	2342	605	\N	559	1958	\N	\N	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2494	CLATG	listo	2346	605	\N	559	1998	\N	\N	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2495	CLATM	listo	2347	605	\N	559	1997	\N	\N	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2496	CBF	listo	2862	609	\N	566	\N	\N	-	22	revisar	\N	1	Laboratorio SBLab	Modelo de informe hecho, no adjunto. No se agrego aun al area general	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2497	FISH 17P	listo	2863	610	\N	567	\N	\N	\N	30	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2498	FLT3	listo	2451	611	81	565	\N	https://drive.google.com/file/d/17yqtmj993twVJ9v99UhTNSX7w_Pxn0Ev/view?usp=sharing	NEGATIVO	15	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2499	GLIA-A	listo	2471	605	\N	559	2082	https://drive.google.com/file/d/1NxKc98DXNWomFRGdA6uujSgJvm9EfU5p/view?usp=sharing	Ver MODELO DE INFORME	4	listo	\N	1	Laboratorio SBLab	Se incluye interpretacion solo en Hexalis	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2500	GLIA-G	listo	2472	605	\N	559	2083	https://drive.google.com/file/d/1iBV4GIj2I72HaFg8CZVvhxAmZwHKWrNL/view?usp=sharing	Ver MODELO DE INFORME	4	listo	\N	1	Laboratorio SBLab	Se incluye interpretacion solo en Hexalis	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2501	GLIDE-A2	listo	2473	605	\N	559	2081	https://drive.google.com/file/d/1W462YiDK0FSakbp3uqw_7xfC1OfgLH64/view?usp=sharing	Ver MODELO DE INFORME	5	listo	\N	1	Laboratorio SBLab	Eliminar el texto en Datatech al cabo de 6 meses	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2502	GLIDE-G2	listo	2474	605	\N	559	2080	https://drive.google.com/file/d/1xc1qDG6ATFMvJcXaMsoY16lSttJWgz3N/view?usp=sharing	Ver MODELO DE INFORME	5	listo	\N	1	Laboratorio SBLab	Eliminar el texto en Datatech al cabo de 6 meses	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2503	HERP1M	listo	2525	605	\N	559	1933	https://drive.google.com/file/d/1_8-C4XXIiTLp5w-kR6qQvbREDWD8k8Ar/view?usp=sharing	Ver MODELO DE INFORME	5	verificado	\N	1	Laboratorio SBLab	Se incluye interpretacion solo en Hexalis	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2504	HERP2M	listo	2527	605	\N	559	1935	https://drive.google.com/file/d/1N3ewvq7oGxuMHxRDuMe-BqDEyKf3FAYj/view?usp=sharing	Ver MODELO DE INFORME	5	verificado	\N	1	Laboratorio SBLab	Se incluye interpretacion solo en Hexalis	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2505	PCR-HIV	listo	2539	612	\N	568	\N	\N	\N	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2506	IDH	listo	2554	609	81	569	2034	https://drive.google.com/file/d/1FWTod3i7jpEQfUtfoOhj902OT5jBkD-X/view?usp=sharing	-	45	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2507	CITOFLU	listo	2587	608	81	570	\N	\N	\N	16	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2508	IGD	listo	2592	541	\N	559	1735	\N	\N	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2509	JAK2- 12	listo	2615	613	\N	563	2158	\N	\N	31	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2510	AC-JO1	listo	2617	605	\N	559	2055	\N	\N	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2511	ANTI-LA	listo	2620	605	\N	559	2053	\N	\N	8	listo	\N	1	Laboratorio SBLab	Se agrega en Hexalis, la determinacion INTERPRETACION separada del RESULTADO.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2512	MICOG 1	listo	2665	605	\N	559	1964	\N	\N	5	listo	\N	1	Laboratorio SBLab	En la web dice IFI en vez de ELISA	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2513	MICOM 1	listo	2666	605	\N	559	1963	\N	\N	5	listo	\N	1	Laboratorio SBLab	En la web dice IFI en vez de ELISA	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2514	NPM-1	listo	2673	614	81	565	\N	https://drive.google.com/file/d/1Kcg1b1gpEqAMy_KhD4fy5Q2QryfiwFBT/view?usp=sharing	NO SE OBSERVAN INSERCIONES NI DELECIONES	20	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2515	PAPP-A	listo	2685	615	87	559	1855	https://drive.google.com/file/d/125g6wGAc4Oh3jEWUS-fXfmcLmN4JOYO0/view?usp=sharing	\N	16	verificado	\N	1	Laboratorio SBLab	Se cambia el tiempo de demora de 2 a 16 dias.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2516	PARVO G1	listo	2697	605	\N	559	1991	\N	\N	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2517	PARVO M1	listo	2698	605	\N	559	1990	\N	\N	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2518	PXEORI	listo	2727	616	82	571	\N	https://drive.google.com/file/d/10b3-_x7XJ8-hGM4e09vAuft1_4iM-_4f/view?usp=sharing	-	8	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2519	PXE1	listo	2728	617	\N	559	1747	https://drive.google.com/file/d/1bu2ni50N9RNljBYHSbNDYfrkt6UEe1uq/view?usp=sharing	\N	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2520	QUIMO	listo	2733	590	\N	572	2174	\N	\N	20	listo	\N	1	Laboratorio SBLab	Previamente se derivaba a TURNER, pero no lo procesa mas.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2521	ANTI-RNP	listo	2745	605	\N	559	2051	\N	\N	8	listo	\N	1	Laboratorio SBLab	Se corrigio valor de referencia. Eliminar texto en Datatech al cabo de 6 meses.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2522	ANTI-RO	listo	2746	605	\N	559	2052	\N	\N	8	listo	\N	1	Laboratorio SBLab	Se agrega en Hexalis, la determinacion INTERPRETACION separada del RESULTADO.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2523	RUNX1	listo	2864	609	81	565	\N	\N	\N	30	listo	\N	1	Laboratorio SBLab	Revisar informe de 22I 330805 PISTONE, SANDRA para ver formato de estudio. Agregar al area general.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2524	AESC70PM	listo	2756	605	\N	559	2054	\N	\N	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2525	ANTI-SM	listo	2766	605	\N	559	2049	\N	\N	8	listo	\N	1	Laboratorio SBLab	Se agrega en Hexalis, la determinacion INTERPRETACION separada del RESULTADO.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2526	FREE-SUB	listo	2781	615	87	559	1854	\N	\N	16	verificado	\N	1	Laboratorio SBLab	Se cambia el tiempo de demora de 2 a 16 dias.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2527	TCF3-HLF	listo	2783	609	81	565	2035	https://drive.google.com/file/d/18EF2iK_L54HgjRTQm-QZPXWFO2w5p0yE/view?usp=sharing	-	30	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2528	TRANS A2	listo	2814	605	\N	559	2086	https://drive.google.com/file/d/1aCriyQKL_1x1Mw6uxczLaXFiXBqI4HtG/view?usp=sharing	Ver MODELO DE INFORME	4	verificado	\N	1	Laboratorio SBLab	Eliminar el texto en Datatech al cabo de 6 meses	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2529	TRANS G2	listo	2815	605	\N	559	2087	https://drive.google.com/file/d/19rpYZKC905jxx6kouw-u8eMPLgmuI410/view?usp=sharing	Ver MODELO DE INFORME	4	verificado	\N	1	Laboratorio SBLab	Se incluye interpretacion	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2530	TEL-AML1	listo	2816	609	81	565	2037	https://drive.google.com/file/d/1eG4EPCpbfetFCwSgX87haQF2cxPdbfob/view?usp=sharing	-	21	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2531	PML-RAR	listo	2817	609	81	567	2039	https://drive.google.com/file/d/1yHrmOIyzN5rA93gB2i7NvX1XifsEU8de/view?usp=sharing	-	17	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2532	MLL/AF4	listo	2818	609	81	565	2038	https://drive.google.com/file/d/1tZwu1Di30j_G9Ikrlw-m2iee8zgMTij4/view?usp=sharing	-	10	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2533	AML1-ETO	listo	2865	609	\N	573	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2534	VARIC G1	listo	2842	605	\N	559	1974	https://drive.google.com/file/d/1ffyykBvia-0A5TG-JorDGc0EAIw6QTBy/view?usp=sharing	Ver MODELO DE INFORME	8	verificado	\N	1	Laboratorio SBLab	Se incluye interpretacion solo en Hexalis	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2535	VARIC M1	listo	2843	605	\N	559	1973	https://drive.google.com/file/d/1MR3cx0RK2aojsx1HDusOtmIayl7HPkEo/view?usp=sharing	Ver MODELO DE INFORME	8	verificado	\N	1	Laboratorio SBLab	Se incluye interpretacion solo en Hexalis	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	50	\N
-2536	OHPGM1A	listo	2195	618	88	559	2167	https://drive.google.com/file/d/1JgJAw-tOma5zWZDMSXr6zfIFn3O5Wowl/view?usp=drive_link	Ver MODELO DE INFORME	5	listo	OHPGM1A	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2537	OHPG	listo	2196	619	86	559	1843	\N	📋	5	verificado	OHPG	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2538	BUTIRICO	listo	2199	620	\N	559	1663	\N	0.03 - 0.30 mmol/l	7	listo	B OHB	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2539	662277	pendiente	2209	621	\N	574	2125	INDICACIONES AL PACIENTE\n\nDeterminación: ACIDO MUCONICO\nMuestra: ORINA AISLADA\nPreparación previa: -\nToma de muestra: Recolectar la muestra al finalizar la última jornada laboral de la semana fuera del ámbito laboral. Recolectar en frasco plástico estéril.\nDatos adicionales: -\nVersión: 01 (07/08/2026)\n\nINDICACIONES AL LABORATORIO\nRemitir alícuota de 15 mL de orina post jornada laboral + alícuota de 5 mL de orina post jornada laboral en tubo de 13x75mm sin aditivo\nConservar a 2-8°C	IBE menor a 500 µg/g Cr	20	listo	AMU	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2540	OXALURIA	listo	2211	534	82	575	1763	ACIDO OXALICO URINARIO\n\nPACIENTE\nDesde 48hs antes de iniciar la recolección de orina de 24h:\n\nEvite la toma de ácido ascórbico (vitamina C), té, mate, café y chocolate o la ingestión de alimentos que contengan oxalato como las espinacas, frutillas, tomates.\n\nSe requiere un recipiente limpio de al menos 2L (brocal, bidón o botella de agua mineral).\n\nDescarte la primera orina de la mañana y registre el horario.\n\nDurante las próximas 24h, recolecte todas las fracciones de orina en dicho recipiente, manteniéndolo refrigerado en heladera durante todo el proceso.\n\nUna vez alcance el horario registrado en el punto 2, orine la última fracción y coloque la misma en el recipiente.	17.5 a 35.1 mg/24h	16	verificado	AOX O	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2541	VALPRO	listo	2214	619	89	576	2095	https://drive.google.com/file/d/1OndcVQfhnYMlAdo-RNIz7_XmiNKQfupL/view?usp=sharing	50.0 a 100.0 µg/ml	4	verificado	AV	1	Laboratorio SBLab	Previamente se derivaba a TURNER	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2542	ADENO-M	listo	2225	622	\N	559	1948	\N	\N	11	listo	ADV M I	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2543	ADRE P	listo	2229	623	90	577	2137	https://drive.google.com/file/d/1GF8XQQVasy-e5J0ChPBM3UJ_jQBanXdI/view?usp=sharing	Ver MODELO DE INFORME	26	listo	AD P	1	Laboratorio SBLab	Se corrigen los valores de referencia.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2544	ALD S	listo	2233	619	90	578	1870	https://drive.google.com/file/d/1TwjhWxAYykEBZrcB43a-sGyyasV_oRnT/view?usp=sharing	Ver MODELO DE INFORME	10	listo	ALD S	1	Laboratorio SBLab	Cambio en el metodo en Labmedicina.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2545	ANTRIPMF	listo	2235	548	\N	579	2171	\N	\N	21	listo	A1A MF	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2546	ANTRIP	listo	2236	541	\N	576	2170	\N	90.00 a 200.00 mg/dl	11	listo	A1A	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2611	RAST DP	listo	2565	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	IGE DP	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2547	CL A1ANT	listo	2237	625	\N	580	2172	ALFA 1 ANTITRIPSINA, CLEARENCE DE\n\nPACIENTE\n- MATERIA FECAL, TOTALIDAD DE DEPOSICIONES DE 2 DÍAS.\n- SANGRE.\nAyuno de 8 horas previas a la toma de muestra de SANGRE.\nRecolectar la totalidad de las deposiciones de dos días recipiente estéril. Mantener a temperatura ambiente hasta su envío al laboratorio.	Hasta 12.5 ml/24h	21	listo	A1ACL	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2548	ALUMINIO	listo	2239	626	\N	559	\N	ZINC SERICO\nNo deben realizar el estudio en pacientes que hayan recibido gadolinio, iodo, bario en las últimas 96 horas. Estos agentes de contraste basados ​​en metal son interferentes conocidos para las técnicas de análisis de trazas de metales.\nConsulte con su medico previo a la realización del estudio.	Menor a 0.6 µg/dl	21	listo	AL	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2549	H.A.D.	listo	2247	618	\N	581	1872	\N	Menor a 13 pmol/l	37	listo	HAD	1	Laboratorio SBLab	Se cambia el envio desde CONGELADO a REFRIGERADO.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2550	HMU	listo	2255	615	\N	576	1850	\N	📋	8	verificado	HMU	1	Laboratorio SBLab	Se cambia el envio desde REFRIGERADO a CONGELADO.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2551	APO E	listo	2866	609	\N	582	\N	\N	-	16	listo	APOE	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2552	AQ4	listo	2259	622	\N	559	2077	\N	\N	31	listo	AQ4	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2553	AQ4 LCR	listo	2260	622	\N	583	2078	\N	\N	31	listo	AQ4 LCR	1	Laboratorio SBLab	Labmedicina no informa valores de referencia.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2554	BANDAS	listo	2263	627	\N	584	1749	\N	\N	31	listo	BO	1	Laboratorio SBLab	Labmedicina no informa valores de referencia.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2555	BARTO-G	listo	2264	628	\N	576	2003	\N	NEGATIVO	11	listo	BN G I	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2556	BARTO-M	listo	2265	628	\N	576	2002	\N	NEGATIVO	11	listo	BN M I	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2557	LAPS S	listo	2272	615	\N	551	1767	https://drive.google.com/file/d/17JTMC47AixAALLcJrT6ipvySVhfyuW87/view?usp=sharing	📋	11	listo	LAPS B	1	Laboratorio SBLab	20/08/2026 Se cambia el envio desde REFRIGERADO a CONGELADO.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2558	BORDE	listo	2278	605	\N	559	1956	\N	\N	16	listo	BP G I	1	Laboratorio SBLab	Se inactiva debido a la falta de reactivo. Se procesa en IDYMIC. 02/07/2026: Se vuelve a activar porque se vuelve a procesar en LABMEDICINA.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2559	BORD-IGM	listo	2280	605	\N	559	1954	\N	\N	16	listo	BP M I	1	Laboratorio SBLab	Se inactiva debido a la falta de reactivo. Se procesa en IDYMIC.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2560	BIFIGG	listo	2287	622	\N	559	1908	\N	\N	16	listo	BL G I	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2561	BIFIGM	listo	2288	622	\N	559	1907	\N	\N	16	listo	BL M I	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2562	CA 72-4	listo	2296	629	\N	559	1880	\N	Hasta 4.0 UI/ml	8	listo	CA724	1	Laboratorio SBLab	Previamente se derivaba a CIBIC	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2563	CARBA	listo	2309	621	89	559	2092	CARBAMAZEPINA\n\nPACIENTE\nObtener la muestra antes de la administración de la siguiente dosis.	\N	3	listo	CBZ	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2564	ACCELUPA	listo	2331	622	\N	576	2064	\N	NEGATIVO	16	listo	ACPG	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2565	CIS C	listo	2348	541	\N	559	1676	https://drive.google.com/file/d/15Zymi2sSFY5Q2Hnc-0kjITWvXMWvenrD/view?usp=sharing	0.56 a 1.02 mg/l	7	listo	CIS C	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2566	CISTI	listo	2349	590	82	585	1765	CISTINA EN ORINA\n\nORINA DE 24 HORAS\n\nUtilizar recipiente limpio y seco.\n\nVaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a\nlas 8 horas o la hora que elija.\n\nAnotar la hora de descarte para tomarla como hora de inicio.\n\nRecolectar todas las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha.\n\nConservar en heladera. Y llevar al laboratorio lo antes posible. No perder ninguna muestra de orina.\n\nSi además se solicita en la misma orden médica ORINA COMPLETA, se debe recolectar la primera orina de la mañana del segundo día en un recipiente separado\ny notificar al técnico o administrativo.	10 a 100 mg/24h	10	listo	CIS O	1	Laboratorio SBLab	04/06/2026 El tiempo de demora se reduce de 20 a 10 días.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2567	CMV-AVI	listo	2358	630	\N	559	1930	https://drive.google.com/file/d/1nTvOXS9Z9xvy-f82DoY3OZqIl-4xr-EN/view?usp=sharing	Ver MODELO DE INFORME	16	listo	CMV TA	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2568	CITRATU	listo	2361	631	82	575	1764	CITRATURIA\n\nDesde 48hs antes de iniciar la recolección de orina de 24h:\n\nEvite la toma de ácido ascórbico (vitamina C), té, mate, café y chocolate o la ingestión de alimentos que contengan oxalato como las espinacas, frutillas, tomates.\n\nSe requiere un recipiente limpio de al menos 2L (brocal, bidón o botella de agua mineral).\n\nDescarte la primera orina de la mañana y registre el horario.\n \nDurante las próximas 24h, recolecte todas las fracciones de orina en dicho recipiente, manteniéndolo refrigerado en heladera durante todo el proceso.\n\nUna vez alcance el horario registrado en el punto 2, orine la última fracción y coloque la misma en el recipiente.	📋	16	verificado	AC O	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2569	CLOBAZAN	listo	2362	621	89	576	2097	https://drive.google.com/file/d/1t2F-8aPGtmMTmNDiyrfxtO_XiTU31s1t/view?usp=sharing	0.12 a 0.97 µg/ml	0	listo	CLB	1	Laboratorio SBLab	Se usan valores de referencia desde Datatech.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2570	CLOZA	listo	2363	621	89	578	\N	https://drive.google.com/file/d/1815IBZ_sJHtXaOWcJzueDJ-7kbkJ6r9J/view?usp=sharing	Ver MODELO DE INFORME	16	listo	CLZP	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2571	COBRE/S	listo	2366	590	\N	559	1775	\N	📋	11	verificado	CU S	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2572	CROMOGRA	listo	2398	632	\N	559	1887	\N	Menor a 102.0 ng/ml	12	listo	CGA	1	Laboratorio SBLab	04/06/2026 El tiempo de demora se reduce de 26 a 20 días. 03/07/2026: Se cambia metodo de ELISA a TRACE, valor de referencia de <100 a <102 y la demora de 20 a 12 dias	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2573	D4	listo	2400	615	86	559	1841	DELTA 4 ANDROSTENEDIONA\n\nPACIENTE\nConcurrir entre el 3º al 5º día del ciclo femenino, siendo el día 1º, el día en el que inició el sangrado menstrual. Si se encuentra en amenorrea y no existe otra indicación médica, obtener la muestra en un día al azar. \nConsignar FUM (Fecha de última menstruación)	📋	5	verificado	D4	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2574	DEOXIPIR	listo	2402	619	\N	586	1769	\N	📋	16	verificado	DPYR	1	Laboratorio SBLab	Se elimina requerimiento de DIURESIS	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2612	RAST EPG	listo	2567	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	9	listo	IGE EPG	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2613	RAST SI	listo	2873	634	\N	559	\N	\N	Ver MODELO DE INFORME	9	listo	IGE SI	1	Laboratorio SBLab	Hacer modelo de informe y pasar al area general	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2575	DGX	listo	2405	532	91	559	2091	INDICACIONES AL PACIENTE\nDeterminación: DIGOXINA\nMuestra: SANGRE VENOSA\nPreparación previa: Concurrir al laboratorio luego de que hayan transcurrido 6 horas de la última dosis, o bien, justo antes de la próxima dosis.\nToma de muestra: Punción venosa.\nDatos adicionales: Indicar dosis y horario de la última toma. Indicar otras medicaciones.\nVersión: 01 (20/ENE/2026)	0.8 a 2.0 ng/ml	6	listo	DGX	1	mariangel. rinaudo@sanbritanico.com.ar	Previamente se derivaba a IBC.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2576	DOPAMINA	listo	2409	623	\N	577	2145	https://drive.google.com/file/d/1Mq52OvCeyCy_wMYWsPAdxbjC3lQkVldX/view?usp=sharing	MENOR A 50 pg/ml	26	listo	DA P	1	Laboratorio SBLab	Se agrega el limite de cuantificacion.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2577	PANEL EN	listo	2415	622	\N	559	2071	\N	NEGATIVO	21	listo	ECF S	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2578	ECF LCR	listo	2416	622	\N	583	2076	\N	NEGATIVO	21	listo	ECF LCR	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2579	ENOLASA	listo	2419	629	\N	559	1885	\N	Menor a 16.3 ng/ml	11	listo	NSE	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2580	ECA	listo	2422	631	\N	559	1868	ENZIMA CONVERTIDORA DE ANGIOTENSINA (ECA)\n\nLas drogas inhibidoras de la ECA (captopril, enalapril) deben ser discontinuados 4 semanas antes de la realización del test. No discontinuar la medicación sin antes consultar con su médico.	20 a 70 U/l	16	listo	ECA	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2581	ERITRO	listo	2429	619	\N	576	2104	\N	4.3 a 29.0 mUI/ml	5	listo	EP	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2582	ESTRONA	listo	2437	624	86	559	1835	\N	📋	21	verificado	E1	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2583	EVEROL	listo	2440	633	89	587	2101	EVEROLIMUS\n\nPACIENTE:\nMuestras: SANGRE\nPreparación previa: Ayuno de 8 horas.\nToma de muestra: Concurra al laboratorio previo a la administración de la siguiente dosis de medicación (valle), cuando la concentración es mínima.\nDatos adicionales: Dosis y horario de la última toma.\nVersión: 1.0 (09-sep-2025)	3.0 a 8.0 ng/ml	6	listo	EVL	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2584	FACTINTR	listo	2441	605	\N	559	2065	\N	\N	14	listo	FI	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2585	FENOBAR	listo	2447	621	\N	559	2100	https://drive.google.com/file/d/1JD9qDr-3bpBwOBNObMXRZYgRTBQAYG7n/view?usp=sharing	10.00 a 40.00 mg/l	5	listo	FBT	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2586	FOSFO G	listo	2459	605	\N	559	1645	\N	\N	11	listo	FFL	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2587	FOSFO M	listo	2460	605	\N	559	1644	\N	\N	11	listo	FFL M	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2588	ANTI-GAD	listo	2465	619	\N	576	1819	\N	\N	27	verificado	GADA	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar)	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2589	GASTRINA	listo	2470	634	\N	576	1888	GASTRINA SERICA\n\nPACIENTE\n24 horas previas a la extracción suspender la toma de antiácidos, drogas anticolinérgicas y antagonistas de receptor H2, inhibidores de la bomba de protones. Consultar con el médico antes de suspender cualquier medicación.	13 - 115 pg/ml	15	listo	GA	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar) Anteriormente se derivaba a TURNER	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2590	GLU 6PDH	listo	2486	635	\N	587	1760	\N	7.0 - 20.5 U/gHb	10	verificado	G6	1	Laboratorio SBLab	04/06/2026 Se cambia demora de 20 a 10 dias.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2591	HELI	listo	2494	634	\N	559	1993	\N	\N	11	listo	AHP G I	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2592	HELI-M	listo	2495	622	\N	559	1992	\N	\N	11	listo	AHP M E	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2593	HEV IGM	listo	2519	605	\N	559	1926	\N	\N	15	listo	HEV M	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2594	ANTI-HU	listo	2551	622	\N	559	2073	\N	NEGATIVO	23	listo	HU IFI	1	Laboratorio SBLab	Se configuro envio CONGELADO	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2595	IA-2	listo	2553	605	\N	576	\N	https://drive.google.com/file/d/1OktxsQ186dCTbs9prb_BrEsCy3eRB4QK/view?usp=sharing	Ver MODELO DE INFORME	17	listo	IA-2	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2596	RAST AM	listo	2867	634	\N	559	\N	\N	Ver MODELO DE INFORME	9	listo	IGE AM	1	Laboratorio SBLab	Hacer modelo de informe y pasar al area general	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2597	RAST AL	listo	2868	634	\N	559	\N	\N	Ver MODELO DE INFORME	11	listo	IGE AL	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2598	RAST ALM	listo	2555	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	IGE ALME	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2599	RAST ALT	listo	2556	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	IGE ALT	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2600	RAST A	listo	2557	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	RA	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2601	RAST AFL	listo	2558	636	\N	559	\N	https://drive.google.com/file/d/1yoLklqgjfI6jlNOFM8IXMWjo-4st2XqB/view?usp=sharing	Ver MODELO DE INFORME	21	listo	IGE AFL	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2602	RAST AF	listo	2559	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	IGE AF	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2603	RAST ANI	listo	2560	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	IGE ANI	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2604	RAST VS	listo	2869	634	\N	559	\N	\N	Ver MODELO DE INFORME	9	listo	IGE VS	1	Laboratorio SBLab	Hacer modelo de informe y pasar al area general	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2605	RAST BL	listo	2870	634	\N	559	\N	\N	Ver MODELO DE INFORME	11	listo	IGE BL	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2606	RAST BT	listo	2871	634	\N	559	\N	\N	Ver MODELO DE INFORME	11	listo	IGE BT	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2607	RAST CAS	listo	2872	634	\N	559	\N	\N	Ver MODELO DE INFORME	11	listo	IGE CAS	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2608	RAST CF	listo	2562	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	9	listo	RCF	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2609	RAST CH	listo	2563	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	IGE CH	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2610	RAST DF	listo	2564	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	IGE DF	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2650	PBS	listo	2708	626	\N	589	1778	\N	Menor a 26.0 µg/dl	16	listo	PB S	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2614	RAST	listo	2569	634	92	559	1737	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	\N	1	Laboratorio SBLab	No tiene valores de referencia en Datatech.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2615	RAST PG	listo	2573	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	8	listo	RPG	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2616	RAST PV	listo	2574	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	8	listo	RPV	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2617	RAST GL	listo	2874	634	\N	559	\N	\N	Ver MODELO DE INFORME	11	listo	IGE GL	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2618	RAST T	listo	2875	634	\N	559	\N	\N	Ver MODELO DE INFORME	9	listo	IGE T	1	Laboratorio SBLab	Hacer modelo de informe y pasar al area general	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2619	RAST YH	listo	2575	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	9	listo	IGE YH	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2620	RAST HM	pendiente	2876	634	\N	559	\N	\N	Ver MODELO DE INFORME	10	listo	IGE HM	1	Laboratorio SBLab	Hacer modelo de informe y pasar al area general	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2621	INFA IGG	listo	2576	622	\N	559	1979	\N	NEGATIVO MENOR A 1/10	11	listo	IFZA G I	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2622	INFA IGM	listo	2577	622	\N	559	1978	\N	NEGATIVO MENOR A 1/16	11	listo	IFZA M I	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2623	INFB IGG	listo	2580	622	\N	559	1982	\N	NEGATIVO MENOR A 1/10	11	listo	IFZB G I	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2624	INFB IGM	listo	2581	622	\N	559	1981	\N	NEGATIVO MENOR A 1/16	11	listo	INFB M I	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2625	INMUNOC	listo	2586	605	\N	559	2042	https://drive.google.com/file/d/1T02jNRMvlUwzi9KXheBwGFFn-7tyBL5w/view?usp=sharing	Ver MODELO DE INFORME	14	listo	CIC	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2626	IGG SUB	listo	2595	579	\N	559	1734	\N	\N	20	listo	IGGSC1/2/3/4	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2627	IGGSC4	listo	2596	579	\N	559	1738	\N	39.5 a 864.0 mg/l	21	listo	IGGSC4	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2628	IAA -1	listo	2605	637	\N	576	1817	ANTICUERPOS ANTI INSULINA\nObtener antes de la aplicación de insulina.	Hasta 0.4 U/ml	21	listo	IAA	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2629	ICA-1	listo	2613	622	\N	559	1818	\N	Ver MODELO DE INFORME	11	listo	ICA	1	Laboratorio SBLab	Se corrige el numero de estudio de Hexalis, ingresado erroneo previamente.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2630	LAMOTRIG	listo	2622	621	89	559	2096	https://drive.google.com/file/d/1LTa4Yn9-h9kKDVrQ3Z7CzR4fj4CavKEf/view?usp=sharing	2.5 a 15.0 µg/ml	10	listo	LAMO	1	Laboratorio SBLab	Los valores de referencia cambiaron a 2,5 a 15,0 (antes eran 3.0 a 14.0 µg/ml)	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2631	LEVETIRA	listo	2626	621	89	588	2099	https://drive.google.com/file/d/1z7CxW0A1D01cgRDPIKBHkqkmhB3VI_v6/view?usp=sharing	12.0 a 46.0 µg/ml	10	listo	LEVET	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2632	LPG	listo	2877	616	\N	559	\N	\N	Ver MODELO DE INFORME	6	listo	LPG	1	Laboratorio SBLab	HACER MODELO Y AGRERGAR AL AREA PRINCIPAL	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2633	LI S	listo	2632	638	\N	559	2090	LITIO\n\nNo se requiere ayuno y/o preparación previa. Tomar la muestra 8 a 10 horas luego de la última dosis.\nPunción venosa, 8 a 10 horas luego de la última dosis.\nIndicar dosis y horario de la última toma. Indicar otras medicaciones.	📋	5	listo	LI S	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2634	ANTI-LKM	listo	2633	622	\N	559	2046	\N	NEGATIVO	8	listo	ALKM	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2635	MN-S	listo	2638	626	\N	559	1776	MANGANESO SERICO\n\nNo deben realizarse el estudio en pacientes que hayan recibido gadolinio, iodo, bario en las últimas 96 horas.\nConsultar con su medico previo a la realización del estudio.	Menor a 0.23 µg/dl	21	listo	MN S	1	Laboratorio SBLab	Se actualiza tipo de muestra desde SANGRE HEPARINIZADA a SUERO. Se actualiza unidades y valores de referencia de 4,7 a 18,3 ug/l a menor a 0,24 ug/dl	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2636	AMB1	listo	2642	622	\N	559	2059	\N	\N	8	listo	AMB	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2637	MERCURIO	listo	2643	639	\N	559	\N	https://drive.google.com/file/d/1kgYgJjNYzqUjjK9dxkA21mpGVTROAI4A/view?usp=sharing	Menor a 0.9 µg/dl	21	listo	HG S	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2638	MTHFR	listo	2648	609	\N	582	1651	https://drive.google.com/file/d/11AOTdI9PyTh_3_eA6EANR5_sm8-HkyDJ/view?usp=sharing	Ver MODELO DE INFORME	21	verificado	BMD100	1	Laboratorio SBLab	Se actualiza el modelo de informe en base a los resultados del protocolo 22N 264276	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2639	MPO	listo	2652	619	\N	559	2060	https://drive.google.com/file/d/1bo6BJ8tumJtzCV-r3N7Sbuh15FoW9Vnl/view?usp=sharing	Ver MODELO DE INFORME	6	listo	MPO	1	Laboratorio SBLab	Se modifico envio de CONGELADO a REFRIGERADO. Cambia metodo de ELISA a CLIA. La demora se reduce de 26 a 6 dias.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2640	MIOGL/S	listo	2653	541	\N	559	1711	\N	\N	7	verificado	MGL S	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2641	MOG IGG	listo	2656	622	\N	559	2068	\N	\N	41	listo	MOG AC IGG	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2642	AML	listo	2660	628	\N	559	2058	\N	NEGATIVO	11	listo	AML	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2643	NOR P	listo	2670	623	\N	577	2139	https://drive.google.com/file/d/1og-eu2gMjtCz_l7qcbX-ytPawdtZDDRn/view?usp=sharing	Ver MODELO DE INFORME	26	listo	NAD P	1	Laboratorio SBLab	Se agrega limite de cuantificacion	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2644	5ND	listo	2674	640	\N	559	\N	\N	📋	8	listo	NT	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2645	OSTEO	listo	2678	615	\N	559	1771	https://drive.google.com/file/d/1uqmryOe7IpR3o0wk9vb6TvPf0w-Pk742/view?usp=sharing	📋	17	listo	OC	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar)	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2646	OXCARBA	listo	2679	621	89	559	2093	https://drive.google.com/file/d/1FPuPycxMmFjBcuCfyGb57dH3enHORhz4/view?usp=sharing	10.0 a 35.0 µg/ml	10	listo	OXC	1	Laboratorio SBLab	Se cambia el rango terapeútico de 3 a 35 a 10 a 35	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2647	PANELNEU	listo	2681	641	\N	576	2070	https://drive.google.com/file/d/1rGDRqMOC_OJfi5ih7GE7oKmnOKg1YOJy/view?usp=sharing	Ver MODELO DE INFORME	22	listo	ONCO	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2648	PEPTI C	listo	2699	619	\N	559	1815	\N	1.1 a 5.0 ng/ml	14	verificado	PPC	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar)	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2649	VIP	listo	2702	605	\N	551	2106	\N	Menor a 75 pg/ml	28	listo	VIP	1	Laboratorio SBLab	No se procesa mas en TURNER. Se envia a LABMEDICINA.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2651	PBOR	listo	2709	626	\N	590	\N	PACIENTE\n\nDeterminación: PLOMO (Pb) URINARIO\nMuestra: ORINA AISLADA POST JORNADA LABORAL (50 ml)\nPreparación previa: -\nToma de muestra: Recolectar la muestra al finalizar la última jornada laboral de la semana fuera del ámbito laboral. Recolectar una orina con por lo menos tres horas de retención en recipiente estéril. Se requieren al menos 40 ml de orina.\nNo refrigerar.\nDatos adicionales: -\nVersión: 01 (06/NOV/2025)\n\nLABORATORIO\nRemitir 2 alícuotas de 15 ml de orina post-jornada laboral + 5 ml de orina en tubo 13×75 mm sin aditivo.	Menor a 150 µg/gCr	18	listo	PB O	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2652	IGFBP.3	listo	2723	619	\N	559	1856	\N	📋	21	listo	IGFBP3	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2653	PR3	listo	2726	619	\N	559	2061	https://drive.google.com/file/d/1m02kJe5gdBkz6aBs5I8-V1FElJJCuZ1a/view?usp=sharing	Ver MODELO DE INFORME	6	listo	PR3	1	Laboratorio SBLab	Se configuro envio CONGELADO. Cambia metodo de ELISA a CLIA. La demora se reduce de 26 a 6 dias.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2654	ACRA	listo	2735	624	\N	559	2066	\N	Ver MODELO DE INFORME	21	listo	ACRA	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2655	SE S	listo	2760	626	\N	559	1777	\N	7.0 a 15.0 µg/dl	21	verificado	SE S	1	Laboratorio SBLab	Actualizacion en valor de referencia: de (menor a 15) a (7-15)	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2656	SEROP	listo	2761	642	\N	582	2135	https://drive.google.com/file/d/1YdawIZGjp-a9Y78O0oyhj55UYwaPTlEG/view?usp=sharing	Menor a 950 ng/ml/10˄9 plaq	8	listo	SEROP	1	Laboratorio SBLab	Alta: 22/07/2025. Baja: 16/10/2025. Alta: 11/11/2025.  Se cambia la demora de 14 a 8 días.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2657	SERO-S	listo	2762	642	\N	559	2134	https://drive.google.com/file/d/19Y1CfhhHTJHD5pEmflzvfAZrh5En0pUn/view?usp=sharing	Menor a 230.0 ng/ml	8	verificado	STN S	1	Laboratorio SBLab	Se configuro envio CONGELADO. Se cambia la demora de 14 a 8 días debido a que se aumenta la frecuencia de envios congelados.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2658	IGF1 120	listo	2767	619	\N	559	\N	\N	NO APLICA	17	listo	SMC	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2659	IGF1 30	listo	2768	619	\N	559	1864	\N	NO APLICA	17	listo	SMC	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2660	IGF1 60	listo	2769	619	\N	559	1865	\N	NO APLICA	17	listo	SMC	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2661	IGF1 90	listo	2770	619	\N	559	1866	\N	NO APLICA	17	listo	SMC	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2662	SMC	listo	2771	619	\N	559	1863	https://drive.google.com/file/d/1B6J8PFnF17qGf1jTMVvVDh_Fi65h2fB3/view?usp=sharing	📋	11	verificado	SMC	1	Laboratorio SBLab	Se configuro envio CONGELADO. Se cambia la demora de 17 a 11 días debido a que se aumenta la frecuencia de envios congelados.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2663	HGH	listo	2772	619	\N	559	1857	\N	📋	11	listo	HGH	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2664	STH 120	listo	2773	619	\N	559	1861	\N	NO APLICA	11	listo	HGH	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2665	STH 180	listo	2774	619	\N	559	1862	\N	NO APLICA	11	listo	HGH	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2666	STH 30	listo	2775	619	\N	559	1858	\N	NO APLICA	11	listo	HGH	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2667	STH 60	listo	2776	619	\N	559	1859	\N	NO APLICA	11	listo	HGH	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2668	STH 90	listo	2777	619	\N	559	1860	\N	NO APLICA	11	listo	HGH	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2669	TOPIRAMA	listo	2801	643	\N	581	2098	https://drive.google.com/file/d/1REhX1cNVAa7mthf3GFMMoMM_po63molw/view?usp=sharing	2.0 - 20.0 µg/ml	23	listo	TOPI	1	Laboratorio SBLab	Se completa el valor de referencia.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2670	VIT A	listo	2845	621	\N	591	2114	LABORATORIO\nSeparar muestra en tubo opaco (proteger de la luz).	0.24 a 0.95 mg/l	27	listo	VA	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar)	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2671	VITA B1	listo	2846	644	\N	591	2116	LABORATORIO\nSeparar muestra en tubo opaco (proteger de la luz).	4.00 a 20.0 µg/l	37	listo	VB1	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar)	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2672	VITA B6	listo	2848	644	\N	591	2117	https://drive.google.com/file/d/1zw7g4vyPoQL48T7YaPHxbDMAMMaV6-M5/view?usp=sharing	📋	27	verificado	VB6	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar). Se corrigen los valores de referencia (estaba mal configurado en la web de Labmedicina). Se elimina texto con valores de referencia.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2673	VIT C	discontinuado	2878	621	\N	592	\N	LABORATORIO\nSeparar muestra en tubo opaco con conservante, congelar (proteger de la luz en tubo especial).	0.40 a 2.00 mg/dl	16	verificado	VC	1	mariangel. rinaudo@sanbritanico.com.ar	Se configuro envio CONGELADO. Cambio de metodología de electroforesis capilar a HPLC-UV, y cambio de muestra de plasma con heparina refrigerada en tubo opaco a plasma con EDTA con conservante congelada en tubo opaco. Etiqueta DATA: 59 EDTA(POC) 19 / Etiqueta HEXA: 19- PLASMA CON EDTA TUBO OPACO. 26/06/2026 Se inactiva debido a problemas con los envios.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2674	VITA C	inactivo	2879	645	\N	593	\N	LABORATORIO\nSeparar muestra en tubo opaco con conservante, congelar (proteger de la luz en tubo especial).	0.40 a 2.00 mg/dl	28	listo	VC	1	Laboratorio SBLab	Se inactiva por cambio de tecnologia. Se implemente VITA C	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2675	VIT.E	listo	2851	621	\N	591	2115	PACIENTE\nEvitar consumir alcohol durante las  24 horas previas a la extracción.\n\nLABORATORIO\nSeparar muestra en tubo opaco (proteger de la luz).	5.0 a 20.0 mg/l	28	listo	VE	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar)	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2676	ZINC	listo	2854	590	\N	559	1779	ZINC SERICO\nNo deben realizar el estudio en pacientes que hayan recibido gadolinio, iodo, bario en las últimas 96 horas. Estos agentes de contraste basados ​​en metal son interferentes conocidos para las técnicas de análisis de trazas de metales.\nConsulte con su medico previo a la realización del estudio.	📋	8	verificado	ZN	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	51	\N
-2677	17PROG	inactivo	2196	646	\N	588	1843	\N	-	4	pendiente	17HPRG	1	Laboratorio SBLab	Se inactiva. Se deriva a LABMEDICINA.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2693	AMINO/S	listo	2242	651	\N	588	2128	AMINOACIDOS SERICOS, CUANTITATIVOS\n\nLABORATORIO\nAdjuntar completa la planilla de Estudios de errores congénitos del metabolismo-Neo pesquisa ampliada.	\N	16	listo	AMINOS	1	Laboratorio SBLab	La paridad esta hecha con una sola determinacion. En Datatech se pone una nota de VER INFORME ADJUNTO.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2747	PH	listo	2705	\N	\N	579	\N	\N	-	2	listo	PH	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2678	17PRONEO	inactivo	2880	605	93	594	\N	PACIENTE\n1. Muestras: Sangre\n2. Recomendaciones: Extraer dentro del primer mes de vida, preferentemente entre los días 2° y 6° de vida.\n3. Modo de recoleccion: Puncion en talon del pie.\n\nLABORATORIO\nRemitir el papel impregnado con sangre y datos del paciente. Conservar a temperatura ambiente.\nObtener la muestra dentro del primer mes de vida. Se recomienda la toma de muestra entre el 2° y 6° dia de vida, 24hs despues de iniciada la alimentacion lactea.\nUtilizar el papel de filtro adecuado: S&S 903.\nNo superponer gotas de sangre sobre el mismo punto del papel.	-	12	pendiente	17HPGN	1	Laboratorio SBLab	Revisar metodo y valores de referencia	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2679	BUTIRICO	discontinuado	2199	647	\N	595	1663	\N	-	12	pendiente	BETAH	1	Laboratorio SBLab	Se procesa en LABMEDICINA.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2680	FENILA	listo	2200	644	\N	571	2121	ACIDO FENIL ACETICO (AFA) URINARIO\n\nPACIENTE\nMuestra de orina de 24h con dieta previa.\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24h: a las 7h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 7h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\nDIETA: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, paltas, berenjenas, ananá chocolate, ciruelas, maníes, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), te ni café.\n\nLABORATORIO\nRemitir 100 ml de orina de 24h recolectada con dieta previa. Indicar diuresis y datos del paciente.	200 a 700 µg/24h	15	listo	AFA	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2681	ACIDOGLU	listo	2203	644	\N	559	2122	\N	12.0 a 98.0 µmol/l	16	listo	GLUTA	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2682	AHO	listo	2204	590	82	596	2120	ACIDO HOMOGENTISICO\n\nRECOLECCION ORINA DE 24 HORAS\n\nUtilizar recipiente limpio y seco.\n\nVaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a\nlas 8 horas o la hora que elija.\n\nAnotar la hora de descarte para tomarla como hora de inicio.\n\nRecolectar todas las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha.\n\nConservar en heladera. Y llevar al laboratorio lo antes posible. No perder ninguna muestra de orina.\n\nSi además se solicita en la misma orden médica ORINA COMPLETA, se debe recolectar la primera orina de la mañana del segundo día en un recipiente separado\ny notificar al técnico o administrativo.	-	15	listo	AHO	1	Laboratorio SBLab	No tiene valores de referencia en Turner.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2683	HOMO PL	listo	2205	644	\N	581	2147	\N	7.20 a 18.00 ng/ml	19	listo	HVAP	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2684	OROTICO	listo	2210	648	\N	597	2123	ACIDO OROTICO URINARIO\n\nPACIENTE\nRecolectar de 4 a 6 orinas durante todo un dia, previa higiene y en condiciones de asepsia. Refrigerar.\n\nLABORATORIO\nRecolectar de 4 a 6 orinas durante todo un día, previa higiene y en condiciones de asepsia. Refrigerar.\nMezclar las muestras, tomar una alícuota de 50 ml y congelarla a -20°C no menos de 12 h.\nEnviar bien refrigerada.\nEl desarrollo bacteriano invalida el estudio debido a los productos metabólicos de los microorganismos.\nAdjuntar planilla de errores congénitos del metabolismo.	Menor a 7.0 mol/mol Cr	22	listo	ORO	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2685	ACPIRU	listo	2212	601	\N	598	2126	\N	0.40 a 2.00 mg/dl	5	listo	ACPIRU	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2686	AVMHPLC	listo	2213	644	82	599	2144	ACIDO VANILLIN MANDELICO\n\nPACIENTE\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24h: a las 7h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el dia y hasta las 7h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\nDIETA: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, paltas, berenjenas, ananá, chocolate, ciruelas, maní, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), té ni café.\n\nLABORATORIO\nRemitir 100 ml de orina de 24h con pH<3, recolectada con dieta previa. Indicar diuresis y datos del paciente.	0.0 a 7.2 mg/24h	19	listo	AVMHPLC	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2687	TD-VAL	inactivo	2214	634	\N	559	2095	Extracción de la muestra 1 hora antes de tomar la medicación. Ayuno de 4h.	Rango Terapeutico: 50 a 100 µg/ml	7	pendiente	VAL	1	Laboratorio SBLab	Se pasa a derivar a LABMEDICINA	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2688	AC GRASO	listo	2216	590	\N	559	1725	\N	0.1 a 0.9 mEq/l	7	listo	NEFA	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2689	ACID.ORG	listo	2217	648	\N	600	2127	ACIDOS ORGANICOS URINARIOS\n\nPACIENTES\n1. Muestras: Orina\n2. Recomendaciones: Recolectar las muestras en condiciones de asepsia. Refrigerar hasta el momento de remitirlas al laboratorio.\n3. Modo de recolección: Recolectar de 4 a 6 orinas durante todo un día, previa higiene y en condiciones de asepsia. Refrigerar.\n\nLABORATORIO\nMezclar las muestras, tomar una alícuota de 100 ml y congelarla a -20°C no menos de 12 h.\nEnviar bien refrigerada.\nEl desarrollo bacteriano invalida el estudio debido a los productos metabólicos de los microorganismos.\nAdjuntar completa la planilla de Estudios de errores congénitos del metabolismo-Neo pesquisa ampliada.	-	22	listo	ACOR	1	Laboratorio SBLab	Crear indicaciones para entregar al paciente	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2690	ACILCARN	listo	2218	649	93	594	2108	ACIL CARNITINAS\n\nLABORATORIO\nRemitir el papel impregnado con sangre y datos del paciente. Conservar a temperatura ambiente.\nUtilizar el papel de filtro adecuado: S&S 903.\nNo superponer gotas de sangre sobre el mismo punto del papel.\nAdjuntar completa la planilla de Estudios de errores congénitos del metabolismo-Neo pesquisa ampliada.	\N	22	listo	ACAR	1	Laboratorio SBLab	La paridad esta hecha con una sola determinacion. En Datatech se pone una nota de VER INFORME ADJUNTO.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2691	ADREURI	listo	2230	644	82	601	2138	ADRENALINA URINARIA\n\nPACIENTE\n1. Muestras: Orina de 24 h.\n2. Recomendaciones: Debe recolectarse con dieta previa.\n3. Modo de recolección: Durante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24 h: a las 7 h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 7hs del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\nDIETA: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, paltas, berenjenas, ananá, chocolate, ciruelas, maníes, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), te ni café.\n\nLABORATORIO\nRemitir 30 ml de orina de 24 h con pH<3, recolectada con dieta previa. Indicar diuresis y datos del paciente.	\N	22	listo	ADRED	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2692	ALD	listo	2232	650	\N	588	1710	\N	Menor a 7.6 UI/l	2	listo	ALD	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2718	ELASTASA	listo	2414	541	\N	579	2173	\N	\N	22	listo	ELAS	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2694	AMINOO	listo	2243	652	\N	597	2129	AMINOACIDOS URINARIOS, CUANTITATIVOS\n\nPACIENTES\n1. Muestras: Orina\n2. Recomendaciones: Mantener refrigerada hasta remitirla al laboratorio.\n3. Modo de recolección: Recolectar de 5 orinas durante todo un día, previa higiene y en condiciones de asepsia. Mantener las muestras en heladera hasta remitirlas al laboratorio.\n\nLABORATORIO\nRecolectar de 5 orinas durante todo un día, previa higiene y en condiciones de asepsia.\nMezclar las muestras, tomar una alícuota de 50 ml. Enviar bien refrigerado.\nEl desarrollo bacteriano invalida el estudio debido a los productos metabólicos de los microorganismos.\nAdjuntar completa la planilla de Estudios de errores congénitos del metabolismo-Neo pesquisa ampliada.	\N	8	listo	AMINOO	1	Laboratorio SBLab	La paridad esta hecha con una sola determinacion. En Datatech se pone una nota de ver informe adjunto.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2695	ANDROGLU	listo	2245	624	\N	588	1842	\N	📋	11	listo	ANDROS	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2696	CARO	listo	2271	647	\N	602	2113	BETA CAROTENO\n\nLABORATORIO\nRemitir 2,5ml de suero refrigerado. Ayuno de 4h.\nProteger de la luz.	50 a 250 µg/ml	11	listo	CAROTE	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2697	BIOTINID	listo	2276	605	93	594	2163	BIOTINIDASA, ACTIVIDAD DE (NEONATAL)\n\nPACIENTE\nExtraer dentro del primer mes de vida. Se recomienda la toma de muestra entre el 2° y 6° día de vida, 24h después de iniciada la alimentación láctea.\n\nLABORATORIO\nRemitir el papel impregnado con sangre y datos del paciente. Conservar a temperatura ambiente.\nUtilizar el papel de filtro adecuado: S&S 903.\nNo superponer gotas de sangre sobre el mismo punto del papel.	-	12	listo	BION	1	Laboratorio SBLab	No tiene valores de referencia	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2698	WRIS	listo	2285	653	\N	588	1905	\N	-	4	listo	WRIS	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2699	WRIC	listo	2286	653	\N	588	1906	\N	-	4	listo	WRIC	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2700	CAL/ASPI	listo	2306	634	\N	603	1831	CALCITONINA EN ASPIRADO DE NODULO\n\nLABORATORIO\nRemitir el lavado de aguja con el material de punción en un vial con 1.0 ml de Sol. Fisiológica. Refrigerar.	-	5	listo	CLN	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2701	CAR LAM	listo	2313	654	\N	604	1892	https://drive.google.com/file/d/1ccZ0fbrjBFdRTob6zP_8eYYbdZKJCgc2/view?usp=sharing	-	35	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2702	CAR ABOR	listo	2314	654	\N	605	1891	LABORATORIO\n\nTOMA DE MUESTRA DE MATERIAL DE ABORTO\na) Extracción: \n- Cuando hacen legrado el médico debe tomar una porción de la zona de vellosidades de la placenta o de lo que va a dar origen a la placenta y enviarlo a las condiciones más estériles posibles, por lo general en un recipiente estéril de urocultivo.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en el mismo recipiente en que se realizó la extracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No debe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	-	63	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes. Se aumenta el tiempo de demora de 21 a 63 dias.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2703	CITOGEN	listo	2315	654	\N	606	1890	LABORATORIO\n\nTOMA DE MUESTRA DE MEDULA OSEA PARA ESTUDIO CITOGENETICO\na) Extracción: \n- Colocar en una jeringa de 5 ml Heparina sódica ESTERIL (0,05 a 0,10 ml aproximadamente). \n- Extraer al menos 2 ml de MEDULA OSEA. Para citogenética está indicado que se debe mandar la primera o segunda porción de extracción. Evite maniobras que impidan la conservación de la\nmuestra en condiciones de estricta esterilidad.\n- Colocar inmediatamente el capuchón en la aguja, o colocar una aguja nueva impidiendo el contacto de la muestra con el aire. No doblar la aguja ni taparla\ncon otros elementos como tapones de goma, gasas, algodón, no estériles. Fijar el émbolo y aguja o tapón estéril con cinta adhesiva.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en la misma jeringa en que se realizó la extracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No debe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\nc) También es posible realizar la extracción en tubos vacutainer con heparina sódica y enviarlos en los mismos.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	-	21	verificado	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2704	CARIOTIP	listo	2316	654	\N	607	1889	LABORATORIO\n\nTOMA DE MUESTRA DE SANGRE PERIFERICA PARA ESTUDIO CITOGENETICO\na) Extracción: \n- Colocar en una jeringa de 5 ml o 10 ml Heparina sódica ESTERIL (0,05 a 0,10 ml aproximadamente).\n- Cambiar la aguja y extraer preferentemente entre 4 y 5 ml de sangre venosa en niños , en caso de bebes puede ser menos ( en lo posible al menos 2ml) y\nentre 8 a 10 ml en adultos. Evite maniobras que impidan la conservación de la\nmuestra en condiciones de estricta esterilidad.\n- Colocar inmediatamente el capuchón en la aguja, o colocar una aguja nueva\nimpidiendo el contacto de la muestra con el aire. No doblar la aguja ni taparla\ncon otros elementos como tapones de goma, gasas, algodón, no estériles. Fijar\nel émbolo y aguja o tapón estéril con cinta adhesiva.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en la misma jeringa en que se realizó la \nextracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No\ndebe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\nc) También es posible realizar la extracción en tubos vacuteiner con heparina sódica y enviarlos en los mismos.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	-	63	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes. Se aumenta el tiempo de demora de 21 a 63 dias.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2719	ECA-LCR	listo	2423	647	\N	612	1869	\N	Menor a 2.5 U/l	8	listo	ECA	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2720	ESTE	listo	2434	656	\N	579	2175	\N	Menor a 4%	8	listo	ESTE	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2721	ESTRIOL	listo	2436	634	95	588	1836	https://drive.google.com/file/d/1vamop087_3twceiXUeCV3yT9TWUN8fTD/view?usp=sharing	Ver MODELO DE INFORME	8	listo	ESL	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2722	FENALA	listo	2445	644	\N	559	2119	\N	📋	15	listo	FENILS	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2723	FOH OSEA	listo	2453	634	\N	588	1772	https://drive.google.com/file/d/1GwshmzZuq5_xwAOSr7hd5GMRkwldSlzz/view?usp=sharing	Ver MODELO DE INFORME	2	listo	OSAL	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2724	FOSGLI	listo	2456	657	\N	613	2131	\N	-	8	listo	FOSGLI	1	Laboratorio SBLab	En el NBU figura como ANTICUERPOS IGG ANTI FOSFATIDIL GLICEROL	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2796	SINCI-M	listo	2764	669	\N	559	1951	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	No tiene valores de referencia en Datatech	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2705	CARIO AL	listo	2317	654	\N	607	1893	LABORATORIO\n\nTOMA DE MUESTRA DE SANGRE PERIFERICA PARA ESTUDIO CITOGENETICO\na) Extracción: \n- Colocar en una jeringa de 5 ml o 10 ml Heparina sódica ESTERIL (0,05 a 0,10 ml aproximadamente).\n- Cambiar la aguja y extraer preferentemente entre 4 y 5 ml de sangre venosa en niños , en caso de bebes puede ser menos ( en lo posible al menos 2ml) y\nentre 8 a 10 ml en adultos. Evite maniobras que impidan la conservación de la\nmuestra en condiciones de estricta esterilidad.\n- Colocar inmediatamente el capuchón en la aguja, o colocar una aguja nueva\nimpidiendo el contacto de la muestra con el aire. No doblar la aguja ni taparla\ncon otros elementos como tapones de goma, gasas, algodón, no estériles. Fijar\nel émbolo y aguja o tapón estéril con cinta adhesiva.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en la misma jeringa en que se realizó la extracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No debe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\nc) También es posible realizar la extracción en tubos vacuteiner con heparina sódica y enviarlos en los mismos.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	-	61	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2706	CARNITIN	listo	2318	649	\N	559	2130	https://drive.google.com/file/d/1aLzqVr5mz3uk1CI111N8LeAD49r1xlbw/view?usp=sharing	Ver MODELO DE INFORME	22	listo	CAR	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2707	CATOHPLC	listo	2319	644	\N	608	2142	CATECOLAMINAS URINARIAS\n\nPACIENTE: ORINA DE 24 HORAS.\nDebe recolectarse con DIETA previa: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, palta, berenjenas, ananá, chocolate, ciruelas, maní, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), te ni café.\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24hs: a las 07:00 h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 07:00 h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\n\nLABORATORIO\nRemitir 30 ml de orina de 24hs con pH 2-3, recolectada con dieta previa. Indicar diuresis y datos del paciente.	\N	22	listo	CATFU	1	Laboratorio SBLab	En Datatech tiene una determinacion fantasma (4), pasa por defecto un guion.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2708	CD20	discontinuado	2860	608	\N	564	\N	\N	\N	4	listo	LBCD20	1	Laboratorio SBLab	Se transfiere a IICT.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2709	CORURI-N	listo	2381	634	\N	609	1828	CORTISOL LIBRE URINARIO\n\nPACIENTE\nEl día previo a concurrir al laboratorio comenzar con la recolección de la ORINA DE 24h.\n- Vaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a las 8 horas o la hora que elija.\n- Anotar la hora de descarte para tomarla como hora de inicio.\n- Recolectar TODAS las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha. No perder ninguna muestra de orina.\n- Conservar en heladera hasta su entrega.	21 a 111  µg/24h	3	verificado	CORURI	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2710	CORSAL	listo	2382	634	94	610	1823	https://drive.google.com/file/d/1f3EIfj2r6cOxhizvs0wh8M74t5FJ6onR/view?usp=drive_link	Ver MODELO DE INFORME	3	verificado	COR08	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2711	CORSAL08	listo	2383	634	\N	610	1824	CORTISOL SALIVAL\n\nPACIENTE\nSe recomienda no comer, beber (excepto agua), fumar, ni cepillarse los dientes durante las 2-3 horas previas a la toma de muestra. \nEnjuagar la boca con agua, sin cepillar los dientes.\nEn el horario indicado en la orden médica, salivar en un frasco estéril (recolectar la mayor cantidad posible).\nConservar en heladera hasta su entrega.	1.4 a 10.1 ng/ml	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2712	CORSAL12	listo	2384	634	\N	610	1825	CORTISOL SALIVAL\n\nPACIENTE\nSe recomienda no comer, beber (excepto agua), fumar, ni cepillarse los dientes durante las 2-3 horas previas a la toma de muestra. \nEnjuagar la boca con agua, sin cepillar los dientes.\nEn el horario indicado en la orden médica, salivar en un frasco estéril (recolectar la mayor cantidad posible).\nConservar en heladera hasta su entrega.	-	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2713	CORSAL18	listo	2385	634	\N	610	1826	CORTISOL SALIVAL\n\nPACIENTE\nSe recomienda no comer, beber (excepto agua), fumar, ni cepillarse los dientes durante las 2-3 horas previas a la toma de muestra. \nEnjuagar la boca con agua, sin cepillar los dientes.\nEn el horario indicado en la orden médica, salivar en un frasco estéril (recolectar la mayor cantidad posible).\nConservar en heladera hasta su entrega.	-	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2714	CORSAL22	listo	2386	634	\N	610	1827	CORTISOL SALIVAL\n\nPACIENTE\nSe recomienda no comer, beber (excepto agua), fumar, ni cepillarse los dientes durante las 2-3 horas previas a la toma de muestra. \nEnjuagar la boca con agua, sin cepillar los dientes.\nEn el horario indicado en la orden médica, salivar en un frasco estéril (recolectar la mayor cantidad posible).\nConservar en heladera hasta su entrega.	0.7 a 2.2 ng/ml	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2715	FISH 12	listo	2399	610	81	611	2040	https://drive.google.com/file/d/1qr11mtxwMr2G0gWRWrgUdua7jj1ftdEV/view?usp=sharing	-	22	listo	STC12	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2716	DIMETFEN	listo	2407	655	\N	571	2148	DIMETOXIFENILETILAMINA, 3, 4 (DMFA)\n\nPACIENTE\nDebe recolectarse con DIETA previa: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, palta, berenjenas, ananá, chocolate, ciruelas, maní, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), te ni café.\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24hs: a las 07:00 h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 07:00 h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.	\N	15	listo	DMFEA	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2717	DOPA O	listo	2410	644	\N	608	2146	DOPAMINA URINARIA\n\nPACIENTE: ORINA DE 24 HORAS.\nDebe recolectarse con DIETA previa: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, palta, berenjenas, ananá, chocolate, ciruelas, maní, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), te ni café.\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24hs: a las 07:00 h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 07:00 h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\n\nLABORATORIO\nRemitir 30 ml de orina de 24hs con pH 2-3, recolectada con dieta previa. Indicar diuresis y datos del paciente.	\N	22	listo	DOPD	1	Laboratorio SBLab	Valor de referencia en Datatech duplicado (texto y configuración de análisis).	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2725	GALA1	listo	2466	658	93	594	2132	GALACTOSA 1-URIDIL FOSFOTRANSFERASA\n\nLABORATORIO\nRemitir el papel impregnado con sangre y datos del paciente. Conservar a temperatura ambiente.\nObtener la muestra dentro del primer mes de vida. Se recomienda la toma de muestra entre el 2° y 6° día de vida, 24hs despues de iniciada la alimentacion lactea.\nUtilizar el papel de filtro adecuado: S&S 903.\nNo superponer gotas de sangre sobre el mismo punto del papel.	\N	17	listo	GALA1	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2726	ANTI-GAN	listo	2469	605	\N	588	2067	https://drive.google.com/file/d/1Gkfl-Ysb4U-kL_p4SmTdSe5q8XMelECp/view?usp=sharing	Ver MODELO DE INFORME	15	listo	PAG	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2727	GASTRINA	discontinuado	2470	634	\N	588	1888	\N	-	11	pendiente	GASTRI	1	Laboratorio SBLab	Se comienza a derivar a LABMEDICINA. Las unidades y valores de referencia no cambian.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2728	VDK	listo	2489	659	\N	614	2176	GRASAS, CUANTITATIVO (VAN DE KAMER) - MATERIA FECAL\n\nPACIENTE\nLos días 4, 5 y 6 de la dieta, recoger toda la muestra de materia fecal de cada día en frascos separados, rotulados, indicando día de recolección, nombre y apellido del paciente. Remitir al laboratorio.\nDIETA: durante 6 días ingerir diariamente y en su totalidad:\nLACTANTES: 800ml de leche entera en la que se disuelven 2 cucharadas de crema de leche.\nNIÑOS DE 2 A 5 AÑOS: 400ml de leche entera, 1 cucharada de crema de leche y 20g de manteca.\nNIÑOS DE 5 A 12 AÑOS: 300ml de leche entera, 2 cucharadas de crema de leche y 25g de manteca.\nADULTOS: 50g de manteca, 3 cucharadas de crema de leche, 1 huevo duro, 2 fetas de jamón crudo, 50g de queso cremoso, 300ml de leche entera, 2 bifes o costeletas de carne vacuna a la plancha, 1 taza de caldo, galletitas de agua.	📋	8	listo	VANKAM	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2729	AR5	listo	2532	660	\N	588	1913	\N	NEGATIVO	3	listo	AR5	1	Laboratorio SBLab	Se corrigio el codigo de Hexalis porque estaba asignado equivocadamente. Se superponia con la derivacion a SEMIR.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2730	ANTIHIST	listo	2533	641	\N	588	2044	\N	Menor a 0.9	8	listo	HIST	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2731	ANTI-HU	discontinuado	2551	622	\N	588	2073	\N	-	29	listo	HUAC	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2732	INT 1-B	listo	2607	634	\N	559	2109	\N	Menor a 5.0 pg/ml	8	listo	INT	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2733	INTER-8	listo	2608	634	\N	551	2110	\N	Menor a 62.0 pg/ml	8	listo	INT8	1	Laboratorio SBLab	Se modifica en tipo de muestra (estaba cargada por error SUERO)	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2734	IOMF	listo	2609	661	\N	579	1693	\N	\N	8	listo	IOMF	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2735	JA	listo	2616	644	93	594	2165	JARABE DE ARCE - LEUCINA, NEONATAL\n\nLABORATORIO\nRemitir el papel impregnado con sangre y datos del paciente. Conservar a temperatura ambiente.\nObtener la muestra dentro del primer mes de vida. Se recomienda la toma de muestra entre el 2° y 6° día de vida, 24h después de iniciada la alimentación láctea.\nUtilizar el papel de filtro adecuado: S&S 903.\nNo superponer gotas de sangre sobre el mismo punto del papel.	\N	18	listo	JA	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2736	LAMOTRIG	discontinuado	2622	621	\N	559	2096	\N	\N	15	pendiente	LAMO	1	Laboratorio SBLab	Se deriva a LABMEDICINA.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2737	LEPTINA	listo	2624	662	\N	559	2133	https://drive.google.com/file/d/1FPz7Ql9VJbNStd9xxuB5y626f_1XVZcr/view?usp=sharing	Ver MODELO DE INFORME	22	listo	LEPT	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2738	MACROPRL	listo	2634	663	\N	559	1840	https://drive.google.com/file/d/1zTgHA-KIgX-WDAgm6E2NcEd520IhAKUY/view?usp=sharing	📋	3	listo	PROPEG	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2739	MAG.SGPG	listo	2635	664	\N	588	2069	\N	NEGATIVO	29	listo	MAG	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2740	METANEF	listo	2645	644	\N	599	2143	METANEFRINAS FRACCIONADAS URINARIAS\n\nPACIENTE: ORINA DE 24 HORAS.\nDebe recolectarse con DIETA previa: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, palta, berenjenas, ananá, chocolate, ciruelas, maní, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), te ni café.\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24hs: a las 07:00 h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 07:00 h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\n\nLABORATORIO\nRemitir 30 ml de orina de 24hs con pH 2-3, recolectada con dieta previa. Indicar diuresis y datos del paciente.	\N	17	listo	METANE	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2741	MOFEG	listo	2658	665	\N	615	2141	\N	1.5 a 5.5 µg/l	19	listo	MOFEGP	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2742	TELOPEP	listo	2667	605	\N	616	1768	\N	200 a 800 µg/mmol/Cr	2	listo	NTX	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2743	AC.POLIS	discontinuado	2669	666	\N	559	2107	https://drive.google.com/file/d/1aVtALB8iM19Dx6KYPf51-snhFtygpRTH/view?usp=sharing	-	16	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2744	NORAURI	listo	2671	644	82	608	2140	NORADRENALINA URINARIA\n\nPACIENTE: ORINA DE 24 HORAS.\nDebe recolectarse con DIETA previa: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, palta, berenjenas, ananá, chocolate, ciruelas, maní, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), te ni café.\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24hs: a las 07:00 h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 07:00 h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\n\nLABORATORIO\nRemitir 30 ml de orina de 24hs con pH 2-3, recolectada con dieta previa. Indicar diuresis y datos del paciente.	\N	22	listo	NORAD	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2745	OCRESOL	listo	2676	667	\N	617	2111	ORTO CRESOL\n\nPACIENTE\nRecolectar una muestra de orina al término de la jornada laboral en un recipiente estéril. Mantener refrigerada hasta remitirla al laboratorio.	Menor a 0.3 mg/gCr	15	listo	OCRESOL	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2746	PEP-C-OR	listo	2700	634	82	596	1816	PEPTIDO C URINARIO\n\nRECOLECCION ORINA DE 24 HORAS\n\nUtilizar recipiente limpio y seco.\n\nVaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a\nlas 8 horas o la hora que elija.\n\nAnotar la hora de descarte para tomarla como hora de inicio.\n\nRecolectar todas las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha.\n\nConservar en heladera. Y llevar al laboratorio lo antes posible. No perder ninguna muestra de orina.\n\nSi además se solicita en la misma orden médica ORINA COMPLETA, se debe recolectar la primera orina de la mañana del segundo día en un recipiente separado\ny notificar al técnico o administrativo.	3.6 - 156.0 µg/24h	2	listo	PEPC-U	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2748	ANTIPLAQ	listo	2706	608	\N	618	2063	LABORATORIO\nRemitir al laboratorio dentro de las 24h de la extracción 3 ml de sangre entera con EDTA.\nConservar a T. ambiente.\nNo centrifugar.\nNo congelar.	\N	8	listo	PQAC	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2749	RENINA	discontinuado	2737	634	96	619	1867	LABORATORIO\nSi la muestra debe ser tomada con el paciente acostado, el paciente debe reposar 30 minutos en camilla antes de la extracción.\nRemitir 1,0ml de plasma con EDTA congelado. Ayuno de 4hs.	-	4	pendiente	RENA O RENP	1	Laboratorio SBLab	Se pasa a procesar en CIBIC.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2750	ROSABENG	listo	2747	668	\N	588	1904	\N	NEGATIVO	2	listo	ROB	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2751	ASCA	listo	2751	660	\N	588	2006	https://drive.google.com/file/d/1ZvBs483UMXJN7xn4v0ETz1vEb-PDE6Dq/view?usp=sharing	Ver MODELO DE INFORME	3	listo	ASCA	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2752	TIROG/AS	listo	2792	634	\N	620	1803	\N	-	3	listo	TIROGN	1	Laboratorio SBLab	Falta configurar el codigo externo en Hexalis para que se pueda poner el mnemonico de Datatech	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2753	TIR	listo	2794	644	\N	559	1806	\N	Menor a 196 µmol/l	19	listo	TIR	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2754	TOXTETAN	listo	2804	660	\N	559	1894	https://drive.google.com/file/d/1zq0f5ZEYiZNDIsPc67pFvlW3IYUejBGP/view?usp=sharing	Ver MODELO DE INFORME	3	listo	TEAP	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2755	TRI	listo	2827	605	93	594	2166	\N	Menor a  75 ng/ml	12	listo	TRIN	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2756	NEON6	inactivo	2757	605	93	594	2161	\N	-	12	pendiente	NEO6	1	Laboratorio SBLab	Se usa cuando no hay derivaciones a FBA. Esta inactivo en este momento.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	52	\N
-2757	ADENO-G	listo	2224	669	\N	559	1949	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2758	AC-ADREN	inactivo	2228	670	\N	621	2062	\N	\N	16	pendiente	\N	1	Laboratorio SBLab	Codigo de facturacion inactivo. Se envia mail a Fernanda.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2759	E.N.A.	listo	2253	660	\N	559	2048	\N	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	La paridad esta hecha con una sola determinacion. En Datatech se pone una nota de VER INFORME ADJUNTO.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2760	AMC	listo	2254	669	\N	559	2045	\N	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2761	ANTICENT	listo	2332	669	\N	559	2047	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2762	CHAIFI	listo	2338	669	\N	559	1911	\N	NEGATIVO	5	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2763	CHLAPSIG	listo	2343	669	\N	559	1962	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2764	CHLA/PSI	listo	2344	669	\N	559	1961	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2765	PP65 CMV	inactivo	2881	\N	\N	\N	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	Codigo de facturación inactivo. Se envia mail a Fernanda.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2766	ANCA C	listo	2359	669	\N	559	\N	\N	NEGATIVO	8	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2767	ANCA P	listo	2360	669	\N	559	\N	\N	NEGATIVO	8	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2768	COXSA-G	pendiente	2882	670	\N	559	\N	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	Codigo de facturacion inactivo. Se envia mail a Fernanda.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2769	COXSA-M	listo	2388	669	\N	559	1966	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2770	DNA	listo	2408	669	\N	559	\N	\N	NEGATIVO	5	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2771	ECHOVI-G	listo	2412	669	\N	559	1968	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2772	ECHOVI-M	listo	2413	669	\N	559	1967	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2773	AAE-IGA	listo	2417	669	\N	559	2084	\N	NEGATIVO	4	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2774	AAE-IGG	listo	2418	669	\N	559	2085	\N	NEGATIVO	4	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2775	FAN	listo	2444	671	\N	559	2043	\N	NEGATIVO	5	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2776	FTA ABS	listo	2464	669	\N	559	1902	\N	NEGATIVO	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2777	HEPBEAC	listo	2508	672	\N	559	1925	\N	NO REACTIVO	5	verificado	\N	1	Laboratorio SBLab	Se incluyen valores normales en Hexalis y se actualiza el método en Hexalis y Datatech	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2778	HEPBCG	listo	2510	673	\N	559	1922	\N	NO REACTIVO	5	listo	\N	1	Laboratorio SBLab	No inclui valores normales en Hexalis porque no se como se informa.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2779	HEPBEAG	listo	2513	674	\N	559	1924	\N	NO REACTIVO	5	verificado	\N	1	Laboratorio SBLab	Se incluyen valores normales en Hexalis y se actualiza el método en Hexalis y Datatech	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2780	HERPE6 G	listo	2528	669	\N	559	1938	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2781	HERPE6 M	listo	2529	669	\N	559	1937	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2782	HIDAGIFI	listo	2530	669	\N	559	1914	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2783	HIDAMIFI	listo	2531	669	\N	559	1912	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2784	LEPTMAT	discontinuado	2883	675	\N	559	\N	\N	\N	4	pendiente	\N	1	SIN ASIGNAR	Codigo de facturacion inactivo. Se envia mail a Fernanda.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2785	AME	listo	2659	669	\N	559	2057	\N	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2786	ANTI-OVA	pendiente	2884	669	\N	559	\N	\N	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	Codigo de facturacion inactivo. Se envia mail a Fernanda.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2787	PARA1ACG	listo	2686	628	\N	559	\N	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2788	PARA1ACM	listo	2687	628	\N	559	1984	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	No tiene valor de referencia en Datatech	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2789	PARA3ACG	listo	2690	628	\N	559	1988	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2790	PARA3ACM	listo	2691	628	\N	559	1987	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	No tiene valor de referencia en Datatech	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2791	PAROTID	listo	2694	628	\N	559	1972	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2792	PARO/IGM	listo	2695	628	\N	559	1971	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2793	SARAMP G	listo	2754	669	\N	559	1977	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2794	SARAMP	listo	2755	669	\N	559	1976	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2795	SINCI	listo	2763	669	\N	559	1952	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	No tiene valores de referencia en Datatech	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2797	TOXOCARA	listo	2802	673	\N	559	2005	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	Texto en Datatech: Pueden presentarse reacciones cruzadas con otros ascáridos, especialmente Áscaris lumbricoides.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2798	TOXOCA-M	listo	2803	673	\N	559	2004	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	Texto en Datatech: Pueden presentarse reacciones cruzadas con otros ascáridos, especialmente Áscaris lumbricoides.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2799	FTA-IgM	listo	2820	669	\N	559	1903	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2800	TRICHI	listo	2821	673	\N	559	2000	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	No tiene valores de referencia en Datatech	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2801	664623A	pendiente	2885	676	\N	559	\N	\N	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	Solo se usa cuando el ENA es POSITIVO. No tiene paridad con DATATECH.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2802	TRICHI-M	listo	2822	673	\N	559	1999	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	No tiene valores de referencia en Datatech	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	53	\N
-2803	ANTI-HID	listo	2197	605	\N	559	2050	https://drive.google.com/file/d/1aTBEIKuwrDnOrBq61jeS2UeCTMJnhSmc/view?usp=sharing	Ver MODELO DE INFORME	33	verificado	4412.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2804	ACIDOMET	listo	2208	677	\N	597	2124	https://drive.google.com/file/d/13zsTtypTAuMbY4b9lCFqFl2HqjeMUu13/view?usp=sharing	Menor a 3.6 mmol/molCr	32	verificado	1723.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2805	ACTH	listo	2219	629	\N	551	1821	PACIENTE\nDeterminación: ACTH – HORMONA ADRENOCORTICOTROFINA\nMuestra: SANGRE.\nPreparación previa: Mantener el ritmo sueno-vigilia durante los días previos. Ayuno de 4-8 horas. Actividad moderada horas antes de la prueba y fundamentalmente en los 30 minutos previos a la extracción de sangre.  Presentarse al Laboratorio por la mañana para poder realizar la extracción alrededor de las las 8 horas.\nToma de muestra: Punción venosa.\nDatos adicionales: Informar al Laboratorio que medicamentos está tomando.\nVersión: 1.0 (22-SEP-2025)\n\nLABORATORIO\nConservar la muestra congelada si no es enviada en el día de toma de muestra.	7.2 a 63.3 pg/ml	3	verificado	6.0	1	Laboratorio SBLab	04/08/2026 Se cambia a muestra congelada.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2806	PCR ADEN	listo	2223	609	81	622	\N	\N	NO DETECTABLE	3	listo	2145.0	1	Laboratorio SBLab	19/06/2026 Se inactiva porque se procesa en BMSB. 10/07/2026 Se activa para otras muestras.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2807	ANTI-ADR	listo	2228	669	\N	559	2062	https://drive.google.com/file/d/1_AO6Rd-eHEqlGrfxp874SDrA6iOnkpNZ/view?usp=sharing	Ver MODELO DE INFORME	5	listo	1924.0	1	Laboratorio SBLab	Se agrega una determinacion (Titulo) en Datatech	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2808	ALDO/OR	listo	2234	634	82	623	1871	Determinación: ALDOSTERONA URINARIA\nMuestra: ORINA DE 24 HORAS.\nPreparación previa: Se recomienda no recolectar muestras de orina durante el período menstrual. En caso contrario junte cada muestra higienizando previamente y colocándose un tampón vaginal.\nToma de muestra: El día previo a concurrir al laboratorio comenzar con la recolección de la ORINA DE 24h.\n- Vaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a las 8 horas o la hora que elija.\n- Anotar la hora de descarte para tomarla como hora de inicio.\n- Recolectar TODAS las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha. No perder ninguna muestra de orina.\n- Mantener en un lugar fresco y al abrigo de la luz. \nDatos adicionales: Cualquier medicación que esté tomando al momento de realizar el \nestudio debe ser comunicada cuando se entrega muestra.\nVersión: 01 (20/NOV/2025)	1.1 a 30.0  μg/24h	6	listo	1019.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2809	BENCE	listo	2267	678	82	623	1755	Determinación: BENCE JONES, PROTEINAS DE\n\nMuestra: ORINA DE 24 HORAS.\nPreparación previa: Se recomienda no recolectar muestras de orina durante el período menstrual. En caso contrario junte cada muestra higienizando previamente y colocándose un tampón vaginal.\nToma de muestra: El día previo a concurrir al laboratorio comenzar con la recolección de la ORINA DE 24h.\n- Vaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a las 8 horas o la hora que elija.\n- Anotar la hora de descarte para tomarla como hora de inicio.\n- Recolectar TODAS las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha. No perder ninguna muestra de orina.\n- Mantener en un lugar fresco y al abrigo de la luz. \nDatos adicionales: Cualquier medicación que esté tomando al momento de realizar el \nestudio debe ser comunicada cuando se entrega muestra.\nVersión: 01 (02/ENE/2026)	-	17	listo	108.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2810	BORREL-G	listo	2283	605	\N	559	1959	https://drive.google.com/file/d/1K6a_w068eSDoyjMy3TlF39OCSN378J63/view?usp=sharing	Ver MODELO DE INFORME	5	listo	1234.0	1	Laboratorio SBLab	Se modifico metodo en Datatech desde IFI a ELISA	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2811	BORREL-M	listo	2284	605	\N	559	1957	https://drive.google.com/file/d/14mSMjFzlPseaIRGwdqxVtMtXx6OiBW9r/view?usp=sharing	Ver MODELO DE INFORME	5	listo	1235.0	1	Laboratorio SBLab	Se modifico metodo en Datatech desde IFI a ELISA	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2812	C1INHIB	listo	2290	541	\N	559	1636	\N	15 a 35 mg/dl	3	listo	1803.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2813	CYFRA 21	listo	2295	629	\N	559	1878	\N	Menor a 3.2 ng/dl	4	listo	2257.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2814	CALCITO	listo	2305	615	\N	588	1830	\N	📋	3	listo	137.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2815	CHAPCR	listo	2339	679	\N	587	2001	https://drive.google.com/file/d/1DEq3GSi3ktYTLD2r-ye8Y2GEJBA4eim2/view?usp=sharing	Ver MODELO DE INFORME	12	listo	1486.0	1	Laboratorio SBLab	Agregar modelo de informe	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2816	ChlaPAg	listo	2340	609	\N	624	\N	https://drive.google.com/file/d/1TF6ToZbCMQCxonPwYMh5zgCM3xgLKiK4/view?usp=sharing	NO DETECTABLE	5	listo	2513.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2817	CMVPCR-M	listo	2351	609	\N	625	2016	https://drive.google.com/file/d/1R9g6IKF32cjG5uiVWEVxu-s-mpIctJtn/view?usp=sharing	NO DETECTABLE	4	listo	1543.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2818	C1	listo	2374	541	\N	559	\N	\N	10.0 a 20.0 mg/dl	4	listo	1802.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2819	PCR-ENTE	listo	2420	680	81	626	1970	https://drive.google.com/file/d/1ordOsqaUU2N-uxgceG8Nw6zv1Swr8_zH/view?usp=sharing	NO DETECTABLE	4	listo	1471.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2820	PANEL AC	listo	2431	641	\N	559	\N	https://drive.google.com/file/d/11lgE0HYwu0Nhrq2lYtZwYBYfXbnvdHKg/view?usp=sharing	-	21	listo	2818.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2821	PCRHELIC	listo	2493	609	81	627	\N	\N	-	10	revisar	1453.0	1	Laboratorio SBLab	No se genero en Hexalis. Revisar con un paciente de prueba. 22N 268188.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2822	H.C.H.	listo	2498	609	\N	587	\N	\N	NO DETECTABLE	6	listo	2450.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2823	HEV-RNA	listo	2518	680	81	628	\N	https://drive.google.com/file/d/1dhYcYy4iZIGriRaIO4NjnegFJHkFKVq9/view?usp=sharing	NO DETECTABLE	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2824	HERPES	listo	2523	609	\N	629	1939	https://drive.google.com/file/d/1AhIA_FzzkTX9i60rHVgDRptputX_awNF/view?usp=sharing	NO DETECTABLE	4	listo	1559.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2825	666222	pendiente	2207	605	\N	551	2112	LABORATORIO\nLuego de la extracción en tubos con EDTA, centrifugar 10 minutos a 2500 - 2700 rpm, separar el plasma inmediatamente y conservar refrigerado. Remitir inmediatamente.	Menor a 10.00 nM/l	16	listo	1996.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2826	PCR HIST	listo	2535	609	81	630	1996	https://drive.google.com/file/d/1oTCBQUADBXYn9DHwpZ6TQNoeL8AT5y8U/view?usp=sharing	NO DETECTABLE	9	listo	4408.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2827	HIVWB	listo	2540	681	\N	588	\N	https://drive.google.com/file/d/1G3-G_NyUk4KnYQUurQ7UFKEUPZd31PWS/view?usp=sharing	NEGATIVO	5	listo	1255.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2828	HLA-B51	listo	2543	682	\N	631	\N	\N	\N	38	listo	2268.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2829	DQ2 DQ8	listo	2544	609	\N	632	\N	https://drive.google.com/file/d/1kPrZnDkku82l5XUWN4iuRbionflN0q9e/view?usp=sharing	Ver MODELO DE INFORME	6	listo	7011.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2830	HLAB51	listo	2546	683	\N	631	\N	\N	NO DETECTABLE	6	listo	2714.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2831	PCRHTLV (41)	listo	2549	684	\N	633	2008	https://drive.google.com/file/d/1qtQhoVgoReYE0zAro-tgV-GpjdeV8pG2/view?usp=sharing	Ver MODELO DE INFORME	16	listo	7061.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2832	RAST CAL	listo	2561	634	\N	559	\N	\N	Ver MODELO DE INFORME	7	listo	560.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2833	RAST DCF	listo	2566	605	\N	559	\N	https://drive.google.com/file/d/1uNGQFk8g4m0SxSaEM8UjesjyrPIeHc3e/view?usp=sharing	Ver MODELO DE INFORME	15	listo	564.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2834	RAST IBP	listo	2568	605	\N	559	\N	https://drive.google.com/file/d/1bGu_48P7ooVY1-bDfl-niEZQ0VhxNhbU/view?usp=sharing	Ver MODELO DE INFORME	15	listo	564.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2835	RAST LAN	listo	2570	634	\N	559	\N	\N	Ver MODELO DE INFORME	7	listo	560.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2836	RAST MER	listo	2571	634	\N	559	\N	\N	Ver MODELO DE INFORME	7	listo	560.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2837	RAST PCT	listo	2572	605	\N	559	\N	https://drive.google.com/file/d/1B1x0MRHmY1n4Q9ZhfItAoDN8hwJfjKdC/view?usp=sharing	Ver MODELO DE INFORME	15	listo	564.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2838	PAI-BIOL	listo	2584	685	\N	634	1639	\N	9.4 - 26.3 AU/ml	13	listo	1825.0	1	Laboratorio SBLab	Se crea temporalmente en reemplazo del PAI-BIOL de LAHT. Se inactiva una vez se informe. 10/08/2026 SE INACTIVÓ	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2839	INTERL-6 (24)	listo	2606	615	\N	576	\N	\N	Menor a 0.7 pg/ml	3	listo	1533.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2840	MUSK	listo	2661	669	\N	559	\N	https://drive.google.com/file/d/1uVkkDTuFMtkbp6AHX8YaIByNjhmKUxnV/view?usp=sharing	NEGATIVO	13	listo	1520.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2841	MYCOGU	listo	2663	609	81	635	\N	https://drive.google.com/file/d/1E2mFjlHCMobO1SkqP8qKRVEh3RwuZ_m9/view?usp=sharing	Ver MODELO DE INFORME	9	listo	2934.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2842	MYCOPCR	listo	2664	609	81	636	\N	https://drive.google.com/file/d/1GHk8G8uAGJzBkIlHUsHsMnOJgcIc2hBM/view?usp=sharing	NO DETECTABLE	5	listo	2512.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2843	AC.POLIS (31)	listo	2669	605	\N	559	2107	https://drive.google.com/file/d/1eQbDn-7qIvCzlLiUPLzZVgGh7PDlndk8/view?usp=sharing	Ver MODELO DE INFORME	8	listo	1121.0	1	Laboratorio SBLab	Previamente se enviaba a TURNER	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2844	PANELHEP (37)	listo	2682	641	\N	559	2074	https://drive.google.com/file/d/1-3fLt2yVO22nZa5bJGfaq30LD4IudS0d/view?usp=sharing	Ver MODELO DE INFORME	7	listo	1938.0	1	Laboratorio SBLab	El nombre anterior era  PANEL DE ANTICUERPOS AUTOINMUNES HEPATICOS	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2845	PCR PARV	listo	2696	609	81	637	\N	https://drive.google.com/file/d/1T4nOwILSSxwZcJmgShpJ2eusSbjllyYj/view?usp=sharing	NO DETECTABLE	5	listo	2901.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2846	BK CUANT	listo	2712	609	81	638	1932	https://drive.google.com/file/d/1oSOutiKgjAp9KSxsM2nJVcOeC-lSS3L1/view?usp=sharing	NO DETECTABLE	5	listo	4211.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2847	BK CUALI	listo	2713	609	81	639	1931	https://drive.google.com/file/d/14fBzADdr-CNpxKsvJwKCutuhCiTXYPxl/view?usp=sharing	NO DETECTABLE	5	listo	4212.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2848	PREALB (16)	listo	2715	541	\N	559	\N	\N	20.0 a 40.0 mg/dl	4	listo	2285.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2849	PREECLAM (17)	listo	2716	629	87	559	\N	https://drive.google.com/file/d/1cGulIixm3Zngk-EPcIuBfHI_me9wdunS/view?usp=sharing	Ver MODELO DE INFORME	3	listo	2331.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2850	AC.RECOV (32)	listo	2736	605	\N	578	2075	https://drive.google.com/file/d/1epmZt2FUoTmQG3PVL4XmuvTE6rX5pM53/view?usp=sharing	Ver MODELO DE INFORME	10	listo	6784.0	1	Laboratorio SBLab	Se modifica el modelo de informe.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2851	RENINA (14)	listo	2737	634	96	581	1867	Determinación:\nRENINA-ANGIOTENSINA PLASMATICA\nMuestra: SANGRE.\nPreparación previa: Ayuno de 8 horas. No ingerir alcohol desde dos días antes de la prueba. Hay medicamentos que pueden alterar los resultados, de cualquier manera sólo debería suspender cualquier medicación que esté tomando si esa fue la indicación de su médico al prescribir los análisis.\nDe no existir alguna indicación médica con respecto al consumo de sal, se debe hacer una dieta balanceada y normal, sin restringir el consumo de sodio, durante 3 días previos a la toma de muestra. \nToma de muestra: Concurrir al laboratorio con 8 horas de ayuno, entre las 7:00 y 10:00 h. No ingerir alcohol desde dos días antes de la prueba. Si la orden médica indica posición "acostado" o supina, el paciente deberá permanecer acostado en el laboratorio 30 minutos antes de la extracción, si indica de pie, debe permanecer de pie (ya sea inmóvil o en movimiento) durante los 30 minutos inmediatamente anteriores a la extracción de sangre. En ambos casos, la extracción se realizará sentado. El estímulo será el indicado por el médico. \nDatos adicionales: Medicación habitual.\nVersión: 1.0 (12-JUN-2025)	\N	8	listo	2821.0	1	Laboratorio SBLab	Se configuro envio CONGELADO en el flujo de trabajo de AMS. 660812 SI	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2930	NEO-6	listo	2757	568	100	594	2161	https://drive.google.com/file/d/1s-hU3eg3rnUcs59233_Oqwn0XbZBkIpl/view?usp=sharing	Ver MODELO DE INFORME	13	listo	\N	1	Laboratorio SBLab	Se activa en Hexalis	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	62	\N
-2968	PIV PCR	listo	2915	609	81	655	\N	\N	NO DETECTABLE	3	listo	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2852	REN (13)	listo	2738	634	96	581	\N	Determinación: RENINA, ACTIVIDAD\n\nPACIENTE\nMuestra: SANGRE.\nPreparación previa: Concurrir al laboratorio con 8 h de ayuno, entre las 7:00 y 10:00 h. No ingerir alcohol desde dos días antes de la prueba. Hay medicamentos que pueden alterar los resultados, de cualquier manera sólo debería suspender cualquier medicación que esté tomando si esa fue la indicación de su médico al prescribir los análisis. De no existir alguna indicación médica con respecto al consumo de sal, se debe hacer una dieta balanceada y normal, sin restringir el consumo de sodio, durante 3 días previos a la toma de muestra. \nToma de muestra: Si la orden médica indica posición "acostado" o supina, el paciente deberá permanecer acostado en el laboratorio 30 minutos antes de la extracción, si indica de pie, debe permanecer de pie (ya sea inmóvil o en movimiento) durante los 30 minutos inmediatamente anteriores a la extracción de sangre. En ambos casos, la extracción se realizará sentado. El estímulo será el indicado por el médico. \nDatos adicionales: Medicación habitual.\nVersión: 1.0 (12-JUN-2025)\n\nLABORATORIO\nLuego de la extracción en tubos con EDTA, centrifugar 10 minutos a 2500-2700 rpm, separar el plasma inmediatamente y conservar refrigerado. Remitir inmediatamente.	📋	8	listo	2725.0	1	Laboratorio SBLab	Se configuro envio CONGELADO en el flujo de trabajo de AMS. 660812 NO	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2853	ARET-IgA (33)	listo	2740	669	\N	559	\N	\N	NEGATIVO Título menor a 1/10	10	listo	2847.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2854	ANTI-RET (34)	listo	2742	605	\N	559	\N	https://drive.google.com/file/d/1wjAZsgz_hz0NLvS4_UAa84BCI7H7wra2/view?usp=sharing	Ver MODELO DE INFORME	10	revisar	6782.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2855	ANTI-RI (35)	listo	2743	628	\N	559	2072	https://drive.google.com/file/d/12cO7xNq9uTJH-5QxF3s4bB9CmWXrLV_B/view?usp=sharing	Ver MODELO DE INFORME	10	listo	1250.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2856	ANTI-RIB	listo	2744	641	\N	559	2056	\N	\N	14	listo	RIB	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2857	TTBLAS (21)	listo	2784	608	97	640	1739	\N	-	6	listo	995.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2858	DHT	listo	2787	605	\N	595	1848	\N	📋	35	listo	1123.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2859	TRICHPCR	listo	2823	609	81	641	2030	https://drive.google.com/file/d/1NkGANa7nuKw50mrrdXMCTfDAahxmzL6b/view?usp=sharing	Ver MODELO DE INFORME	11	listo	7044.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2860	PCRVARI	listo	2840	609	81	629	1975	https://drive.google.com/file/d/1Imveq6-8MdJEcoKO_rH03WEDZCa0qYTN/view?usp=sharing	NO DETECTABLE	4	listo	2603.0	1	Laboratorio SBLab	f	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2861	VIT-C	listo	2849	644	\N	559	2118	\N	4.0 a 20.0 mg/l	5	listo	1937.0	1	Laboratorio SBLab	S	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	54	\N
-2862	ACIDO5	listo	2198	686	82	571	\N	Determinación: ACIDO 5 HIDROX-INDOL ACETICO URINARIO\n\nMuestra: ORINA 24h\n\nPreparación previa:\nDurante 3 días el paciente no debe ingerir: bananas, tomates, chocolate, cacao, vainilla, ni ningún alimento que los contenga (tortas, cremas, postres, helados, etc.). \nNo debe beber té, café, mate ni gaseosas. Debe realizar poco ejercicio físico. \n\nToma de muestra:\nAl cuarto día y continuando con la dieta, debe recolectar ORINA DE 24h. de la siguiente manera:\nEl día que inicia la recolección, puntualmente a las 8 h, o a la hora que usted elija (anótela....) orina en el inodoro, tratando de vaciar bien la vejiga,y desechando esa muestra. \nA partir de este momento, debe recolectar todas las muestras de orina del día y de la noche y toda la cantidad, en el colector para orina de 24 h de boca ancha, sin perder ninguna micción.\nDebe recolectar hasta las 8h del día siguiente o hasta la hora que usted eligió inclusive (anótela....)\nLas 24h se cuentan a partir del momento que se orina en el inodoro y se descarta la orina. Cumpla estrictamente los horarios de inicio y finalización de la recolección , y recoja TODO el volumen TODAS las veces que orine.\nRemita la muestra de su orina dentro de las 24h de finalizar su recolección. Consérvese en heladera.\n\nDatos adicionales: -\n\nVersión: 01 (01/JUN/2026)	2.00 a 9.00 mg/24h	8	listo	HI5	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2863	FOLI ERI	listo	2202	629	\N	642	\N	\N	523 a 1257 ng/ml	3	listo	AFE2	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2864	ADENOSIN	listo	2221	687	81	643	1792	https://drive.google.com/file/d/1oaRzdk6LgCo2CMnMh7sDMX5OtBu9ab2j/view?usp=sharing	Ver MODELO DE INFORME	8	listo	DEA	1	Laboratorio SBLab	20/08/2026 CBOFFELLI Se corrigen los valores de referencia de ADENOSIN (662417) en base a un nuevo resultado recibido de IBC.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2865	ARSE/S	listo	2261	688	\N	576	1780	\N	0.00 a 15.00 µg/l	15	listo	ARS	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2866	BUFO O	listo	2289	689	82	644	2136	https://drive.google.com/file/d/1FBAzQdf37jdi9D8GOHnIhEUv25AcVLkU/view?usp=sharing	1.00 a 8.90 µg%	17	listo	BUF	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2867	CAD-LIBR	listo	2299	541	\N	559	1751	https://drive.google.com/file/d/1N5jEk1eE8lEPJwMNmFJZYmW-HEuERkaS/view?usp=sharing	Ver MODELO DE INFORME	8	listo	KLSL	1	Laboratorio SBLab	Cambiar modelo de informe	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2868	TD-DIG	inactivo	2405	629	\N	559	2091	\N	📋	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2869	FENILE	listo	2446	648	82	644	\N	PACIENTE\n\nMuestra: ORINA DE 24 HORAS.\nPreparación previa:\nDebe recolectarse con DIETA previa: durante tres días previos a la recolección de la muestra no ingerir bananas, tomates, chocolate, cacao, vainilla, ni ningún alimento que los contenga (tortas, cremas, postres, helados, etc.). \nNo debe beber té, café, mate ni gaseosas. Debe realizar poco ejercicio físico. \n\nToma de muestra:\nHacer durante tres días la dieta indicada. Al cuarto día y continuando con la dieta, recolectar la orina de 24h:\nA las 07:00 h orinar y descartar esa orina. \nA partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 07:00 h del día siguiente inclusive en un brocal.\nMantener refrigerada hasta el momento de llevarla al laboratorio. \nRemitir la muestra dentro de las 24h de completada la recolección.\n\nLABORATORIO\nRemitir al menos 300 ml de orina refrigerada.	130.00 a 450.00 µg/24h	17	listo	FEA	1	Laboratorio SBLab	Falta configurar indicaciones al paciente	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2870	GPX	inactivo	2488	647	\N	589	\N	\N	4171 a 10881 U/l	16	listo	GPX	1	Laboratorio SBLab	desactivada momentáneamente por falta de reactivo 24/07/26	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2871	INHIBINA	listo	2585	690	\N	559	\N	\N	📋	45	listo	INH	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2872	IFS	listo	2588	691	\N	559	1748	\N	-	11	listo	IFS	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2931	NEO-7	listo	2759	568	100	594	2162	https://drive.google.com/file/d/1sVIkY79biJwDeXA9NDVJanL8YWlZJoBk/view?usp=sharing	Ver MODELO DE INFORME	13	listo	\N	1	Laboratorio SBLab	Se corrige nombre en Datatech, dado que daba lugar a confusion respecto al SCREENING NEONATAL	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	62	\N
-2967	HPV PCR	listo	2684	609	81	667	2029	\N	NO DETECTABLE	21	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2873	IFO	listo	2589	691	82	645	1754	Determinación: INMUNOFIJACION URINARIA\nMuestras: ORINA DE 24 HORAS.\nPreparación previa: No requiere.\nToma de muestra: El día previo a concurrir al laboratorio comenzar con la recolección de la ORINA DE 24h.\n- Vaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a las 8 horas o la hora que elija.\n- Anotar la hora de descarte para tomarla como hora de inicio.\n- Recolectar TODAS las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha. No perder ninguna muestra de orina.\n- Conservar en heladera hasta su entrega.\nDatos adicionales: No aplica.\nVersión: 1.0 (15-SEP-2025)	-	11	listo	IFO	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2874	MF-FQM	listo	2640	692	\N	646	\N	https://drive.google.com/file/d/1468432z-m3X5ojqcKUOhu3NkWjnjTL0n/view?usp=sharing	-	4	listo	FMF	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2875	MIOGOR	listo	2654	693	\N	647	\N	\N	NEGATIVO	3	listo	MIO	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2876	ANTI-RIB	listo	2744	641	\N	559	2056	\N	NEGATIVO	14	listo	RIB	1	Laboratorio SBLab	Previamente se enviaba a CIBIC,  pero este ya no lo procesa.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2877	SEROPLA	inactivo	2761	644	\N	648	2135	Determinación: SEROTONINA PLAQUETARIA\nMuestra: SANGRE\nPreparación previa:\nDurante 4 días no ingerir bananas, palta, berenjenas, ananás, ciruelas y nueces.\nEvitar la ingesta de drogas inhibidoras de la monoaminooxidasa -  Isocarboxazida (Marplan), fenelzina (Nardil), tranilcipromina (Parnate), Selegilina (Eldepryl, Zelapar), rasagilina (Azilect), safinamida (Xadago) - por lo menos 7 días antes de la toma de la muestra. No suspender la medicación sin antes contactar a su médico.\nSe requieren 8 horas de ayuno. \nToma de muestra: Punción venosa.\nDatos adicionales: Informar el nombre de los medicamentos que recibe.\nVersión: 01 (01/AGO/2025)	📋	11	listo	SER	1	Laboratorio SBLab	Alta: 16/09/2025. Baja: 11/11/2025	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2878	TOXIGA	listo	2805	669	\N	559	1942	https://drive.google.com/file/d/12m6PgiCqG9pp_-Mi_8J82VLMEb4ym9qK/view?usp=sharing	NEGATIVO	6	listo	TOXOA	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2879	TOXO-AVI	listo	2807	629	\N	595	1945	https://drive.google.com/file/d/1dGnNNLZDdppK4TJaeg5bBE3DOiDnKo1Z/view?usp=sharing	Ver MODELO DE INFORME	6	listo	TOXA3	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	55	\N
-2880	ADENO AG	listo	2226	694	81	649	1950	https://drive.google.com/file/d/1LRjjcH50b96fixJb79G0tMIqHlgpfqjF/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2881	BORDET	listo	2277	695	81	650	2025	https://drive.google.com/file/d/1q_KKmXibmb7Z0_VY5CY-3XVV6EGhoC14/view?usp=sharing	NO DETECTABLE	6	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2882	BORM-IFI	listo	2282	669	\N	559	1955	\N	NEGATIVO	3	listo	16407.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2883	AC.ENTER	listo	2421	669	\N	559	1969	https://drive.google.com/file/d/1Zl10q7NR3kGh0AR05DZyqrjsR87DyTwH/view?usp=sharing	NEGATIVO	3	listo	2029.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2884	HISTO G	listo	2536	696	\N	559	1994	\N	NEGATIVO	10	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2885	INFLU AG	listo	2578	694	81	649	1980	https://drive.google.com/file/d/1zherE7E9oWEjNBVlMnQagNaYTAfLeR39/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2886	INF B Ag	listo	2582	694	81	649	\N	https://drive.google.com/file/d/1IfmNz4qYuGOJLf_FAB2Rfw5W9xOTQHuo/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2887	METAPNEU	listo	2647	694	81	649	\N	https://drive.google.com/file/d/1Oxz7Zcu7dEwxn4frNqdVwgL5K_cJQYh_/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2888	PREPCR	listo	2886	609	81	649	\N	\N	NEGATIVO	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2889	662745A	inactivo	2683	694	81	649	\N	https://drive.google.com/file/d/1dkOIiwTz9ARnVs2baxlDcHby6KJpQLXU/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2890	PRVPCR	listo	2887	609	81	649	\N	\N	NEGATIVO	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2891	PINFI  g	listo	2688	694	81	649	1985	https://drive.google.com/file/d/1i6zww08VbG6qif_XHkN3o2mUZiZyUkqM/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2892	PINFII g	listo	2689	694	81	649	1986	https://drive.google.com/file/d/1hIU0oiTEZ2ONvI2sHv9LpkogvkVuE8wN/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2893	PINFIIIg	listo	2692	694	81	649	1989	https://drive.google.com/file/d/1JYtwU7iim5Wn-ChkL3vgvrBuE09m62Sb/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2894	POSACONA	listo	2714	644	\N	559	2089	https://drive.google.com/file/d/1jGiJ3unURTdpavSruTz972XL3lF_B0GK/view?usp=sharing	Ver MODELO DE INFORME	12	listo	42971.0	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2895	VSR Ag	listo	2765	694	81	649	1953	https://drive.google.com/file/d/1AI2CTT-q0ZupDDO23cmKqnfvpNKYTfSb/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2896	VORICO	listo	2852	644	\N	576	\N	\N	Rango Terapeútico: 1.5 - 5.0 µg/ml	10	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	56	\N
-2897	NA	pendiente	2888	\N	\N	559	\N	\N	\N	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	57	\N
-2898	000614	pendiente	2889	\N	\N	587	\N	\N	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	57	\N
-2899	660184	pendiente	2890	\N	\N	587	\N	\N	\N	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	57	\N
-2900	HISTO-AG	listo	2534	560	\N	548	1995	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	58	\N
-2901	HANTAPCR	listo	2891	609	98	651	\N	\N	NO DETECTABLE	5	listo	HANPCR	1	Laboratorio SBLab	Cambio de codigo en Hexalis.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	59	\N
-2902	LEPTO	listo	2892	697	98	576	\N	\N	NO REACTIVO	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	59	\N
-2903	LEPTOM	listo	2893	605	98	576	\N	\N	NO REACTIVO	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	59	\N
-2904	LEPTOSV	listo	2883	698	98	576	\N	\N	NEGATIVO	7	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	59	\N
-2905	F.H.A.	listo	2894	609	98	652	\N	\N	NO DETECTABLE	15	listo	830FHA	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	59	\N
-2906	LEPPCR	listo	2895	609	98	651	\N	\N	NO DETECTABLE	10	listo	LEPPCR	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	59	\N
-2907	HANTA	listo	2896	605	98	576	\N	\N	\N	15	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	59	\N
-2908	DEN-SERO	listo	2897	699	98	576	\N	\N	NO DETECTABLE	8	listo	DENPCR	1	Laboratorio SBLab	Se crea en HexaLIS y Datatech	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	59	\N
-2966	PVR	listo	2914	609	81	666	\N	\N	NO DETECTABLE	4	listo	\N	1	Hematologia SBLab	ADJUNTAR MODELO DE INFORME - AGREGAR AL AREA GENERAL	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2909	CAR ABOR	discontinuado	2314	654	\N	605	1891	LABORATORIO\n\nTOMA DE MUESTRA DE MATERIAL DE ABORTO\na) Extracción: \n- Cuando hacen legrado el médico debe tomar una porción de la zona de vellosidades de la placenta o de lo que va a dar origen a la placenta y enviarlo a las condiciones más estériles posibles, por lo general en un recipiente estéril de urocultivo.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en el mismo recipiente en que se realizó la extracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No debe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	-	63	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes. Se aumenta el tiempo de demora de 21 a 63 dias. 03/07/2026: Se envia a TURNER.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	60	\N
-2910	CARIO AL	discontinuado	2317	654	\N	607	1893	LABORATORIO\n\nTOMA DE MUESTRA DE SANGRE PERIFERICA PARA ESTUDIO CITOGENETICO\na) Extracción: \n- Colocar en una jeringa de 5 ml o 10 ml Heparina sódica ESTERIL (0,05 a 0,10 ml aproximadamente).\n- Cambiar la aguja y extraer preferentemente entre 4 y 5 ml de sangre venosa en niños , en caso de bebes puede ser menos ( en lo posible al menos 2ml) y\nentre 8 a 10 ml en adultos. Evite maniobras que impidan la conservación de la\nmuestra en condiciones de estricta esterilidad.\n- Colocar inmediatamente el capuchón en la aguja, o colocar una aguja nueva\nimpidiendo el contacto de la muestra con el aire. No doblar la aguja ni taparla\ncon otros elementos como tapones de goma, gasas, algodón, no estériles. Fijar\nel émbolo y aguja o tapón estéril con cinta adhesiva.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en la misma jeringa en que se realizó la extracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No debe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\nc) También es posible realizar la extracción en tubos vacuteiner con heparina sódica y enviarlos en los mismos.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	-	61	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes. 03/07/2026: Se envia a TURNER.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	60	\N
-2911	CARIOTIP	discontinuado	2316	654	\N	607	1889	LABORATORIO\n\nTOMA DE MUESTRA DE SANGRE PERIFERICA PARA ESTUDIO CITOGENETICO\na) Extracción: \n- Colocar en una jeringa de 5 ml o 10 ml Heparina sódica ESTERIL (0,05 a 0,10 ml aproximadamente).\n- Cambiar la aguja y extraer preferentemente entre 4 y 5 ml de sangre venosa en niños , en caso de bebes puede ser menos ( en lo posible al menos 2ml) y\nentre 8 a 10 ml en adultos. Evite maniobras que impidan la conservación de la\nmuestra en condiciones de estricta esterilidad.\n- Colocar inmediatamente el capuchón en la aguja, o colocar una aguja nueva\nimpidiendo el contacto de la muestra con el aire. No doblar la aguja ni taparla\ncon otros elementos como tapones de goma, gasas, algodón, no estériles. Fijar\nel émbolo y aguja o tapón estéril con cinta adhesiva.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en la misma jeringa en que se realizó la \nextracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No\ndebe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\nc) También es posible realizar la extracción en tubos vacuteiner con heparina sódica y enviarlos en los mismos.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	-	63	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes. Se aumenta el tiempo de demora de 21 a 63 dias. 03/07/2026: Se envia a TURNER.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	60	\N
-2912	CITOGEN	discontinuado	2315	654	\N	606	1890	LABORATORIO\n\nTOMA DE MUESTRA DE MEDULA OSEA PARA ESTUDIO CITOGENETICO\na) Extracción: \n- Colocar en una jeringa de 5 ml Heparina sódica ESTERIL (0,05 a 0,10 ml aproximadamente). \n- Extraer al menos 2 ml de MEDULA OSEA. Para citogenética está indicado que se debe mandar la primera o segunda porción de extracción. Evite maniobras que impidan la conservación de la\nmuestra en condiciones de estricta esterilidad.\n- Colocar inmediatamente el capuchón en la aguja, o colocar una aguja nueva impidiendo el contacto de la muestra con el aire. No doblar la aguja ni taparla\ncon otros elementos como tapones de goma, gasas, algodón, no estériles. Fijar el émbolo y aguja o tapón estéril con cinta adhesiva.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en la misma jeringa en que se realizó la extracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No debe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\nc) También es posible realizar la extracción en tubos vacutainer con heparina sódica y enviarlos en los mismos.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	-	21	verificado	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes. 03/07/2026: Se envia a TURNER.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	60	\N
-2913	CAR LAM	discontinuado	2313	654	\N	604	1892	https://drive.google.com/file/d/1ccZ0fbrjBFdRTob6zP_8eYYbdZKJCgc2/view?usp=sharing	-	35	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes. 03/07/2026: Se envia a TURNER.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	60	\N
-2914	FAC XIII	listo	2898	700	99	653	\N	\N	50 a 150 %	8	revisar	\N	1	Laboratorio SBLab	Faltan valores de referencia en Hexalis y Datatech	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	61	\N
-2915	FACT II	listo	2899	\N	99	654	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	61	\N
-2916	FACT IX	listo	2900	\N	99	653	\N	\N	70 a 120 %	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	61	\N
-2917	FACT V	listo	2901	\N	99	654	\N	\N	70 a 120 %	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	61	\N
-2918	FACT VII	listo	2902	701	99	654	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	61	\N
-2919	FACT VW	listo	2903	702	99	653	\N	\N	📋	8	listo	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	61	\N
-2920	FACT XI	listo	2904	\N	99	654	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	61	\N
-2921	FACTOR X	listo	2905	\N	99	653	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	61	\N
-2922	FACTVIII	listo	2906	701	99	653	\N	\N	50 a 150 %	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	61	\N
-2923	INH VIII	listo	2907	\N	99	653	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	61	\N
-2924	PAI-BIOL	discontinuado	2584	\N	\N	\N	1639	\N	\N	0	listo	\N	1	SIN ASIGNAR	No se procesa mas en LAHT. Se pasa a CIBIC.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	61	\N
-2925	PR S TOT	listo	2908	\N	99	654	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	61	\N
-2926	PROT S	listo	2909	\N	99	654	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	61	\N
-2927	RISTOCET	listo	2910	703	99	653	\N	\N	50 - 150 %	8	listo	\N	1	Laboratorio SBLab	Falta adjuntar el modelo de informe.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	61	\N
-2928	CORRTP	listo	2809	538	99	511	1625	\N	\N	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	61	\N
-2929	CORRKPTT	listo	2619	538	99	511	1627	\N	\N	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	61	\N
-2932	GAL/NEO	listo	2467	704	100	594	2164	LABORATORIO\nColectar las muestras de sangre después de cumplidas 24 h. de ingesta de leche conteniendo lactosa (calostro, leche humana madura o leches maternizadas), y antes de superado el 5° día de vida. \nSi el niño es dado de alta antes de cumplir el tiempo mínimo de\ningesta de leche requerido, se debe colectar la muestra inmediatamente antes del alta sin tener en cuenta su estado alimentario y colectar una segunda muestra una vez cumplimentadas las 24 h. de\ningesta de leche conteniendo lactosa. \nNo utilizar anticoagulantes como EDTA, Citrato u Oxalato.\nCompletar todos los datos solicitados en la tarjeta de recolección de muestras con bolígrafo y con letra clara y legible.\nAsegurarse que la impregnación del papel es correcta. En caso contrario proceder inmediatamente a tomar una nueva muestra de calidad satisfactoria antes de proceder a su envío.	0.00 a 8.00 mg/dl	10	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	62	\N
-2933	E.N.N.	listo	2758	655	100	594	\N	https://drive.google.com/file/d/1Xf_fW7sRiXJq9Kv3WXFefSN41xssqsqw/view?usp=sharing	Ver MODELO DE INFORME	26	listo	\N	1	Laboratorio SBLab	El nombre en Datatech continua siendo ESTUDIO NEUROMETABOLICO NEONATAL	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	62	\N
-2934	ADV	listo	2222	609	81	655	\N	https://drive.google.com/file/d/1YIBHucnIsDS8OkJvut_1-f4x_zmt-CpK/view?usp=sharing	NO DETECTABLE	3	listo	\N	1	Hematologia SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2935	aRNr	listo	2227	609	81	656	2009	https://drive.google.com/file/d/1U9e0JkUm1-PaLNy5AmaSxdZVqY3djrCe/view?usp=sharing	NO DETECTABLE	11	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2936	CLAMIPCR	listo	2345	609	81	657	2026	https://drive.google.com/file/d/1eXZ9tcsWXfOy2Pi1ZLYmE5spveyp-xDw/view?usp=sharing	NO DETECTABLE	5	listo	\N	1	Hematologia SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2937	CMV-LCR	listo	2350	609	\N	658	\N	https://drive.google.com/file/d/1JMDPgHwztb6jkSd7DPA-kSZZKjiGK6ni/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Hematologia SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2938	CMVPCR-O	listo	2352	609	\N	659	2015	https://drive.google.com/file/d/10OXEpfI74Nu-BpkTor28zoAVEQLPgj5f/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Hematologia SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2939	CMV-OR	listo	2353	609	\N	659	2017	\N	NO DETECTABLE	4	listo	\N	1	Laboratorio SBLab	Se cambia el nombre desde CMV EN ORINA CUANTITATIVO - PCR	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2940	PCR CMV	listo	2354	609	\N	581	2014	https://drive.google.com/file/d/1EZJzcfnHXPGF9zEl_7Bz0lcYhrS0COrZ/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Laboratorio SBLab	Se cambia el nombre desde CMV CUALTITATIVO - PCR. 26/06/2026: Se cambia el nombre desde CITOMEGALOVIRUS EN SANGRE, ADN POR PCR (CUALITATIVO)	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2941	CMV PCR	listo	2357	609	\N	581	2013	https://drive.google.com/file/d/1yciQ-hUbbuozBgeUIykpcJGHHEDx5jlq/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Laboratorio SBLab	Se cambia el nombre desde CMV CUANTITATIVO - PCR. 23/07/2026 Se agrega la determinacion 5. Valor hallado en logs.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2942	CMV NEO	listo	2911	705	\N	660	\N	\N	NO DETECTABLE	7	listo	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2943	PCRCOR	listo	2378	609	\N	661	2012	https://drive.google.com/file/d/1qg-HSsotXNNmSqj-DtNSIT4BhqaNzCcj/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2944	PCR DENG	listo	2401	680	\N	581	2018	https://drive.google.com/file/d/1EzDqNny0U2sL1sSLCkAK1m09xOClu5px/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2945	EBV-LCR	listo	2424	609	\N	658	\N	\N	NO DETECTABLE	4	listo	\N	1	Hematologia SBLab	Falta paridad	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2946	EBV-PCR	listo	2427	609	\N	662	2032	https://drive.google.com/file/d/1THf1FHzpVVu3rdMkpVu2-k-tR6EX_dz0/view?usp=sharing	NO DETECTABLE	5	listo	\N	1	Laboratorio SBLab	Carga manual de resultado pre-analítico: TIPO DE MUESTRA.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2947	PCR-EBV	listo	2428	609	81	663	2031	https://drive.google.com/file/d/1VYGeThHrcLDpGizzK_9CMLdeFxp5wKhN/view?usp=sharing	NO DETECTABLE	5	listo	\N	1	Laboratorio SBLab	Carga manual de resultado pre-analítico: TIPO DE MUESTRA (LCR o SANGRE ENTERA)	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2948	FACTOR V	listo	2443	609	\N	582	1648	\N	NO DETECTABLE	26	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2949	HBV PCR	listo	2511	609	\N	662	2020	https://drive.google.com/file/d/1j7L813Bjza4zyJhj-AQtA4ag3Vff1s_7/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Laboratorio SBLab	Se cambia el nombre desde HBV - PCR CUALITATIVA	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2950	PCR HBV	listo	2514	609	\N	662	2019	\N	NO DETECTABLE	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2951	HCVPCR	listo	2516	609	\N	662	2021	\N	NO DETECTABLE	16	listo	\N	1	Laboratorio SBLab	Se cambia el nombre desde DETECCION DEL VIRUS DE HEPATITIS C	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2952	HEPCCV	listo	2517	609	\N	662	2022	\N	NO DETECTABLE	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2953	HSVLCR	listo	2522	609	\N	664	\N	https://drive.google.com/file/d/1xu3gWBX82v-ECnE0OULKGg0HnE70c4jJ/view?usp=sharing	NO DETECTABLE	5	listo	\N	1	Hematologia SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2954	HIVCV	listo	2537	609	\N	662	2010	\N	NO DETECTABLE	10	listo	\N	1	Laboratorio SBLab	Cambio de factor de conversion de UI/ml a copias/ml	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2955	HIV PCR	listo	2538	609	\N	662	2011	\N	NO DETECTABLE	8	listo	\N	1	Laboratorio SBLab	Cambio de factor de conversion de UI/ml a copias/ml	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2956	HLAB27	listo	2545	609	\N	582	2079	\N	NO DETECTABLE	16	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2957	INFLUPCR	inactivo	2912	680	81	649	\N	\N	NO DETECTABLE	3	pendiente	\N	1	coordinacionsblab@sanbritanico.com.ar	Se inactiva. A partir de este dia se piden individualmente.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2958	INFP	listo	2579	609	81	665	2023	\N	NO DETECTABLE	3	listo	\N	1	Laboratorio SBLab	Reemplaza a la prueba INFLUENZA A + B, DETECCION POR PCR, que se inactiva.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2959	INFB-RNA	listo	2583	680	81	665	2024	\N	NO DETECTABLE	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2960	JAK2	listo	2614	706	\N	582	2159	\N	NO DETECTABLE	15	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2961	HMPV PCR	listo	2646	609	81	655	\N	https://drive.google.com/file/d/18GPmMev4gcqCxfNc6eqyVRMX7fqvTSeK/view?usp=sharing	NO DETECTABLE	3	listo	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2962	MYCO- RT	listo	2662	609	81	657	2028	https://drive.google.com/file/d/1f46b19yT3_XBH4lamBakADYjXKrErqoZ/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Hematologia SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2963	GONOPCR	listo	2668	609	81	657	2027	https://drive.google.com/file/d/1G0TWQ38mDIZrj6-VoF6tX20KQqo4kFnF/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Hematologia SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2964	PAI	listo	2680	683	\N	582	1650	\N	\N	16	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2965	PRVS	listo	2913	609	81	666	\N	\N	NO DETECTABLE	4	listo	\N	1	Hematologia SBLab	ADJUNTAR MODELO DE INFORME - AGREGAR AL AREA GENERAL	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2969	NEUJI	listo	2710	609	\N	668	1965	https://drive.google.com/file/d/1j4cTRdy2gSOXY501h_VqWUTTQAgVoubc/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Hematologia SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2970	PNEUMOJI	listo	2711	609	\N	668	\N	https://drive.google.com/file/d/1kTGRBjzr5xXNkeDYAKfz4lkv1uNXgsgP/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	SIN ASIGNAR	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2971	PT2021	listo	2731	609	\N	582	1649	\N	NO DETECTABLE	26	listo	\N	1	Laboratorio SBLab	Se cambia el nombre desde MUTACION EN GEN PROTROMBINA 20210	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2972	VZVLCR	listo	2841	609	\N	664	\N	https://drive.google.com/file/d/14JWRcbTrf5nxcdKJFLuB9I6lXCiEI6aX/view?usp=sharing	NO DETECTABLE	5	listo	\N	1	Hematologia SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2973	VSP	listo	2844	609	81	669	2033	LABORATORIO\nMuestra en al menos 2 ml de SHIELD 1X.	NO DETECTABLE	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	63	\N
-2974	CRYCUANT	pendiente	2916	707	81	670	\N	\N	NO DETECTABLE	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	64	\N
-2975	NEUJI	discontinuado	2710	609	81	671	1965	Tipo de muestra: ESPUTO Higiene previa: - Cepillar los dientes - Retirar prótesis, si posee - Hacer buches con agua. Recoleccion: - Toser profundamente y recolectar flema en frasco estéril, solamente expectoración bronquial profunda (flema). No saliva. Recolectar primer esputo de la mañana. - Cerrar el envase, rotular y llevar inmediatamente al Laboratorio.	NO DETECTABLE	8	listo	1485.0	1	Laboratorio SBLab	Se envia a CIBIC. 14/08/2026 Se comienza a procesar en BMSB.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	64	\N
-2976	GALACT	listo	2917	708	\N	672	\N	\N	-	3	listo	\N	1	Laboratorio SBLab	Congelar la muestra hasta procesarla en el tubo primario.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	64	\N
-2977	GALACTAG	inactivo	2918	605	\N	672	\N	\N	-	8	listo	\N	1	Laboratorio SBLab	Congelar la muestra hasta procesarla en el tubo primario.	2026-08-24 14:57:54.97231-03	2026-08-24 14:57:54.97231-03	64	\N
-2234	FOLICO	listo	2201	532	\N	505	1761		3.1 a 20.0 ng/ml	1	listo		1	Laboratorio SBLab		2026-08-24 14:57:54.97231-03	2026-08-24 18:10:35.716527-03	49	\N
+2236	AC.BILIA	listo	2215	534	\N	507	1773	https://drive.google.com/file/d/1_fgh3wB_sUlK5aSYSdsQqZMjH6EhKY6u/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2237	ADD	listo	2220	535	76	508	1677	https://drive.google.com/file/d/1Y9at0TssujE3q5aoBi4-RCBvnPp44SK4/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2238	ALB	listo	2231	536	\N	507	1728	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2239	AFP	listo	2238	532	\N	507	1874	\N	0.89 a 8.78 ng/ml	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2240	AMLB	listo	2240	534	77	509	1706	https://drive.google.com/file/d/1CIlWvMYcwxaOHsr9qB5dInn5fMkODVH1/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2241	AM	listo	2241	534	\N	507	1705	\N	📋	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde AMILASEMIA	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2242	AMONIO	listo	2244	537	\N	510	1788	\N	18.00 a 72.00 μmol/l	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde AMONIO	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2243	LUPICO	listo	2246	538	\N	511	1634	https://drive.google.com/file/d/1s3JWP4brFW_na98PqGgNTvkodNt0EtqW/view?usp=sharing	Ver MODELO DE INFORME	2	listo	\N	1	Laboratorio SBLab	17/07/2026 Se modifican valores de referencia de KPTT.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2244	ASO	listo	2248	539	\N	512	1743	\N	0 a 200 UI/ml	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2245	AEP-NBU	listo	2249	532	\N	512	1881	ANTIGENO PROSTATICO ESPECÍFICO - PSA\nNo mantener relaciones sexuales 48 horas antes del análisis.\nNo realizar ejercicios físicos ni andar en bicicleta 48 horas antes del análisis.\nCenar de manera habitual y contar las horas de ayuno a partir de finalizada la cena.\nConcurrir al laboratorio con un período de ayuno de 8 horas y no más de 14 horas.\nNo fumar, ni beber café, té o mate . Puede beber agua durante el ayuno.\nInformar el nombre de los medicamentos que recibe.\nNOTA : \n1) si se ha realizado un tacto rectal, esperar 1 semana para realizar el análisis.\n2) se se ha realizado una biopsia rectal, cirugía de próstata o\ninfección urinaria, espere de 3 a 6 semanas para realizar el análisis.	0.00 a 4.00 ng/ml	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2246	AEP	listo	2250	532	\N	512	1882	ANTIGENO PROSTATICO ESPECÍFICO - PSA\nNo mantener relaciones sexuales 48 horas antes del análisis.\nNo realizar ejercicios físicos ni andar en bicicleta 48 horas antes del análisis.\nCenar de manera habitual y contar las horas de ayuno a partir de finalizada la cena.\nConcurrir al laboratorio con un período de ayuno de 8 horas y no más de 14 horas.\nNo fumar, ni beber café, té o mate . Puede beber agua durante el ayuno.\nInformar el nombre de los medicamentos que recibe.\nNOTA : \n1) si se ha realizado un tacto rectal, esperar 1 semana para realizar el análisis.\n2) se se ha realizado una biopsia rectal, cirugía de próstata o\ninfección urinaria, espere de 3 a 6 semanas para realizar el análisis.	0.00 a 4.00 ng/ml	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (duplicado en Datatech).	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2247	AEP-LNBU	listo	2251	532	\N	512	1884	https://drive.google.com/file/d/1wbP3sXx5PQk4Dcrrdj8GFXFq3Cq4kd3f/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (duplicado en Datatech). Evaluar el informe de la relacion Libre/Total. En otros sitiso se informa como porcentaje.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2248	AEPL	listo	2252	532	\N	512	1883	https://drive.google.com/file/d/1wbP3sXx5PQk4Dcrrdj8GFXFq3Cq4kd3f/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Evaluar el informe de la relacion Libre/Total. En otros sitios se informa como porcentaje.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2249	ATIII	listo	2256	540	\N	513	1637	\N	79.4 a 112.0 %	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2250	APOA	listo	2257	541	\N	507	1722	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2251	APOB	listo	2258	541	\N	507	1723	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2252	ATPO	listo	2262	532	\N	507	1805	\N	0.00 a 5.61 UI/ml	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2253	BETA-2	listo	2270	541	\N	507	1746	\N	0.97 a 2.64 mg/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2254	BICAR/SU	listo	2273	542	\N	506	1784	\N	21 a 24 mmol/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2255	BT	listo	2275	543	\N	507	1699	https://drive.google.com/file/d/1NJ5LBgTBvcKueuoC9jF6dYuzzSTMLIKl/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde BILIRRUBINA TOTAL Y FRACCIONADA	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2256	CA-125	listo	2291	532	\N	507	1879	\N	0 a 35 U/ml	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CA-125	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2257	CA15-3NB	listo	2292	532	\N	507	1875	\N	0.0 a 31.3 U/ml	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CA 15-3	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2258	CA19-9	listo	2294	532	\N	507	1876	\N	0 a 37 U/ml	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CA 19-9	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2259	CA19-9NB	listo	2293	532	\N	507	1877	\N	0 a 37 U/ml	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (duplicado en Datatech). Se modifico el nombre desde CA 19-9	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2260	CAO1	listo	2301	544	\N	514	1682	\N	-	1	listo	\N	1	Laboratorio SBLab	Establecer valores de referencia en base a la bibliografia	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2261	CAI	listo	2302	545	\N	506	1681	\N	4.52 a 5.20 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2262	CA	listo	2303	544	\N	507	1680	\N	📋	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CALCEMIA	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2263	CAO	listo	2304	544	78	515	1683	https://drive.google.com/file/d/1E7RcRxnHkK34XDTA-S-NOTlpZ_38yj5z/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CALCIURIA	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2264	CAUR	listo	2307	546	\N	516	1766	https://drive.google.com/file/d/1KtQQDApGy2yvlhyiBvhI3HQ58AVVVPCI/view?usp=sharing	-	8	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CALCULO URINARIO	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2265	CARBO	listo	2310	547	\N	506	1785	\N	0 a 3 %	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2266	CEA	listo	2330	532	\N	507	1873	\N	0 a 5 ng/ml	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CEA - ANTIGENO CARCINO EMBRIONARIO	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2267	CERU	listo	2333	548	\N	512	1774	\N	19 a 57 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2268	CETONE	listo	2334	549	\N	506	\N	\N	NEGATIVO	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2235	ACLAC	listo	2206	533	\N	506	1787	\N	5.0 a 13.0 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-09-09 17:50:23.216682+00	49	\N
+2269	CETONU	listo	2335	549	\N	517	\N	\N	NO CONTIENE	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2270	CHAEIA	listo	2336	532	\N	507	1910	https://drive.google.com/file/d/1Anv0c1aA0e9sDVKhkj8EuNuohckvmWek/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CHAGAS-TRYPANOSOMA CRUZI (EIA)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2271	CHAHAI	listo	2337	550	\N	512	1909	https://drive.google.com/file/d/16PvoRRhcd4w3nX1AN09RUxkFhXHuYN0a/view?usp=sharing	Ver MODELO DE INFORME	2	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde CHAGAS-TRYPANOSOMA CRUZI (EIA)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2272	ACITOG	listo	2355	532	\N	507	1929	https://drive.google.com/file/d/1P5AeTe0g9RS0U3s8w6ZBpKT1pdQBphCA/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	En Hexalis se informa Interpretacion y Concentración. En Datatech solo Concentración.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2273	ACITOM-N	listo	2356	532	\N	507	1928	https://drive.google.com/file/d/12-IFjKmCB65oKUHNiQi1Q6Ot-xz7p098/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2274	ACITOM	listo	2855	532	\N	507	\N	https://drive.google.com/file/d/12-IFjKmCB65oKUHNiQi1Q6Ot-xz7p098/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (duplicado en Datatech).	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2275	RCO	listo	2364	\N	\N	518	1632	\N	NORMORRETRACTIL	2	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (requiere procesamiento inmediato).	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2276	COAGU	listo	2365	538	79	519	1630	https://drive.google.com/file/d/15sE1OBVpUJ06b6KpehEYHaMl9214saEJ/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2277	HDL	listo	2367	551	\N	507	1716	https://drive.google.com/file/d/1RcywhFFAo5h0agQwWhHvEgdjj7NhkBHm/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2278	LDL	listo	2368	552	\N	507	1717	\N	0 a 100 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2279	C	listo	2369	553	\N	507	1715	\N	📋	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde COLESTEROLEMIA TOTAL	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2280	VLDL	listo	2371	554	\N	507	1719	\N	0 a 30 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2281	VLDL-NBU	listo	2370	554	\N	507	1720	\N	0 a 30 mg/dl	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (duplicado en Datatech).	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2282	LDL-NBU	listo	2372	552	\N	507	1718	\N	0 a 100 mg/dl	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (duplicado en Datatech).	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2283	CHE	listo	2373	555	\N	507	1704	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2284	C3	listo	2375	541	\N	507	1740	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2285	C4	listo	2376	541	\N	507	1741	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2286	TH50	listo	2377	556	\N	507	1742	\N	128 a 158 seg	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2287	COR	listo	2379	532	\N	507	1822	\N	3.7 a 19.4 µg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2288	COR-18	listo	2380	532	\N	507	\N	https://drive.google.com/file/d/1C9Mdn_3B1okuO8KtuDyARjrlAcBnbdEJ/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2289	COR-ES	listo	2387	532	\N	520	\N	\N	-	1	listo	\N	1	Hematologia SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2290	CPK	listo	2389	557	\N	507	1708	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2291	CKMBMASA	listo	2390	532	\N	507	1709	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2292	CRLB	listo	2391	558	77	521	1672	https://drive.google.com/file/d/10l4hwsn6cBMRcUv1iiWamiDauKb8iocX/view?usp=sharing	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2293	CRO1	listo	2392	558	\N	517	1673	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2294	CR	listo	2393	558	\N	507	1671	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2295	CRO	listo	2394	558	78	522	1674	https://drive.google.com/file/d/1kBfSsE1FL_tMffhZ7w8L_KaeazPq9E2Q/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2296	DCE	listo	2395	558	80	523	1675	https://drive.google.com/file/d/133MWK_W40_oxz70RYPvSoOg1a9dRvKib/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2297	CRIO	listo	2396	\N	\N	524	1622	\N	NO PRESENTA	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2298	CRIOGLO	listo	2397	\N	\N	512	1621	\N	NEGATIVO	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2299	DHEA	listo	2403	532	\N	507	1844	\N	📋	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde DHEA-S	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2300	TD-DIF	listo	2404	532	\N	507	2094	\N	10.00 a 20.00  µg/ml	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2301	DIMERO D	listo	2406	559	\N	513	1714	\N	0 a 198 ng/ml	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2302	DROGAS	listo	2411	560	\N	525	2105	https://drive.google.com/file/d/1HIFLcqA7ZS2AwIygOePTRhB2JBMjDSi3/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2303	AE-B	listo	2425	532	\N	507	1947	https://drive.google.com/file/d/12gQ2J6RWc4AHQowbxyRQ27wldHEH4qOH/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2304	AEBCM	listo	2426	532	\N	507	1946	https://drive.google.com/file/d/1IKmwTJoWbPgOTiOpJpPAFh-ArpZ_80K5/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	En Hexalis se informa Interpretacion y Relacion S/CO. En Datatech solo Resultado	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2305	E	listo	2430	561	\N	526	1623	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2306	EAB	listo	2432	562	\N	506	1781	https://drive.google.com/file/d/1I3cs6WMMnXiTmW5EG_6zwB4k8pcny9Wn/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2307	EABI	listo	2433	562	\N	506	1782	https://drive.google.com/file/d/1j5Vy-2v5Sh1Gwj7V7_qD6VIxWraXw-xL/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2308	E2	listo	2435	532	\N	507	1834	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2309	TLE2	listo	2438	\N	\N	527	1646	https://drive.google.com/file/d/11yzPKC1UmiYWe3fkamasfS4RuB-G2801/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Eliminar parte del texto en Datatech al cabo de 6 meses.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2310	TLE1	listo	2439	\N	\N	513	1647	https://drive.google.com/file/d/1Lj78uJcFtz8G8mCBFB1ooVPWcAEbkCpB/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Eliminar parte del texto en Datatech al cabo de 6 meses.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2311	FR	listo	2442	541	\N	512	1744	\N	0 a 30 UI/ml	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2312	FE	listo	2448	563	\N	507	1756	https://drive.google.com/file/d/1TxS3CEfcOQKu34F0s0wllMYCow3HQoSN/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2313	FERR	listo	2449	532	\N	507	1759	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2314	FIB	listo	2450	564	\N	513	1628	\N	180 a 350 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2315	FLA	listo	2452	565	\N	528	1618	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2316	FOH	listo	2454	566	\N	507	1698	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2317	P	listo	2455	567	\N	507	1684	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2318	PO	listo	2457	567	78	522	1686	https://drive.google.com/file/d/1snXSxwexxyHwpRjtD8iuAcn9SRIeAIMu/view?usp=sharing	400 a 1300 mg/24h	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2319	PO1	listo	2458	567	\N	529	1687	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2320	RTP	listo	2461	568	78	530	1685	https://drive.google.com/file/d/1YP-R9lXPxtnksW2HdpWPdpv4cSjDO2hq/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2321	FRUCTO	listo	2462	569	\N	507	1661	\N	205 a 285 ng/ml	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2322	FSH	listo	2463	532	\N	507	1832	https://drive.google.com/file/d/1i7xsbAK__EBb6O9DNsBCKqftBpNs_-Jq/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2323	GGT	listo	2468	570	\N	507	1701	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2324	GLOBTRAN	listo	2475	532	\N	507	1849	\N	📋	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde GLOBULINA TRANSPORTADORA DE HORMONAS SEXUALES	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2325	GB	listo	2476	565	\N	528	1617	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2326	GR	listo	2477	565	\N	528	1615	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2327	G	listo	2478	571	\N	507	1652	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2328	GCIR	listo	2479	572	\N	531	1653	\N	-	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (requiere procesamiento inmediato).	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2329	GPP	listo	2480	571	\N	532	1657	\N	0 a 140 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2330	GP120MIN	listo	2481	571	\N	532	1658	\N	0 a 140 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2331	GP180MIN	listo	2482	571	\N	533	1659	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2332	GP 30MIN	listo	2483	571	\N	534	1654	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2333	GP 60MIN	listo	2484	571	\N	535	1655	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2334	GP 90MIN	listo	2485	571	\N	536	1656	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2335	GLU	listo	2487	571	\N	529	1660	\N	1 a 15 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2336	HAM	listo	2490	535	\N	537	\N	https://drive.google.com/file/d/1efXWRupcji4zGH65b27PRBeqFA28fZ8C/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Revisar las unidades en Datatech y copiarlas en Hexalis	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2337	HAP	listo	2491	541	\N	507	1703	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2338	HE4	listo	2492	532	\N	512	1886	https://drive.google.com/file/d/1m-m1dREcdk96qMoioNp4GME9_Z-mOmOE/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2339	HU	listo	2496	573	\N	538	2179	https://drive.google.com/file/d/1rANbZ7_u-GAF0Bi1PEqjAenMtK5nT5Cx/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2340	HTO	listo	2497	565	\N	528	1614	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2341	HGL1	listo	2499	554	\N	526	1662	\N	4.0 a 5.7 %	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2342	HB	listo	2500	565	\N	528	1616	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2343	HC	listo	2501	565	\N	528	1613	https://drive.google.com/file/d/1VMpjj-wL2VHNlZnIqtlZMGCNOOnzAwKs/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2344	HS	listo	2502	565	\N	528	1612	https://drive.google.com/file/d/1gtL0udDrx2b7RwUMM59fkn3UtqP_wiBq/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2345	HEP	listo	2503	574	\N	539	1638	https://drive.google.com/file/d/12vuyipyf9oCk0ziTxGPmPtAn7igeRujz/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2346	HEPAG	listo	2504	532	\N	507	1918	https://drive.google.com/file/d/1pVj6H1sIMweJvlLPKtpzeNpH1wDpWbcr/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	El analisis solo tiene una determinacion RESULTADO CUALITATIVO, no se informa el INDEX	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2347	HEPAM	listo	2505	532	\N	507	1917	https://drive.google.com/file/d/1ov5UWKpqQ6u3SkLzPbNSaz7WKsW8WwLI/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Se informa el RESULTADO CUALITATIVO y el INDEX	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2348	HEPBCM	listo	2506	532	\N	512	1921	https://drive.google.com/file/d/1uw6stTy--duuNoz_zWB6hjjK5ypq3qIm/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Se incorpora la determinacion localmente.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2349	HEPBCTO	listo	2507	532	\N	507	1920	https://drive.google.com/file/d/1D3adyTg_VKGTjr6au_PWdHfjCL1metMm/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2350	HEPBSAC	listo	2509	532	\N	507	1923	https://drive.google.com/file/d/1QEygc_AnZknvDrRseqonSmIwJzQEZneS/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2351	HEPBSAG	listo	2512	532	\N	507	1919	https://drive.google.com/file/d/1SsBGibnTBBmbkprNbMvhl-tXe4los_jD/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2352	HEPCAC	listo	2515	532	\N	507	1927	https://drive.google.com/file/d/1eRoUvhO8JEsXMs7cNCG69JN_ZYl7Gxts/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2353	HEC1	listo	2521	575	\N	507	1700	https://drive.google.com/file/d/1UxZ_Hm154sUZt-hepXw9mmUu2-Qbj6gG/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2354	HERP1G	listo	2524	532	\N	507	1934	https://drive.google.com/file/d/1eBwCpR6V8naWlof0pKzk1qoZXYc4u3ex/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2355	HERP2G	listo	2526	532	\N	507	1936	https://drive.google.com/file/d/13QpqR-LssNJLYfMFoDz0tYRsNa9cNU5a/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2356	HIVEIA	listo	2541	532	\N	507	1915	https://drive.google.com/file/d/1k4uDLoJD6R8FfpVYHBa1_kJXQ9JaXD9l/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2357	TEST-HIV	listo	2542	576	\N	512	1916	https://drive.google.com/file/d/1nvDXnCSvNsq1Wtulr2RlKEgBV2rduY0Y/view?usp=sharing	NO REACTIVO	1	listo	\N	1	Laboratorio SBLab	Deberia incluir un comentario con las limitaciones del test.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2358	HOMA	listo	2547	\N	\N	507	1814	https://drive.google.com/file/d/1Ob47ohqbGYgbbRT1iddj1SJagTp906X_/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2359	HOMOC	listo	2548	532	\N	540	1726	https://drive.google.com/file/d/1WpvI6HK9IjMZl5EKXsUXERpIldhGv_Gs/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2360	HTLV I	listo	2550	532	\N	507	2007	https://drive.google.com/file/d/19z4ORDDhR2hZkZ6wvbcVsBVNO24K9YSC/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	En Datatech solo tiene la relacion S/CO, habria que incorporar la determinacion de interpretacion.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2361	HUD	listo	2552	577	\N	512	1896	https://drive.google.com/file/d/1wXsS4_Gpad3au4wfNXYBY5lqaX7FUx62/view?usp=sharing	Ver MODELO DE INFORME	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2362	IGA	listo	2590	541	\N	507	1730	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2363	IGAS	listo	2591	578	\N	541	1731	\N	📋	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2364	IGE	listo	2593	579	\N	507	1736	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2365	IGG	listo	2594	541	\N	507	1733	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2366	IGM	listo	2597	541	\N	507	1732	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2367	INS	listo	2598	532	\N	507	1807	\N	2.6 a 24.9 µmol/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2368	INSPP	listo	2599	532	\N	532	1811	\N	\N	1	listo	\N	1	Laboratorio SBLab	No tiene valores de referencia en Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2369	INSPP120	listo	2600	532	\N	532	1812	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2370	INSPP180	listo	2601	532	\N	533	1813	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2371	INS PP30	listo	2602	532	\N	534	1808	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2372	INS PP60	listo	2603	532	\N	535	1809	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2373	INS PP90	listo	2604	532	\N	536	1810	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2374	I/OA	listo	2610	580	\N	529	1692	https://drive.google.com/file/d/1C7spFtUzRHOKwWeB9FWh8x44zSM7-89Y/view?usp=sharing	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2375	I	listo	2611	580	\N	507	1690	https://drive.google.com/file/d/1Q8nfzOWCFdSOCKKDJ1zNhoATb_n74-kX/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2376	IOO	listo	2612	580	\N	542	1691	https://drive.google.com/file/d/1T6q-r2LD2QhEAwz2cBIWh6pyiOeJwct8/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2377	KPTT	listo	2618	538	\N	513	1626	\N	20.2 a 29.5 seg	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2378	CORRKPTT	listo	2619	538	\N	543	1627	https://drive.google.com/file/d/1Vs22PSGPgtAjTqlfmCa03t0llxLaYrrS/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2379	LDH	listo	2621	581	\N	507	1702	\N	125 a 220 U/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2380	LAZO	listo	2623	582	\N	\N	1633	\N	Hasta 5 petequias	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (requiere procesamiento local).	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2381	LEUCMF	listo	2625	573	\N	544	2169	\N	NO CONTIENE	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2382	LH	listo	2627	532	\N	507	1833	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2383	LIP	listo	2628	534	\N	507	1707	\N	0 a 64 U/l	1	listo	\N	1	Laboratorio SBLab	05/05/2025 Cambio en valores de referencia de 8 a 78 U/l a 0 a 64 U/l	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2384	LIPO	listo	2629	583	\N	507	1724	\N	0 a 30 µmol/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2385	L.C.R.	listo	2630	\N	\N	545	1791	https://drive.google.com/file/d/1nmnp5U1m4LC9Q-XVZ-txYz98olwKTmkb/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2386	PUNCION	listo	2631	\N	81	546	1790	https://drive.google.com/file/d/14XVx1fdTlfZW_bFGtcHMUppvI6LtXo2-/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2387	MGS	listo	2636	554	\N	507	1688	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2388	MGO	listo	2637	554	82	542	1689	https://drive.google.com/file/d/18pdNrcxxVmjgg67MpPpeI25h6swkE0ZK/view?usp=sharing	72.9 a 121.5 mg/24h	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2389	PPD	listo	2639	584	\N	\N	1898	https://drive.google.com/file/d/1dUIGvAX7ZwL3rAQo2a4cNhRKNBCZ5rgF/view?usp=sharing	Ver MODELO DE INFORME	4	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (requiere procesamiento local). No tiene valores de referencia en Datatech. Poner nota del estilo El test de tuberculina tiene diferente valor, de acuerdo al paciente en el cual sea aplicado, y los valores decorte deben ser tenidos en mente antes de solicitar el mismo (test de tuberculina dirigido)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2390	MDRD-4	listo	2641	585	\N	507	\N	https://drive.google.com/file/d/1YVQvYKqMiNtSdELfFZ6U_IdD_Ubn2-ef/view?usp=sharing	MAYOR A 60 ml/min/1.73m2	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2391	META	listo	2644	562	\N	506	1786	\N	0.0 a 1.5 %	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2392	METO	listo	2649	532	83	547	2103	https://drive.google.com/file/d/1Vn3GBNGB1ipFpKjNPS7C8FANKGh3z9Iu/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Se modifica el codigo de 669044  a 667486 para hacerlo coincidir con el NBU	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2393	MICRO	listo	2650	541	\N	522	1664	https://drive.google.com/file/d/1bVQRly5CCKUbxmsWfJFuQ3d56QI1qtkj/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2394	A/C	listo	2651	586	\N	548	1665	https://drive.google.com/file/d/1FpRzIq1IB2L3t7Rky11ku-2Gd23p40kV/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2395	MOC	listo	2655	573	84	549	1793	https://drive.google.com/file/d/1yx4oqxLm5yBsJ3AOUTlkae1RKso_vriA/view?usp=sharing	Ver MODELO DE INFORME	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2396	MON	listo	2657	577	\N	512	1899	\N	NEGATIVO	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2397	NOTA	listo	2672	\N	\N	\N	\N	\N	\N	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2398	O	listo	2675	587	\N	550	2178	https://drive.google.com/file/d/1glSzmzj-XG7rCoQwktytYLbI64uhRcMg/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2399	OSMO/O	listo	2677	588	\N	522	1789	RECOLECCION ORINA DE 24 HORAS\n\nUtilizar recipiente limpio y seco.\n\nVaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a\nlas 8 horas o la hora que elija.\n\nAnotar la hora de descarte para tomarla como hora de inicio.\n\nRecolectar todas las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha.\n\nConservar en heladera. Y llevar al laboratorio lo antes posible. No perder ninguna muestra de orina.\n\nSi además se solicita en la misma orden médica ORINA COMPLETA, se debe recolectar la primera orina de la mañana del segundo día en un recipiente separado\ny notificar al técnico o administrativo.	50 a 1300 mOsm/kg	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2400	PTH	listo	2693	532	\N	551	1829	\N	15.0 a 68.3 pg/ml	1	listo	\N	1	Laboratorio SBLab	Etiqueta DATA: E2 EDTA(P)-PTH 20 / Etiqueta HEXA: 20- PLASMA CON EDTA	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2401	PTH-B	listo	2856	532	\N	551	\N	\N	-	1	listo	\N	1	Laboratorio SBLab	Etiqueta DATA: E56 EDTA(P)-BASAL 20 / Etiqueta HEXA: 20- PLASMA CON EDTA	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2402	PTH-M	listo	2857	532	\N	551	\N	\N	-	1	listo	\N	1	Laboratorio SBLab	Etiqueta DATA: E57 EDTA(P)-MOVIL 37 / Etiqueta HEXA: 37- PLASMA CON EDTA	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2403	PTH-PE	listo	2858	532	\N	551	\N	\N	-	1	listo	\N	1	Laboratorio SBLab	Etiqueta DATA: E58 EDTA(P)-POSTEX 38 / Etiqueta HEXA: 38- PLASMA CON EDTA	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2404	ANTI-CCP	listo	2701	532	\N	507	2041	\N	0 a 5  µmol/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2405	BNP	listo	2703	532	\N	552	1713	https://drive.google.com/file/d/13TlXGfuG6-iK7GwvO4MheFtL4hHJH8X0/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2406	PH LIQ	listo	2704	562	81	521	1783	https://drive.google.com/file/d/1LlxaWQQWu81qSpg4c3D4qfzqaBpt-KDJ/view?usp=sharing	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2407	PQ	listo	2707	565	\N	528	1619	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2408	PROCALCI	listo	2717	532	\N	507	1695	\N	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2409	PRG	listo	2718	532	\N	507	1837	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2410	PRL	listo	2719	532	\N	507	1838	PROLACTINA\nConcurrir al laboratorio entre las 8 y las 9:30 horas de la mañana, con un período de ayuno de 8 a 12 horas y con 2 horas de vigilia (despierto).\nCenar de manera habitual y contar las horas de ayuno a partir de finalizada la cena.\nNo superar las 14 horas de ayuno.\nNo realizar ejercicios físicos 24 horas antes del análisis.\nNo fumar, ni beber café, té o mate . Puede beber agua durante el ayuno.\nNo mantener relaciones sexuales 48 horas antes del análisis.\nInformar el nombre de los medicamentos que recibe.\nAntes de la extracción de sangre, deberá permanecer en el laboratorio, entre 20 y 30 minutos en reposo.\nMujeres, se aconseja realizar extracción de sangre entre el 3er y 5to día del ciclo.	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2411	POOL PRL	listo	2720	532	\N	553	1839	PROLACTINA\nConcurrir al laboratorio entre las 8 y las 9:30 horas de la mañana, con un período de ayuno de 8 a 12 horas y con 2 horas de vigilia (despierto).\nCenar de manera habitual y contar las horas de ayuno a partir de finalizada la cena.\nNo superar las 14 horas de ayuno.\nNo realizar ejercicios físicos 24 horas antes del análisis.\nNo fumar, ni beber café, té o mate . Puede beber agua durante el ayuno.\nNo mantener relaciones sexuales 48 horas antes del análisis.\nInformar el nombre de los medicamentos que recibe.\nAntes de la extracción de sangre, deberá permanecer en el laboratorio, entre 20 y 30 minutos en reposo.\nMujeres, se aconseja realizar extracción de sangre entre el 3er y 5to día del ciclo.\nSe tomarán tres muestras de sangre separadas 20 minutos entre sí.	📋	1	listo	\N	1	Laboratorio SBLab	Eliminar el texto en Datatech al cabo de 6 meses.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2412	PCR	listo	2721	541	\N	507	1694	\N	Hasta 0.5 mg/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2413	PC	listo	2722	589	\N	513	1635	\N	70 a 140 %	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2414	A/G	listo	2724	590	\N	507	1727	https://drive.google.com/file/d/1CI8ECRAPpxkB2IuMqvR84iPjnRpl8VR8/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2415	PT	listo	2725	591	\N	507	1729	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2416	PTO	listo	2729	579	82	522	1752	https://drive.google.com/file/d/12-N0Mc2BHe3ZMHVbFeJmZbUXpOrHXx3Y/view?usp=sharing	0.0 a 0.3 g/24h	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2417	PRO	listo	2730	579	\N	548	1753	\N	0.00 a 0.15 g/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2418	FIET	listo	2732	\N	\N	\N	\N	\N	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	No figura para los derivantes (requiere procesamiento inmediato).	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2419	REC TSH	listo	2734	532	\N	512	1801	\N	0 a  1.99 µmol/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2420	RPCA	listo	2739	592	\N	513	\N	https://drive.google.com/file/d/1X7UJuIp8E-lf742P4fOCjysC-FQ43x-o/view?usp=sharing	Ver MODELO DE INFORME	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2421	RET	listo	2741	565	\N	528	1620	https://drive.google.com/file/d/1A1Rb7mhbXndUbabrRO-s90PEdD80nyDt/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2422	RR	listo	2748	593	\N	512	1745	\N	NO REACTIVO - Título menor a 8	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2423	AARIGG	listo	2749	532	\N	507	1941	https://drive.google.com/file/d/1nuQ5Q5xM065QkyV369-yQl2QRM0LlvYp/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2424	AARIGM	listo	2750	532	\N	507	1940	https://drive.google.com/file/d/1mStuMTHMxpocjYK1rwkrsiOEMbnJFARH/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2425	SOMF	listo	2752	560	\N	544	2168	SANGRE OCULTA EN MATERIA FECAL\nPor Método Inmunocromatográfico\n\nMuestra :\nMateria fecal espontánea recolectada en recipiente suministrado por el\nlaboratorio. No se requiere la totalidad de la deposición, solo una porción.\nMantener en heladera hasta su  envío al laboratorio, el mismo día de la toma de muestra.	NEGATIVO	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2426	TC	listo	2753	594	85	554	1631	https://drive.google.com/file/d/1142WCrOmF-tL1IPsNEquY6wpCuFeoZsw/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2427	SUB	listo	2778	532	86	507	1853	https://drive.google.com/file/d/1JZ7qgrEhz2MtzIxOV1C4kzxnI-iCK_MY/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2428	DAP	listo	2779	595	86	507	1851	\N	NEGATIVO	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2429	GRAVI	listo	2780	595	86	529	1852	\N	NEGATIVO	1	listo	\N	1	Laboratorio SBLab	Se modifico nombre desde GRAVINDEX	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2430	TACRO	listo	2782	532	\N	528	2102	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2431	TES	listo	2785	532	\N	507	1845	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2432	TES-BIO	listo	2786	596	\N	507	1846	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2433	TESL	listo	2788	596	\N	507	1847	\N	\N	1	revisar	\N	1	Laboratorio SBLab	no sale valores de referencia ni modelo informe con el icono	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2434	TP	listo	2789	538	\N	513	1624	https://drive.google.com/file/d/1pkH2zjdp87rje0FORMSyhahrHGMO_qx5/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2435	TT	listo	2790	538	\N	513	1629	\N	17.4 a 26.0 s	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2436	TIROGLO	listo	2791	532	\N	507	1802	\N	3.68 a 64.15 µmol/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2437	ANTI-TG	listo	2793	532	\N	507	1804	\N	0 a 4.11 µmol/l	1	listo	\N	1	Laboratorio SBLab	Se modifico el nombre desde ANTITIROGLOBULINA	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2438	TSH	listo	2795	532	\N	507	1798	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2439	TSH30	listo	2796	532	\N	555	1799	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2440	TSH60	listo	2797	532	\N	556	1800	\N	-	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2441	T4L	listo	2798	532	\N	507	1796	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2442	T4	listo	2799	532	\N	507	1797	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2443	TDM	listo	2800	\N	\N	\N	\N	\N	\N	0	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2444	TOXIGG	listo	2806	532	\N	507	1944	https://drive.google.com/file/d/1eGTcEt7YZcIfaPibCrflqmmAKl5SjZxB/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	El analisis solo tiene una determinacion en Datatech: RESULTADO CUANTITATIVO, no se informa la INTERPRETACION, deberia cambiarse agregando una determinacion	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2445	TOXIGM	listo	2808	532	\N	507	1943	https://drive.google.com/file/d/1Yaysn9mhIf8T3rhc0ixPkL7a0lXb9UTs/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	Se informa el RESULTADO CUALITATIVO y el INDEX	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2446	CORRTP	listo	2809	538	\N	543	1625	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2447	TGO	listo	2810	597	\N	507	1696	\N	11 a 34 U/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2448	TGP	listo	2811	597	\N	507	1697	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2449	TRA	listo	2812	598	\N	507	1757	https://drive.google.com/file/d/1UCVpgwIjDcfgzPglyvD2s3EcKH4US8YO/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2450	SAT	listo	2813	599	\N	507	1758	https://drive.google.com/file/d/1v1CAjz1nf7XLSTIISNcqnxqPf5wukSl2/view?usp=sharing	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2451	SYPHILIS	listo	2819	532	\N	507	\N	https://drive.google.com/file/d/1pt3Hv0rmhwlyvqTCPUAVdhbZ9UV_XpnL/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Hematologia SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2452	TGL	listo	2824	600	\N	507	1721	\N	60 a 150 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2453	T3LIBRE	listo	2825	532	\N	507	1794	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2454	T3	listo	2826	532	\N	507	1795	\N	📋	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2455	TPA	listo	2828	532	\N	507	1712	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2456	UREA	listo	2829	601	77	521	1668	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2457	U/OA	listo	2830	601	\N	529	1669	\N	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2458	UO	listo	2831	601	78	542	1670	https://drive.google.com/file/d/1BTa2xbup9_zKAjw_A-AKUqlZ5Ic4_aP0/view?usp=sharing	25.6 a 42.8 g/24h	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2459	U	listo	2832	601	\N	507	1666	\N	16.6 a 48.5 mg/dl	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2460	UES	listo	2833	601	\N	557	1667	https://drive.google.com/file/d/1sSjGQdiQooW6lftf5WL-TofbMpWYdZsY/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2461	CLU	listo	2834	601	78	523	\N	https://drive.google.com/file/d/17dno8Acpuquf29lM0_AF6Iq0p2_1TOCf/view?usp=sharing	64 a 300 ml/min	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2462	AU	listo	2835	602	\N	507	1678	\N	📋	1	listo	\N	1	Laboratorio SBLab	En NBU es URICO, ACIDO	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2463	AUO	listo	2836	602	78	542	1679	https://drive.google.com/file/d/1J-fOjb-qvr7OmJ4ueUV-Mfp28Ope00gl/view?usp=sharing	250 a 750 mg/24h	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2464	VD/LCR	listo	2837	603	\N	545	1901	\N	NO REACTIVO	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2465	VD	listo	2838	603	\N	512	1900	\N	NO REACTIVO	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2466	VANCO	listo	2839	532	\N	507	2088	https://drive.google.com/file/d/1T9Ij2cul_eSFTwWAVh-JppDIfwWklkXH/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	16/07/2026 Se cambia el valor de referencia teraputico por pedido del Dr. Nannini	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2467	VIT B12	listo	2847	532	\N	507	1762	\N	187 a 883 µmol/l	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2468	VIT-D3	listo	2850	532	\N	507	1770	https://drive.google.com/file/d/12vH-wU8HiZQ-ifxZTr_dNeDvmrhW0RTQ/view?usp=sharing	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2469	WID	listo	2853	577	\N	512	1897	https://drive.google.com/file/d/1hmDPFl3_McUy5vXGi5fXA8k6nbsZZdI8/view?usp=sharing	Ver MODELO DE INFORME	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N
+2470	BCR/ABL	listo	2859	\N	\N	\N	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2471	BCR-CUAN	listo	2266	604	81	558	2157	https://drive.google.com/file/d/1rUAUFHvvE6B1h7lhyOqcqOcVG2kDnWcO/view?usp=sharing	Ver MODELO DE INFORME	16	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2472	B2GLIG	listo	2268	605	\N	559	1641	https://drive.google.com/file/d/19e2yB7gk8ZNlEsW__OeNQ-swx7AzuKzT/view?usp=sharing	Ver MODELO DE INFORME	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2473	B2GLIM	listo	2269	605	\N	559	1640	https://drive.google.com/file/d/11Fjz_EzefOG-ZihSPelYzM4o0inBKbmB/view?usp=sharing	Ver MODELO DE INFORME	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2474	BICAR/OR	listo	2274	606	\N	560	\N	\N	Menor a 30.0 nmol/l	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2475	C L SUE	listo	2297	541	\N	559	1750	https://drive.google.com/file/d/11mS9jDOUXyZlm8njK7OdjlxOsbnEAYj0/view?usp=sharing	Ver MODELO DE INFORME	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2476	C L OR	listo	2298	548	82	561	\N	https://drive.google.com/file/d/1k9guDnVE7bEi9-n_CSaJJmjYQ9rfwJ4z/view?usp=sharing	Ver MODELO DE INFORME	7	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2477	IGVH	listo	2300	607	\N	562	2036	https://drive.google.com/file/d/1MP5xq8W8BKQI6JTEfy3DKrAE40iV2SqL/view?usp=sharing	-	16	listo	\N	1	Laboratorio SBLab	03/08/2026 Se termina de configurar el informe con resultados de paciente.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2478	CALPRO	listo	2308	605	\N	544	2177	\N	\N	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2479	ACARDIGG	listo	2311	605	\N	559	1643	https://drive.google.com/file/d/1albzAEkIb8Cmmge9ODOYaFr_pLpfa241/view?usp=sharing	Ver MODELO DE INFORME	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2480	ACARDIGM	listo	2312	605	\N	559	1642	https://drive.google.com/file/d/1ZFZIUtYe9l6i53ORfRw3AB55Z93uRlKw/view?usp=sharing	Ver MODELO DE INFORME	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2481	CD3/CD16	listo	2320	608	\N	526	2155	\N	\N	6	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2482	CD19	listo	2321	608	\N	563	2152	https://drive.google.com/file/d/1Aat-xeMhXnL7tmf9H_JAMR59q4rIvqaX/view?usp=sharing	Ver MODELO DE INFORME	6	listo	\N	1	Laboratorio SBLab	Se actualiza el modelo de informe segun lo que remite IICT.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2483	CD2	listo	2322	608	\N	563	2156	\N	\N	6	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2484	CD20	listo	2860	608	\N	564	\N	\N	\N	4	listo	\N	1	Laboratorio SBLab	Se transfiere derivacion de TURNER a IICT.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2485	CD25	listo	2323	608	\N	526	\N	https://drive.google.com/file/d/18LNgDkm8yojcj1OaBlAGBbU1WBrPDV4-/view?usp=sharing	Ver MODELO DE INFORME	6	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2486	LINFO NK	listo	2325	608	\N	563	2154	\N	\N	6	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2487	CD34	listo	2326	608	\N	563	2151	\N	\N	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2488	CD4	listo	2327	608	\N	563	2150	https://drive.google.com/file/d/10tO8tb5w4595dKMDni8nOur5kgnQ210Y/view?usp=sharing	Ver MODELO DE INFORME	11	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2489	CD56	listo	2328	608	\N	563	2153	https://drive.google.com/file/d/1F_uJ7evtGxjf__-E85b9ec9yj5XUJh61/view?usp=sharing	Ver MODELO DE INFORME	6	listo	\N	1	Laboratorio SBLab	Se actualiza el modelo de informe segun lo que remite IICT.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2490	CD8	listo	2329	608	\N	563	2149	\N	\N	11	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2491	CEPBA	pendiente	2861	607	\N	565	\N	\N	\N	21	listo	\N	1	Laboratorio SBLab	Revisar informe de 22I 330805 PISTONE, SANDRA para ver formato de estudio. Agregar al area general.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2492	CLAPG	listo	2341	605	\N	559	1960	\N	\N	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2493	CLAPM	listo	2342	605	\N	559	1958	\N	\N	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2494	CLATG	listo	2346	605	\N	559	1998	\N	\N	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2495	CLATM	listo	2347	605	\N	559	1997	\N	\N	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2496	CBF	listo	2862	609	\N	566	\N	\N	-	22	revisar	\N	1	Laboratorio SBLab	Modelo de informe hecho, no adjunto. No se agrego aun al area general	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2497	FISH 17P	listo	2863	610	\N	567	\N	\N	\N	30	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2498	FLT3	listo	2451	611	81	565	\N	https://drive.google.com/file/d/17yqtmj993twVJ9v99UhTNSX7w_Pxn0Ev/view?usp=sharing	NEGATIVO	15	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2499	GLIA-A	listo	2471	605	\N	559	2082	https://drive.google.com/file/d/1NxKc98DXNWomFRGdA6uujSgJvm9EfU5p/view?usp=sharing	Ver MODELO DE INFORME	4	listo	\N	1	Laboratorio SBLab	Se incluye interpretacion solo en Hexalis	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2500	GLIA-G	listo	2472	605	\N	559	2083	https://drive.google.com/file/d/1iBV4GIj2I72HaFg8CZVvhxAmZwHKWrNL/view?usp=sharing	Ver MODELO DE INFORME	4	listo	\N	1	Laboratorio SBLab	Se incluye interpretacion solo en Hexalis	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2501	GLIDE-A2	listo	2473	605	\N	559	2081	https://drive.google.com/file/d/1W462YiDK0FSakbp3uqw_7xfC1OfgLH64/view?usp=sharing	Ver MODELO DE INFORME	5	listo	\N	1	Laboratorio SBLab	Eliminar el texto en Datatech al cabo de 6 meses	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2502	GLIDE-G2	listo	2474	605	\N	559	2080	https://drive.google.com/file/d/1xc1qDG6ATFMvJcXaMsoY16lSttJWgz3N/view?usp=sharing	Ver MODELO DE INFORME	5	listo	\N	1	Laboratorio SBLab	Eliminar el texto en Datatech al cabo de 6 meses	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2503	HERP1M	listo	2525	605	\N	559	1933	https://drive.google.com/file/d/1_8-C4XXIiTLp5w-kR6qQvbREDWD8k8Ar/view?usp=sharing	Ver MODELO DE INFORME	5	verificado	\N	1	Laboratorio SBLab	Se incluye interpretacion solo en Hexalis	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2504	HERP2M	listo	2527	605	\N	559	1935	https://drive.google.com/file/d/1N3ewvq7oGxuMHxRDuMe-BqDEyKf3FAYj/view?usp=sharing	Ver MODELO DE INFORME	5	verificado	\N	1	Laboratorio SBLab	Se incluye interpretacion solo en Hexalis	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2505	PCR-HIV	listo	2539	612	\N	568	\N	\N	\N	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2506	IDH	listo	2554	609	81	569	2034	https://drive.google.com/file/d/1FWTod3i7jpEQfUtfoOhj902OT5jBkD-X/view?usp=sharing	-	45	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2507	CITOFLU	listo	2587	608	81	570	\N	\N	\N	16	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2508	IGD	listo	2592	541	\N	559	1735	\N	\N	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2509	JAK2- 12	listo	2615	613	\N	563	2158	\N	\N	31	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2510	AC-JO1	listo	2617	605	\N	559	2055	\N	\N	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2511	ANTI-LA	listo	2620	605	\N	559	2053	\N	\N	8	listo	\N	1	Laboratorio SBLab	Se agrega en Hexalis, la determinacion INTERPRETACION separada del RESULTADO.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2512	MICOG 1	listo	2665	605	\N	559	1964	\N	\N	5	listo	\N	1	Laboratorio SBLab	En la web dice IFI en vez de ELISA	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2513	MICOM 1	listo	2666	605	\N	559	1963	\N	\N	5	listo	\N	1	Laboratorio SBLab	En la web dice IFI en vez de ELISA	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2514	NPM-1	listo	2673	614	81	565	\N	https://drive.google.com/file/d/1Kcg1b1gpEqAMy_KhD4fy5Q2QryfiwFBT/view?usp=sharing	NO SE OBSERVAN INSERCIONES NI DELECIONES	20	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2515	PAPP-A	listo	2685	615	87	559	1855	https://drive.google.com/file/d/125g6wGAc4Oh3jEWUS-fXfmcLmN4JOYO0/view?usp=sharing	\N	16	verificado	\N	1	Laboratorio SBLab	Se cambia el tiempo de demora de 2 a 16 dias.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2516	PARVO G1	listo	2697	605	\N	559	1991	\N	\N	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2517	PARVO M1	listo	2698	605	\N	559	1990	\N	\N	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2518	PXEORI	listo	2727	616	82	571	\N	https://drive.google.com/file/d/10b3-_x7XJ8-hGM4e09vAuft1_4iM-_4f/view?usp=sharing	-	8	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2519	PXE1	listo	2728	617	\N	559	1747	https://drive.google.com/file/d/1bu2ni50N9RNljBYHSbNDYfrkt6UEe1uq/view?usp=sharing	\N	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2520	QUIMO	listo	2733	590	\N	572	2174	\N	\N	20	listo	\N	1	Laboratorio SBLab	Previamente se derivaba a TURNER, pero no lo procesa mas.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2521	ANTI-RNP	listo	2745	605	\N	559	2051	\N	\N	8	listo	\N	1	Laboratorio SBLab	Se corrigio valor de referencia. Eliminar texto en Datatech al cabo de 6 meses.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2522	ANTI-RO	listo	2746	605	\N	559	2052	\N	\N	8	listo	\N	1	Laboratorio SBLab	Se agrega en Hexalis, la determinacion INTERPRETACION separada del RESULTADO.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2523	RUNX1	listo	2864	609	81	565	\N	\N	\N	30	listo	\N	1	Laboratorio SBLab	Revisar informe de 22I 330805 PISTONE, SANDRA para ver formato de estudio. Agregar al area general.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2524	AESC70PM	listo	2756	605	\N	559	2054	\N	\N	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2525	ANTI-SM	listo	2766	605	\N	559	2049	\N	\N	8	listo	\N	1	Laboratorio SBLab	Se agrega en Hexalis, la determinacion INTERPRETACION separada del RESULTADO.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2526	FREE-SUB	listo	2781	615	87	559	1854	\N	\N	16	verificado	\N	1	Laboratorio SBLab	Se cambia el tiempo de demora de 2 a 16 dias.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2527	TCF3-HLF	listo	2783	609	81	565	2035	https://drive.google.com/file/d/18EF2iK_L54HgjRTQm-QZPXWFO2w5p0yE/view?usp=sharing	-	30	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2528	TRANS A2	listo	2814	605	\N	559	2086	https://drive.google.com/file/d/1aCriyQKL_1x1Mw6uxczLaXFiXBqI4HtG/view?usp=sharing	Ver MODELO DE INFORME	4	verificado	\N	1	Laboratorio SBLab	Eliminar el texto en Datatech al cabo de 6 meses	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2529	TRANS G2	listo	2815	605	\N	559	2087	https://drive.google.com/file/d/19rpYZKC905jxx6kouw-u8eMPLgmuI410/view?usp=sharing	Ver MODELO DE INFORME	4	verificado	\N	1	Laboratorio SBLab	Se incluye interpretacion	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2530	TEL-AML1	listo	2816	609	81	565	2037	https://drive.google.com/file/d/1eG4EPCpbfetFCwSgX87haQF2cxPdbfob/view?usp=sharing	-	21	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2531	PML-RAR	listo	2817	609	81	567	2039	https://drive.google.com/file/d/1yHrmOIyzN5rA93gB2i7NvX1XifsEU8de/view?usp=sharing	-	17	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2532	MLL/AF4	listo	2818	609	81	565	2038	https://drive.google.com/file/d/1tZwu1Di30j_G9Ikrlw-m2iee8zgMTij4/view?usp=sharing	-	10	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2533	AML1-ETO	listo	2865	609	\N	573	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2534	VARIC G1	listo	2842	605	\N	559	1974	https://drive.google.com/file/d/1ffyykBvia-0A5TG-JorDGc0EAIw6QTBy/view?usp=sharing	Ver MODELO DE INFORME	8	verificado	\N	1	Laboratorio SBLab	Se incluye interpretacion solo en Hexalis	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2535	VARIC M1	listo	2843	605	\N	559	1973	https://drive.google.com/file/d/1MR3cx0RK2aojsx1HDusOtmIayl7HPkEo/view?usp=sharing	Ver MODELO DE INFORME	8	verificado	\N	1	Laboratorio SBLab	Se incluye interpretacion solo en Hexalis	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N
+2536	OHPGM1A	listo	2195	618	88	559	2167	https://drive.google.com/file/d/1JgJAw-tOma5zWZDMSXr6zfIFn3O5Wowl/view?usp=drive_link	Ver MODELO DE INFORME	5	listo	OHPGM1A	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2537	OHPG	listo	2196	619	86	559	1843	\N	📋	5	verificado	OHPG	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2538	BUTIRICO	listo	2199	620	\N	559	1663	\N	0.03 - 0.30 mmol/l	7	listo	B OHB	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2539	662277	pendiente	2209	621	\N	574	2125	INDICACIONES AL PACIENTE\n\nDeterminación: ACIDO MUCONICO\nMuestra: ORINA AISLADA\nPreparación previa: -\nToma de muestra: Recolectar la muestra al finalizar la última jornada laboral de la semana fuera del ámbito laboral. Recolectar en frasco plástico estéril.\nDatos adicionales: -\nVersión: 01 (07/08/2026)\n\nINDICACIONES AL LABORATORIO\nRemitir alícuota de 15 mL de orina post jornada laboral + alícuota de 5 mL de orina post jornada laboral en tubo de 13x75mm sin aditivo\nConservar a 2-8°C	IBE menor a 500 µg/g Cr	20	listo	AMU	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2540	OXALURIA	listo	2211	534	82	575	1763	ACIDO OXALICO URINARIO\n\nPACIENTE\nDesde 48hs antes de iniciar la recolección de orina de 24h:\n\nEvite la toma de ácido ascórbico (vitamina C), té, mate, café y chocolate o la ingestión de alimentos que contengan oxalato como las espinacas, frutillas, tomates.\n\nSe requiere un recipiente limpio de al menos 2L (brocal, bidón o botella de agua mineral).\n\nDescarte la primera orina de la mañana y registre el horario.\n\nDurante las próximas 24h, recolecte todas las fracciones de orina en dicho recipiente, manteniéndolo refrigerado en heladera durante todo el proceso.\n\nUna vez alcance el horario registrado en el punto 2, orine la última fracción y coloque la misma en el recipiente.	17.5 a 35.1 mg/24h	16	verificado	AOX O	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2541	VALPRO	listo	2214	619	89	576	2095	https://drive.google.com/file/d/1OndcVQfhnYMlAdo-RNIz7_XmiNKQfupL/view?usp=sharing	50.0 a 100.0 µg/ml	4	verificado	AV	1	Laboratorio SBLab	Previamente se derivaba a TURNER	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2542	ADENO-M	listo	2225	622	\N	559	1948	\N	\N	11	listo	ADV M I	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2543	ADRE P	listo	2229	623	90	577	2137	https://drive.google.com/file/d/1GF8XQQVasy-e5J0ChPBM3UJ_jQBanXdI/view?usp=sharing	Ver MODELO DE INFORME	26	listo	AD P	1	Laboratorio SBLab	Se corrigen los valores de referencia.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2544	ALD S	listo	2233	619	90	578	1870	https://drive.google.com/file/d/1TwjhWxAYykEBZrcB43a-sGyyasV_oRnT/view?usp=sharing	Ver MODELO DE INFORME	10	listo	ALD S	1	Laboratorio SBLab	Cambio en el metodo en Labmedicina.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2545	ANTRIPMF	listo	2235	548	\N	579	2171	\N	\N	21	listo	A1A MF	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2546	ANTRIP	listo	2236	541	\N	576	2170	\N	90.00 a 200.00 mg/dl	11	listo	A1A	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2611	RAST DP	listo	2565	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	IGE DP	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2547	CL A1ANT	listo	2237	625	\N	580	2172	ALFA 1 ANTITRIPSINA, CLEARENCE DE\n\nPACIENTE\n- MATERIA FECAL, TOTALIDAD DE DEPOSICIONES DE 2 DÍAS.\n- SANGRE.\nAyuno de 8 horas previas a la toma de muestra de SANGRE.\nRecolectar la totalidad de las deposiciones de dos días recipiente estéril. Mantener a temperatura ambiente hasta su envío al laboratorio.	Hasta 12.5 ml/24h	21	listo	A1ACL	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2548	ALUMINIO	listo	2239	626	\N	559	\N	ZINC SERICO\nNo deben realizar el estudio en pacientes que hayan recibido gadolinio, iodo, bario en las últimas 96 horas. Estos agentes de contraste basados ​​en metal son interferentes conocidos para las técnicas de análisis de trazas de metales.\nConsulte con su medico previo a la realización del estudio.	Menor a 0.6 µg/dl	21	listo	AL	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2549	H.A.D.	listo	2247	618	\N	581	1872	\N	Menor a 13 pmol/l	37	listo	HAD	1	Laboratorio SBLab	Se cambia el envio desde CONGELADO a REFRIGERADO.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2550	HMU	listo	2255	615	\N	576	1850	\N	📋	8	verificado	HMU	1	Laboratorio SBLab	Se cambia el envio desde REFRIGERADO a CONGELADO.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2551	APO E	listo	2866	609	\N	582	\N	\N	-	16	listo	APOE	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2552	AQ4	listo	2259	622	\N	559	2077	\N	\N	31	listo	AQ4	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2553	AQ4 LCR	listo	2260	622	\N	583	2078	\N	\N	31	listo	AQ4 LCR	1	Laboratorio SBLab	Labmedicina no informa valores de referencia.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2554	BANDAS	listo	2263	627	\N	584	1749	\N	\N	31	listo	BO	1	Laboratorio SBLab	Labmedicina no informa valores de referencia.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2555	BARTO-G	listo	2264	628	\N	576	2003	\N	NEGATIVO	11	listo	BN G I	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2556	BARTO-M	listo	2265	628	\N	576	2002	\N	NEGATIVO	11	listo	BN M I	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2557	LAPS S	listo	2272	615	\N	551	1767	https://drive.google.com/file/d/17JTMC47AixAALLcJrT6ipvySVhfyuW87/view?usp=sharing	📋	11	listo	LAPS B	1	Laboratorio SBLab	20/08/2026 Se cambia el envio desde REFRIGERADO a CONGELADO.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2558	BORDE	listo	2278	605	\N	559	1956	\N	\N	16	listo	BP G I	1	Laboratorio SBLab	Se inactiva debido a la falta de reactivo. Se procesa en IDYMIC. 02/07/2026: Se vuelve a activar porque se vuelve a procesar en LABMEDICINA.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2559	BORD-IGM	listo	2280	605	\N	559	1954	\N	\N	16	listo	BP M I	1	Laboratorio SBLab	Se inactiva debido a la falta de reactivo. Se procesa en IDYMIC.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2560	BIFIGG	listo	2287	622	\N	559	1908	\N	\N	16	listo	BL G I	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2561	BIFIGM	listo	2288	622	\N	559	1907	\N	\N	16	listo	BL M I	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2562	CA 72-4	listo	2296	629	\N	559	1880	\N	Hasta 4.0 UI/ml	8	listo	CA724	1	Laboratorio SBLab	Previamente se derivaba a CIBIC	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2563	CARBA	listo	2309	621	89	559	2092	CARBAMAZEPINA\n\nPACIENTE\nObtener la muestra antes de la administración de la siguiente dosis.	\N	3	listo	CBZ	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2564	ACCELUPA	listo	2331	622	\N	576	2064	\N	NEGATIVO	16	listo	ACPG	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2565	CIS C	listo	2348	541	\N	559	1676	https://drive.google.com/file/d/15Zymi2sSFY5Q2Hnc-0kjITWvXMWvenrD/view?usp=sharing	0.56 a 1.02 mg/l	7	listo	CIS C	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2566	CISTI	listo	2349	590	82	585	1765	CISTINA EN ORINA\n\nORINA DE 24 HORAS\n\nUtilizar recipiente limpio y seco.\n\nVaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a\nlas 8 horas o la hora que elija.\n\nAnotar la hora de descarte para tomarla como hora de inicio.\n\nRecolectar todas las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha.\n\nConservar en heladera. Y llevar al laboratorio lo antes posible. No perder ninguna muestra de orina.\n\nSi además se solicita en la misma orden médica ORINA COMPLETA, se debe recolectar la primera orina de la mañana del segundo día en un recipiente separado\ny notificar al técnico o administrativo.	10 a 100 mg/24h	10	listo	CIS O	1	Laboratorio SBLab	04/06/2026 El tiempo de demora se reduce de 20 a 10 días.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2567	CMV-AVI	listo	2358	630	\N	559	1930	https://drive.google.com/file/d/1nTvOXS9Z9xvy-f82DoY3OZqIl-4xr-EN/view?usp=sharing	Ver MODELO DE INFORME	16	listo	CMV TA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2568	CITRATU	listo	2361	631	82	575	1764	CITRATURIA\n\nDesde 48hs antes de iniciar la recolección de orina de 24h:\n\nEvite la toma de ácido ascórbico (vitamina C), té, mate, café y chocolate o la ingestión de alimentos que contengan oxalato como las espinacas, frutillas, tomates.\n\nSe requiere un recipiente limpio de al menos 2L (brocal, bidón o botella de agua mineral).\n\nDescarte la primera orina de la mañana y registre el horario.\n \nDurante las próximas 24h, recolecte todas las fracciones de orina en dicho recipiente, manteniéndolo refrigerado en heladera durante todo el proceso.\n\nUna vez alcance el horario registrado en el punto 2, orine la última fracción y coloque la misma en el recipiente.	📋	16	verificado	AC O	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2569	CLOBAZAN	listo	2362	621	89	576	2097	https://drive.google.com/file/d/1t2F-8aPGtmMTmNDiyrfxtO_XiTU31s1t/view?usp=sharing	0.12 a 0.97 µg/ml	0	listo	CLB	1	Laboratorio SBLab	Se usan valores de referencia desde Datatech.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2570	CLOZA	listo	2363	621	89	578	\N	https://drive.google.com/file/d/1815IBZ_sJHtXaOWcJzueDJ-7kbkJ6r9J/view?usp=sharing	Ver MODELO DE INFORME	16	listo	CLZP	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2571	COBRE/S	listo	2366	590	\N	559	1775	\N	📋	11	verificado	CU S	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2572	CROMOGRA	listo	2398	632	\N	559	1887	\N	Menor a 102.0 ng/ml	12	listo	CGA	1	Laboratorio SBLab	04/06/2026 El tiempo de demora se reduce de 26 a 20 días. 03/07/2026: Se cambia metodo de ELISA a TRACE, valor de referencia de <100 a <102 y la demora de 20 a 12 dias	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2573	D4	listo	2400	615	86	559	1841	DELTA 4 ANDROSTENEDIONA\n\nPACIENTE\nConcurrir entre el 3º al 5º día del ciclo femenino, siendo el día 1º, el día en el que inició el sangrado menstrual. Si se encuentra en amenorrea y no existe otra indicación médica, obtener la muestra en un día al azar. \nConsignar FUM (Fecha de última menstruación)	📋	5	verificado	D4	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2574	DEOXIPIR	listo	2402	619	\N	586	1769	\N	📋	16	verificado	DPYR	1	Laboratorio SBLab	Se elimina requerimiento de DIURESIS	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2612	RAST EPG	listo	2567	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	9	listo	IGE EPG	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2613	RAST SI	listo	2873	634	\N	559	\N	\N	Ver MODELO DE INFORME	9	listo	IGE SI	1	Laboratorio SBLab	Hacer modelo de informe y pasar al area general	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2575	DGX	listo	2405	532	91	559	2091	INDICACIONES AL PACIENTE\nDeterminación: DIGOXINA\nMuestra: SANGRE VENOSA\nPreparación previa: Concurrir al laboratorio luego de que hayan transcurrido 6 horas de la última dosis, o bien, justo antes de la próxima dosis.\nToma de muestra: Punción venosa.\nDatos adicionales: Indicar dosis y horario de la última toma. Indicar otras medicaciones.\nVersión: 01 (20/ENE/2026)	0.8 a 2.0 ng/ml	6	listo	DGX	1	mariangel. rinaudo@sanbritanico.com.ar	Previamente se derivaba a IBC.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2576	DOPAMINA	listo	2409	623	\N	577	2145	https://drive.google.com/file/d/1Mq52OvCeyCy_wMYWsPAdxbjC3lQkVldX/view?usp=sharing	MENOR A 50 pg/ml	26	listo	DA P	1	Laboratorio SBLab	Se agrega el limite de cuantificacion.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2577	PANEL EN	listo	2415	622	\N	559	2071	\N	NEGATIVO	21	listo	ECF S	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2578	ECF LCR	listo	2416	622	\N	583	2076	\N	NEGATIVO	21	listo	ECF LCR	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2579	ENOLASA	listo	2419	629	\N	559	1885	\N	Menor a 16.3 ng/ml	11	listo	NSE	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2580	ECA	listo	2422	631	\N	559	1868	ENZIMA CONVERTIDORA DE ANGIOTENSINA (ECA)\n\nLas drogas inhibidoras de la ECA (captopril, enalapril) deben ser discontinuados 4 semanas antes de la realización del test. No discontinuar la medicación sin antes consultar con su médico.	20 a 70 U/l	16	listo	ECA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2581	ERITRO	listo	2429	619	\N	576	2104	\N	4.3 a 29.0 mUI/ml	5	listo	EP	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2582	ESTRONA	listo	2437	624	86	559	1835	\N	📋	21	verificado	E1	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2583	EVEROL	listo	2440	633	89	587	2101	EVEROLIMUS\n\nPACIENTE:\nMuestras: SANGRE\nPreparación previa: Ayuno de 8 horas.\nToma de muestra: Concurra al laboratorio previo a la administración de la siguiente dosis de medicación (valle), cuando la concentración es mínima.\nDatos adicionales: Dosis y horario de la última toma.\nVersión: 1.0 (09-sep-2025)	3.0 a 8.0 ng/ml	6	listo	EVL	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2584	FACTINTR	listo	2441	605	\N	559	2065	\N	\N	14	listo	FI	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2585	FENOBAR	listo	2447	621	\N	559	2100	https://drive.google.com/file/d/1JD9qDr-3bpBwOBNObMXRZYgRTBQAYG7n/view?usp=sharing	10.00 a 40.00 mg/l	5	listo	FBT	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2586	FOSFO G	listo	2459	605	\N	559	1645	\N	\N	11	listo	FFL	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2587	FOSFO M	listo	2460	605	\N	559	1644	\N	\N	11	listo	FFL M	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2588	ANTI-GAD	listo	2465	619	\N	576	1819	\N	\N	27	verificado	GADA	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2589	GASTRINA	listo	2470	634	\N	576	1888	GASTRINA SERICA\n\nPACIENTE\n24 horas previas a la extracción suspender la toma de antiácidos, drogas anticolinérgicas y antagonistas de receptor H2, inhibidores de la bomba de protones. Consultar con el médico antes de suspender cualquier medicación.	13 - 115 pg/ml	15	listo	GA	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar) Anteriormente se derivaba a TURNER	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2590	GLU 6PDH	listo	2486	635	\N	587	1760	\N	7.0 - 20.5 U/gHb	10	verificado	G6	1	Laboratorio SBLab	04/06/2026 Se cambia demora de 20 a 10 dias.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2591	HELI	listo	2494	634	\N	559	1993	\N	\N	11	listo	AHP G I	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2592	HELI-M	listo	2495	622	\N	559	1992	\N	\N	11	listo	AHP M E	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2593	HEV IGM	listo	2519	605	\N	559	1926	\N	\N	15	listo	HEV M	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2594	ANTI-HU	listo	2551	622	\N	559	2073	\N	NEGATIVO	23	listo	HU IFI	1	Laboratorio SBLab	Se configuro envio CONGELADO	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2595	IA-2	listo	2553	605	\N	576	\N	https://drive.google.com/file/d/1OktxsQ186dCTbs9prb_BrEsCy3eRB4QK/view?usp=sharing	Ver MODELO DE INFORME	17	listo	IA-2	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2596	RAST AM	listo	2867	634	\N	559	\N	\N	Ver MODELO DE INFORME	9	listo	IGE AM	1	Laboratorio SBLab	Hacer modelo de informe y pasar al area general	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2597	RAST AL	listo	2868	634	\N	559	\N	\N	Ver MODELO DE INFORME	11	listo	IGE AL	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2598	RAST ALM	listo	2555	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	IGE ALME	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2599	RAST ALT	listo	2556	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	IGE ALT	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2600	RAST A	listo	2557	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	RA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2601	RAST AFL	listo	2558	636	\N	559	\N	https://drive.google.com/file/d/1yoLklqgjfI6jlNOFM8IXMWjo-4st2XqB/view?usp=sharing	Ver MODELO DE INFORME	21	listo	IGE AFL	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2602	RAST AF	listo	2559	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	IGE AF	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2603	RAST ANI	listo	2560	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	IGE ANI	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2604	RAST VS	listo	2869	634	\N	559	\N	\N	Ver MODELO DE INFORME	9	listo	IGE VS	1	Laboratorio SBLab	Hacer modelo de informe y pasar al area general	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2605	RAST BL	listo	2870	634	\N	559	\N	\N	Ver MODELO DE INFORME	11	listo	IGE BL	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2606	RAST BT	listo	2871	634	\N	559	\N	\N	Ver MODELO DE INFORME	11	listo	IGE BT	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2607	RAST CAS	listo	2872	634	\N	559	\N	\N	Ver MODELO DE INFORME	11	listo	IGE CAS	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2608	RAST CF	listo	2562	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	9	listo	RCF	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2609	RAST CH	listo	2563	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	IGE CH	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2610	RAST DF	listo	2564	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	IGE DF	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2650	PBS	listo	2708	626	\N	589	1778	\N	Menor a 26.0 µg/dl	16	listo	PB S	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2614	RAST	listo	2569	634	92	559	1737	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	11	listo	\N	1	Laboratorio SBLab	No tiene valores de referencia en Datatech.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2615	RAST PG	listo	2573	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	8	listo	RPG	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2616	RAST PV	listo	2574	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	8	listo	RPV	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2617	RAST GL	listo	2874	634	\N	559	\N	\N	Ver MODELO DE INFORME	11	listo	IGE GL	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2618	RAST T	listo	2875	634	\N	559	\N	\N	Ver MODELO DE INFORME	9	listo	IGE T	1	Laboratorio SBLab	Hacer modelo de informe y pasar al area general	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2619	RAST YH	listo	2575	634	\N	559	\N	https://drive.google.com/file/d/1qr0J09gLHvI8dJUnsPjogzyknCRlFRwi/view?usp=sharing	Ver MODELO DE INFORME	9	listo	IGE YH	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2620	RAST HM	pendiente	2876	634	\N	559	\N	\N	Ver MODELO DE INFORME	10	listo	IGE HM	1	Laboratorio SBLab	Hacer modelo de informe y pasar al area general	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2621	INFA IGG	listo	2576	622	\N	559	1979	\N	NEGATIVO MENOR A 1/10	11	listo	IFZA G I	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2622	INFA IGM	listo	2577	622	\N	559	1978	\N	NEGATIVO MENOR A 1/16	11	listo	IFZA M I	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2623	INFB IGG	listo	2580	622	\N	559	1982	\N	NEGATIVO MENOR A 1/10	11	listo	IFZB G I	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2624	INFB IGM	listo	2581	622	\N	559	1981	\N	NEGATIVO MENOR A 1/16	11	listo	INFB M I	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2625	INMUNOC	listo	2586	605	\N	559	2042	https://drive.google.com/file/d/1T02jNRMvlUwzi9KXheBwGFFn-7tyBL5w/view?usp=sharing	Ver MODELO DE INFORME	14	listo	CIC	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2626	IGG SUB	listo	2595	579	\N	559	1734	\N	\N	20	listo	IGGSC1/2/3/4	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2627	IGGSC4	listo	2596	579	\N	559	1738	\N	39.5 a 864.0 mg/l	21	listo	IGGSC4	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2628	IAA -1	listo	2605	637	\N	576	1817	ANTICUERPOS ANTI INSULINA\nObtener antes de la aplicación de insulina.	Hasta 0.4 U/ml	21	listo	IAA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2629	ICA-1	listo	2613	622	\N	559	1818	\N	Ver MODELO DE INFORME	11	listo	ICA	1	Laboratorio SBLab	Se corrige el numero de estudio de Hexalis, ingresado erroneo previamente.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2630	LAMOTRIG	listo	2622	621	89	559	2096	https://drive.google.com/file/d/1LTa4Yn9-h9kKDVrQ3Z7CzR4fj4CavKEf/view?usp=sharing	2.5 a 15.0 µg/ml	10	listo	LAMO	1	Laboratorio SBLab	Los valores de referencia cambiaron a 2,5 a 15,0 (antes eran 3.0 a 14.0 µg/ml)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2631	LEVETIRA	listo	2626	621	89	588	2099	https://drive.google.com/file/d/1z7CxW0A1D01cgRDPIKBHkqkmhB3VI_v6/view?usp=sharing	12.0 a 46.0 µg/ml	10	listo	LEVET	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2632	LPG	listo	2877	616	\N	559	\N	\N	Ver MODELO DE INFORME	6	listo	LPG	1	Laboratorio SBLab	HACER MODELO Y AGRERGAR AL AREA PRINCIPAL	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2633	LI S	listo	2632	638	\N	559	2090	LITIO\n\nNo se requiere ayuno y/o preparación previa. Tomar la muestra 8 a 10 horas luego de la última dosis.\nPunción venosa, 8 a 10 horas luego de la última dosis.\nIndicar dosis y horario de la última toma. Indicar otras medicaciones.	📋	5	listo	LI S	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2634	ANTI-LKM	listo	2633	622	\N	559	2046	\N	NEGATIVO	8	listo	ALKM	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2635	MN-S	listo	2638	626	\N	559	1776	MANGANESO SERICO\n\nNo deben realizarse el estudio en pacientes que hayan recibido gadolinio, iodo, bario en las últimas 96 horas.\nConsultar con su medico previo a la realización del estudio.	Menor a 0.23 µg/dl	21	listo	MN S	1	Laboratorio SBLab	Se actualiza tipo de muestra desde SANGRE HEPARINIZADA a SUERO. Se actualiza unidades y valores de referencia de 4,7 a 18,3 ug/l a menor a 0,24 ug/dl	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2636	AMB1	listo	2642	622	\N	559	2059	\N	\N	8	listo	AMB	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2637	MERCURIO	listo	2643	639	\N	559	\N	https://drive.google.com/file/d/1kgYgJjNYzqUjjK9dxkA21mpGVTROAI4A/view?usp=sharing	Menor a 0.9 µg/dl	21	listo	HG S	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2638	MTHFR	listo	2648	609	\N	582	1651	https://drive.google.com/file/d/11AOTdI9PyTh_3_eA6EANR5_sm8-HkyDJ/view?usp=sharing	Ver MODELO DE INFORME	21	verificado	BMD100	1	Laboratorio SBLab	Se actualiza el modelo de informe en base a los resultados del protocolo 22N 264276	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2639	MPO	listo	2652	619	\N	559	2060	https://drive.google.com/file/d/1bo6BJ8tumJtzCV-r3N7Sbuh15FoW9Vnl/view?usp=sharing	Ver MODELO DE INFORME	6	listo	MPO	1	Laboratorio SBLab	Se modifico envio de CONGELADO a REFRIGERADO. Cambia metodo de ELISA a CLIA. La demora se reduce de 26 a 6 dias.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2640	MIOGL/S	listo	2653	541	\N	559	1711	\N	\N	7	verificado	MGL S	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2641	MOG IGG	listo	2656	622	\N	559	2068	\N	\N	41	listo	MOG AC IGG	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2642	AML	listo	2660	628	\N	559	2058	\N	NEGATIVO	11	listo	AML	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2643	NOR P	listo	2670	623	\N	577	2139	https://drive.google.com/file/d/1og-eu2gMjtCz_l7qcbX-ytPawdtZDDRn/view?usp=sharing	Ver MODELO DE INFORME	26	listo	NAD P	1	Laboratorio SBLab	Se agrega limite de cuantificacion	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2644	5ND	listo	2674	640	\N	559	\N	\N	📋	8	listo	NT	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2645	OSTEO	listo	2678	615	\N	559	1771	https://drive.google.com/file/d/1uqmryOe7IpR3o0wk9vb6TvPf0w-Pk742/view?usp=sharing	📋	17	listo	OC	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2646	OXCARBA	listo	2679	621	89	559	2093	https://drive.google.com/file/d/1FPuPycxMmFjBcuCfyGb57dH3enHORhz4/view?usp=sharing	10.0 a 35.0 µg/ml	10	listo	OXC	1	Laboratorio SBLab	Se cambia el rango terapeútico de 3 a 35 a 10 a 35	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2647	PANELNEU	listo	2681	641	\N	576	2070	https://drive.google.com/file/d/1rGDRqMOC_OJfi5ih7GE7oKmnOKg1YOJy/view?usp=sharing	Ver MODELO DE INFORME	22	listo	ONCO	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2648	PEPTI C	listo	2699	619	\N	559	1815	\N	1.1 a 5.0 ng/ml	14	verificado	PPC	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2649	VIP	listo	2702	605	\N	551	2106	\N	Menor a 75 pg/ml	28	listo	VIP	1	Laboratorio SBLab	No se procesa mas en TURNER. Se envia a LABMEDICINA.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2651	PBOR	listo	2709	626	\N	590	\N	PACIENTE\n\nDeterminación: PLOMO (Pb) URINARIO\nMuestra: ORINA AISLADA POST JORNADA LABORAL (50 ml)\nPreparación previa: -\nToma de muestra: Recolectar la muestra al finalizar la última jornada laboral de la semana fuera del ámbito laboral. Recolectar una orina con por lo menos tres horas de retención en recipiente estéril. Se requieren al menos 40 ml de orina.\nNo refrigerar.\nDatos adicionales: -\nVersión: 01 (06/NOV/2025)\n\nLABORATORIO\nRemitir 2 alícuotas de 15 ml de orina post-jornada laboral + 5 ml de orina en tubo 13×75 mm sin aditivo.	Menor a 150 µg/gCr	18	listo	PB O	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2652	IGFBP.3	listo	2723	619	\N	559	1856	\N	📋	21	listo	IGFBP3	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2653	PR3	listo	2726	619	\N	559	2061	https://drive.google.com/file/d/1m02kJe5gdBkz6aBs5I8-V1FElJJCuZ1a/view?usp=sharing	Ver MODELO DE INFORME	6	listo	PR3	1	Laboratorio SBLab	Se configuro envio CONGELADO. Cambia metodo de ELISA a CLIA. La demora se reduce de 26 a 6 dias.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2654	ACRA	listo	2735	624	\N	559	2066	\N	Ver MODELO DE INFORME	21	listo	ACRA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2655	SE S	listo	2760	626	\N	559	1777	\N	7.0 a 15.0 µg/dl	21	verificado	SE S	1	Laboratorio SBLab	Actualizacion en valor de referencia: de (menor a 15) a (7-15)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2656	SEROP	listo	2761	642	\N	582	2135	https://drive.google.com/file/d/1YdawIZGjp-a9Y78O0oyhj55UYwaPTlEG/view?usp=sharing	Menor a 950 ng/ml/10˄9 plaq	8	listo	SEROP	1	Laboratorio SBLab	Alta: 22/07/2025. Baja: 16/10/2025. Alta: 11/11/2025.  Se cambia la demora de 14 a 8 días.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2657	SERO-S	listo	2762	642	\N	559	2134	https://drive.google.com/file/d/19Y1CfhhHTJHD5pEmflzvfAZrh5En0pUn/view?usp=sharing	Menor a 230.0 ng/ml	8	verificado	STN S	1	Laboratorio SBLab	Se configuro envio CONGELADO. Se cambia la demora de 14 a 8 días debido a que se aumenta la frecuencia de envios congelados.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2658	IGF1 120	listo	2767	619	\N	559	\N	\N	NO APLICA	17	listo	SMC	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2659	IGF1 30	listo	2768	619	\N	559	1864	\N	NO APLICA	17	listo	SMC	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2660	IGF1 60	listo	2769	619	\N	559	1865	\N	NO APLICA	17	listo	SMC	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2661	IGF1 90	listo	2770	619	\N	559	1866	\N	NO APLICA	17	listo	SMC	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2662	SMC	listo	2771	619	\N	559	1863	https://drive.google.com/file/d/1B6J8PFnF17qGf1jTMVvVDh_Fi65h2fB3/view?usp=sharing	📋	11	verificado	SMC	1	Laboratorio SBLab	Se configuro envio CONGELADO. Se cambia la demora de 17 a 11 días debido a que se aumenta la frecuencia de envios congelados.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2663	HGH	listo	2772	619	\N	559	1857	\N	📋	11	listo	HGH	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2664	STH 120	listo	2773	619	\N	559	1861	\N	NO APLICA	11	listo	HGH	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2665	STH 180	listo	2774	619	\N	559	1862	\N	NO APLICA	11	listo	HGH	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2666	STH 30	listo	2775	619	\N	559	1858	\N	NO APLICA	11	listo	HGH	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2667	STH 60	listo	2776	619	\N	559	1859	\N	NO APLICA	11	listo	HGH	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2668	STH 90	listo	2777	619	\N	559	1860	\N	NO APLICA	11	listo	HGH	1	Laboratorio SBLab	Previamente se derivaba a TURNER.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2669	TOPIRAMA	listo	2801	643	\N	581	2098	https://drive.google.com/file/d/1REhX1cNVAa7mthf3GFMMoMM_po63molw/view?usp=sharing	2.0 - 20.0 µg/ml	23	listo	TOPI	1	Laboratorio SBLab	Se completa el valor de referencia.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2670	VIT A	listo	2845	621	\N	591	2114	LABORATORIO\nSeparar muestra en tubo opaco (proteger de la luz).	0.24 a 0.95 mg/l	27	listo	VA	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2671	VITA B1	listo	2846	644	\N	591	2116	LABORATORIO\nSeparar muestra en tubo opaco (proteger de la luz).	4.00 a 20.0 µg/l	37	listo	VB1	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2672	VITA B6	listo	2848	644	\N	591	2117	https://drive.google.com/file/d/1zw7g4vyPoQL48T7YaPHxbDMAMMaV6-M5/view?usp=sharing	📋	27	verificado	VB6	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar). Se corrigen los valores de referencia (estaba mal configurado en la web de Labmedicina). Se elimina texto con valores de referencia.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2673	VIT C	discontinuado	2878	621	\N	592	\N	LABORATORIO\nSeparar muestra en tubo opaco con conservante, congelar (proteger de la luz en tubo especial).	0.40 a 2.00 mg/dl	16	verificado	VC	1	mariangel. rinaudo@sanbritanico.com.ar	Se configuro envio CONGELADO. Cambio de metodología de electroforesis capilar a HPLC-UV, y cambio de muestra de plasma con heparina refrigerada en tubo opaco a plasma con EDTA con conservante congelada en tubo opaco. Etiqueta DATA: 59 EDTA(POC) 19 / Etiqueta HEXA: 19- PLASMA CON EDTA TUBO OPACO. 26/06/2026 Se inactiva debido a problemas con los envios.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2674	VITA C	inactivo	2879	645	\N	593	\N	LABORATORIO\nSeparar muestra en tubo opaco con conservante, congelar (proteger de la luz en tubo especial).	0.40 a 2.00 mg/dl	28	listo	VC	1	Laboratorio SBLab	Se inactiva por cambio de tecnologia. Se implemente VITA C	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2675	VIT.E	listo	2851	621	\N	591	2115	PACIENTE\nEvitar consumir alcohol durante las  24 horas previas a la extracción.\n\nLABORATORIO\nSeparar muestra en tubo opaco (proteger de la luz).	5.0 a 20.0 mg/l	28	listo	VE	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2676	ZINC	listo	2854	590	\N	559	1779	ZINC SERICO\nNo deben realizar el estudio en pacientes que hayan recibido gadolinio, iodo, bario en las últimas 96 horas. Estos agentes de contraste basados ​​en metal son interferentes conocidos para las técnicas de análisis de trazas de metales.\nConsulte con su medico previo a la realización del estudio.	📋	8	verificado	ZN	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N
+2677	17PROG	inactivo	2196	646	\N	588	1843	\N	-	4	pendiente	17HPRG	1	Laboratorio SBLab	Se inactiva. Se deriva a LABMEDICINA.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2693	AMINO/S	listo	2242	651	\N	588	2128	AMINOACIDOS SERICOS, CUANTITATIVOS\n\nLABORATORIO\nAdjuntar completa la planilla de Estudios de errores congénitos del metabolismo-Neo pesquisa ampliada.	\N	16	listo	AMINOS	1	Laboratorio SBLab	La paridad esta hecha con una sola determinacion. En Datatech se pone una nota de VER INFORME ADJUNTO.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2747	PH	listo	2705	\N	\N	579	\N	\N	-	2	listo	PH	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2678	17PRONEO	inactivo	2880	605	93	594	\N	PACIENTE\n1. Muestras: Sangre\n2. Recomendaciones: Extraer dentro del primer mes de vida, preferentemente entre los días 2° y 6° de vida.\n3. Modo de recoleccion: Puncion en talon del pie.\n\nLABORATORIO\nRemitir el papel impregnado con sangre y datos del paciente. Conservar a temperatura ambiente.\nObtener la muestra dentro del primer mes de vida. Se recomienda la toma de muestra entre el 2° y 6° dia de vida, 24hs despues de iniciada la alimentacion lactea.\nUtilizar el papel de filtro adecuado: S&S 903.\nNo superponer gotas de sangre sobre el mismo punto del papel.	-	12	pendiente	17HPGN	1	Laboratorio SBLab	Revisar metodo y valores de referencia	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2679	BUTIRICO	discontinuado	2199	647	\N	595	1663	\N	-	12	pendiente	BETAH	1	Laboratorio SBLab	Se procesa en LABMEDICINA.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2680	FENILA	listo	2200	644	\N	571	2121	ACIDO FENIL ACETICO (AFA) URINARIO\n\nPACIENTE\nMuestra de orina de 24h con dieta previa.\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24h: a las 7h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 7h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\nDIETA: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, paltas, berenjenas, ananá chocolate, ciruelas, maníes, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), te ni café.\n\nLABORATORIO\nRemitir 100 ml de orina de 24h recolectada con dieta previa. Indicar diuresis y datos del paciente.	200 a 700 µg/24h	15	listo	AFA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2681	ACIDOGLU	listo	2203	644	\N	559	2122	\N	12.0 a 98.0 µmol/l	16	listo	GLUTA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2682	AHO	listo	2204	590	82	596	2120	ACIDO HOMOGENTISICO\n\nRECOLECCION ORINA DE 24 HORAS\n\nUtilizar recipiente limpio y seco.\n\nVaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a\nlas 8 horas o la hora que elija.\n\nAnotar la hora de descarte para tomarla como hora de inicio.\n\nRecolectar todas las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha.\n\nConservar en heladera. Y llevar al laboratorio lo antes posible. No perder ninguna muestra de orina.\n\nSi además se solicita en la misma orden médica ORINA COMPLETA, se debe recolectar la primera orina de la mañana del segundo día en un recipiente separado\ny notificar al técnico o administrativo.	-	15	listo	AHO	1	Laboratorio SBLab	No tiene valores de referencia en Turner.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2683	HOMO PL	listo	2205	644	\N	581	2147	\N	7.20 a 18.00 ng/ml	19	listo	HVAP	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2684	OROTICO	listo	2210	648	\N	597	2123	ACIDO OROTICO URINARIO\n\nPACIENTE\nRecolectar de 4 a 6 orinas durante todo un dia, previa higiene y en condiciones de asepsia. Refrigerar.\n\nLABORATORIO\nRecolectar de 4 a 6 orinas durante todo un día, previa higiene y en condiciones de asepsia. Refrigerar.\nMezclar las muestras, tomar una alícuota de 50 ml y congelarla a -20°C no menos de 12 h.\nEnviar bien refrigerada.\nEl desarrollo bacteriano invalida el estudio debido a los productos metabólicos de los microorganismos.\nAdjuntar planilla de errores congénitos del metabolismo.	Menor a 7.0 mol/mol Cr	22	listo	ORO	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2685	ACPIRU	listo	2212	601	\N	598	2126	\N	0.40 a 2.00 mg/dl	5	listo	ACPIRU	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2686	AVMHPLC	listo	2213	644	82	599	2144	ACIDO VANILLIN MANDELICO\n\nPACIENTE\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24h: a las 7h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el dia y hasta las 7h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\nDIETA: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, paltas, berenjenas, ananá, chocolate, ciruelas, maní, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), té ni café.\n\nLABORATORIO\nRemitir 100 ml de orina de 24h con pH<3, recolectada con dieta previa. Indicar diuresis y datos del paciente.	0.0 a 7.2 mg/24h	19	listo	AVMHPLC	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2687	TD-VAL	inactivo	2214	634	\N	559	2095	Extracción de la muestra 1 hora antes de tomar la medicación. Ayuno de 4h.	Rango Terapeutico: 50 a 100 µg/ml	7	pendiente	VAL	1	Laboratorio SBLab	Se pasa a derivar a LABMEDICINA	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2688	AC GRASO	listo	2216	590	\N	559	1725	\N	0.1 a 0.9 mEq/l	7	listo	NEFA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2689	ACID.ORG	listo	2217	648	\N	600	2127	ACIDOS ORGANICOS URINARIOS\n\nPACIENTES\n1. Muestras: Orina\n2. Recomendaciones: Recolectar las muestras en condiciones de asepsia. Refrigerar hasta el momento de remitirlas al laboratorio.\n3. Modo de recolección: Recolectar de 4 a 6 orinas durante todo un día, previa higiene y en condiciones de asepsia. Refrigerar.\n\nLABORATORIO\nMezclar las muestras, tomar una alícuota de 100 ml y congelarla a -20°C no menos de 12 h.\nEnviar bien refrigerada.\nEl desarrollo bacteriano invalida el estudio debido a los productos metabólicos de los microorganismos.\nAdjuntar completa la planilla de Estudios de errores congénitos del metabolismo-Neo pesquisa ampliada.	-	22	listo	ACOR	1	Laboratorio SBLab	Crear indicaciones para entregar al paciente	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2690	ACILCARN	listo	2218	649	93	594	2108	ACIL CARNITINAS\n\nLABORATORIO\nRemitir el papel impregnado con sangre y datos del paciente. Conservar a temperatura ambiente.\nUtilizar el papel de filtro adecuado: S&S 903.\nNo superponer gotas de sangre sobre el mismo punto del papel.\nAdjuntar completa la planilla de Estudios de errores congénitos del metabolismo-Neo pesquisa ampliada.	\N	22	listo	ACAR	1	Laboratorio SBLab	La paridad esta hecha con una sola determinacion. En Datatech se pone una nota de VER INFORME ADJUNTO.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2691	ADREURI	listo	2230	644	82	601	2138	ADRENALINA URINARIA\n\nPACIENTE\n1. Muestras: Orina de 24 h.\n2. Recomendaciones: Debe recolectarse con dieta previa.\n3. Modo de recolección: Durante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24 h: a las 7 h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 7hs del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\nDIETA: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, paltas, berenjenas, ananá, chocolate, ciruelas, maníes, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), te ni café.\n\nLABORATORIO\nRemitir 30 ml de orina de 24 h con pH<3, recolectada con dieta previa. Indicar diuresis y datos del paciente.	\N	22	listo	ADRED	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2692	ALD	listo	2232	650	\N	588	1710	\N	Menor a 7.6 UI/l	2	listo	ALD	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2718	ELASTASA	listo	2414	541	\N	579	2173	\N	\N	22	listo	ELAS	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2694	AMINOO	listo	2243	652	\N	597	2129	AMINOACIDOS URINARIOS, CUANTITATIVOS\n\nPACIENTES\n1. Muestras: Orina\n2. Recomendaciones: Mantener refrigerada hasta remitirla al laboratorio.\n3. Modo de recolección: Recolectar de 5 orinas durante todo un día, previa higiene y en condiciones de asepsia. Mantener las muestras en heladera hasta remitirlas al laboratorio.\n\nLABORATORIO\nRecolectar de 5 orinas durante todo un día, previa higiene y en condiciones de asepsia.\nMezclar las muestras, tomar una alícuota de 50 ml. Enviar bien refrigerado.\nEl desarrollo bacteriano invalida el estudio debido a los productos metabólicos de los microorganismos.\nAdjuntar completa la planilla de Estudios de errores congénitos del metabolismo-Neo pesquisa ampliada.	\N	8	listo	AMINOO	1	Laboratorio SBLab	La paridad esta hecha con una sola determinacion. En Datatech se pone una nota de ver informe adjunto.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2695	ANDROGLU	listo	2245	624	\N	588	1842	\N	📋	11	listo	ANDROS	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2696	CARO	listo	2271	647	\N	602	2113	BETA CAROTENO\n\nLABORATORIO\nRemitir 2,5ml de suero refrigerado. Ayuno de 4h.\nProteger de la luz.	50 a 250 µg/ml	11	listo	CAROTE	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2697	BIOTINID	listo	2276	605	93	594	2163	BIOTINIDASA, ACTIVIDAD DE (NEONATAL)\n\nPACIENTE\nExtraer dentro del primer mes de vida. Se recomienda la toma de muestra entre el 2° y 6° día de vida, 24h después de iniciada la alimentación láctea.\n\nLABORATORIO\nRemitir el papel impregnado con sangre y datos del paciente. Conservar a temperatura ambiente.\nUtilizar el papel de filtro adecuado: S&S 903.\nNo superponer gotas de sangre sobre el mismo punto del papel.	-	12	listo	BION	1	Laboratorio SBLab	No tiene valores de referencia	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2698	WRIS	listo	2285	653	\N	588	1905	\N	-	4	listo	WRIS	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2699	WRIC	listo	2286	653	\N	588	1906	\N	-	4	listo	WRIC	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2700	CAL/ASPI	listo	2306	634	\N	603	1831	CALCITONINA EN ASPIRADO DE NODULO\n\nLABORATORIO\nRemitir el lavado de aguja con el material de punción en un vial con 1.0 ml de Sol. Fisiológica. Refrigerar.	-	5	listo	CLN	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2701	CAR LAM	listo	2313	654	\N	604	1892	https://drive.google.com/file/d/1ccZ0fbrjBFdRTob6zP_8eYYbdZKJCgc2/view?usp=sharing	-	35	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2702	CAR ABOR	listo	2314	654	\N	605	1891	LABORATORIO\n\nTOMA DE MUESTRA DE MATERIAL DE ABORTO\na) Extracción: \n- Cuando hacen legrado el médico debe tomar una porción de la zona de vellosidades de la placenta o de lo que va a dar origen a la placenta y enviarlo a las condiciones más estériles posibles, por lo general en un recipiente estéril de urocultivo.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en el mismo recipiente en que se realizó la extracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No debe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	-	63	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes. Se aumenta el tiempo de demora de 21 a 63 dias.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2703	CITOGEN	listo	2315	654	\N	606	1890	LABORATORIO\n\nTOMA DE MUESTRA DE MEDULA OSEA PARA ESTUDIO CITOGENETICO\na) Extracción: \n- Colocar en una jeringa de 5 ml Heparina sódica ESTERIL (0,05 a 0,10 ml aproximadamente). \n- Extraer al menos 2 ml de MEDULA OSEA. Para citogenética está indicado que se debe mandar la primera o segunda porción de extracción. Evite maniobras que impidan la conservación de la\nmuestra en condiciones de estricta esterilidad.\n- Colocar inmediatamente el capuchón en la aguja, o colocar una aguja nueva impidiendo el contacto de la muestra con el aire. No doblar la aguja ni taparla\ncon otros elementos como tapones de goma, gasas, algodón, no estériles. Fijar el émbolo y aguja o tapón estéril con cinta adhesiva.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en la misma jeringa en que se realizó la extracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No debe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\nc) También es posible realizar la extracción en tubos vacutainer con heparina sódica y enviarlos en los mismos.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	-	21	verificado	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2704	CARIOTIP	listo	2316	654	\N	607	1889	LABORATORIO\n\nTOMA DE MUESTRA DE SANGRE PERIFERICA PARA ESTUDIO CITOGENETICO\na) Extracción: \n- Colocar en una jeringa de 5 ml o 10 ml Heparina sódica ESTERIL (0,05 a 0,10 ml aproximadamente).\n- Cambiar la aguja y extraer preferentemente entre 4 y 5 ml de sangre venosa en niños , en caso de bebes puede ser menos ( en lo posible al menos 2ml) y\nentre 8 a 10 ml en adultos. Evite maniobras que impidan la conservación de la\nmuestra en condiciones de estricta esterilidad.\n- Colocar inmediatamente el capuchón en la aguja, o colocar una aguja nueva\nimpidiendo el contacto de la muestra con el aire. No doblar la aguja ni taparla\ncon otros elementos como tapones de goma, gasas, algodón, no estériles. Fijar\nel émbolo y aguja o tapón estéril con cinta adhesiva.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en la misma jeringa en que se realizó la \nextracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No\ndebe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\nc) También es posible realizar la extracción en tubos vacuteiner con heparina sódica y enviarlos en los mismos.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	-	63	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes. Se aumenta el tiempo de demora de 21 a 63 dias.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2719	ECA-LCR	listo	2423	647	\N	612	1869	\N	Menor a 2.5 U/l	8	listo	ECA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2720	ESTE	listo	2434	656	\N	579	2175	\N	Menor a 4%	8	listo	ESTE	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2721	ESTRIOL	listo	2436	634	95	588	1836	https://drive.google.com/file/d/1vamop087_3twceiXUeCV3yT9TWUN8fTD/view?usp=sharing	Ver MODELO DE INFORME	8	listo	ESL	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2722	FENALA	listo	2445	644	\N	559	2119	\N	📋	15	listo	FENILS	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2723	FOH OSEA	listo	2453	634	\N	588	1772	https://drive.google.com/file/d/1GwshmzZuq5_xwAOSr7hd5GMRkwldSlzz/view?usp=sharing	Ver MODELO DE INFORME	2	listo	OSAL	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2724	FOSGLI	listo	2456	657	\N	613	2131	\N	-	8	listo	FOSGLI	1	Laboratorio SBLab	En el NBU figura como ANTICUERPOS IGG ANTI FOSFATIDIL GLICEROL	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2796	SINCI-M	listo	2764	669	\N	559	1951	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	No tiene valores de referencia en Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2705	CARIO AL	listo	2317	654	\N	607	1893	LABORATORIO\n\nTOMA DE MUESTRA DE SANGRE PERIFERICA PARA ESTUDIO CITOGENETICO\na) Extracción: \n- Colocar en una jeringa de 5 ml o 10 ml Heparina sódica ESTERIL (0,05 a 0,10 ml aproximadamente).\n- Cambiar la aguja y extraer preferentemente entre 4 y 5 ml de sangre venosa en niños , en caso de bebes puede ser menos ( en lo posible al menos 2ml) y\nentre 8 a 10 ml en adultos. Evite maniobras que impidan la conservación de la\nmuestra en condiciones de estricta esterilidad.\n- Colocar inmediatamente el capuchón en la aguja, o colocar una aguja nueva\nimpidiendo el contacto de la muestra con el aire. No doblar la aguja ni taparla\ncon otros elementos como tapones de goma, gasas, algodón, no estériles. Fijar\nel émbolo y aguja o tapón estéril con cinta adhesiva.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en la misma jeringa en que se realizó la extracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No debe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\nc) También es posible realizar la extracción en tubos vacuteiner con heparina sódica y enviarlos en los mismos.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	-	61	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2706	CARNITIN	listo	2318	649	\N	559	2130	https://drive.google.com/file/d/1aLzqVr5mz3uk1CI111N8LeAD49r1xlbw/view?usp=sharing	Ver MODELO DE INFORME	22	listo	CAR	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2707	CATOHPLC	listo	2319	644	\N	608	2142	CATECOLAMINAS URINARIAS\n\nPACIENTE: ORINA DE 24 HORAS.\nDebe recolectarse con DIETA previa: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, palta, berenjenas, ananá, chocolate, ciruelas, maní, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), te ni café.\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24hs: a las 07:00 h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 07:00 h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\n\nLABORATORIO\nRemitir 30 ml de orina de 24hs con pH 2-3, recolectada con dieta previa. Indicar diuresis y datos del paciente.	\N	22	listo	CATFU	1	Laboratorio SBLab	En Datatech tiene una determinacion fantasma (4), pasa por defecto un guion.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2708	CD20	discontinuado	2860	608	\N	564	\N	\N	\N	4	listo	LBCD20	1	Laboratorio SBLab	Se transfiere a IICT.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2709	CORURI-N	listo	2381	634	\N	609	1828	CORTISOL LIBRE URINARIO\n\nPACIENTE\nEl día previo a concurrir al laboratorio comenzar con la recolección de la ORINA DE 24h.\n- Vaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a las 8 horas o la hora que elija.\n- Anotar la hora de descarte para tomarla como hora de inicio.\n- Recolectar TODAS las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha. No perder ninguna muestra de orina.\n- Conservar en heladera hasta su entrega.	21 a 111  µg/24h	3	verificado	CORURI	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2710	CORSAL	listo	2382	634	94	610	1823	https://drive.google.com/file/d/1f3EIfj2r6cOxhizvs0wh8M74t5FJ6onR/view?usp=drive_link	Ver MODELO DE INFORME	3	verificado	COR08	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2711	CORSAL08	listo	2383	634	\N	610	1824	CORTISOL SALIVAL\n\nPACIENTE\nSe recomienda no comer, beber (excepto agua), fumar, ni cepillarse los dientes durante las 2-3 horas previas a la toma de muestra. \nEnjuagar la boca con agua, sin cepillar los dientes.\nEn el horario indicado en la orden médica, salivar en un frasco estéril (recolectar la mayor cantidad posible).\nConservar en heladera hasta su entrega.	1.4 a 10.1 ng/ml	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2712	CORSAL12	listo	2384	634	\N	610	1825	CORTISOL SALIVAL\n\nPACIENTE\nSe recomienda no comer, beber (excepto agua), fumar, ni cepillarse los dientes durante las 2-3 horas previas a la toma de muestra. \nEnjuagar la boca con agua, sin cepillar los dientes.\nEn el horario indicado en la orden médica, salivar en un frasco estéril (recolectar la mayor cantidad posible).\nConservar en heladera hasta su entrega.	-	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2713	CORSAL18	listo	2385	634	\N	610	1826	CORTISOL SALIVAL\n\nPACIENTE\nSe recomienda no comer, beber (excepto agua), fumar, ni cepillarse los dientes durante las 2-3 horas previas a la toma de muestra. \nEnjuagar la boca con agua, sin cepillar los dientes.\nEn el horario indicado en la orden médica, salivar en un frasco estéril (recolectar la mayor cantidad posible).\nConservar en heladera hasta su entrega.	-	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2714	CORSAL22	listo	2386	634	\N	610	1827	CORTISOL SALIVAL\n\nPACIENTE\nSe recomienda no comer, beber (excepto agua), fumar, ni cepillarse los dientes durante las 2-3 horas previas a la toma de muestra. \nEnjuagar la boca con agua, sin cepillar los dientes.\nEn el horario indicado en la orden médica, salivar en un frasco estéril (recolectar la mayor cantidad posible).\nConservar en heladera hasta su entrega.	0.7 a 2.2 ng/ml	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2715	FISH 12	listo	2399	610	81	611	2040	https://drive.google.com/file/d/1qr11mtxwMr2G0gWRWrgUdua7jj1ftdEV/view?usp=sharing	-	22	listo	STC12	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2716	DIMETFEN	listo	2407	655	\N	571	2148	DIMETOXIFENILETILAMINA, 3, 4 (DMFA)\n\nPACIENTE\nDebe recolectarse con DIETA previa: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, palta, berenjenas, ananá, chocolate, ciruelas, maní, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), te ni café.\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24hs: a las 07:00 h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 07:00 h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.	\N	15	listo	DMFEA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2717	DOPA O	listo	2410	644	\N	608	2146	DOPAMINA URINARIA\n\nPACIENTE: ORINA DE 24 HORAS.\nDebe recolectarse con DIETA previa: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, palta, berenjenas, ananá, chocolate, ciruelas, maní, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), te ni café.\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24hs: a las 07:00 h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 07:00 h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\n\nLABORATORIO\nRemitir 30 ml de orina de 24hs con pH 2-3, recolectada con dieta previa. Indicar diuresis y datos del paciente.	\N	22	listo	DOPD	1	Laboratorio SBLab	Valor de referencia en Datatech duplicado (texto y configuración de análisis).	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2725	GALA1	listo	2466	658	93	594	2132	GALACTOSA 1-URIDIL FOSFOTRANSFERASA\n\nLABORATORIO\nRemitir el papel impregnado con sangre y datos del paciente. Conservar a temperatura ambiente.\nObtener la muestra dentro del primer mes de vida. Se recomienda la toma de muestra entre el 2° y 6° día de vida, 24hs despues de iniciada la alimentacion lactea.\nUtilizar el papel de filtro adecuado: S&S 903.\nNo superponer gotas de sangre sobre el mismo punto del papel.	\N	17	listo	GALA1	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2726	ANTI-GAN	listo	2469	605	\N	588	2067	https://drive.google.com/file/d/1Gkfl-Ysb4U-kL_p4SmTdSe5q8XMelECp/view?usp=sharing	Ver MODELO DE INFORME	15	listo	PAG	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2727	GASTRINA	discontinuado	2470	634	\N	588	1888	\N	-	11	pendiente	GASTRI	1	Laboratorio SBLab	Se comienza a derivar a LABMEDICINA. Las unidades y valores de referencia no cambian.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2728	VDK	listo	2489	659	\N	614	2176	GRASAS, CUANTITATIVO (VAN DE KAMER) - MATERIA FECAL\n\nPACIENTE\nLos días 4, 5 y 6 de la dieta, recoger toda la muestra de materia fecal de cada día en frascos separados, rotulados, indicando día de recolección, nombre y apellido del paciente. Remitir al laboratorio.\nDIETA: durante 6 días ingerir diariamente y en su totalidad:\nLACTANTES: 800ml de leche entera en la que se disuelven 2 cucharadas de crema de leche.\nNIÑOS DE 2 A 5 AÑOS: 400ml de leche entera, 1 cucharada de crema de leche y 20g de manteca.\nNIÑOS DE 5 A 12 AÑOS: 300ml de leche entera, 2 cucharadas de crema de leche y 25g de manteca.\nADULTOS: 50g de manteca, 3 cucharadas de crema de leche, 1 huevo duro, 2 fetas de jamón crudo, 50g de queso cremoso, 300ml de leche entera, 2 bifes o costeletas de carne vacuna a la plancha, 1 taza de caldo, galletitas de agua.	📋	8	listo	VANKAM	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2729	AR5	listo	2532	660	\N	588	1913	\N	NEGATIVO	3	listo	AR5	1	Laboratorio SBLab	Se corrigio el codigo de Hexalis porque estaba asignado equivocadamente. Se superponia con la derivacion a SEMIR.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2730	ANTIHIST	listo	2533	641	\N	588	2044	\N	Menor a 0.9	8	listo	HIST	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2731	ANTI-HU	discontinuado	2551	622	\N	588	2073	\N	-	29	listo	HUAC	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2732	INT 1-B	listo	2607	634	\N	559	2109	\N	Menor a 5.0 pg/ml	8	listo	INT	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2733	INTER-8	listo	2608	634	\N	551	2110	\N	Menor a 62.0 pg/ml	8	listo	INT8	1	Laboratorio SBLab	Se modifica en tipo de muestra (estaba cargada por error SUERO)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2734	IOMF	listo	2609	661	\N	579	1693	\N	\N	8	listo	IOMF	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2735	JA	listo	2616	644	93	594	2165	JARABE DE ARCE - LEUCINA, NEONATAL\n\nLABORATORIO\nRemitir el papel impregnado con sangre y datos del paciente. Conservar a temperatura ambiente.\nObtener la muestra dentro del primer mes de vida. Se recomienda la toma de muestra entre el 2° y 6° día de vida, 24h después de iniciada la alimentación láctea.\nUtilizar el papel de filtro adecuado: S&S 903.\nNo superponer gotas de sangre sobre el mismo punto del papel.	\N	18	listo	JA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2736	LAMOTRIG	discontinuado	2622	621	\N	559	2096	\N	\N	15	pendiente	LAMO	1	Laboratorio SBLab	Se deriva a LABMEDICINA.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2737	LEPTINA	listo	2624	662	\N	559	2133	https://drive.google.com/file/d/1FPz7Ql9VJbNStd9xxuB5y626f_1XVZcr/view?usp=sharing	Ver MODELO DE INFORME	22	listo	LEPT	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2738	MACROPRL	listo	2634	663	\N	559	1840	https://drive.google.com/file/d/1zTgHA-KIgX-WDAgm6E2NcEd520IhAKUY/view?usp=sharing	📋	3	listo	PROPEG	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2739	MAG.SGPG	listo	2635	664	\N	588	2069	\N	NEGATIVO	29	listo	MAG	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2740	METANEF	listo	2645	644	\N	599	2143	METANEFRINAS FRACCIONADAS URINARIAS\n\nPACIENTE: ORINA DE 24 HORAS.\nDebe recolectarse con DIETA previa: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, palta, berenjenas, ananá, chocolate, ciruelas, maní, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), te ni café.\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24hs: a las 07:00 h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 07:00 h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\n\nLABORATORIO\nRemitir 30 ml de orina de 24hs con pH 2-3, recolectada con dieta previa. Indicar diuresis y datos del paciente.	\N	17	listo	METANE	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2741	MOFEG	listo	2658	665	\N	615	2141	\N	1.5 a 5.5 µg/l	19	listo	MOFEGP	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2742	TELOPEP	listo	2667	605	\N	616	1768	\N	200 a 800 µg/mmol/Cr	2	listo	NTX	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2743	AC.POLIS	discontinuado	2669	666	\N	559	2107	https://drive.google.com/file/d/1aVtALB8iM19Dx6KYPf51-snhFtygpRTH/view?usp=sharing	-	16	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2744	NORAURI	listo	2671	644	82	608	2140	NORADRENALINA URINARIA\n\nPACIENTE: ORINA DE 24 HORAS.\nDebe recolectarse con DIETA previa: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, palta, berenjenas, ananá, chocolate, ciruelas, maní, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), te ni café.\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24hs: a las 07:00 h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 07:00 h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\n\nLABORATORIO\nRemitir 30 ml de orina de 24hs con pH 2-3, recolectada con dieta previa. Indicar diuresis y datos del paciente.	\N	22	listo	NORAD	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2745	OCRESOL	listo	2676	667	\N	617	2111	ORTO CRESOL\n\nPACIENTE\nRecolectar una muestra de orina al término de la jornada laboral en un recipiente estéril. Mantener refrigerada hasta remitirla al laboratorio.	Menor a 0.3 mg/gCr	15	listo	OCRESOL	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2746	PEP-C-OR	listo	2700	634	82	596	1816	PEPTIDO C URINARIO\n\nRECOLECCION ORINA DE 24 HORAS\n\nUtilizar recipiente limpio y seco.\n\nVaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a\nlas 8 horas o la hora que elija.\n\nAnotar la hora de descarte para tomarla como hora de inicio.\n\nRecolectar todas las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha.\n\nConservar en heladera. Y llevar al laboratorio lo antes posible. No perder ninguna muestra de orina.\n\nSi además se solicita en la misma orden médica ORINA COMPLETA, se debe recolectar la primera orina de la mañana del segundo día en un recipiente separado\ny notificar al técnico o administrativo.	3.6 - 156.0 µg/24h	2	listo	PEPC-U	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2748	ANTIPLAQ	listo	2706	608	\N	618	2063	LABORATORIO\nRemitir al laboratorio dentro de las 24h de la extracción 3 ml de sangre entera con EDTA.\nConservar a T. ambiente.\nNo centrifugar.\nNo congelar.	\N	8	listo	PQAC	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2749	RENINA	discontinuado	2737	634	96	619	1867	LABORATORIO\nSi la muestra debe ser tomada con el paciente acostado, el paciente debe reposar 30 minutos en camilla antes de la extracción.\nRemitir 1,0ml de plasma con EDTA congelado. Ayuno de 4hs.	-	4	pendiente	RENA O RENP	1	Laboratorio SBLab	Se pasa a procesar en CIBIC.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2750	ROSABENG	listo	2747	668	\N	588	1904	\N	NEGATIVO	2	listo	ROB	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2751	ASCA	listo	2751	660	\N	588	2006	https://drive.google.com/file/d/1ZvBs483UMXJN7xn4v0ETz1vEb-PDE6Dq/view?usp=sharing	Ver MODELO DE INFORME	3	listo	ASCA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2752	TIROG/AS	listo	2792	634	\N	620	1803	\N	-	3	listo	TIROGN	1	Laboratorio SBLab	Falta configurar el codigo externo en Hexalis para que se pueda poner el mnemonico de Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2753	TIR	listo	2794	644	\N	559	1806	\N	Menor a 196 µmol/l	19	listo	TIR	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2754	TOXTETAN	listo	2804	660	\N	559	1894	https://drive.google.com/file/d/1zq0f5ZEYiZNDIsPc67pFvlW3IYUejBGP/view?usp=sharing	Ver MODELO DE INFORME	3	listo	TEAP	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2755	TRI	listo	2827	605	93	594	2166	\N	Menor a  75 ng/ml	12	listo	TRIN	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2756	NEON6	inactivo	2757	605	93	594	2161	\N	-	12	pendiente	NEO6	1	Laboratorio SBLab	Se usa cuando no hay derivaciones a FBA. Esta inactivo en este momento.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N
+2757	ADENO-G	listo	2224	669	\N	559	1949	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2758	AC-ADREN	inactivo	2228	670	\N	621	2062	\N	\N	16	pendiente	\N	1	Laboratorio SBLab	Codigo de facturacion inactivo. Se envia mail a Fernanda.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2759	E.N.A.	listo	2253	660	\N	559	2048	\N	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	La paridad esta hecha con una sola determinacion. En Datatech se pone una nota de VER INFORME ADJUNTO.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2760	AMC	listo	2254	669	\N	559	2045	\N	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2761	ANTICENT	listo	2332	669	\N	559	2047	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2762	CHAIFI	listo	2338	669	\N	559	1911	\N	NEGATIVO	5	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2763	CHLAPSIG	listo	2343	669	\N	559	1962	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2764	CHLA/PSI	listo	2344	669	\N	559	1961	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2765	PP65 CMV	inactivo	2881	\N	\N	\N	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	Codigo de facturación inactivo. Se envia mail a Fernanda.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2766	ANCA C	listo	2359	669	\N	559	\N	\N	NEGATIVO	8	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2767	ANCA P	listo	2360	669	\N	559	\N	\N	NEGATIVO	8	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2768	COXSA-G	pendiente	2882	670	\N	559	\N	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	Codigo de facturacion inactivo. Se envia mail a Fernanda.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2769	COXSA-M	listo	2388	669	\N	559	1966	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2770	DNA	listo	2408	669	\N	559	\N	\N	NEGATIVO	5	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2771	ECHOVI-G	listo	2412	669	\N	559	1968	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2772	ECHOVI-M	listo	2413	669	\N	559	1967	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2773	AAE-IGA	listo	2417	669	\N	559	2084	\N	NEGATIVO	4	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2774	AAE-IGG	listo	2418	669	\N	559	2085	\N	NEGATIVO	4	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2775	FAN	listo	2444	671	\N	559	2043	\N	NEGATIVO	5	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2776	FTA ABS	listo	2464	669	\N	559	1902	\N	NEGATIVO	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2777	HEPBEAC	listo	2508	672	\N	559	1925	\N	NO REACTIVO	5	verificado	\N	1	Laboratorio SBLab	Se incluyen valores normales en Hexalis y se actualiza el método en Hexalis y Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2778	HEPBCG	listo	2510	673	\N	559	1922	\N	NO REACTIVO	5	listo	\N	1	Laboratorio SBLab	No inclui valores normales en Hexalis porque no se como se informa.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2779	HEPBEAG	listo	2513	674	\N	559	1924	\N	NO REACTIVO	5	verificado	\N	1	Laboratorio SBLab	Se incluyen valores normales en Hexalis y se actualiza el método en Hexalis y Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2780	HERPE6 G	listo	2528	669	\N	559	1938	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2781	HERPE6 M	listo	2529	669	\N	559	1937	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2782	HIDAGIFI	listo	2530	669	\N	559	1914	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2783	HIDAMIFI	listo	2531	669	\N	559	1912	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2784	LEPTMAT	discontinuado	2883	675	\N	559	\N	\N	\N	4	pendiente	\N	1	SIN ASIGNAR	Codigo de facturacion inactivo. Se envia mail a Fernanda.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2785	AME	listo	2659	669	\N	559	2057	\N	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2786	ANTI-OVA	pendiente	2884	669	\N	559	\N	\N	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	Codigo de facturacion inactivo. Se envia mail a Fernanda.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2787	PARA1ACG	listo	2686	628	\N	559	\N	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2788	PARA1ACM	listo	2687	628	\N	559	1984	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	No tiene valor de referencia en Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2789	PARA3ACG	listo	2690	628	\N	559	1988	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2790	PARA3ACM	listo	2691	628	\N	559	1987	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	No tiene valor de referencia en Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2791	PAROTID	listo	2694	628	\N	559	1972	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2792	PARO/IGM	listo	2695	628	\N	559	1971	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2793	SARAMP G	listo	2754	669	\N	559	1977	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2794	SARAMP	listo	2755	669	\N	559	1976	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2795	SINCI	listo	2763	669	\N	559	1952	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	No tiene valores de referencia en Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2797	TOXOCARA	listo	2802	673	\N	559	2005	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	Texto en Datatech: Pueden presentarse reacciones cruzadas con otros ascáridos, especialmente Áscaris lumbricoides.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2798	TOXOCA-M	listo	2803	673	\N	559	2004	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	Texto en Datatech: Pueden presentarse reacciones cruzadas con otros ascáridos, especialmente Áscaris lumbricoides.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2799	FTA-IgM	listo	2820	669	\N	559	1903	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2800	TRICHI	listo	2821	673	\N	559	2000	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	No tiene valores de referencia en Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2801	664623A	pendiente	2885	676	\N	559	\N	\N	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	Solo se usa cuando el ENA es POSITIVO. No tiene paridad con DATATECH.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2802	TRICHI-M	listo	2822	673	\N	559	1999	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	No tiene valores de referencia en Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N
+2803	ANTI-HID	listo	2197	605	\N	559	2050	https://drive.google.com/file/d/1aTBEIKuwrDnOrBq61jeS2UeCTMJnhSmc/view?usp=sharing	Ver MODELO DE INFORME	33	verificado	4412.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2804	ACIDOMET	listo	2208	677	\N	597	2124	https://drive.google.com/file/d/13zsTtypTAuMbY4b9lCFqFl2HqjeMUu13/view?usp=sharing	Menor a 3.6 mmol/molCr	32	verificado	1723.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2805	ACTH	listo	2219	629	\N	551	1821	PACIENTE\nDeterminación: ACTH – HORMONA ADRENOCORTICOTROFINA\nMuestra: SANGRE.\nPreparación previa: Mantener el ritmo sueno-vigilia durante los días previos. Ayuno de 4-8 horas. Actividad moderada horas antes de la prueba y fundamentalmente en los 30 minutos previos a la extracción de sangre.  Presentarse al Laboratorio por la mañana para poder realizar la extracción alrededor de las las 8 horas.\nToma de muestra: Punción venosa.\nDatos adicionales: Informar al Laboratorio que medicamentos está tomando.\nVersión: 1.0 (22-SEP-2025)\n\nLABORATORIO\nConservar la muestra congelada si no es enviada en el día de toma de muestra.	7.2 a 63.3 pg/ml	3	verificado	6.0	1	Laboratorio SBLab	04/08/2026 Se cambia a muestra congelada.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2806	PCR ADEN	listo	2223	609	81	622	\N	\N	NO DETECTABLE	3	listo	2145.0	1	Laboratorio SBLab	19/06/2026 Se inactiva porque se procesa en BMSB. 10/07/2026 Se activa para otras muestras.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2807	ANTI-ADR	listo	2228	669	\N	559	2062	https://drive.google.com/file/d/1_AO6Rd-eHEqlGrfxp874SDrA6iOnkpNZ/view?usp=sharing	Ver MODELO DE INFORME	5	listo	1924.0	1	Laboratorio SBLab	Se agrega una determinacion (Titulo) en Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2808	ALDO/OR	listo	2234	634	82	623	1871	Determinación: ALDOSTERONA URINARIA\nMuestra: ORINA DE 24 HORAS.\nPreparación previa: Se recomienda no recolectar muestras de orina durante el período menstrual. En caso contrario junte cada muestra higienizando previamente y colocándose un tampón vaginal.\nToma de muestra: El día previo a concurrir al laboratorio comenzar con la recolección de la ORINA DE 24h.\n- Vaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a las 8 horas o la hora que elija.\n- Anotar la hora de descarte para tomarla como hora de inicio.\n- Recolectar TODAS las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha. No perder ninguna muestra de orina.\n- Mantener en un lugar fresco y al abrigo de la luz. \nDatos adicionales: Cualquier medicación que esté tomando al momento de realizar el \nestudio debe ser comunicada cuando se entrega muestra.\nVersión: 01 (20/NOV/2025)	1.1 a 30.0  μg/24h	6	listo	1019.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2809	BENCE	listo	2267	678	82	623	1755	Determinación: BENCE JONES, PROTEINAS DE\n\nMuestra: ORINA DE 24 HORAS.\nPreparación previa: Se recomienda no recolectar muestras de orina durante el período menstrual. En caso contrario junte cada muestra higienizando previamente y colocándose un tampón vaginal.\nToma de muestra: El día previo a concurrir al laboratorio comenzar con la recolección de la ORINA DE 24h.\n- Vaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a las 8 horas o la hora que elija.\n- Anotar la hora de descarte para tomarla como hora de inicio.\n- Recolectar TODAS las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha. No perder ninguna muestra de orina.\n- Mantener en un lugar fresco y al abrigo de la luz. \nDatos adicionales: Cualquier medicación que esté tomando al momento de realizar el \nestudio debe ser comunicada cuando se entrega muestra.\nVersión: 01 (02/ENE/2026)	-	17	listo	108.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2810	BORREL-G	listo	2283	605	\N	559	1959	https://drive.google.com/file/d/1K6a_w068eSDoyjMy3TlF39OCSN378J63/view?usp=sharing	Ver MODELO DE INFORME	5	listo	1234.0	1	Laboratorio SBLab	Se modifico metodo en Datatech desde IFI a ELISA	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2811	BORREL-M	listo	2284	605	\N	559	1957	https://drive.google.com/file/d/14mSMjFzlPseaIRGwdqxVtMtXx6OiBW9r/view?usp=sharing	Ver MODELO DE INFORME	5	listo	1235.0	1	Laboratorio SBLab	Se modifico metodo en Datatech desde IFI a ELISA	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2812	C1INHIB	listo	2290	541	\N	559	1636	\N	15 a 35 mg/dl	3	listo	1803.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2813	CYFRA 21	listo	2295	629	\N	559	1878	\N	Menor a 3.2 ng/dl	4	listo	2257.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2814	CALCITO	listo	2305	615	\N	588	1830	\N	📋	3	listo	137.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2815	CHAPCR	listo	2339	679	\N	587	2001	https://drive.google.com/file/d/1DEq3GSi3ktYTLD2r-ye8Y2GEJBA4eim2/view?usp=sharing	Ver MODELO DE INFORME	12	listo	1486.0	1	Laboratorio SBLab	Agregar modelo de informe	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2816	ChlaPAg	listo	2340	609	\N	624	\N	https://drive.google.com/file/d/1TF6ToZbCMQCxonPwYMh5zgCM3xgLKiK4/view?usp=sharing	NO DETECTABLE	5	listo	2513.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2817	CMVPCR-M	listo	2351	609	\N	625	2016	https://drive.google.com/file/d/1R9g6IKF32cjG5uiVWEVxu-s-mpIctJtn/view?usp=sharing	NO DETECTABLE	4	listo	1543.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2818	C1	listo	2374	541	\N	559	\N	\N	10.0 a 20.0 mg/dl	4	listo	1802.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2819	PCR-ENTE	listo	2420	680	81	626	1970	https://drive.google.com/file/d/1ordOsqaUU2N-uxgceG8Nw6zv1Swr8_zH/view?usp=sharing	NO DETECTABLE	4	listo	1471.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2820	PANEL AC	listo	2431	641	\N	559	\N	https://drive.google.com/file/d/11lgE0HYwu0Nhrq2lYtZwYBYfXbnvdHKg/view?usp=sharing	-	21	listo	2818.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2821	PCRHELIC	listo	2493	609	81	627	\N	\N	-	10	revisar	1453.0	1	Laboratorio SBLab	No se genero en Hexalis. Revisar con un paciente de prueba. 22N 268188.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2822	H.C.H.	listo	2498	609	\N	587	\N	\N	NO DETECTABLE	6	listo	2450.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2823	HEV-RNA	listo	2518	680	81	628	\N	https://drive.google.com/file/d/1dhYcYy4iZIGriRaIO4NjnegFJHkFKVq9/view?usp=sharing	NO DETECTABLE	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2824	HERPES	listo	2523	609	\N	629	1939	https://drive.google.com/file/d/1AhIA_FzzkTX9i60rHVgDRptputX_awNF/view?usp=sharing	NO DETECTABLE	4	listo	1559.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2825	666222	pendiente	2207	605	\N	551	2112	LABORATORIO\nLuego de la extracción en tubos con EDTA, centrifugar 10 minutos a 2500 - 2700 rpm, separar el plasma inmediatamente y conservar refrigerado. Remitir inmediatamente.	Menor a 10.00 nM/l	16	listo	1996.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2826	PCR HIST	listo	2535	609	81	630	1996	https://drive.google.com/file/d/1oTCBQUADBXYn9DHwpZ6TQNoeL8AT5y8U/view?usp=sharing	NO DETECTABLE	9	listo	4408.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2827	HIVWB	listo	2540	681	\N	588	\N	https://drive.google.com/file/d/1G3-G_NyUk4KnYQUurQ7UFKEUPZd31PWS/view?usp=sharing	NEGATIVO	5	listo	1255.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2828	HLA-B51	listo	2543	682	\N	631	\N	\N	\N	38	listo	2268.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2829	DQ2 DQ8	listo	2544	609	\N	632	\N	https://drive.google.com/file/d/1kPrZnDkku82l5XUWN4iuRbionflN0q9e/view?usp=sharing	Ver MODELO DE INFORME	6	listo	7011.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2830	HLAB51	listo	2546	683	\N	631	\N	\N	NO DETECTABLE	6	listo	2714.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2831	PCRHTLV (41)	listo	2549	684	\N	633	2008	https://drive.google.com/file/d/1qtQhoVgoReYE0zAro-tgV-GpjdeV8pG2/view?usp=sharing	Ver MODELO DE INFORME	16	listo	7061.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2832	RAST CAL	listo	2561	634	\N	559	\N	\N	Ver MODELO DE INFORME	7	listo	560.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2833	RAST DCF	listo	2566	605	\N	559	\N	https://drive.google.com/file/d/1uNGQFk8g4m0SxSaEM8UjesjyrPIeHc3e/view?usp=sharing	Ver MODELO DE INFORME	15	listo	564.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2834	RAST IBP	listo	2568	605	\N	559	\N	https://drive.google.com/file/d/1bGu_48P7ooVY1-bDfl-niEZQ0VhxNhbU/view?usp=sharing	Ver MODELO DE INFORME	15	listo	564.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2835	RAST LAN	listo	2570	634	\N	559	\N	\N	Ver MODELO DE INFORME	7	listo	560.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2836	RAST MER	listo	2571	634	\N	559	\N	\N	Ver MODELO DE INFORME	7	listo	560.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2837	RAST PCT	listo	2572	605	\N	559	\N	https://drive.google.com/file/d/1B1x0MRHmY1n4Q9ZhfItAoDN8hwJfjKdC/view?usp=sharing	Ver MODELO DE INFORME	15	listo	564.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2838	PAI-BIOL	listo	2584	685	\N	634	1639	\N	9.4 - 26.3 AU/ml	13	listo	1825.0	1	Laboratorio SBLab	Se crea temporalmente en reemplazo del PAI-BIOL de LAHT. Se inactiva una vez se informe. 10/08/2026 SE INACTIVÓ	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2839	INTERL-6 (24)	listo	2606	615	\N	576	\N	\N	Menor a 0.7 pg/ml	3	listo	1533.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2840	MUSK	listo	2661	669	\N	559	\N	https://drive.google.com/file/d/1uVkkDTuFMtkbp6AHX8YaIByNjhmKUxnV/view?usp=sharing	NEGATIVO	13	listo	1520.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2841	MYCOGU	listo	2663	609	81	635	\N	https://drive.google.com/file/d/1E2mFjlHCMobO1SkqP8qKRVEh3RwuZ_m9/view?usp=sharing	Ver MODELO DE INFORME	9	listo	2934.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2842	MYCOPCR	listo	2664	609	81	636	\N	https://drive.google.com/file/d/1GHk8G8uAGJzBkIlHUsHsMnOJgcIc2hBM/view?usp=sharing	NO DETECTABLE	5	listo	2512.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2843	AC.POLIS (31)	listo	2669	605	\N	559	2107	https://drive.google.com/file/d/1eQbDn-7qIvCzlLiUPLzZVgGh7PDlndk8/view?usp=sharing	Ver MODELO DE INFORME	8	listo	1121.0	1	Laboratorio SBLab	Previamente se enviaba a TURNER	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2844	PANELHEP (37)	listo	2682	641	\N	559	2074	https://drive.google.com/file/d/1-3fLt2yVO22nZa5bJGfaq30LD4IudS0d/view?usp=sharing	Ver MODELO DE INFORME	7	listo	1938.0	1	Laboratorio SBLab	El nombre anterior era  PANEL DE ANTICUERPOS AUTOINMUNES HEPATICOS	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2845	PCR PARV	listo	2696	609	81	637	\N	https://drive.google.com/file/d/1T4nOwILSSxwZcJmgShpJ2eusSbjllyYj/view?usp=sharing	NO DETECTABLE	5	listo	2901.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2846	BK CUANT	listo	2712	609	81	638	1932	https://drive.google.com/file/d/1oSOutiKgjAp9KSxsM2nJVcOeC-lSS3L1/view?usp=sharing	NO DETECTABLE	5	listo	4211.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2847	BK CUALI	listo	2713	609	81	639	1931	https://drive.google.com/file/d/14fBzADdr-CNpxKsvJwKCutuhCiTXYPxl/view?usp=sharing	NO DETECTABLE	5	listo	4212.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2848	PREALB (16)	listo	2715	541	\N	559	\N	\N	20.0 a 40.0 mg/dl	4	listo	2285.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2849	PREECLAM (17)	listo	2716	629	87	559	\N	https://drive.google.com/file/d/1cGulIixm3Zngk-EPcIuBfHI_me9wdunS/view?usp=sharing	Ver MODELO DE INFORME	3	listo	2331.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2850	AC.RECOV (32)	listo	2736	605	\N	578	2075	https://drive.google.com/file/d/1epmZt2FUoTmQG3PVL4XmuvTE6rX5pM53/view?usp=sharing	Ver MODELO DE INFORME	10	listo	6784.0	1	Laboratorio SBLab	Se modifica el modelo de informe.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2851	RENINA (14)	listo	2737	634	96	581	1867	Determinación:\nRENINA-ANGIOTENSINA PLASMATICA\nMuestra: SANGRE.\nPreparación previa: Ayuno de 8 horas. No ingerir alcohol desde dos días antes de la prueba. Hay medicamentos que pueden alterar los resultados, de cualquier manera sólo debería suspender cualquier medicación que esté tomando si esa fue la indicación de su médico al prescribir los análisis.\nDe no existir alguna indicación médica con respecto al consumo de sal, se debe hacer una dieta balanceada y normal, sin restringir el consumo de sodio, durante 3 días previos a la toma de muestra. \nToma de muestra: Concurrir al laboratorio con 8 horas de ayuno, entre las 7:00 y 10:00 h. No ingerir alcohol desde dos días antes de la prueba. Si la orden médica indica posición "acostado" o supina, el paciente deberá permanecer acostado en el laboratorio 30 minutos antes de la extracción, si indica de pie, debe permanecer de pie (ya sea inmóvil o en movimiento) durante los 30 minutos inmediatamente anteriores a la extracción de sangre. En ambos casos, la extracción se realizará sentado. El estímulo será el indicado por el médico. \nDatos adicionales: Medicación habitual.\nVersión: 1.0 (12-JUN-2025)	\N	8	listo	2821.0	1	Laboratorio SBLab	Se configuro envio CONGELADO en el flujo de trabajo de AMS. 660812 SI	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2968	PIV PCR	listo	2915	609	81	655	\N	\N	NO DETECTABLE	3	listo	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2852	REN (13)	listo	2738	634	96	581	\N	Determinación: RENINA, ACTIVIDAD\n\nPACIENTE\nMuestra: SANGRE.\nPreparación previa: Concurrir al laboratorio con 8 h de ayuno, entre las 7:00 y 10:00 h. No ingerir alcohol desde dos días antes de la prueba. Hay medicamentos que pueden alterar los resultados, de cualquier manera sólo debería suspender cualquier medicación que esté tomando si esa fue la indicación de su médico al prescribir los análisis. De no existir alguna indicación médica con respecto al consumo de sal, se debe hacer una dieta balanceada y normal, sin restringir el consumo de sodio, durante 3 días previos a la toma de muestra. \nToma de muestra: Si la orden médica indica posición "acostado" o supina, el paciente deberá permanecer acostado en el laboratorio 30 minutos antes de la extracción, si indica de pie, debe permanecer de pie (ya sea inmóvil o en movimiento) durante los 30 minutos inmediatamente anteriores a la extracción de sangre. En ambos casos, la extracción se realizará sentado. El estímulo será el indicado por el médico. \nDatos adicionales: Medicación habitual.\nVersión: 1.0 (12-JUN-2025)\n\nLABORATORIO\nLuego de la extracción en tubos con EDTA, centrifugar 10 minutos a 2500-2700 rpm, separar el plasma inmediatamente y conservar refrigerado. Remitir inmediatamente.	📋	8	listo	2725.0	1	Laboratorio SBLab	Se configuro envio CONGELADO en el flujo de trabajo de AMS. 660812 NO	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2853	ARET-IgA (33)	listo	2740	669	\N	559	\N	\N	NEGATIVO Título menor a 1/10	10	listo	2847.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2854	ANTI-RET (34)	listo	2742	605	\N	559	\N	https://drive.google.com/file/d/1wjAZsgz_hz0NLvS4_UAa84BCI7H7wra2/view?usp=sharing	Ver MODELO DE INFORME	10	revisar	6782.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2855	ANTI-RI (35)	listo	2743	628	\N	559	2072	https://drive.google.com/file/d/12cO7xNq9uTJH-5QxF3s4bB9CmWXrLV_B/view?usp=sharing	Ver MODELO DE INFORME	10	listo	1250.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2856	ANTI-RIB	listo	2744	641	\N	559	2056	\N	\N	14	listo	RIB	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2857	TTBLAS (21)	listo	2784	608	97	640	1739	\N	-	6	listo	995.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2858	DHT	listo	2787	605	\N	595	1848	\N	📋	35	listo	1123.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2859	TRICHPCR	listo	2823	609	81	641	2030	https://drive.google.com/file/d/1NkGANa7nuKw50mrrdXMCTfDAahxmzL6b/view?usp=sharing	Ver MODELO DE INFORME	11	listo	7044.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2860	PCRVARI	listo	2840	609	81	629	1975	https://drive.google.com/file/d/1Imveq6-8MdJEcoKO_rH03WEDZCa0qYTN/view?usp=sharing	NO DETECTABLE	4	listo	2603.0	1	Laboratorio SBLab	f	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2861	VIT-C	listo	2849	644	\N	559	2118	\N	4.0 a 20.0 mg/l	5	listo	1937.0	1	Laboratorio SBLab	S	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N
+2862	ACIDO5	listo	2198	686	82	571	\N	Determinación: ACIDO 5 HIDROX-INDOL ACETICO URINARIO\n\nMuestra: ORINA 24h\n\nPreparación previa:\nDurante 3 días el paciente no debe ingerir: bananas, tomates, chocolate, cacao, vainilla, ni ningún alimento que los contenga (tortas, cremas, postres, helados, etc.). \nNo debe beber té, café, mate ni gaseosas. Debe realizar poco ejercicio físico. \n\nToma de muestra:\nAl cuarto día y continuando con la dieta, debe recolectar ORINA DE 24h. de la siguiente manera:\nEl día que inicia la recolección, puntualmente a las 8 h, o a la hora que usted elija (anótela....) orina en el inodoro, tratando de vaciar bien la vejiga,y desechando esa muestra. \nA partir de este momento, debe recolectar todas las muestras de orina del día y de la noche y toda la cantidad, en el colector para orina de 24 h de boca ancha, sin perder ninguna micción.\nDebe recolectar hasta las 8h del día siguiente o hasta la hora que usted eligió inclusive (anótela....)\nLas 24h se cuentan a partir del momento que se orina en el inodoro y se descarta la orina. Cumpla estrictamente los horarios de inicio y finalización de la recolección , y recoja TODO el volumen TODAS las veces que orine.\nRemita la muestra de su orina dentro de las 24h de finalizar su recolección. Consérvese en heladera.\n\nDatos adicionales: -\n\nVersión: 01 (01/JUN/2026)	2.00 a 9.00 mg/24h	8	listo	HI5	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2863	FOLI ERI	listo	2202	629	\N	642	\N	\N	523 a 1257 ng/ml	3	listo	AFE2	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2864	ADENOSIN	listo	2221	687	81	643	1792	https://drive.google.com/file/d/1oaRzdk6LgCo2CMnMh7sDMX5OtBu9ab2j/view?usp=sharing	Ver MODELO DE INFORME	8	listo	DEA	1	Laboratorio SBLab	20/08/2026 CBOFFELLI Se corrigen los valores de referencia de ADENOSIN (662417) en base a un nuevo resultado recibido de IBC.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2865	ARSE/S	listo	2261	688	\N	576	1780	\N	0.00 a 15.00 µg/l	15	listo	ARS	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2866	BUFO O	listo	2289	689	82	644	2136	https://drive.google.com/file/d/1FBAzQdf37jdi9D8GOHnIhEUv25AcVLkU/view?usp=sharing	1.00 a 8.90 µg%	17	listo	BUF	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2867	CAD-LIBR	listo	2299	541	\N	559	1751	https://drive.google.com/file/d/1N5jEk1eE8lEPJwMNmFJZYmW-HEuERkaS/view?usp=sharing	Ver MODELO DE INFORME	8	listo	KLSL	1	Laboratorio SBLab	Cambiar modelo de informe	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2868	TD-DIG	inactivo	2405	629	\N	559	2091	\N	📋	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2869	FENILE	listo	2446	648	82	644	\N	PACIENTE\n\nMuestra: ORINA DE 24 HORAS.\nPreparación previa:\nDebe recolectarse con DIETA previa: durante tres días previos a la recolección de la muestra no ingerir bananas, tomates, chocolate, cacao, vainilla, ni ningún alimento que los contenga (tortas, cremas, postres, helados, etc.). \nNo debe beber té, café, mate ni gaseosas. Debe realizar poco ejercicio físico. \n\nToma de muestra:\nHacer durante tres días la dieta indicada. Al cuarto día y continuando con la dieta, recolectar la orina de 24h:\nA las 07:00 h orinar y descartar esa orina. \nA partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 07:00 h del día siguiente inclusive en un brocal.\nMantener refrigerada hasta el momento de llevarla al laboratorio. \nRemitir la muestra dentro de las 24h de completada la recolección.\n\nLABORATORIO\nRemitir al menos 300 ml de orina refrigerada.	130.00 a 450.00 µg/24h	17	listo	FEA	1	Laboratorio SBLab	Falta configurar indicaciones al paciente	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2870	GPX	inactivo	2488	647	\N	589	\N	\N	4171 a 10881 U/l	16	listo	GPX	1	Laboratorio SBLab	desactivada momentáneamente por falta de reactivo 24/07/26	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2871	INHIBINA	listo	2585	690	\N	559	\N	\N	📋	45	listo	INH	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2872	IFS	listo	2588	691	\N	559	1748	\N	-	11	listo	IFS	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2967	HPV PCR	listo	2684	609	81	667	2029	\N	NO DETECTABLE	21	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2873	IFO	listo	2589	691	82	645	1754	Determinación: INMUNOFIJACION URINARIA\nMuestras: ORINA DE 24 HORAS.\nPreparación previa: No requiere.\nToma de muestra: El día previo a concurrir al laboratorio comenzar con la recolección de la ORINA DE 24h.\n- Vaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a las 8 horas o la hora que elija.\n- Anotar la hora de descarte para tomarla como hora de inicio.\n- Recolectar TODAS las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha. No perder ninguna muestra de orina.\n- Conservar en heladera hasta su entrega.\nDatos adicionales: No aplica.\nVersión: 1.0 (15-SEP-2025)	-	11	listo	IFO	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2874	MF-FQM	listo	2640	692	\N	646	\N	https://drive.google.com/file/d/1468432z-m3X5ojqcKUOhu3NkWjnjTL0n/view?usp=sharing	-	4	listo	FMF	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2875	MIOGOR	listo	2654	693	\N	647	\N	\N	NEGATIVO	3	listo	MIO	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2876	ANTI-RIB	listo	2744	641	\N	559	2056	\N	NEGATIVO	14	listo	RIB	1	Laboratorio SBLab	Previamente se enviaba a CIBIC,  pero este ya no lo procesa.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2877	SEROPLA	inactivo	2761	644	\N	648	2135	Determinación: SEROTONINA PLAQUETARIA\nMuestra: SANGRE\nPreparación previa:\nDurante 4 días no ingerir bananas, palta, berenjenas, ananás, ciruelas y nueces.\nEvitar la ingesta de drogas inhibidoras de la monoaminooxidasa -  Isocarboxazida (Marplan), fenelzina (Nardil), tranilcipromina (Parnate), Selegilina (Eldepryl, Zelapar), rasagilina (Azilect), safinamida (Xadago) - por lo menos 7 días antes de la toma de la muestra. No suspender la medicación sin antes contactar a su médico.\nSe requieren 8 horas de ayuno. \nToma de muestra: Punción venosa.\nDatos adicionales: Informar el nombre de los medicamentos que recibe.\nVersión: 01 (01/AGO/2025)	📋	11	listo	SER	1	Laboratorio SBLab	Alta: 16/09/2025. Baja: 11/11/2025	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2878	TOXIGA	listo	2805	669	\N	559	1942	https://drive.google.com/file/d/12m6PgiCqG9pp_-Mi_8J82VLMEb4ym9qK/view?usp=sharing	NEGATIVO	6	listo	TOXOA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2879	TOXO-AVI	listo	2807	629	\N	595	1945	https://drive.google.com/file/d/1dGnNNLZDdppK4TJaeg5bBE3DOiDnKo1Z/view?usp=sharing	Ver MODELO DE INFORME	6	listo	TOXA3	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N
+2880	ADENO AG	listo	2226	694	81	649	1950	https://drive.google.com/file/d/1LRjjcH50b96fixJb79G0tMIqHlgpfqjF/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2881	BORDET	listo	2277	695	81	650	2025	https://drive.google.com/file/d/1q_KKmXibmb7Z0_VY5CY-3XVV6EGhoC14/view?usp=sharing	NO DETECTABLE	6	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2882	BORM-IFI	listo	2282	669	\N	559	1955	\N	NEGATIVO	3	listo	16407.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2883	AC.ENTER	listo	2421	669	\N	559	1969	https://drive.google.com/file/d/1Zl10q7NR3kGh0AR05DZyqrjsR87DyTwH/view?usp=sharing	NEGATIVO	3	listo	2029.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2884	HISTO G	listo	2536	696	\N	559	1994	\N	NEGATIVO	10	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2885	INFLU AG	listo	2578	694	81	649	1980	https://drive.google.com/file/d/1zherE7E9oWEjNBVlMnQagNaYTAfLeR39/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2886	INF B Ag	listo	2582	694	81	649	\N	https://drive.google.com/file/d/1IfmNz4qYuGOJLf_FAB2Rfw5W9xOTQHuo/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2887	METAPNEU	listo	2647	694	81	649	\N	https://drive.google.com/file/d/1Oxz7Zcu7dEwxn4frNqdVwgL5K_cJQYh_/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2888	PREPCR	listo	2886	609	81	649	\N	\N	NEGATIVO	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2889	662745A	inactivo	2683	694	81	649	\N	https://drive.google.com/file/d/1dkOIiwTz9ARnVs2baxlDcHby6KJpQLXU/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2890	PRVPCR	listo	2887	609	81	649	\N	\N	NEGATIVO	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2891	PINFI  g	listo	2688	694	81	649	1985	https://drive.google.com/file/d/1i6zww08VbG6qif_XHkN3o2mUZiZyUkqM/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2892	PINFII g	listo	2689	694	81	649	1986	https://drive.google.com/file/d/1hIU0oiTEZ2ONvI2sHv9LpkogvkVuE8wN/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2893	PINFIIIg	listo	2692	694	81	649	1989	https://drive.google.com/file/d/1JYtwU7iim5Wn-ChkL3vgvrBuE09m62Sb/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2894	POSACONA	listo	2714	644	\N	559	2089	https://drive.google.com/file/d/1jGiJ3unURTdpavSruTz972XL3lF_B0GK/view?usp=sharing	Ver MODELO DE INFORME	12	listo	42971.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2895	VSR Ag	listo	2765	694	81	649	1953	https://drive.google.com/file/d/1AI2CTT-q0ZupDDO23cmKqnfvpNKYTfSb/view?usp=sharing	NEGATIVO	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2896	VORICO	listo	2852	644	\N	576	\N	\N	Rango Terapeútico: 1.5 - 5.0 µg/ml	10	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	56	\N
+2897	NA	pendiente	2888	\N	\N	559	\N	\N	\N	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	57	\N
+2898	000614	pendiente	2889	\N	\N	587	\N	\N	Ver MODELO DE INFORME	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	57	\N
+2899	660184	pendiente	2890	\N	\N	587	\N	\N	\N	2	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	57	\N
+2900	HISTO-AG	listo	2534	560	\N	548	1995	\N	NEGATIVO	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	58	\N
+2901	HANTAPCR	listo	2891	609	98	651	\N	\N	NO DETECTABLE	5	listo	HANPCR	1	Laboratorio SBLab	Cambio de codigo en Hexalis.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	59	\N
+2902	LEPTO	listo	2892	697	98	576	\N	\N	NO REACTIVO	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	59	\N
+2903	LEPTOM	listo	2893	605	98	576	\N	\N	NO REACTIVO	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	59	\N
+2904	LEPTOSV	listo	2883	698	98	576	\N	\N	NEGATIVO	7	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	59	\N
+2905	F.H.A.	listo	2894	609	98	652	\N	\N	NO DETECTABLE	15	listo	830FHA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	59	\N
+2906	LEPPCR	listo	2895	609	98	651	\N	\N	NO DETECTABLE	10	listo	LEPPCR	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	59	\N
+2907	HANTA	listo	2896	605	98	576	\N	\N	\N	15	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	59	\N
+2908	DEN-SERO	listo	2897	699	98	576	\N	\N	NO DETECTABLE	8	listo	DENPCR	1	Laboratorio SBLab	Se crea en HexaLIS y Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	59	\N
+2966	PVR	listo	2914	609	81	666	\N	\N	NO DETECTABLE	4	listo	\N	1	Hematologia SBLab	ADJUNTAR MODELO DE INFORME - AGREGAR AL AREA GENERAL	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2909	CAR ABOR	discontinuado	2314	654	\N	605	1891	LABORATORIO\n\nTOMA DE MUESTRA DE MATERIAL DE ABORTO\na) Extracción: \n- Cuando hacen legrado el médico debe tomar una porción de la zona de vellosidades de la placenta o de lo que va a dar origen a la placenta y enviarlo a las condiciones más estériles posibles, por lo general en un recipiente estéril de urocultivo.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en el mismo recipiente en que se realizó la extracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No debe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	-	63	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes. Se aumenta el tiempo de demora de 21 a 63 dias. 03/07/2026: Se envia a TURNER.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	60	\N
+2910	CARIO AL	discontinuado	2317	654	\N	607	1893	LABORATORIO\n\nTOMA DE MUESTRA DE SANGRE PERIFERICA PARA ESTUDIO CITOGENETICO\na) Extracción: \n- Colocar en una jeringa de 5 ml o 10 ml Heparina sódica ESTERIL (0,05 a 0,10 ml aproximadamente).\n- Cambiar la aguja y extraer preferentemente entre 4 y 5 ml de sangre venosa en niños , en caso de bebes puede ser menos ( en lo posible al menos 2ml) y\nentre 8 a 10 ml en adultos. Evite maniobras que impidan la conservación de la\nmuestra en condiciones de estricta esterilidad.\n- Colocar inmediatamente el capuchón en la aguja, o colocar una aguja nueva\nimpidiendo el contacto de la muestra con el aire. No doblar la aguja ni taparla\ncon otros elementos como tapones de goma, gasas, algodón, no estériles. Fijar\nel émbolo y aguja o tapón estéril con cinta adhesiva.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en la misma jeringa en que se realizó la extracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No debe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\nc) También es posible realizar la extracción en tubos vacuteiner con heparina sódica y enviarlos en los mismos.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	-	61	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes. 03/07/2026: Se envia a TURNER.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	60	\N
+2911	CARIOTIP	discontinuado	2316	654	\N	607	1889	LABORATORIO\n\nTOMA DE MUESTRA DE SANGRE PERIFERICA PARA ESTUDIO CITOGENETICO\na) Extracción: \n- Colocar en una jeringa de 5 ml o 10 ml Heparina sódica ESTERIL (0,05 a 0,10 ml aproximadamente).\n- Cambiar la aguja y extraer preferentemente entre 4 y 5 ml de sangre venosa en niños , en caso de bebes puede ser menos ( en lo posible al menos 2ml) y\nentre 8 a 10 ml en adultos. Evite maniobras que impidan la conservación de la\nmuestra en condiciones de estricta esterilidad.\n- Colocar inmediatamente el capuchón en la aguja, o colocar una aguja nueva\nimpidiendo el contacto de la muestra con el aire. No doblar la aguja ni taparla\ncon otros elementos como tapones de goma, gasas, algodón, no estériles. Fijar\nel émbolo y aguja o tapón estéril con cinta adhesiva.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en la misma jeringa en que se realizó la \nextracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No\ndebe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\nc) También es posible realizar la extracción en tubos vacuteiner con heparina sódica y enviarlos en los mismos.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	-	63	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes. Se aumenta el tiempo de demora de 21 a 63 dias. 03/07/2026: Se envia a TURNER.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	60	\N
+2912	CITOGEN	discontinuado	2315	654	\N	606	1890	LABORATORIO\n\nTOMA DE MUESTRA DE MEDULA OSEA PARA ESTUDIO CITOGENETICO\na) Extracción: \n- Colocar en una jeringa de 5 ml Heparina sódica ESTERIL (0,05 a 0,10 ml aproximadamente). \n- Extraer al menos 2 ml de MEDULA OSEA. Para citogenética está indicado que se debe mandar la primera o segunda porción de extracción. Evite maniobras que impidan la conservación de la\nmuestra en condiciones de estricta esterilidad.\n- Colocar inmediatamente el capuchón en la aguja, o colocar una aguja nueva impidiendo el contacto de la muestra con el aire. No doblar la aguja ni taparla\ncon otros elementos como tapones de goma, gasas, algodón, no estériles. Fijar el émbolo y aguja o tapón estéril con cinta adhesiva.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en la misma jeringa en que se realizó la extracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No debe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\nc) También es posible realizar la extracción en tubos vacutainer con heparina sódica y enviarlos en los mismos.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	-	21	verificado	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes. 03/07/2026: Se envia a TURNER.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	60	\N
+2913	CAR LAM	discontinuado	2313	654	\N	604	1892	https://drive.google.com/file/d/1ccZ0fbrjBFdRTob6zP_8eYYbdZKJCgc2/view?usp=sharing	-	35	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes. 03/07/2026: Se envia a TURNER.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	60	\N
+2914	FAC XIII	listo	2898	700	99	653	\N	\N	50 a 150 %	8	revisar	\N	1	Laboratorio SBLab	Faltan valores de referencia en Hexalis y Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	61	\N
+2915	FACT II	listo	2899	\N	99	654	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	61	\N
+2916	FACT IX	listo	2900	\N	99	653	\N	\N	70 a 120 %	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	61	\N
+2917	FACT V	listo	2901	\N	99	654	\N	\N	70 a 120 %	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	61	\N
+2918	FACT VII	listo	2902	701	99	654	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	61	\N
+2919	FACT VW	listo	2903	702	99	653	\N	\N	📋	8	listo	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	61	\N
+2920	FACT XI	listo	2904	\N	99	654	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	61	\N
+2921	FACTOR X	listo	2905	\N	99	653	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	61	\N
+2922	FACTVIII	listo	2906	701	99	653	\N	\N	50 a 150 %	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	61	\N
+2923	INH VIII	listo	2907	\N	99	653	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	61	\N
+2924	PAI-BIOL	discontinuado	2584	\N	\N	\N	1639	\N	\N	0	listo	\N	1	SIN ASIGNAR	No se procesa mas en LAHT. Se pasa a CIBIC.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	61	\N
+2925	PR S TOT	listo	2908	\N	99	654	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	61	\N
+2926	PROT S	listo	2909	\N	99	654	\N	\N	\N	0	pendiente	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	61	\N
+2927	RISTOCET	listo	2910	703	99	653	\N	\N	50 - 150 %	8	listo	\N	1	Laboratorio SBLab	Falta adjuntar el modelo de informe.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	61	\N
+2928	CORRTP	listo	2809	538	99	511	1625	\N	\N	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	61	\N
+2929	CORRKPTT	listo	2619	538	99	511	1627	\N	\N	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	61	\N
+2934	ADV	listo	2222	609	81	655	\N	https://drive.google.com/file/d/1YIBHucnIsDS8OkJvut_1-f4x_zmt-CpK/view?usp=sharing	NO DETECTABLE	3	listo	\N	1	Hematologia SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2935	aRNr	listo	2227	609	81	656	2009	https://drive.google.com/file/d/1U9e0JkUm1-PaLNy5AmaSxdZVqY3djrCe/view?usp=sharing	NO DETECTABLE	11	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2936	CLAMIPCR	listo	2345	609	81	657	2026	https://drive.google.com/file/d/1eXZ9tcsWXfOy2Pi1ZLYmE5spveyp-xDw/view?usp=sharing	NO DETECTABLE	5	listo	\N	1	Hematologia SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2937	CMV-LCR	listo	2350	609	\N	658	\N	https://drive.google.com/file/d/1JMDPgHwztb6jkSd7DPA-kSZZKjiGK6ni/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Hematologia SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2938	CMVPCR-O	listo	2352	609	\N	659	2015	https://drive.google.com/file/d/10OXEpfI74Nu-BpkTor28zoAVEQLPgj5f/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Hematologia SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2939	CMV-OR	listo	2353	609	\N	659	2017	\N	NO DETECTABLE	4	listo	\N	1	Laboratorio SBLab	Se cambia el nombre desde CMV EN ORINA CUANTITATIVO - PCR	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2940	PCR CMV	listo	2354	609	\N	581	2014	https://drive.google.com/file/d/1EZJzcfnHXPGF9zEl_7Bz0lcYhrS0COrZ/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Laboratorio SBLab	Se cambia el nombre desde CMV CUALTITATIVO - PCR. 26/06/2026: Se cambia el nombre desde CITOMEGALOVIRUS EN SANGRE, ADN POR PCR (CUALITATIVO)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2941	CMV PCR	listo	2357	609	\N	581	2013	https://drive.google.com/file/d/1yciQ-hUbbuozBgeUIykpcJGHHEDx5jlq/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Laboratorio SBLab	Se cambia el nombre desde CMV CUANTITATIVO - PCR. 23/07/2026 Se agrega la determinacion 5. Valor hallado en logs.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2942	CMV NEO	listo	2911	705	\N	660	\N	\N	NO DETECTABLE	7	listo	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2943	PCRCOR	listo	2378	609	\N	661	2012	https://drive.google.com/file/d/1qg-HSsotXNNmSqj-DtNSIT4BhqaNzCcj/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2944	PCR DENG	listo	2401	680	\N	581	2018	https://drive.google.com/file/d/1EzDqNny0U2sL1sSLCkAK1m09xOClu5px/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2945	EBV-LCR	listo	2424	609	\N	658	\N	\N	NO DETECTABLE	4	listo	\N	1	Hematologia SBLab	Falta paridad	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2946	EBV-PCR	listo	2427	609	\N	662	2032	https://drive.google.com/file/d/1THf1FHzpVVu3rdMkpVu2-k-tR6EX_dz0/view?usp=sharing	NO DETECTABLE	5	listo	\N	1	Laboratorio SBLab	Carga manual de resultado pre-analítico: TIPO DE MUESTRA.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2947	PCR-EBV	listo	2428	609	81	663	2031	https://drive.google.com/file/d/1VYGeThHrcLDpGizzK_9CMLdeFxp5wKhN/view?usp=sharing	NO DETECTABLE	5	listo	\N	1	Laboratorio SBLab	Carga manual de resultado pre-analítico: TIPO DE MUESTRA (LCR o SANGRE ENTERA)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2948	FACTOR V	listo	2443	609	\N	582	1648	\N	NO DETECTABLE	26	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2949	HBV PCR	listo	2511	609	\N	662	2020	https://drive.google.com/file/d/1j7L813Bjza4zyJhj-AQtA4ag3Vff1s_7/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Laboratorio SBLab	Se cambia el nombre desde HBV - PCR CUALITATIVA	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2950	PCR HBV	listo	2514	609	\N	662	2019	\N	NO DETECTABLE	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2951	HCVPCR	listo	2516	609	\N	662	2021	\N	NO DETECTABLE	16	listo	\N	1	Laboratorio SBLab	Se cambia el nombre desde DETECCION DEL VIRUS DE HEPATITIS C	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2952	HEPCCV	listo	2517	609	\N	662	2022	\N	NO DETECTABLE	8	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2953	HSVLCR	listo	2522	609	\N	664	\N	https://drive.google.com/file/d/1xu3gWBX82v-ECnE0OULKGg0HnE70c4jJ/view?usp=sharing	NO DETECTABLE	5	listo	\N	1	Hematologia SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2954	HIVCV	listo	2537	609	\N	662	2010	\N	NO DETECTABLE	10	listo	\N	1	Laboratorio SBLab	Cambio de factor de conversion de UI/ml a copias/ml	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2955	HIV PCR	listo	2538	609	\N	662	2011	\N	NO DETECTABLE	8	listo	\N	1	Laboratorio SBLab	Cambio de factor de conversion de UI/ml a copias/ml	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2956	HLAB27	listo	2545	609	\N	582	2079	\N	NO DETECTABLE	16	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2957	INFLUPCR	inactivo	2912	680	81	649	\N	\N	NO DETECTABLE	3	pendiente	\N	1	coordinacionsblab@sanbritanico.com.ar	Se inactiva. A partir de este dia se piden individualmente.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2958	INFP	listo	2579	609	81	665	2023	\N	NO DETECTABLE	3	listo	\N	1	Laboratorio SBLab	Reemplaza a la prueba INFLUENZA A + B, DETECCION POR PCR, que se inactiva.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2959	INFB-RNA	listo	2583	680	81	665	2024	\N	NO DETECTABLE	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2960	JAK2	listo	2614	706	\N	582	2159	\N	NO DETECTABLE	15	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2961	HMPV PCR	listo	2646	609	81	655	\N	https://drive.google.com/file/d/18GPmMev4gcqCxfNc6eqyVRMX7fqvTSeK/view?usp=sharing	NO DETECTABLE	3	listo	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2962	MYCO- RT	listo	2662	609	81	657	2028	https://drive.google.com/file/d/1f46b19yT3_XBH4lamBakADYjXKrErqoZ/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Hematologia SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2963	GONOPCR	listo	2668	609	81	657	2027	https://drive.google.com/file/d/1G0TWQ38mDIZrj6-VoF6tX20KQqo4kFnF/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Hematologia SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2964	PAI	listo	2680	683	\N	582	1650	\N	\N	16	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2965	PRVS	listo	2913	609	81	666	\N	\N	NO DETECTABLE	4	listo	\N	1	Hematologia SBLab	ADJUNTAR MODELO DE INFORME - AGREGAR AL AREA GENERAL	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2969	NEUJI	listo	2710	609	\N	668	1965	https://drive.google.com/file/d/1j4cTRdy2gSOXY501h_VqWUTTQAgVoubc/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	Hematologia SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2970	PNEUMOJI	listo	2711	609	\N	668	\N	https://drive.google.com/file/d/1kTGRBjzr5xXNkeDYAKfz4lkv1uNXgsgP/view?usp=sharing	NO DETECTABLE	4	listo	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2971	PT2021	listo	2731	609	\N	582	1649	\N	NO DETECTABLE	26	listo	\N	1	Laboratorio SBLab	Se cambia el nombre desde MUTACION EN GEN PROTROMBINA 20210	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2972	VZVLCR	listo	2841	609	\N	664	\N	https://drive.google.com/file/d/14JWRcbTrf5nxcdKJFLuB9I6lXCiEI6aX/view?usp=sharing	NO DETECTABLE	5	listo	\N	1	Hematologia SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2973	VSP	listo	2844	609	81	669	2033	LABORATORIO\nMuestra en al menos 2 ml de SHIELD 1X.	NO DETECTABLE	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N
+2974	CRYCUANT	pendiente	2916	707	81	670	\N	\N	NO DETECTABLE	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	64	\N
+2975	NEUJI	discontinuado	2710	609	81	671	1965	Tipo de muestra: ESPUTO Higiene previa: - Cepillar los dientes - Retirar prótesis, si posee - Hacer buches con agua. Recoleccion: - Toser profundamente y recolectar flema en frasco estéril, solamente expectoración bronquial profunda (flema). No saliva. Recolectar primer esputo de la mañana. - Cerrar el envase, rotular y llevar inmediatamente al Laboratorio.	NO DETECTABLE	8	listo	1485.0	1	Laboratorio SBLab	Se envia a CIBIC. 14/08/2026 Se comienza a procesar en BMSB.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	64	\N
+2976	GALACT	listo	2917	708	\N	672	\N	\N	-	3	listo	\N	1	Laboratorio SBLab	Congelar la muestra hasta procesarla en el tubo primario.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	64	\N
+2977	GALACTAG	inactivo	2918	605	\N	672	\N	\N	-	8	listo	\N	1	Laboratorio SBLab	Congelar la muestra hasta procesarla en el tubo primario.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	64	\N
+2234	FOLICO	listo	2201	532	\N	505	1761		3.1 a 20.0 ng/ml	1	listo		1	Laboratorio SBLab		2026-08-24 17:57:54.97231+00	2026-08-24 21:10:35.716527+00	49	\N
+2930	NEO-6	listo	2757	568	100	594	2161	https://drive.google.com/file/d/1s-hU3eg3rnUcs59233_Oqwn0XbZBkIpl/view?usp=sharing	Ver MODELO DE INFORME	13	pendiente	\N	1	Laboratorio SBLab	Se activa en Hexalis	2026-08-24 17:57:54.97231+00	2026-09-09 15:13:58.864843+00	62	\N
+2931	NEO-7	listo	2759	568	100	594	2162	https://drive.google.com/file/d/1sVIkY79biJwDeXA9NDVJanL8YWlZJoBk/view?usp=sharing	Ver MODELO DE INFORME	13	pendiente	\N	1	Laboratorio SBLab	Se corrige nombre en Datatech, dado que daba lugar a confusion respecto al SCREENING NEONATAL	2026-08-24 17:57:54.97231+00	2026-09-09 15:13:58.864843+00	62	\N
+2932	GAL/NEO	listo	2467	704	100	594	2164	LABORATORIO\nColectar las muestras de sangre después de cumplidas 24 h. de ingesta de leche conteniendo lactosa (calostro, leche humana madura o leches maternizadas), y antes de superado el 5° día de vida. \nSi el niño es dado de alta antes de cumplir el tiempo mínimo de\ningesta de leche requerido, se debe colectar la muestra inmediatamente antes del alta sin tener en cuenta su estado alimentario y colectar una segunda muestra una vez cumplimentadas las 24 h. de\ningesta de leche conteniendo lactosa. \nNo utilizar anticoagulantes como EDTA, Citrato u Oxalato.\nCompletar todos los datos solicitados en la tarjeta de recolección de muestras con bolígrafo y con letra clara y legible.\nAsegurarse que la impregnación del papel es correcta. En caso contrario proceder inmediatamente a tomar una nueva muestra de calidad satisfactoria antes de proceder a su envío.	0.00 a 8.00 mg/dl	10	pendiente	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-09-09 15:13:58.864843+00	62	\N
+2933	E.N.N.	listo	2758	655	100	594	\N	https://drive.google.com/file/d/1Xf_fW7sRiXJq9Kv3WXFefSN41xssqsqw/view?usp=sharing	Ver MODELO DE INFORME	26	pendiente	\N	1	Laboratorio SBLab	El nombre en Datatech continua siendo ESTUDIO NEUROMETABOLICO NEONATAL	2026-08-24 17:57:54.97231+00	2026-09-09 15:13:58.864843+00	62	\N
 \.
 
 
@@ -2554,94 +2515,94 @@ COPY public.estudio_colega_modelo (id, id_estudio_colega, nombre_archivo, conten
 --
 
 COPY public.estudio_colega_muestra (id, id_estudio_colega, id_tipo_muestra, id_aditivo, volumen, id_unidad_medida, id_recipiente, id_modalidad_recoleccion, id_tecnica_recoleccion, id_conservacion, id_condicion_especial, id_prioridad_envio, created_at, orden, observacion) FROM stdin;
-180	2235	23	4	2.00	2	\N	\N	\N	2	2	1	2026-09-01 18:09:54.273131-03	1	\N
-187	2236	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-232	2237	2	\N	\N	\N	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-188	2238	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-189	2239	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-233	2240	15	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-190	2241	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-234	2242	3	3	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-235	2243	3	2	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-236	2244	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-237	2245	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-238	2246	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-239	2247	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-240	2248	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-245	2249	3	1	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-191	2250	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-192	2251	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-193	2252	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-194	2253	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-181	2254	23	4	2.00	2	\N	\N	\N	2	2	1	2026-09-01 18:09:54.273131-03	1	\N
-195	2255	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-196	2256	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-197	2257	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-198	2258	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-199	2259	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-249	2260	2	\N	10.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-182	2261	23	4	2.00	2	\N	\N	\N	2	2	1	2026-09-01 18:09:54.273131-03	1	\N
-200	2262	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-250	2263	2	\N	\N	\N	\N	\N	\N	2	1	\N	2026-09-01 18:09:54.273131-03	1	\N
-251	2264	18	\N	\N	\N	\N	\N	\N	1	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-183	2265	23	4	2.00	2	\N	\N	\N	2	2	1	2026-09-01 18:09:54.273131-03	1	\N
-201	2266	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-241	2267	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-184	2268	23	4	2.00	2	\N	\N	\N	2	2	1	2026-09-01 18:09:54.273131-03	1	\N
-252	2269	2	\N	\N	\N	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-202	2270	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-242	2271	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-203	2272	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-204	2273	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-205	2274	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-254	2275	23	3	3.00	2	\N	\N	\N	1	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-255	2276	23	1	3.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-206	2277	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-207	2278	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-208	2279	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-209	2280	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-210	2281	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-211	2282	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-212	2283	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-213	2284	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-214	2285	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-215	2286	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-216	2287	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-217	2288	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-256	2289	12	\N	1.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-218	2290	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-219	2291	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-257	2292	15	3	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-253	2293	2	\N	\N	\N	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-220	2294	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-258	2295	2	\N	10.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-260	2296	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-261	2297	23	\N	\N	\N	\N	\N	\N	1	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-243	2298	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-221	2299	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-222	2300	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-246	2301	3	1	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-262	2302	2	\N	10.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-223	2303	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-224	2304	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-263	2305	23	3	3.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-185	2306	23	4	2.00	2	\N	\N	\N	2	2	1	2026-09-01 18:09:54.273131-03	1	\N
-186	2307	23	4	2.00	2	\N	\N	\N	2	2	1	2026-09-01 18:09:54.273131-03	1	\N
-225	2308	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-264	2309	23	3	2.50	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-247	2310	3	1	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-244	2311	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-226	2312	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-227	2313	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-248	2314	3	1	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-265	2315	24	\N	\N	\N	\N	\N	\N	1	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-228	2316	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-229	2317	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-259	2318	2	\N	10.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-266	2319	2	\N	10.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-267	2320	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-230	2321	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
-231	2322	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 18:09:54.273131-03	1	\N
+180	2235	23	4	2.00	2	\N	\N	\N	2	2	1	2026-09-01 21:09:54.273131+00	1	\N
+187	2236	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+232	2237	2	\N	\N	\N	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+188	2238	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+189	2239	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+233	2240	15	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+190	2241	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+234	2242	3	3	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+235	2243	3	2	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+236	2244	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+237	2245	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+238	2246	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+239	2247	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+240	2248	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+245	2249	3	1	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+191	2250	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+192	2251	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+193	2252	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+194	2253	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+181	2254	23	4	2.00	2	\N	\N	\N	2	2	1	2026-09-01 21:09:54.273131+00	1	\N
+195	2255	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+196	2256	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+197	2257	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+198	2258	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+199	2259	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+249	2260	2	\N	10.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+182	2261	23	4	2.00	2	\N	\N	\N	2	2	1	2026-09-01 21:09:54.273131+00	1	\N
+200	2262	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+250	2263	2	\N	\N	\N	\N	\N	\N	2	1	\N	2026-09-01 21:09:54.273131+00	1	\N
+251	2264	18	\N	\N	\N	\N	\N	\N	1	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+183	2265	23	4	2.00	2	\N	\N	\N	2	2	1	2026-09-01 21:09:54.273131+00	1	\N
+201	2266	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+241	2267	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+184	2268	23	4	2.00	2	\N	\N	\N	2	2	1	2026-09-01 21:09:54.273131+00	1	\N
+252	2269	2	\N	\N	\N	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+202	2270	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+242	2271	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+203	2272	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+204	2273	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+205	2274	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+254	2275	23	3	3.00	2	\N	\N	\N	1	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+255	2276	23	1	3.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+206	2277	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+207	2278	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+208	2279	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+209	2280	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+210	2281	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+211	2282	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+212	2283	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+213	2284	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+214	2285	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+215	2286	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+216	2287	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+217	2288	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+256	2289	12	\N	1.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+218	2290	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+219	2291	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+257	2292	15	3	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+253	2293	2	\N	\N	\N	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+220	2294	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+258	2295	2	\N	10.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+260	2296	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+261	2297	23	\N	\N	\N	\N	\N	\N	1	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+243	2298	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+221	2299	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+222	2300	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+246	2301	3	1	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+262	2302	2	\N	10.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+223	2303	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+224	2304	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+263	2305	23	3	3.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+185	2306	23	4	2.00	2	\N	\N	\N	2	2	1	2026-09-01 21:09:54.273131+00	1	\N
+186	2307	23	4	2.00	2	\N	\N	\N	2	2	1	2026-09-01 21:09:54.273131+00	1	\N
+225	2308	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+264	2309	23	3	2.50	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+247	2310	3	1	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+244	2311	1	\N	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+226	2312	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+227	2313	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+248	2314	3	1	2.00	2	\N	\N	\N	3	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+265	2315	24	\N	\N	\N	\N	\N	\N	1	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+228	2316	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+229	2317	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+259	2318	2	\N	10.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+266	2319	2	\N	10.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+267	2320	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+230	2321	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
+231	2322	1	\N	2.00	2	\N	\N	\N	2	\N	\N	2026-09-01 21:09:54.273131+00	1	\N
 \.
 
 
@@ -3041,6 +3002,14 @@ COPY public.muestra (id, nombre, observacion) FROM stdin;
 
 
 --
+-- Data for Name: password_reset_token; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.password_reset_token (id, id_usuario, token, expira, usado, created_at) FROM stdin;
+\.
+
+
+--
 -- Data for Name: preanalitico; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -3183,6 +3152,17 @@ COPY public.unidad_medida (id, nombre) FROM stdin;
 4	g
 5	tubo completo
 6	unidad
+\.
+
+
+--
+-- Data for Name: usuario; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.usuario (id, username, nombre_completo, email, password_hash, rol, activo, permisos, created_at) FROM stdin;
+1	nbojanich	nbojanich	\N	scrypt:32768:8:1$U8dn7aspZMVGEXvT$bfe6e06e30e5c772b95f6bb0ff0b8011de6d236193fcb8432f00a72d13f9a23081e21fe353e70ad53965d4e1074a455b62ac459c003470b7c22c19589f04ef9c	admin	t	\N	2026-09-09 15:32:03.530391
+2	ccarletti	ccarletti	\N	scrypt:32768:8:1$hTlXxdD77lNvONAD$5a96c5333c760db74d941d8a8222ec0a3ba9cb90a357eeec9521b3453e12b9433c129f158a57f1a701ea71785bcced7e1b471889d2bebc0c75ab701e2005a288	admin	t	\N	2026-09-09 15:32:03.530391
+3	rbaccaro	rbaccaro	\N	scrypt:32768:8:1$xKmP2lSFVdj38lIm$245e98e6fb6d0fd60c79d2d62736dce3dde38a95feea071d9dc5b7ee6c48f5dead2f55ceca368cdff1068b7b8d884bd4587a5d84a4e329384ca918aeafdf5986	admin	t	\N	2026-09-09 15:32:03.530391
 \.
 
 
@@ -3773,7 +3753,7 @@ SELECT pg_catalog.setval('public.aditivo_id_seq', 5, true);
 -- Name: colega_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.colega_id_seq', 65, true);
+SELECT pg_catalog.setval('public.colega_id_seq', 72, true);
 
 
 --
@@ -3794,14 +3774,14 @@ SELECT pg_catalog.setval('public.conservacion_id_seq', 5, true);
 -- Name: estudio_colega_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.estudio_colega_id_seq', 2979, true);
+SELECT pg_catalog.setval('public.estudio_colega_id_seq', 2980, true);
 
 
 --
 -- Name: estudio_colega_modelo_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.estudio_colega_modelo_id_seq', 2, true);
+SELECT pg_catalog.setval('public.estudio_colega_modelo_id_seq', 4, true);
 
 
 --
@@ -3822,14 +3802,14 @@ SELECT pg_catalog.setval('public.estudio_colega_muestra_id_seq', 267, true);
 -- Name: estudio_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.estudio_id_seq', 2918, true);
+SELECT pg_catalog.setval('public.estudio_id_seq', 2919, true);
 
 
 --
 -- Name: metodo_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.metodo_id_seq', 714, true);
+SELECT pg_catalog.setval('public.metodo_id_seq', 715, true);
 
 
 --
@@ -3844,6 +3824,13 @@ SELECT pg_catalog.setval('public.modalidad_recoleccion_id_seq', 18, true);
 --
 
 SELECT pg_catalog.setval('public.muestra_id_seq', 672, true);
+
+
+--
+-- Name: password_reset_token_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.password_reset_token_id_seq', 1, false);
 
 
 --
@@ -3893,6 +3880,13 @@ SELECT pg_catalog.setval('public.tipo_muestra_id_seq', 27, true);
 --
 
 SELECT pg_catalog.setval('public.unidad_medida_id_seq', 6, true);
+
+
+--
+-- Name: usuario_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.usuario_id_seq', 3, true);
 
 
 --
@@ -4055,6 +4049,22 @@ ALTER TABLE ONLY public.muestra
 
 
 --
+-- Name: password_reset_token password_reset_token_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.password_reset_token
+    ADD CONSTRAINT password_reset_token_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: password_reset_token password_reset_token_token_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.password_reset_token
+    ADD CONSTRAINT password_reset_token_token_key UNIQUE (token);
+
+
+--
 -- Name: preanalitico preanalitico_nombre_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4167,11 +4177,43 @@ ALTER TABLE ONLY public.unidad_medida
 
 
 --
+-- Name: colega uq_colega_descripcion; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.colega
+    ADD CONSTRAINT uq_colega_descripcion UNIQUE (descripcion);
+
+
+--
 -- Name: valor_estudio_sector uq_estudio_sector_posicion; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.valor_estudio_sector
     ADD CONSTRAINT uq_estudio_sector_posicion UNIQUE (id_estudio, id_sector, posicion_informe);
+
+
+--
+-- Name: usuario usuario_email_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.usuario
+    ADD CONSTRAINT usuario_email_key UNIQUE (email);
+
+
+--
+-- Name: usuario usuario_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.usuario
+    ADD CONSTRAINT usuario_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: usuario usuario_username_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.usuario
+    ADD CONSTRAINT usuario_username_key UNIQUE (username);
 
 
 --
@@ -4187,6 +4229,13 @@ ALTER TABLE ONLY public.valor_estudio_sector
 --
 
 CREATE INDEX idx_ecm_id_estudio_colega ON public.estudio_colega_modelo USING btree (id_estudio_colega);
+
+
+--
+-- Name: idx_password_reset_token_usuario; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_password_reset_token_usuario ON public.password_reset_token USING btree (id_usuario);
 
 
 --
@@ -4406,6 +4455,14 @@ ALTER TABLE ONLY public.estudio_colega
 
 
 --
+-- Name: password_reset_token password_reset_token_id_usuario_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.password_reset_token
+    ADD CONSTRAINT password_reset_token_id_usuario_fkey FOREIGN KEY (id_usuario) REFERENCES public.usuario(id) ON DELETE CASCADE;
+
+
+--
 -- Name: valor_estudio_sector valor_estudio_sector_id_estudio_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4425,5 +4482,5 @@ ALTER TABLE ONLY public.valor_estudio_sector
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 4OletR0tGoYQc1lG1Y1g1oLVDHqoU03LuPP6fX1nwgB5dwX7z2YnAhflWeXN4zT
+\unrestrict kc5JGf2udV7quEvQD3XT4mtjct2UAe3HZcytdRhzhptBJUXZv5KGnOh5OfxgGoK
 

@@ -97,6 +97,15 @@
       font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
     }
 
+    /* El plugin "forms" de Tailwind le agrega su propio alto a <select>,
+       que queda más alto que un input/input-group de Bootstrap del mismo
+       tamaño ("sm"): esto los vuelve a alinear. */
+    select.form-select-sm {
+      height: calc(1.5em + .5rem + 2px);
+      padding-top: .25rem;
+      padding-bottom: .25rem;
+    }
+
     /* Contenedor sin scroll horizontal */
     .table-container-fixed {
       background: #ffffff;
@@ -217,6 +226,23 @@
     .nav-btn.active {
       background: #006b3f;
       color: #ffffff;
+    }
+
+    /* Dropdown "Muestras" de la barra de navegación: se abre con hover, no
+       con click (no usa el JS de Bootstrap, sólo su .dropdown-menu para
+       posicionar). El padding-top invisible evita que se cierre al mover
+       el mouse del botón al menú por el pequeño espacio entre ambos. */
+    .hover-dropdown {
+      padding-top: 4px;
+      margin-top: -4px;
+    }
+
+    .hover-dropdown > .dropdown-menu {
+      margin-top: 0;
+    }
+
+    .hover-dropdown:hover > .dropdown-menu {
+      display: block;
     }
 
     .app-content {
@@ -387,11 +413,175 @@
     .side-panel-leave-to {
       transform: translateX(100%);
     }
+
+    /* Pantallas de autenticación (login/registro/recuperar contraseña) */
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      background: linear-gradient(160deg, #f0f3ff 0%, #f9f9ff 60%);
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px -8px rgba(0, 104, 119, 0.15);
+      padding: 2rem;
+    }
+
+    .auth-logo {
+      height: 44px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 1.25rem;
+    }
   </style>
 </head>
 
 <body>
   <div id="app">
+    <!-- ========================================================= -->
+    <!-- AUTENTICACIÓN: login / registro / olvidé mi contraseña /   -->
+    <!-- restablecer contraseña. Sin sesión, es lo único visible.   -->
+    <!-- ========================================================= -->
+    <div class="auth-page" v-if="!isLoggedIn">
+      <div class="auth-card">
+        <img alt="Sanatorio Británico" class="auth-logo"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8xjJ6dJRSLRqt7KpYtEpbz7Gh2PWgyJUdtyTzFH-v9uJDhLskF5kdd21XrWw0IH6pe_CyvdbVHVIAwOYaYfLJIXcw9N_OLSidR66D8ARKIULP_I68ylkIQO5vjPAVIJBIy_7aMTj_u6_-njf2z5pqj6ZW9-t-hpkWer-ohlfI_WjkoGXsfBE9zNJizKcgb2Czsn6Kr4aWF1_DGKMzcbWVXgYQrBnlWgaE76HTgG9FXxyFbz63URtfyjA2Oz-puz5kkw" />
+
+        <div class="alert alert-danger rounded-lg text-xs" role="alert" v-if="authError">{{ authError }}</div>
+
+        <!-- LOGIN -->
+        <template v-if="authView === 'login'">
+          <h5 class="text-center font-bold text-primary mb-1">Gestión de Laboratorio</h5>
+          <p class="text-center text-on-surface-variant text-xs mb-4">Iniciá sesión para continuar</p>
+          <form @submit.prevent="login">
+            <div class="mb-3">
+              <label class="form-label text-xs font-semibold">Usuario</label>
+              <input class="form-control form-control-sm rounded-lg" required type="text" v-model="authForm.username" autofocus />
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-xs font-semibold">Contraseña</label>
+              <input class="form-control form-control-sm rounded-lg" required type="password" v-model="authForm.password" />
+            </div>
+            <button :disabled="authLoading" class="btn btn-primary bg-primary border-primary w-100 rounded-lg shadow-sm" type="submit">
+              {{ authLoading ? 'Ingresando...' : 'Iniciar sesión' }}
+            </button>
+          </form>
+          <div class="d-flex justify-content-between mt-3">
+            <button @click="goToAuthView('forgot')" class="btn btn-link btn-sm text-primary p-0" type="button">Olvidé mi contraseña</button>
+            <button @click="goToAuthView('register')" class="btn btn-link btn-sm text-primary p-0" type="button">Crear cuenta</button>
+          </div>
+        </template>
+
+        <!-- REGISTRO -->
+        <template v-else-if="authView === 'register'">
+          <h5 class="text-center font-bold text-primary mb-1">Crear cuenta</h5>
+          <p class="text-center text-on-surface-variant text-xs mb-4">
+            Se crea con acceso de sólo lectura ("consulta"); un administrador puede ampliarlo luego.
+          </p>
+          <form @submit.prevent="register">
+            <div class="mb-2">
+              <label class="form-label text-xs font-semibold">Usuario *</label>
+              <input class="form-control form-control-sm rounded-lg" required type="text" v-model="authForm.username" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label text-xs font-semibold">Nombre completo</label>
+              <input class="form-control form-control-sm rounded-lg" type="text" v-model="authForm.nombre_completo" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label text-xs font-semibold">Email</label>
+              <input class="form-control form-control-sm rounded-lg" type="email" v-model="authForm.email" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label text-xs font-semibold">Contraseña *</label>
+              <input class="form-control form-control-sm rounded-lg" minlength="6" required type="password" v-model="authForm.password" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-xs font-semibold">Repetir contraseña *</label>
+              <input class="form-control form-control-sm rounded-lg" minlength="6" required type="password" v-model="authForm.password2" />
+            </div>
+            <button :disabled="authLoading" class="btn btn-primary bg-primary border-primary w-100 rounded-lg shadow-sm" type="submit">
+              {{ authLoading ? 'Creando cuenta...' : 'Crear cuenta' }}
+            </button>
+          </form>
+          <div class="text-center mt-3">
+            <button @click="goToAuthView('login')" class="btn btn-link btn-sm text-primary p-0" type="button">Ya tengo cuenta, iniciar sesión</button>
+          </div>
+        </template>
+
+        <!-- OLVIDÉ MI CONTRASEÑA -->
+        <template v-else-if="authView === 'forgot'">
+          <h5 class="text-center font-bold text-primary mb-1">Olvidé mi contraseña</h5>
+          <p class="text-center text-on-surface-variant text-xs mb-4">
+            Todavía no hay un servicio de email configurado en el sistema: el link para restablecer la contraseña se
+            muestra directo acá abajo, en vez de enviarse por correo.
+          </p>
+          <template v-if="!forgotResult">
+            <form @submit.prevent="requestForgotPassword">
+              <div class="mb-3">
+                <label class="form-label text-xs font-semibold">Usuario</label>
+                <input class="form-control form-control-sm rounded-lg" required type="text" v-model="forgotUsername" autofocus />
+              </div>
+              <button :disabled="authLoading" class="btn btn-primary bg-primary border-primary w-100 rounded-lg shadow-sm" type="submit">
+                {{ authLoading ? 'Generando link...' : 'Generar link de recuperación' }}
+              </button>
+            </form>
+          </template>
+          <template v-else>
+            <div class="alert alert-success rounded-lg text-xs">{{ forgotResult.mensaje }}</div>
+            <div class="mb-3" v-if="forgotResult.token">
+              <label class="form-label text-xs font-semibold">Token (válido hasta {{ new Date(forgotResult.expira).toLocaleString() }})</label>
+              <textarea class="form-control form-control-sm rounded-lg" readonly rows="2">{{ forgotResult.token }}</textarea>
+              <button @click="resetForm.token = forgotResult.token; goToAuthView('reset')"
+                class="btn btn-sm btn-outline-primary border-primary text-primary rounded-lg mt-2 w-100" type="button">
+                Usar este token para restablecer ahora
+              </button>
+            </div>
+          </template>
+          <div class="text-center mt-3">
+            <button @click="goToAuthView('login')" class="btn btn-link btn-sm text-primary p-0" type="button">Volver a iniciar sesión</button>
+          </div>
+        </template>
+
+        <!-- RESTABLECER CONTRASEÑA (con el token generado arriba) -->
+        <template v-else-if="authView === 'reset'">
+          <h5 class="text-center font-bold text-primary mb-1">Restablecer contraseña</h5>
+          <p class="text-center text-on-surface-variant text-xs mb-4">Pegá el token recibido y elegí una contraseña nueva.</p>
+          <div class="alert alert-success rounded-lg text-xs" v-if="resetResult">{{ resetResult }}</div>
+          <form @submit.prevent="submitResetPassword" v-else>
+            <div class="mb-2">
+              <label class="form-label text-xs font-semibold">Token</label>
+              <textarea class="form-control form-control-sm rounded-lg" required rows="2" v-model="resetForm.token"></textarea>
+            </div>
+            <div class="mb-2">
+              <label class="form-label text-xs font-semibold">Contraseña nueva</label>
+              <input class="form-control form-control-sm rounded-lg" minlength="6" required type="password" v-model="resetForm.password" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-xs font-semibold">Repetir contraseña nueva</label>
+              <input class="form-control form-control-sm rounded-lg" minlength="6" required type="password" v-model="resetForm.password2" />
+            </div>
+            <button :disabled="authLoading" class="btn btn-primary bg-primary border-primary w-100 rounded-lg shadow-sm" type="submit">
+              {{ authLoading ? 'Actualizando...' : 'Restablecer contraseña' }}
+            </button>
+          </form>
+          <div class="text-center mt-3">
+            <button @click="goToAuthView('login')" class="btn btn-link btn-sm text-primary p-0" type="button">Volver a iniciar sesión</button>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- APLICACIÓN (requiere sesión iniciada)                       -->
+    <!-- ========================================================= -->
+    <template v-else>
     <!-- Navbar (incluye la navegación principal, antes en un sidebar lateral) -->
     <nav class="bg-white mb-6 shadow-sm border-b border-surface-variant">
       <div class="container-fluid px-4 py-3 flex justify-between items-center flex-wrap gap-3">
@@ -400,24 +590,23 @@
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8xjJ6dJRSLRqt7KpYtEpbz7Gh2PWgyJUdtyTzFH-v9uJDhLskF5kdd21XrWw0IH6pe_CyvdbVHVIAwOYaYfLJIXcw9N_OLSidR66D8ARKIULP_I68ylkIQO5vjPAVIJBIy_7aMTj_u6_-njf2z5pqj6ZW9-t-hpkWer-ohlfI_WjkoGXsfBE9zNJizKcgb2Czsn6Kr4aWF1_DGKMzcbWVXgYQrBnlWgaE76HTgG9FXxyFbz63URtfyjA2Oz-puz5kkw" />
           <div class="h-8 w-px bg-outline-variant hidden md:block"></div>
           <ul class="nav gap-1 mb-0 flex-wrap">
-            <li class="nav-item">
+            <li class="nav-item" v-if="pantallaPermitida('estudios')">
               <button :class="['nav-btn', currentView === 'indicaciones' ? 'active' : '']" @click="switchToIndicaciones" type="button">
                 <i class="bi bi-file-earmark-medical me-1"></i>Estudios
               </button>
             </li>
-            <li class="nav-item" :key="key" v-for="[key, entity] in topNavEntities">
+            <li class="nav-item" :key="key" v-for="[key, entity] in topNavEntitiesVisibles">
               <button :class="['nav-btn', (currentView === 'crud' && currentEntityKey === key) ? 'active' : '']"
                 @click="switchCrudEntity(key)" type="button">
                 <i :class="['bi', entity.icon, 'me-1']"></i>{{ entity.label }}
               </button>
             </li>
-            <li class="nav-item dropdown">
-              <button :class="['nav-btn dropdown-toggle', muestrasDropdownActive ? 'active' : '']"
-                data-bs-toggle="dropdown" type="button">
+            <li class="nav-item dropdown hover-dropdown" v-if="muestrasCatalogoEntitiesVisibles.length">
+              <button :class="['nav-btn dropdown-toggle', muestrasDropdownActive ? 'active' : '']" type="button">
                 <i class="bi bi-droplet me-1"></i>Muestras
               </button>
               <ul class="dropdown-menu shadow-sm">
-                <li :key="key" v-for="[key, entity] in muestrasCatalogoEntities">
+                <li :key="key" v-for="[key, entity] in muestrasCatalogoEntitiesVisibles">
                   <button class="dropdown-item" :class="(currentView === 'crud' && currentEntityKey === key) ? 'active' : ''"
                     @click="switchCrudEntity(key)" type="button">
                     <i :class="['bi', entity.icon, 'me-2']"></i>{{ entity.label }}
@@ -425,11 +614,24 @@
                 </li>
               </ul>
             </li>
+            <li class="nav-item" v-if="isAdmin">
+              <button :class="['nav-btn', currentView === 'admin_usuarios' ? 'active' : '']" @click="switchToAdminUsuarios" type="button">
+                <i class="bi bi-people me-1"></i>Administración
+              </button>
+            </li>
           </ul>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center gap-3">
           <img alt="BritLab" class="h-8 object-contain"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-sRnXcbyd0lFrERDFL59G_q9tKiXtrfjo_3L2GsAKmESNCrlOi1HbGk58SYrR7NlL5rBoNtoIWmQ7LfL4w5iMngrkVj6qtp2G_W7z74-xJ1CSAmUfw3ksN1O3ni1wpHPNZV2eHxiMLPpiqYj-XsxI5RSLM6Jw_W_U8RN_ZvfaugFtBqwUxGhZijcQDhcfD-riV9ZtrOpwOi5s-AY8TEnM0c27BvKvQQNVnkVLEqIROTcirLrgTOScVE3yi9Dt0S4d4g" />
+          <div class="h-8 w-px bg-outline-variant hidden md:block"></div>
+          <span class="text-xs text-on-surface-variant d-none d-md-inline">
+            <i class="bi bi-person-circle me-1"></i>{{ currentUser?.username }}
+            <span class="badge rounded-pill badge-xs bg-tertiary ms-1">{{ currentUser?.rol }}</span>
+          </span>
+          <button @click="logout()" class="btn btn-sm btn-light border-outline-variant text-on-surface rounded-lg px-2" title="Cerrar sesión" type="button">
+            <i class="bi bi-box-arrow-right"></i>
+          </button>
         </div>
       </div>
     </nav>
@@ -453,7 +655,7 @@
             <h5 class="text-lg font-bold text-primary mb-0 flex items-center">
               <i class="bi bi-search me-2 text-primary-container"></i>Consulta y Edición de Estudios por Colega
             </h5>
-            <button @click="openNewEstudioForColega" v-if="selectedColegaId"
+            <button @click="openNewEstudioForColega" v-if="isAdmin && selectedColegaId"
               class="btn btn-primary bg-primary border-primary shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors rounded-lg px-3 py-1.5 text-sm flex-shrink-0">
               <i class="bi bi-plus-lg me-1"></i> Nuevo Estudio
             </button>
@@ -467,7 +669,7 @@
                 class="form-select form-select-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
                 v-model="selectedColegaId">
                 <option :value="null">-- Seleccione un Colega --</option>
-                <option :value="ALL_ESTUDIOS">Todos los Estudios (catálogo maestro)</option>
+                <option :value="ALL_ESTUDIOS">Todos los Estudios</option>
                 <optgroup label="Colegas">
                   <option :key="d.id" :value="d.id" v-for="d in colegasList">
                     {{ d.descripcion }}
@@ -514,12 +716,7 @@
           <div class="d-flex justify-content-between align-items-start gap-2">
             <div>
               <i class="bi bi-exclamation-triangle-fill me-2"></i>
-              <strong>{{ gruposConflicto.length }}</strong> estudio(s) figuran "listo" (activo) en más de un colega al mismo tiempo<span v-if="!soloConflictos">:</span>
-              <template v-if="!soloConflictos">
-                <span :key="g.codigo_hexalis" v-for="(g, i) in gruposConflicto">
-                  <strong>{{ g.codigo_hexalis }}</strong> ({{ g.estudio_descripcion }})<span v-if="i < gruposConflicto.length - 1">, </span>
-                </span>
-              </template>
+              <strong>{{ gruposConflicto.length }}</strong> estudio(s) figuran "listo" (activo) en más de un colega al mismo tiempo
             </div>
             <button @click="toggleSoloConflictos" class="btn btn-xs btn-outline-dark flex-shrink-0" type="button">
               {{ soloConflictos ? 'Ver todos los estudios' : 'Ver estos estudios' }}
@@ -575,8 +772,8 @@
                     <span class="font-medium text-xs">No se encontraron estudios para el colega seleccionado.</span>
                   </td>
                 </tr>
-                <!-- Lista de Estudios (fila resumen + fila desplegable de detalle) -->
-                <template :key="item.id" v-else v-for="item in filteredEstudios">
+                <!-- Lista de Estudios (fila resumen + fila desplegable de detalle), paginada -->
+                <template :key="item.id" v-else v-for="item in estudiosPaginados">
                   <tr @click="toggleRowExpand(item)" class="cursor-pointer" :class="filaEnConflicto(item) ? 'table-warning' : ''" style="cursor: pointer;">
                     <td class="text-center">
                       <i :class="['bi', expandedRows.has(item.id) ? 'bi-chevron-down' : 'bi-chevron-right']"></i>
@@ -593,12 +790,12 @@
                         </span>
                       </span>
 
-                      <!-- Muestra: círculo con la cantidad, o "No disponible" en rojo -->
+                      <!-- Muestra: círculo con la cantidad, o "No disponible" en gris -->
                       <span v-else-if="col.field === 'muestra'">
                         <span v-if="item.muestra_count" :title="item.muestra"
                           class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary text-white font-bold"
                           style="width: 24px; height: 24px; font-size: .7rem;">{{ item.muestra_count }}</span>
-                        <span class="text-error font-medium" v-else>No disponible</span>
+                        <span class="text-britlab-gray font-medium" v-else>No disponible</span>
                       </span>
 
                       <!-- Indicaciones Paciente: ojo para ver en el panel lateral, o "No disponible" en rojo -->
@@ -625,7 +822,7 @@
                       <span :title="item[col.field]" v-else>{{ item[col.field] ?? '-' }}</span>
                     </td>
                     <td class="text-center">
-                      <button @click.stop="editEstudioColega(item)"
+                      <button @click.stop="editEstudioColega(item)" v-if="isAdmin"
                         class="btn btn-xs btn-outline-primary border-primary text-primary hover:bg-primary hover:text-white"
                         title="Editar">
                         <i class="bi bi-pencil"></i>
@@ -718,10 +915,10 @@
                               <p class="text-xs text-on-surface-variant mb-0" v-else>Sin indicaciones cargadas.</p>
                             </div>
 
-                            <div class="mt-3 pt-2 border-top border-outline-variant">
-                              <p class="text-xs font-bold text-on-surface mb-1">Indicaciones Profesional / Derivante</p>
-                              <button @click="openModeloColegaPanel(item)" class="btn btn-xs btn-outline-primary border-primary text-primary" type="button">
-                                <i class="bi bi-eye me-1"></i>Ver Indicaciones
+                            <div class="mt-3 pt-2 border-top border-outline-variant d-flex justify-content-between align-items-center">
+                              <p class="text-xs font-bold text-on-surface mb-0">Indicaciones Profesional / Derivante</p>
+                              <button @click="openModeloColegaPanel(item)" class="btn btn-xs btn-outline-primary border-primary text-primary d-flex align-items-center justify-content-center" type="button">
+                                <i class="bi bi-eye me-1"></i>Ver
                               </button>
                             </div>
 
@@ -740,6 +937,33 @@
             </table>
           </div>
         </div>
+
+        <!-- Paginación del listado de Estudios -->
+        <nav
+          class="d-flex justify-content-between align-items-center bg-white p-3 rounded-lg border border-outline-variant shadow-sm mb-4 flex-wrap gap-2"
+          v-if="filteredEstudios.length > 0">
+          <span class="text-on-surface-variant text-xs font-medium">Mostrando página {{ paginaEstudios }} de {{
+            totalPaginasEstudios }} (Total: {{ filteredEstudios.length }} estudios)</span>
+          <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2">
+              <label class="text-on-surface-variant text-xs font-medium mb-0">Por página:</label>
+              <select :value="estudiosPorPagina" @change="cambiarTamanioPaginaEstudios($event.target.value)"
+                class="form-select form-select-sm rounded-lg border-outline-variant" style="width: 80px;">
+                <option :key="n" :value="n" v-for="n in PAGE_SIZE_OPTIONS">{{ n }}</option>
+              </select>
+            </div>
+            <ul class="pagination pagination-sm mb-0" v-if="totalPaginasEstudios > 1">
+              <li :class="['page-item', paginaEstudios === 1 ? 'disabled' : '']">
+                <button @click="cambiarPaginaEstudios(paginaEstudios - 1)"
+                  class="page-link text-primary border-outline-variant">Anterior</button>
+              </li>
+              <li :class="['page-item', paginaEstudios === totalPaginasEstudios ? 'disabled' : '']">
+                <button @click="cambiarPaginaEstudios(paginaEstudios + 1)"
+                  class="page-link text-primary border-outline-variant">Siguiente</button>
+              </li>
+            </ul>
+          </div>
+        </nav>
       </div>
 
       <!-- ========================================================= -->
@@ -747,12 +971,20 @@
       <!-- de Muestras, y demás entidades sin botón propio en la barra)       -->
       <!-- ========================================================= -->
       <div v-if="currentView === 'crud'">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
           <h4 class="mb-0 text-primary font-bold text-xl">{{ currentEntity.label }}</h4>
-          <button @click="openModal('create')"
-            class="btn btn-primary bg-primary border-primary shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors rounded-lg px-3 py-1.5 text-sm">
-            <i class="bi bi-plus-lg me-1"></i> Nuevo {{ currentEntity.singular }}
-          </button>
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <div class="input-group input-group-sm" style="width: 260px;" v-if="currentEntity.searchable">
+              <span class="input-group-text bg-surface-container border-outline-variant text-primary"><i class="bi bi-search"></i></span>
+              <input @input="onCrudSearchInput" :placeholder="currentEntity.searchPlaceholder || 'Buscar...'"
+                class="form-control rounded-e-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
+                type="text" v-model="crudSearchQuery" />
+            </div>
+            <button @click="openModal('create')" v-if="isAdmin"
+              class="btn btn-primary bg-primary border-primary shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors rounded-lg px-3 py-1.5 text-sm">
+              <i class="bi bi-plus-lg me-1"></i> Nuevo {{ currentEntity.singular }}
+            </button>
+          </div>
         </div>
         <div class="table-container-fixed mb-4">
           <table class="table table-hover table-fixed-layout" v-if="!loading && items.length > 0">
@@ -769,17 +1001,25 @@
                     v-if="col.type === 'fk'">{{ fkLabel(col.ref, item[col.field]) || '-' }}</span>
                   <span :class="['badge rounded-pill badge-xs', item[col.field] ? 'bg-success-teal' : 'bg-tertiary']"
                     v-else-if="col.type === 'boolean'">{{ item[col.field] ? 'Sí' : 'No' }}</span>
+                  <span :class="['badge rounded-pill badge-xs', item[col.field] ? 'bg-success-teal' : 'bg-tertiary']"
+                    v-else-if="col.type === 'estado-habilitado'">{{ item[col.field] ? 'Habilitado' : 'Deshabilitado' }}</span>
                   <span class="text-on-surface font-medium" :title="item[col.field]" v-else>{{ item[col.field] ?? '-' }}</span>
                 </td>
                 <td class="text-center">
-                  <div class="d-flex justify-content-center gap-1">
+                  <div class="d-flex justify-content-center gap-1" v-if="isAdmin">
                     <button @click="openModal('edit', item)" class="btn btn-xs btn-outline-primary border-primary text-primary hover:bg-primary hover:text-white" title="Editar">
                       <i class="bi bi-pencil"></i>
                     </button>
-                    <button @click="deleteItem(item.id)" class="btn btn-xs btn-outline-danger" title="Eliminar">
+                    <button @click="toggleColegaHabilitado(item)" v-if="currentEntity.hasEnableToggle"
+                      :class="['btn btn-xs', item.habilitado ? 'btn-outline-danger' : 'btn-outline-success']"
+                      :title="item.habilitado ? 'Deshabilitar' : 'Habilitar'">
+                      <i :class="['bi', item.habilitado ? 'bi-slash-circle' : 'bi-check-circle']"></i>
+                    </button>
+                    <button @click="deleteItem(item.id)" v-else-if="!currentEntity.noDelete" class="btn btn-xs btn-outline-danger" title="Eliminar">
                       <i class="bi bi-trash"></i>
                     </button>
                   </div>
+                  <span class="text-britlab-gray" v-else>—</span>
                 </td>
               </tr>
             </tbody>
@@ -795,21 +1035,167 @@
         </div>
         <!-- Paginación -->
         <nav
-          class="d-flex justify-content-between align-items-center bg-white p-3 rounded-lg border border-outline-variant shadow-sm"
-          v-if="pagination.total_pages > 1">
+          class="d-flex justify-content-between align-items-center bg-white p-3 rounded-lg border border-outline-variant shadow-sm flex-wrap gap-2"
+          v-if="items.length > 0">
           <span class="text-on-surface-variant text-xs font-medium">Mostrando página {{ pagination.page }} de {{
             pagination.total_pages }} (Total: {{ pagination.total }} registros)</span>
-          <ul class="pagination pagination-sm mb-0">
-            <li :class="['page-item', pagination.page === 1 ? 'disabled' : '']">
-              <button @click="changePage(pagination.page - 1)"
-                class="page-link text-primary border-outline-variant">Anterior</button>
-            </li>
-            <li :class="['page-item', pagination.page === pagination.total_pages ? 'disabled' : '']">
-              <button @click="changePage(pagination.page + 1)"
-                class="page-link text-primary border-outline-variant">Siguiente</button>
-            </li>
-          </ul>
+          <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2">
+              <label class="text-on-surface-variant text-xs font-medium mb-0">Por página:</label>
+              <select :value="crudPageSize" @change="cambiarTamanioPaginaCrud($event.target.value)"
+                class="form-select form-select-sm rounded-lg border-outline-variant" style="width: 80px;">
+                <option :key="n" :value="n" v-for="n in PAGE_SIZE_OPTIONS">{{ n }}</option>
+              </select>
+            </div>
+            <ul class="pagination pagination-sm mb-0" v-if="pagination.total_pages > 1">
+              <li :class="['page-item', pagination.page === 1 ? 'disabled' : '']">
+                <button @click="changePage(pagination.page - 1)"
+                  class="page-link text-primary border-outline-variant">Anterior</button>
+              </li>
+              <li :class="['page-item', pagination.page === pagination.total_pages ? 'disabled' : '']">
+                <button @click="changePage(pagination.page + 1)"
+                  class="page-link text-primary border-outline-variant">Siguiente</button>
+              </li>
+            </ul>
+          </div>
         </nav>
+      </div>
+
+      <!-- ========================================================= -->
+      <!-- VISTA: ADMINISTRACIÓN DE USUARIOS (sólo admin)              -->
+      <!-- ========================================================= -->
+      <div v-if="currentView === 'admin_usuarios'">
+        <h4 class="mb-4 text-primary font-bold text-xl">
+          <i class="bi bi-people me-2"></i>Administración de Usuarios
+        </h4>
+
+        <!-- Alta de usuario -->
+        <div class="bg-white rounded-xl shadow-sm border border-outline-variant p-4 mb-4">
+          <h6 class="font-bold text-on-surface mb-3">Nuevo usuario</h6>
+          <form @submit.prevent="crearUsuarioAdmin" class="row g-2 align-items-end">
+            <div class="col-md-2">
+              <label class="form-label text-xs font-semibold mb-1">Usuario *</label>
+              <input class="form-control form-control-sm rounded-lg" required type="text" v-model="adminUsuarioForm.username" />
+            </div>
+            <div class="col-md-2">
+              <label class="form-label text-xs font-semibold mb-1">Nombre completo</label>
+              <input class="form-control form-control-sm rounded-lg" type="text" v-model="adminUsuarioForm.nombre_completo" />
+            </div>
+            <div class="col-md-2">
+              <label class="form-label text-xs font-semibold mb-1">Email</label>
+              <input class="form-control form-control-sm rounded-lg" type="email" v-model="adminUsuarioForm.email" />
+            </div>
+            <div class="col-md-2">
+              <label class="form-label text-xs font-semibold mb-1">Contraseña *</label>
+              <input class="form-control form-control-sm rounded-lg" minlength="6" required type="password" v-model="adminUsuarioForm.password" />
+            </div>
+            <div class="col-md-2">
+              <label class="form-label text-xs font-semibold mb-1">Rol</label>
+              <select class="form-select form-select-sm rounded-lg" v-model="adminUsuarioForm.rol">
+                <option value="user">user (consulta)</option>
+                <option value="admin">admin (full)</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <button :disabled="adminCreandoUsuario" class="btn btn-primary bg-primary border-primary w-100 rounded-lg shadow-sm text-sm" type="submit">
+                <i class="bi bi-plus-lg me-1"></i>{{ adminCreandoUsuario ? 'Creando...' : 'Crear' }}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Listado de usuarios -->
+        <div class="table-container-fixed mb-4">
+          <table class="table table-hover table-auto-layout" v-if="!adminUsuariosLoading && adminUsuarios.length">
+            <thead class="table-dark">
+              <tr>
+                <th>Usuario</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template :key="u.id" v-for="u in adminUsuarios">
+                <tr>
+                  <td class="font-semibold text-primary">{{ u.username }}</td>
+                  <td>{{ u.nombre_completo || '-' }}</td>
+                  <td>{{ u.email || '-' }}</td>
+                  <td>
+                    <select :value="u.rol" @change="cambiarRolUsuario(u, $event.target.value)"
+                      class="form-select form-select-sm rounded-lg" style="width: 130px;">
+                      <option value="user">user (consulta)</option>
+                      <option value="admin">admin (full)</option>
+                    </select>
+                  </td>
+                  <td>
+                    <span :class="['badge rounded-pill badge-xs', u.activo ? 'bg-success-teal' : 'bg-tertiary']">
+                      {{ u.activo ? 'Habilitado' : 'Deshabilitado' }}
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <div class="d-flex justify-content-center gap-1">
+                      <button @click="toggleEditarPermisos(u)" class="btn btn-xs btn-outline-primary border-primary text-primary" title="Permisos">
+                        <i class="bi bi-shield-lock"></i>
+                      </button>
+                      <button @click="resetearPasswordUsuario(u)" class="btn btn-xs btn-light border" title="Resetear contraseña">
+                        <i class="bi bi-key"></i>
+                      </button>
+                      <button @click="toggleUsuarioActivo(u)"
+                        :class="['btn btn-xs', u.activo ? 'btn-outline-danger' : 'btn-outline-success']"
+                        :title="u.activo ? 'Deshabilitar' : 'Habilitar'">
+                        <i :class="['bi', u.activo ? 'bi-slash-circle' : 'bi-check-circle']"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Editor de permisos (pantallas visibles / columnas ocultas de Estudios) -->
+                <tr v-if="expandedUsuarioId === u.id">
+                  <td colspan="6" class="bg-surface-container-low">
+                    <div class="p-3">
+                      <p class="text-xs text-on-surface-variant mb-3">
+                        Sin nada marcado, este usuario ve todas las pantallas y columnas (el rol "user" ya es de sólo lectura).
+                        Marcar acá restringe puntualmente lo que puede ver.
+                      </p>
+                      <div class="row g-3">
+                        <div class="col-md-6">
+                          <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">PANTALLAS VISIBLES</h6>
+                          <div class="form-check" :key="p.key" v-for="p in PANTALLAS_DISPONIBLES">
+                            <input :id="'pant_' + u.id + '_' + p.key" class="form-check-input" type="checkbox"
+                              :checked="permisosEditForm.pantallas.includes(p.key)" @change="togglePermisoPantalla(p.key)" />
+                            <label :for="'pant_' + u.id + '_' + p.key" class="form-check-label text-xs">{{ p.label }}</label>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">COLUMNAS OCULTAS EN ESTUDIOS</h6>
+                          <div class="form-check" :key="c.field" v-for="c in INDICACIONES_COLUMNAS">
+                            <input :id="'col_' + u.id + '_' + c.field" class="form-check-input" type="checkbox"
+                              :checked="permisosEditForm.columnas_ocultas_estudios.includes(c.field)" @change="togglePermisoColumnaOculta(c.field)" />
+                            <label :for="'col_' + u.id + '_' + c.field" class="form-check-label text-xs">{{ c.label }}</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mt-3 text-end">
+                        <button @click="expandedUsuarioId = null" class="btn btn-sm btn-light border-outline-variant rounded-lg me-2" type="button">Cancelar</button>
+                        <button @click="guardarPermisosUsuario(u)" class="btn btn-sm btn-primary bg-primary border-primary rounded-lg" type="button">Guardar permisos</button>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+          <div class="text-center my-5" v-if="adminUsuariosLoading">
+            <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
+            <p class="mt-2 text-on-surface-variant font-medium text-xs">Cargando usuarios...</p>
+          </div>
+          <div class="text-center py-5 text-on-surface-variant" v-if="!adminUsuariosLoading && !adminUsuarios.length">
+            <i class="bi bi-inbox text-4xl d-block mb-2 text-tertiary-fixed-dim"></i>
+            <span class="font-medium text-sm">No hay usuarios cargados.</span>
+          </div>
+        </div>
       </div>
 
       <!-- ========================================================= -->
@@ -1039,10 +1425,10 @@
                 <ul class="list-unstyled mb-0" v-else>
                   <li :key="m.id" class="d-flex justify-content-between align-items-center border border-outline-variant rounded-lg px-3 py-2 mb-2"
                     v-for="m in modelosEstudio">
-                    <a :href="urlDescargaModelo(m)" class="d-flex align-items-center gap-2 text-decoration-none" target="_blank">
+                    <button @click="abrirModelo(m)" class="d-flex align-items-center gap-2 text-decoration-none btn btn-link p-0 border-0" type="button">
                       <i class="bi bi-file-earmark-pdf text-danger"></i>
                       <span class="text-xs font-medium">{{ m.nombre_archivo }}</span>
-                    </a>
+                    </button>
                     <button @click="eliminarModelo(m)" class="btn btn-xs btn-outline-danger" title="Eliminar" type="button">
                       <i class="bi bi-trash"></i>
                     </button>
@@ -1171,10 +1557,10 @@
               <p class="text-on-surface-variant text-xs" v-if="!sidePanel.modelos.length">Sin PDFs cargados.</p>
               <ul class="list-unstyled mb-4" v-else>
                 <li :key="m.id" class="mb-2" v-for="m in sidePanel.modelos">
-                  <a :href="urlDescargaModelo(m)" class="d-flex align-items-center gap-2 text-decoration-none" target="_blank">
+                  <button @click="abrirModelo(m)" class="d-flex align-items-center gap-2 text-decoration-none btn btn-link p-0 border-0" type="button">
                     <i class="bi bi-file-earmark-pdf text-danger"></i>
                     <span class="text-sm font-medium">{{ m.nombre_archivo }}</span>
-                  </a>
+                  </button>
                 </li>
               </ul>
               <h6 class="text-xs font-bold text-britlab-gray" style="letter-spacing: .05em;">INDICACIONES AL COLEGA</h6>
@@ -1185,6 +1571,7 @@
         </div>
       </aside>
     </transition>
+    </template>
   </div>
 
   <!-- Scripts CDN -->

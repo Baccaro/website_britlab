@@ -29,6 +29,10 @@ services:
     restart: always
     environment:
       - DATABASE_URL=postgresql://flask_user:flask_password@db:5432/lab_db
+      # Fija la clave de firma de los JWT de sesión: sin esto, cada
+      # reinicio del contenedor generaría una clave al azar e invalidaría
+      # todas las sesiones activas.
+      - SECRET_KEY=1201481c3c06009c34ecd0d15a7f4e86befc79e594bfbf7713b37e57cf842d59
     depends_on:
       db:
         condition: service_healthy

@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, Response
 from app.crud import _commit_or_400
 from app.database import db
 from app.models import EstudioColegaModelo, EstudioColega
+from app.auth import token_required, admin_required
 
 bp = Blueprint('estudio_colega_modelo', __name__, url_prefix='/api/estudio-colega-modelo')
 
@@ -19,6 +20,7 @@ def _serialize(m):
 
 
 @bp.route('/estudio-colega/<int:id_estudio_colega>', methods=['GET'])
+@token_required
 def list_por_estudio_colega(id_estudio_colega):
     items = (
         EstudioColegaModelo.query
@@ -30,6 +32,7 @@ def list_por_estudio_colega(id_estudio_colega):
 
 
 @bp.route('', methods=['POST'])
+@admin_required
 def upload():
     id_estudio_colega = request.form.get('id_estudio_colega', type=int)
     archivo = request.files.get('archivo')
@@ -62,6 +65,7 @@ def upload():
 
 
 @bp.route('/<int:id>/descargar', methods=['GET'])
+@token_required
 def descargar(id):
     m = EstudioColegaModelo.query.get_or_404(id)
     return Response(
@@ -72,6 +76,7 @@ def descargar(id):
 
 
 @bp.route('/<int:id>', methods=['DELETE'])
+@admin_required
 def delete(id):
     m = EstudioColegaModelo.query.get_or_404(id)
     db.session.delete(m)

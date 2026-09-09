@@ -21,6 +21,8 @@ def create_app():
     from app.routes.estudio_colega_muestra import bp as estudio_colega_muestra_bp
     from app.routes.estudio_colega_muestra_alternativa import bp as estudio_colega_muestra_alternativa_bp
     from app.routes.estudio_colega_modelo import bp as estudio_colega_modelo_bp
+    from app.routes.auth import bp as auth_bp
+    from app.routes.usuarios import bp as usuarios_bp
 
     app.register_blueprint(colegas_bp)
     app.register_blueprint(estudios_bp)
@@ -35,5 +37,7 @@ def create_app():
     app.register_blueprint(estudio_colega_muestra_bp)
     app.register_blueprint(estudio_colega_muestra_alternativa_bp)
     app.register_blueprint(estudio_colega_modelo_bp)
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(usuarios_bp)
 
     return app

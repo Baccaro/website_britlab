@@ -27,7 +27,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             length = int(self.headers.get("Content-Length", 0) or 0)
             body = self.rfile.read(length) if length else None
         req = urllib.request.Request(url, data=body, method=method)
-        if body:
+        # Reenviar Authorization (JWT de sesión) y Content-Type del pedido
+        # original: sin esto, cualquier ruta protegida devolvería 401 acá
+        # aunque el token sea válido.
+        auth = self.headers.get("Authorization")
+        if auth:
+            req.add_header("Authorization", auth)
+        content_type = self.headers.get("Content-Type")
+        if content_type:
+            req.add_header("Content-Type", content_type)
+        elif body:
             req.add_header("Content-Type", "application/json")
         try:
             with urllib.request.urlopen(req) as resp:
