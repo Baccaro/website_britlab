@@ -7,6 +7,7 @@ from app.auth import token_required, admin_required
 bp = Blueprint('estudio_colega_modelo', __name__, url_prefix='/api/estudio-colega-modelo')
 
 MAX_BYTES = 15 * 1024 * 1024  # 15 MB por archivo
+CATEGORIAS_VALIDAS = ('preanalitico', 'paciente', 'colega')
 
 
 def _serialize(m):
@@ -15,6 +16,8 @@ def _serialize(m):
         'id_estudio_colega': m.id_estudio_colega,
         'nombre_archivo': m.nombre_archivo,
         'tamanio_bytes': m.tamanio_bytes,
+        'categoria': m.categoria,
+        'descripcion': m.descripcion,
         'created_at': m.created_at.isoformat() if m.created_at else None,
     }
 
@@ -22,12 +25,13 @@ def _serialize(m):
 @bp.route('/estudio-colega/<int:id_estudio_colega>', methods=['GET'])
 @token_required
 def list_por_estudio_colega(id_estudio_colega):
-    items = (
-        EstudioColegaModelo.query
-        .filter_by(id_estudio_colega=id_estudio_colega)
-        .order_by(EstudioColegaModelo.created_at.asc(), EstudioColegaModelo.id.asc())
-        .all()
-    )
+    # ?categoria= filtra a un solo dropdown (preanalitico/paciente/colega);
+    # sin filtro trae todo (usado antes de que existiera esta distinción).
+    query = EstudioColegaModelo.query.filter_by(id_estudio_colega=id_estudio_colega)
+    categoria = request.args.get('categoria')
+    if categoria:
+        query = query.filter_by(categoria=categoria)
+    items = query.order_by(EstudioColegaModelo.created_at.asc(), EstudioColegaModelo.id.asc()).all()
     return jsonify([_serialize(m) for m in items]), 200
 
 
@@ -36,8 +40,12 @@ def list_por_estudio_colega(id_estudio_colega):
 def upload():
     id_estudio_colega = request.form.get('id_estudio_colega', type=int)
     archivo = request.files.get('archivo')
+    categoria = request.form.get('categoria', 'colega')
+    descripcion = request.form.get('descripcion') or None
     if not id_estudio_colega or not archivo:
         return jsonify({'error': 'Faltan datos: id_estudio_colega y archivo son obligatorios'}), 400
+    if categoria not in CATEGORIAS_VALIDAS:
+        return jsonify({'error': f"Categoría inválida, debe ser una de: {', '.join(CATEGORIAS_VALIDAS)}"}), 400
 
     EstudioColega.query.get_or_404(id_estudio_colega)
 
@@ -56,12 +64,30 @@ def upload():
         nombre_archivo=nombre,
         contenido=contenido,
         tamanio_bytes=len(contenido),
+        categoria=categoria,
+        descripcion=descripcion,
     )
     db.session.add(nuevo)
     error_response = _commit_or_400()
     if error_response:
         return error_response
     return jsonify(_serialize(nuevo)), 201
+
+
+@bp.route('/<int:id>', methods=['PUT'])
+@admin_required
+def update_descripcion(id):
+    """Sólo permite editar la descripción de un archivo ya subido (nombre,
+    contenido y categoría no se pueden cambiar: para eso hay que volver a
+    subirlo)."""
+    m = EstudioColegaModelo.query.get_or_404(id)
+    data = request.get_json(silent=True) or {}
+    if 'descripcion' in data:
+        m.descripcion = data['descripcion'] or None
+    error_response = _commit_or_400()
+    if error_response:
+        return error_response
+    return jsonify(_serialize(m)), 200
 
 
 @bp.route('/<int:id>/descargar', methods=['GET'])

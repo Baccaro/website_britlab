@@ -9,6 +9,9 @@ bp = make_crud_blueprint(
     'colegas', '/api/colegas', Colega,
     ColegaCreate, ColegaUpdate, ColegaOut,
     allow_delete=False, search_field='descripcion',
+    sensitive_fields=['portal_usuario', 'portal_password'],
+    sensitive_permiso='ver_credenciales_colegas',
+    unique_name_field='descripcion',
 )
 
 

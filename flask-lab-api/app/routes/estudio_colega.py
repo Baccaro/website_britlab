@@ -146,15 +146,23 @@ def _listar_estudios_colega(colega_id=None):
         for m in muestras_query.all():
             muestras_por_registro.setdefault(m.id_estudio_colega, []).append(m)
 
-    modelos_por_registro = {}
+    # Conteo de PDFs por registro Y categoría (preanalitico/paciente/colega):
+    # cada dropdown de documentación necesita saber si tiene algo para mostrar
+    # el link "Ver" o no, sin pedir de a uno por fila.
+    pdfs_por_registro = {}
     if ids_regs:
         conteos = (
-            db.session.query(EstudioColegaModelo.id_estudio_colega, db.func.count(EstudioColegaModelo.id))
+            db.session.query(
+                EstudioColegaModelo.id_estudio_colega,
+                EstudioColegaModelo.categoria,
+                db.func.count(EstudioColegaModelo.id),
+            )
             .filter(EstudioColegaModelo.id_estudio_colega.in_(ids_regs))
-            .group_by(EstudioColegaModelo.id_estudio_colega)
+            .group_by(EstudioColegaModelo.id_estudio_colega, EstudioColegaModelo.categoria)
             .all()
         )
-        modelos_por_registro = dict(conteos)
+        for id_ec, categoria, cantidad in conteos:
+            pdfs_por_registro.setdefault(id_ec, {})[categoria] = cantidad
 
     respuesta = []
     for reg, estudio, colega in resultados:
@@ -178,7 +186,11 @@ def _listar_estudios_colega(colega_id=None):
             'muestra_count': len(muestras_por_registro.get(reg.id, [])),
             'indicaciones_pacientes': reg.indicaciones_pacientes,
             'indicaciones_colega': reg.indicaciones_colega,
-            'modelos_count': modelos_por_registro.get(reg.id, 0),
+            'preanalitico_descripcion': reg.preanalitico_descripcion,
+            'modelo_derivante_observaciones': reg.modelo_derivante_observaciones,
+            'pdfs_preanalitico_count': pdfs_por_registro.get(reg.id, {}).get('preanalitico', 0),
+            'pdfs_paciente_count': pdfs_por_registro.get(reg.id, {}).get('paciente', 0),
+            'pdfs_colega_count': pdfs_por_registro.get(reg.id, {}).get('colega', 0),
             'valor_referencia': reg.valor_referencia,
             'dias_demora': reg.dias_demora,
             'estado': reg.estado,

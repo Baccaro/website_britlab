@@ -49,14 +49,24 @@ const ESTUDIO_COLEGA_SECCIONES = [
   },
   { key: 'muestras', title: 'Muestras', desc: 'Una o varias muestras admitidas, cada una con su recolección y conservación.' },
   {
-    key: 'preanalitico', title: 'Pre-analítico e Indicaciones',
-    desc: 'Preparación previa, valores de referencia e indicaciones al paciente.',
-    fields: ['id_preanalitico', 'valor_referencia', 'indicaciones_pacientes']
+    key: 'preanalitico', title: 'Preanalítico',
+    desc: 'Descripción y documentación adjunta.',
+    fields: ['preanalitico_descripcion']
+  },
+  {
+    key: 'indicaciones_pacientes', title: 'Indicaciones Pacientes',
+    desc: 'Descripción de las indicaciones y documentación adjunta para el paciente.',
+    fields: ['indicaciones_pacientes']
   },
   {
     key: 'indicaciones_colega', title: 'Indicaciones al Profesional / Derivante',
-    desc: 'Indicaciones para el colega y modelos de informe (PDF) adjuntos.',
+    desc: 'Descripción de las indicaciones para el colega derivante.',
     fields: ['indicaciones_colega']
+  },
+  {
+    key: 'modelo_derivante', title: 'Modelo Derivante',
+    desc: 'Observaciones y modelos de informe (PDF) del laboratorio derivante, cada uno con su propia descripción.',
+    fields: ['modelo_derivante_observaciones']
   },
   {
     key: 'procesamiento', title: 'Procesamiento y Tiempos',
@@ -71,6 +81,17 @@ const ESTUDIO_COLEGA_SECCIONES = [
     fields: ['nemonico_datatech', 'tharsis', 'codigo_laboratorio', 'estado', 'habilitar_ia', 'habilitar_web']
   }
 ];
+
+// Qué secciones del formulario llevan además un cargador de PDFs (1..N), y a
+// qué categoría de estudio_colega_modelo corresponde cada una. Sólo
+// 'modelo_derivante' permite ponerle una descripción propia a cada archivo.
+const CATEGORIA_PDF_POR_SECCION = { preanalitico: 'preanalitico', indicaciones_pacientes: 'paciente', modelo_derivante: 'colega' };
+const SECCIONES_CON_PDF = Object.keys(CATEGORIA_PDF_POR_SECCION);
+const LABEL_PDF_POR_SECCION = {
+  preanalitico: 'Documentación de Preanalítico (PDF)',
+  indicaciones_pacientes: 'Documentación para el Paciente (PDF)',
+  modelo_derivante: 'Modelos de Informe del Derivante (PDF)',
+};
 
 let _muestraKeySeq = 0;
 const nextMuestraKey = () => `m${_muestraKeySeq++}`;
@@ -285,6 +306,37 @@ const app = createApp({
     // (Estudio x Colega no usa este modal: tiene su propia pantalla completa).
     const modalEntityKey = ref('estudios');
     let modalInstance = null;
+    // El modal (#crudModal) recién existe en el DOM una vez logueado (todo el
+    // resto de la app vive detrás de v-if="isLoggedIn"), así que no se puede
+    // instanciar en onMounted como antes: se crea recién la primera vez que
+    // hace falta, con el elemento ya presente.
+    const ensureModalInstance = () => {
+      if (!modalInstance) {
+        const modalEl = document.getElementById('crudModal');
+        if (modalEl) modalInstance = new bootstrap.Modal(modalEl);
+      }
+      return modalInstance;
+    };
+
+    // --- "Ver ampliado": abre cualquier campo de texto enriquecido del
+    // formulario de Estudio x Colega en un modal grande, para escribir más
+    // cómodo. Edita el mismo formData[campo] en vivo (no hay "aceptar/cancelar"
+    // por separado: es sólo una vista más grande del mismo campo). ---
+    let richModalInstance = null;
+    const richModalField = ref(null);
+    const richModalLabel = ref('');
+    const ensureRichModalInstance = () => {
+      if (!richModalInstance) {
+        const modalEl = document.getElementById('richEditorModal');
+        if (modalEl) richModalInstance = new bootstrap.Modal(modalEl);
+      }
+      return richModalInstance;
+    };
+    const abrirEditorAmpliado = (field, label) => {
+      richModalField.value = field;
+      richModalLabel.value = label;
+      ensureRichModalInstance().show();
+    };
     // Secciones desplegables abiertas/cerradas del formulario de Estudio x Colega
     const sectionsOpen = ref(Object.fromEntries(ESTUDIO_COLEGA_SECCIONES.map(s => [s.key, true])));
     const toggleSection = (key) => { sectionsOpen.value[key] = !sectionsOpen.value[key]; };
@@ -442,11 +494,19 @@ const app = createApp({
         columns: [
           { field: 'descripcion', label: 'Descripción' },
           { field: 'es_propio', label: 'Propio del Sanatorio', type: 'boolean' },
-          { field: 'habilitado', label: 'Estado', type: 'estado-habilitado' }
+          { field: 'habilitado', label: 'Estado', type: 'estado-habilitado' },
+          { field: 'portal_url', label: 'Portal', type: 'portal' }
         ],
         fields: [
           { field: 'descripcion', label: 'Descripción / Laboratorio', type: 'text', required: true },
-          { field: 'es_propio', label: '¿Es un laboratorio propio del Sanatorio Británico?', type: 'switch', default: false }
+          { field: 'es_propio', label: '¿Es un laboratorio propio del Sanatorio Británico?', type: 'switch', default: false },
+          { field: 'habilitado', label: '¿Habilitado?', type: 'switch', default: true },
+          { field: 'portal_url', label: 'Enlace al Portal', type: 'text' },
+          // Sensibles: sólo un admin (o un 'user' con el permiso puntual) las ve
+          // al leer; acá se editan sin restricción porque este modal es admin-only.
+          { field: 'portal_usuario', label: 'Usuario del Portal', type: 'text' },
+          { field: 'portal_password', label: 'Contraseña del Portal', type: 'password' },
+          { field: 'observaciones', label: 'Observaciones', type: 'textarea' }
         ]
       },
       metodos: {
@@ -531,6 +591,8 @@ const app = createApp({
         endpoint: 'tipos-muestra',
         icon: 'bi-droplet-half',
         noDelete: true,
+        searchable: true,
+        searchPlaceholder: 'Buscar por nombre...',
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -540,6 +602,8 @@ const app = createApp({
         endpoint: 'aditivos',
         icon: 'bi-eyedropper',
         noDelete: true,
+        searchable: true,
+        searchPlaceholder: 'Buscar por nombre...',
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -549,6 +613,8 @@ const app = createApp({
         endpoint: 'unidades-medida',
         icon: 'bi-rulers',
         noDelete: true,
+        searchable: true,
+        searchPlaceholder: 'Buscar por nombre...',
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -558,6 +624,8 @@ const app = createApp({
         endpoint: 'recipientes',
         icon: 'bi-cup-straw',
         noDelete: true,
+        searchable: true,
+        searchPlaceholder: 'Buscar por nombre...',
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -567,6 +635,8 @@ const app = createApp({
         endpoint: 'modalidades-recoleccion',
         icon: 'bi-calendar-check',
         noDelete: true,
+        searchable: true,
+        searchPlaceholder: 'Buscar por nombre...',
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -576,6 +646,8 @@ const app = createApp({
         endpoint: 'tecnicas-recoleccion',
         icon: 'bi-tools',
         noDelete: true,
+        searchable: true,
+        searchPlaceholder: 'Buscar por nombre...',
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -585,6 +657,8 @@ const app = createApp({
         endpoint: 'conservaciones',
         icon: 'bi-thermometer-snow',
         noDelete: true,
+        searchable: true,
+        searchPlaceholder: 'Buscar por nombre...',
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -594,6 +668,8 @@ const app = createApp({
         endpoint: 'condiciones-especiales',
         icon: 'bi-exclamation-diamond',
         noDelete: true,
+        searchable: true,
+        searchPlaceholder: 'Buscar por nombre...',
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -603,6 +679,8 @@ const app = createApp({
         endpoint: 'prioridades-envio',
         icon: 'bi-truck',
         noDelete: true,
+        searchable: true,
+        searchPlaceholder: 'Buscar por nombre...',
         columns: [{ field: 'nombre', label: 'Nombre' }],
         fields: [{ field: 'nombre', label: 'Nombre', type: 'text', required: true }]
       },
@@ -630,12 +708,14 @@ const app = createApp({
           { field: 'paridad_datatech_hexalis', label: 'Paridad Datatech-Hexalis', type: 'select', options: ESTADOS_PARIDAD, default: 'pendiente' },
           { field: 'estado', label: 'Estado', type: 'select', options: ESTADOS_REGISTRO, default: 'pendiente' },
           { field: 'valor_referencia', label: 'Valor de Referencia', type: 'textarea' },
-          { field: 'indicaciones_pacientes', label: 'Indicaciones Pacientes', type: 'richtext' },
-          { field: 'indicaciones_colega', label: 'Indicaciones Colega', type: 'richtext' },
+          { field: 'preanalitico_descripcion', label: 'Descripción', type: 'richtext' },
+          { field: 'indicaciones_pacientes', label: 'Descripción', type: 'richtext' },
+          { field: 'indicaciones_colega', label: 'Descripción', type: 'richtext' },
+          { field: 'modelo_derivante_observaciones', label: 'Observaciones', type: 'richtext' },
           { field: 'dias_demora', label: 'Días de Demora', type: 'number', default: 0 },
           // Placeholder visual, sin backend todavía: no se persiste (el schema
           // del servidor ignora cualquier campo que no reconoce).
-          { field: 'observaciones_operativas', label: 'Observaciones Operativas', type: 'textarea' },
+          { field: 'observaciones_operativas', label: 'Observaciones Operativas', type: 'richtext' },
           { field: 'codigo_laboratorio', label: 'Código Laboratorio Procesante', type: 'text' },
           // 'tharsis', 'habilitar_ia' y 'habilitar_web' son placeholders
           // visuales de una futura integración: tampoco se persisten aún.
@@ -740,7 +820,8 @@ const app = createApp({
       try {
         const res = await axios.post(`${API_BASE}/usuarios/${usuario.id}/resetear-password`, {});
         if (res.data.password_generada) {
-          alert(`Nueva contraseña provisoria para ${usuario.username}:\n\n${res.data.password_generada}\n\nCompartísela al usuario; puede cambiarla luego desde "Olvidé mi contraseña".`);
+          // window.alert, no alert() a secas: 'alert' acá es el ref del banner de arriba.
+          window.alert(`Nueva contraseña provisoria para ${usuario.username}:\n\n${res.data.password_generada}\n\nCompartísela al usuario; puede cambiarla luego desde "Olvidé mi contraseña".`);
         }
         showAlert('Contraseña reseteada correctamente');
       } catch (err) {
@@ -758,6 +839,7 @@ const app = createApp({
       permisosEditForm.value = {
         pantallas: [...(p.pantallas || [])],
         columnas_ocultas_estudios: [...(p.columnas_ocultas_estudios || [])],
+        ver_credenciales_colegas: !!p.ver_credenciales_colegas,
       };
     };
 
@@ -778,8 +860,11 @@ const app = createApp({
         const pantallas = permisosEditForm.value.pantallas.length ? permisosEditForm.value.pantallas : null;
         const columnasOcultas = permisosEditForm.value.columnas_ocultas_estudios.length
           ? permisosEditForm.value.columnas_ocultas_estudios : null;
-        const permisos = (pantallas || columnasOcultas)
-          ? { pantallas, columnas_ocultas_estudios: columnasOcultas }
+        // A diferencia de pantallas/columnasOcultas (opt-out), este flag es
+        // opt-in: sólo se manda si está marcado, nunca se "limpia a null" por
+        // estar vacío (acá "vacío" significa false, no "sin restricción").
+        const permisos = (pantallas || columnasOcultas || permisosEditForm.value.ver_credenciales_colegas)
+          ? { pantallas, columnas_ocultas_estudios: columnasOcultas, ver_credenciales_colegas: permisosEditForm.value.ver_credenciales_colegas }
           : null;
         await axios.put(`${API_BASE}/usuarios/${usuario.id}`, { permisos });
         showAlert('Permisos actualizados correctamente');
@@ -931,6 +1016,18 @@ const app = createApp({
       }
     };
 
+    // Muestra usuario/contraseña del portal de un colega. Si vinieron en null
+    // pese a haber datos cargados (portal_usuario_cargado/portal_password_cargado)
+    // es que el backend los redactó por falta de permiso (ver_credenciales_colegas):
+    // se avisa en vez de mostrar "vacío" como si no hubiera nada cargado.
+    const verCredencialesColega = (item) => {
+      if (item.portal_usuario == null && item.portal_password == null && (item.portal_usuario_cargado || item.portal_password_cargado)) {
+        showAlert('Este colega tiene credenciales de portal cargadas, pero no tenés permiso para verlas.', 'danger');
+        return;
+      }
+      window.alert(`Credenciales del portal de "${item.descripcion}":\n\nUsuario: ${item.portal_usuario || '(sin usuario)'}\nContraseña: ${item.portal_password || '(sin contraseña)'}`);
+    };
+
     // El botón "Estudios" de la barra superior siempre vuelve al catálogo
     // maestro "Todos los Estudios", sin recordar el último colega elegido.
     const switchToIndicaciones = () => {
@@ -984,6 +1081,10 @@ const app = createApp({
         if (!rowMuestrasCache.value[item.id]) {
           fetchRowMuestras(item.id);
         }
+        // Arranca mostrando la primera muestra (si tiene alguna cargada).
+        if (muestraSeleccionadaPorFila.value[item.id] === undefined) {
+          muestraSeleccionadaPorFila.value[item.id] = 0;
+        }
       }
       expandedRows.value = next;
     };
@@ -1004,22 +1105,44 @@ const app = createApp({
       }
     };
 
-    // --- Panel lateral (desde la derecha) para ver Indicaciones al Paciente
-    // o el Modelo de Informe del Colega (PDFs + indicaciones) de una fila,
-    // sin salir de la tabla. ---
-    const sidePanel = ref({ open: false, kind: null, item: null, modelos: [], loadingModelos: false });
-
-    const openIndicacionesPanel = (item) => {
-      sidePanel.value = { open: true, kind: 'paciente', item, modelos: [], loadingModelos: false };
+    // Selector "paginado" de muestras de la tarjeta "Muestras" (un botón por
+    // muestra + "Ver todas"): sólo se muestra en la tarjeta la muestra elegida.
+    const muestraSeleccionadaPorFila = ref({});
+    const seleccionarMuestraFila = (idEstudioColega, idx) => {
+      muestraSeleccionadaPorFila.value[idEstudioColega] = idx;
     };
 
-    const openModeloColegaPanel = async (item) => {
-      sidePanel.value = { open: true, kind: 'colega', item, modelos: [], loadingModelos: true };
+    // --- Panel lateral (desde la derecha) para ver, sin salir de la tabla,
+    // el contenido de cada dropdown de documentación de una fila: Preanalítico,
+    // Indicaciones Paciente, o Modelo Derivante (éste último con las
+    // Indicaciones al Profesional/Derivante también, ya que están relacionadas). ---
+    const sidePanel = ref({ open: false, kind: null, item: null, modelos: [], muestras: [], loadingModelos: false });
+
+    const _abrirPanelConPdfs = async (item, kind, categoria) => {
+      sidePanel.value = { open: true, kind, item, modelos: [], muestras: [], loadingModelos: true };
       try {
-        const res = await axios.get(`${API_BASE}/estudio-colega-modelo/estudio-colega/${item.id}`);
+        const res = await axios.get(`${API_BASE}/estudio-colega-modelo/estudio-colega/${item.id}`, { params: { categoria } });
         sidePanel.value.modelos = res.data;
       } catch (err) {
         sidePanel.value.modelos = [];
+      } finally {
+        sidePanel.value.loadingModelos = false;
+      }
+    };
+
+    const openPreanaliticoPanel = (item) => _abrirPanelConPdfs(item, 'preanalitico', 'preanalitico');
+    const openIndicacionesPanel = (item) => _abrirPanelConPdfs(item, 'paciente', 'paciente');
+    const openModeloColegaPanel = (item) => _abrirPanelConPdfs(item, 'colega', 'colega');
+
+    // "Ver todas" en la tarjeta de Muestras: todas las muestras del registro,
+    // ya ordenadas por 'orden' (mismo endpoint que arma la tarjeta compacta).
+    const openMuestrasPanel = async (item) => {
+      sidePanel.value = { open: true, kind: 'muestras', item, modelos: [], muestras: [], loadingModelos: true };
+      try {
+        const res = await axios.get(`${API_BASE}/estudio-colega-muestra/estudio-colega/${item.id}`);
+        sidePanel.value.muestras = res.data;
+      } catch (err) {
+        sidePanel.value.muestras = [];
       } finally {
         sidePanel.value.loadingModelos = false;
       }
@@ -1053,7 +1176,7 @@ const app = createApp({
           fkText.value[f.field] = fkLabel(f.ref, formData.value[f.field]) || '';
         }
       });
-      modalInstance.show();
+      ensureModalInstance().show();
     };
 
     // --- Muestras estructuradas (1..N por Estudio x Colega). Cada muestra, a
@@ -1245,32 +1368,40 @@ const app = createApp({
       delete rowMuestrasCache.value[idEstudioColega];
     };
 
-    // --- Modelos de informe (PDF) del colega, 1..N por Estudio x Colega.
-    // Editando un registro ya guardado se suben al toque (requieren un
-    // id_estudio_colega real). Creando uno nuevo, todavía no existe ese id:
-    // los PDF elegidos se bufferan en memoria (como las muestras) y recién
-    // se suben al guardar, con el id real que devuelve la creación. ---
-    const modelosEstudio = ref([]);
+    // --- Modelos de informe (PDF), 1..N por Estudio x Colega, agrupados por
+    // categoría (una por cada dropdown que admite documentación: Preanalítico,
+    // Indicaciones Paciente y Modelo Derivante). Editando un registro ya
+    // guardado se suben al toque (requieren un id_estudio_colega real).
+    // Creando uno nuevo, todavía no existe ese id: los PDF elegidos se
+    // bufferan en memoria (como las muestras) y recién se suben al guardar,
+    // con el id real que devuelve la creación. Sólo 'colega' (Modelo
+    // Derivante) permite ponerle una descripción propia a cada archivo. ---
+    const blankModelosPorCategoria = () => ({ preanalitico: [], paciente: [], colega: [] });
+    const modelosPorCategoria = ref(blankModelosPorCategoria());
     const modelosLoading = ref(false);
     const modeloSubiendo = ref(false);
-    const modelosPendientes = ref([]); // {_key, file} elegidos antes de guardar (modo "create")
+    const modelosPendientesPorCategoria = ref(blankModelosPorCategoria()); // {_key, file, descripcion}
 
     const fetchModelosDeEstudioColega = async (idEstudioColega) => {
       modelosLoading.value = true;
       try {
         const res = await axios.get(`${API_BASE}/estudio-colega-modelo/estudio-colega/${idEstudioColega}`);
-        modelosEstudio.value = res.data;
+        const agrupado = blankModelosPorCategoria();
+        res.data.forEach(m => { (agrupado[m.categoria] || (agrupado[m.categoria] = [])).push(m); });
+        modelosPorCategoria.value = agrupado;
       } catch (err) {
-        modelosEstudio.value = [];
+        modelosPorCategoria.value = blankModelosPorCategoria();
       } finally {
         modelosLoading.value = false;
       }
     };
 
-    const subirModeloInmediato = async (file) => {
+    const subirModeloInmediato = async (file, categoria, descripcion = null) => {
       const fd = new FormData();
       fd.append('id_estudio_colega', formData.value.id);
       fd.append('archivo', file);
+      fd.append('categoria', categoria);
+      if (descripcion) fd.append('descripcion', descripcion);
       modeloSubiendo.value = true;
       try {
         await axios.post(`${API_BASE}/estudio-colega-modelo`, fd);
@@ -1285,7 +1416,7 @@ const app = createApp({
 
     // Si el registro ya existe (edit) sube directo; si se está creando uno
     // nuevo, lo guarda en el buffer para subirlo recién al guardar el formulario.
-    const onSeleccionarPdf = (event) => {
+    const onSeleccionarPdf = (event, categoria) => {
       const file = event.target.files[0];
       event.target.value = '';
       if (!file) return;
@@ -1294,34 +1425,49 @@ const app = createApp({
         return;
       }
       if (modalMode.value === 'edit') {
-        subirModeloInmediato(file);
+        subirModeloInmediato(file, categoria);
       } else {
-        modelosPendientes.value.push({ _key: nextMuestraKey(), file });
+        modelosPendientesPorCategoria.value[categoria].push({ _key: nextMuestraKey(), file, descripcion: '' });
       }
     };
 
-    const quitarModeloPendiente = (item) => {
-      modelosPendientes.value = modelosPendientes.value.filter(m => m._key !== item._key);
+    const quitarModeloPendiente = (categoria, item) => {
+      modelosPendientesPorCategoria.value[categoria] = modelosPendientesPorCategoria.value[categoria].filter(m => m._key !== item._key);
     };
 
     const persistModelosPendientes = async (idEstudioColega) => {
-      for (const m of modelosPendientes.value) {
-        const fd = new FormData();
-        fd.append('id_estudio_colega', idEstudioColega);
-        fd.append('archivo', m.file);
-        await axios.post(`${API_BASE}/estudio-colega-modelo`, fd);
+      for (const categoria of Object.keys(modelosPendientesPorCategoria.value)) {
+        for (const m of modelosPendientesPorCategoria.value[categoria]) {
+          const fd = new FormData();
+          fd.append('id_estudio_colega', idEstudioColega);
+          fd.append('archivo', m.file);
+          fd.append('categoria', categoria);
+          if (m.descripcion) fd.append('descripcion', m.descripcion);
+          await axios.post(`${API_BASE}/estudio-colega-modelo`, fd);
+        }
       }
-      modelosPendientes.value = [];
+      modelosPendientesPorCategoria.value = blankModelosPorCategoria();
     };
 
-    const eliminarModelo = async (modelo) => {
+    const eliminarModelo = async (modelo, categoria) => {
       if (!confirm(`¿Eliminar "${modelo.nombre_archivo}"?`)) return;
       try {
         await axios.delete(`${API_BASE}/estudio-colega-modelo/${modelo.id}`);
-        modelosEstudio.value = modelosEstudio.value.filter(m => m.id !== modelo.id);
+        modelosPorCategoria.value[categoria] = modelosPorCategoria.value[categoria].filter(m => m.id !== modelo.id);
         showAlert('Archivo eliminado correctamente');
       } catch (err) {
         showAlert(apiErrorMessage(err, 'No se pudo eliminar el archivo'), 'danger');
+      }
+    };
+
+    // Editar la descripción de un PDF de "Modelo Derivante" ya subido (el
+    // resto de categorías no muestran este input, aunque el backend lo acepta
+    // para cualquiera).
+    const actualizarDescripcionModelo = async (modelo) => {
+      try {
+        await axios.put(`${API_BASE}/estudio-colega-modelo/${modelo.id}`, { descripcion: modelo.descripcion || null });
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo guardar la descripción del archivo'), 'danger');
       }
     };
 
@@ -1370,13 +1516,13 @@ const app = createApp({
       // se guardan (create/update/delete) recién cuando se guarda el formulario.
       muestrasEliminadas.value = [];
       alternativasEliminadas.value = [];
-      modelosPendientes.value = [];
+      modelosPendientesPorCategoria.value = blankModelosPorCategoria();
       if (mode === 'edit') {
         fetchMuestrasDeEstudioColega(formData.value.id);
         fetchModelosDeEstudioColega(formData.value.id);
       } else {
         muestrasForm.value = [];
-        modelosEstudio.value = [];
+        modelosPorCategoria.value = blankModelosPorCategoria();
       }
     };
 
@@ -1460,7 +1606,7 @@ const app = createApp({
           currentView.value = 'indicaciones';
           fetchEstudiosPorColega();
         } else {
-          modalInstance.hide();
+          ensureModalInstance().hide();
           fetchItems(pagination.value.page);
         }
         // Las listas de referencia pueden haber cambiado (p.ej. se creó un Estudio nuevo)
@@ -1499,11 +1645,16 @@ const app = createApp({
       return fallback;
     };
 
+    // Vista previa de una sola línea de un campo de texto enriquecido (le
+    // saca las etiquetas HTML y lo trunca) para las tarjetas resumen de la
+    // fila desplegable de "Todos los Estudios".
+    const textoPlano = (html, maxLen = 90) => {
+      if (!html) return '';
+      const texto = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      return texto.length > maxLen ? texto.slice(0, maxLen) + '…' : texto;
+    };
+
     onMounted(async () => {
-      const modalEl = document.getElementById('crudModal');
-      if (modalEl) {
-        modalInstance = new bootstrap.Modal(modalEl);
-      }
       // Sin token guardado, se queda en la pantalla de login sin pedir nada
       // a la API. Con token, se valida contra /api/auth/me antes de cargar
       // el resto de la app (puede haber expirado o el usuario fue deshabilitado).
@@ -1621,6 +1772,7 @@ const app = createApp({
       crudSearchQuery,
       onCrudSearchInput,
       toggleColegaHabilitado,
+      verCredencialesColega,
       MUESTRA_CAMPOS,
       onComboInput,
       comboNeedsCreate,
@@ -1628,6 +1780,9 @@ const app = createApp({
       ESTUDIO_COLEGA_SECCIONES,
       sectionsOpen,
       toggleSection,
+      richModalField,
+      richModalLabel,
+      abrirEditorAmpliado,
       fieldsForSection,
       muestrasForm,
       muestrasLoading,
@@ -1648,19 +1803,28 @@ const app = createApp({
       toggleRowExpand,
       rowMuestrasCache,
       rowMuestrasLoading,
+      muestraSeleccionadaPorFila,
+      seleccionarMuestraFila,
       API_BASE,
-      modelosEstudio,
+      SECCIONES_CON_PDF,
+      CATEGORIA_PDF_POR_SECCION,
+      LABEL_PDF_POR_SECCION,
+      modelosPorCategoria,
       modelosLoading,
       modeloSubiendo,
-      modelosPendientes,
+      modelosPendientesPorCategoria,
       onSeleccionarPdf,
       quitarModeloPendiente,
       eliminarModelo,
+      actualizarDescripcionModelo,
       abrirModelo,
       sidePanel,
       openIndicacionesPanel,
+      openPreanaliticoPanel,
       openModeloColegaPanel,
-      closeSidePanel
+      openMuestrasPanel,
+      closeSidePanel,
+      textoPlano
     };
   }
 });
@@ -1672,10 +1836,16 @@ const app = createApp({
 // contenido se descarta el formato de origen y se inserta como texto plano,
 // para no poder inyectar HTML/atributos ajenos vía el portapapeles.
 app.component('rich-editor', {
-  props: { modelValue: { type: String, default: '' }, placeholder: { type: String, default: '' } },
+  props: {
+    modelValue: { type: String, default: '' },
+    placeholder: { type: String, default: '' },
+    // 'large': usado dentro del modal de edición ampliada, le da mucho más
+    // alto al área de texto para trabajar cómodo en pantalla completa.
+    large: { type: Boolean, default: false },
+  },
   emits: ['update:modelValue'],
   template: `
-    <div class="rich-editor">
+    <div :class="['rich-editor', large ? 'rich-editor-lg' : '']">
       <div class="rich-toolbar">
         <button type="button" title="Negrita" @mousedown.prevent="exec('bold')"><i class="bi bi-type-bold"></i></button>
         <button type="button" title="Cursiva" @mousedown.prevent="exec('italic')"><i class="bi bi-type-italic"></i></button>

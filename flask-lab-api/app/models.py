@@ -13,6 +13,15 @@ class Colega(db.Model):
     # deshabilitan. Al deshabilitar, opcionalmente se pasan a 'pendiente' todos
     # sus registros Estudio x Colega (ver routes/colegas.py).
     habilitado = db.Column(db.Boolean, nullable=False, default=True)
+    portal_url = db.Column(db.Text, nullable=True)
+    # Credenciales del portal externo del colega: sensibles, sólo un admin (o
+    # un 'user' con permisos.ver_credenciales_colegas) las ve en la API (ver
+    # app/crud.py _redactar_sensibles). No van hasheadas ni cifradas: son
+    # credenciales de un sistema externo que el admin necesita leer tal cual,
+    # no una contraseña de acceso a esta aplicación.
+    portal_usuario = db.Column(db.String(150), nullable=True)
+    portal_password = db.Column(db.String(255), nullable=True)
+    observaciones = db.Column(db.Text, nullable=True)
 
 
 class Estudio(db.Model):
@@ -91,6 +100,11 @@ class EstudioColega(db.Model):
     id_sector_laboratorio = db.Column(db.Integer, db.ForeignKey('public.valor_estudio_sector.id', ondelete='SET NULL'), nullable=True)
     indicaciones_pacientes = db.Column(db.Text, nullable=True)
     indicaciones_colega = db.Column(db.Text, nullable=True)
+    # Descripción propia del dropdown "Preanalítico" (independiente del
+    # catálogo id_preanalitico) y Observaciones del dropdown "Modelo
+    # Derivante" (independiente de indicaciones_colega, que quedó sólo texto).
+    preanalitico_descripcion = db.Column(db.Text, nullable=True)
+    modelo_derivante_observaciones = db.Column(db.Text, nullable=True)
     valor_referencia = db.Column(db.Text, nullable=True)
     dias_demora = db.Column(db.Integer, default=0)
     estado = db.Column(db.String(20), nullable=False, default='pendiente')
@@ -262,6 +276,11 @@ class EstudioColegaModelo(db.Model):
     nombre_archivo = db.Column(db.String(255), nullable=False)
     contenido = db.Column(db.LargeBinary, nullable=False)
     tamanio_bytes = db.Column(db.Integer, nullable=False)
+    # A qué dropdown pertenece: 'preanalitico', 'paciente' o 'colega' (Modelo
+    # Derivante). 'descripcion' es el comentario propio de cada archivo
+    # (pensado para 'colega', pero disponible para cualquier categoría).
+    categoria = db.Column(db.String(20), nullable=False, default='colega')
+    descripcion = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 

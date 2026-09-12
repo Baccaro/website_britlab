@@ -9,6 +9,16 @@ CREATE TABLE public.colega (
 	descripcion varchar(255) NOT NULL,
 	es_propio bool NOT NULL DEFAULT false,
 	habilitado bool NOT NULL DEFAULT true,
+	portal_url text NULL,
+	-- portal_usuario/portal_password: credenciales del portal externo del
+	-- colega. Sensibles: la API las redacta salvo admin o un 'user' con
+	-- permisos.ver_credenciales_colegas habilitado explícitamente (opt-in,
+	-- al revés que el resto de los permisos). Van en texto plano a propósito:
+	-- son credenciales de un sistema externo que el admin necesita leer tal
+	-- cual, no una contraseña de acceso a esta aplicación.
+	portal_usuario varchar(150) NULL,
+	portal_password varchar(255) NULL,
+	observaciones text NULL,
 	CONSTRAINT colega_pkey PRIMARY KEY (id),
 	CONSTRAINT uq_colega_descripcion UNIQUE (descripcion)
 );
@@ -123,6 +133,12 @@ CREATE TABLE public.estudio_colega (
 	id_muestra int4 NULL,
 	id_sector_laboratorio int4 NULL,
 	indicaciones text NULL,
+	-- preanalitico_descripcion: texto propio del dropdown "Preanalítico" (aparte
+	-- del catálogo id_preanalitico). modelo_derivante_observaciones: texto propio
+	-- del dropdown "Modelo Derivante" (aparte de indicaciones_colega/"Indicaciones
+	-- al Profesional-Derivante", que quedó sólo texto, sin documentación).
+	preanalitico_descripcion text NULL,
+	modelo_derivante_observaciones text NULL,
 	valor_referencia text NULL,
 	dias_demora int4 DEFAULT 0 NULL,
 	estado public.estado_registro_enum DEFAULT 'pendiente'::estado_registro_enum NOT NULL,
@@ -281,8 +297,14 @@ CREATE TABLE public.estudio_colega_modelo (
 	nombre_archivo varchar(255) NOT NULL,
 	contenido bytea NOT NULL,
 	tamanio_bytes int4 NOT NULL,
+	-- categoria: a qué dropdown pertenece este PDF ('preanalitico', 'paciente'
+	-- o 'colega'/Modelo Derivante). descripcion: comentario propio del archivo
+	-- (sólo se edita desde "Modelo Derivante", pero cualquier categoría lo acepta).
+	categoria varchar(20) DEFAULT 'colega'::character varying NOT NULL,
+	descripcion text NULL,
 	created_at timestamptz DEFAULT CURRENT_TIMESTAMP NULL,
 	CONSTRAINT estudio_colega_modelo_pkey PRIMARY KEY (id),
+	CONSTRAINT chk_ecm_categoria CHECK (categoria IN ('preanalitico', 'paciente', 'colega')),
 	CONSTRAINT ecm_id_estudio_colega_fkey FOREIGN KEY (id_estudio_colega) REFERENCES public.estudio_colega(id) ON DELETE CASCADE
 );
 CREATE INDEX idx_ecm_id_estudio_colega ON public.estudio_colega_modelo (id_estudio_colega);

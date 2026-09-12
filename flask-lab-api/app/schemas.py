@@ -16,6 +16,12 @@ class ColegaBase(BaseModel):
     descripcion: str
     es_propio: Optional[bool] = False
     habilitado: Optional[bool] = True
+    portal_url: Optional[str] = None
+    # Sensibles: se redactan en la respuesta salvo admin o permiso explícito
+    # (ver app/crud.py _redactar_sensibles y app/routes/colegas.py).
+    portal_usuario: Optional[str] = None
+    portal_password: Optional[str] = None
+    observaciones: Optional[str] = None
 
 class ColegaCreate(ColegaBase):
     pass
@@ -24,6 +30,10 @@ class ColegaUpdate(BaseModel):
     descripcion: Optional[str] = None
     es_propio: Optional[bool] = None
     habilitado: Optional[bool] = None
+    portal_url: Optional[str] = None
+    portal_usuario: Optional[str] = None
+    portal_password: Optional[str] = None
+    observaciones: Optional[str] = None
 
 class ColegaOut(ColegaBase):
     id: int
@@ -138,6 +148,8 @@ class EstudioColegaBase(BaseModel):
     id_sector_laboratorio: Optional[int] = None
     indicaciones_pacientes: Optional[str] = None
     indicaciones_colega: Optional[str] = None
+    preanalitico_descripcion: Optional[str] = None
+    modelo_derivante_observaciones: Optional[str] = None
     valor_referencia: Optional[str] = None
     dias_demora: Optional[int] = 0
     estado: Optional[str] = 'pendiente'
@@ -160,6 +172,8 @@ class EstudioColegaUpdate(BaseModel):
     id_sector_laboratorio: Optional[int] = None
     indicaciones_pacientes: Optional[str] = None
     indicaciones_colega: Optional[str] = None
+    preanalitico_descripcion: Optional[str] = None
+    modelo_derivante_observaciones: Optional[str] = None
     valor_referencia: Optional[str] = None
     dias_demora: Optional[int] = None
     estado: Optional[str] = None

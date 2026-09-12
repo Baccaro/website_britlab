@@ -193,14 +193,28 @@
     }
 
 
+    /* Encabezado de cada sección desplegable del formulario de Estudio x
+       Colega: sombreado propio (distinto del blanco del contenido) para que
+       se note de un vistazo que es un acordeón clickeable, con un borde
+       izquierdo de acento cuando está abierto. */
     .section-toggle {
-      background: transparent;
+      background: #eef1f8;
       border: none;
+      border-left: 3px solid transparent;
       width: 100%;
+      transition: background .15s ease, border-color .15s ease;
     }
 
     .section-toggle:hover {
-      background: #f0f3ff;
+      background: #e3e8f5;
+    }
+
+    .section-toggle.section-toggle-open {
+      border-left-color: #006877;
+    }
+
+    .section-content {
+      background: #fbfcff;
     }
 
     /* Botones de navegación en la barra superior (reemplazan al sidebar) */
@@ -349,6 +363,14 @@
       border: none;
       border-radius: 0;
       outline: none;
+    }
+
+    /* Editor ampliado (dentro del modal "Ver ampliado"): mucho más alto para
+       trabajar más cómodo en pantalla completa. */
+    .rich-editor-lg .rich-content {
+      min-height: 60vh;
+      max-height: 65vh;
+      font-size: 0.9rem;
     }
 
     .rich-content:empty:before {
@@ -653,7 +675,7 @@
         <div class="bg-white rounded-xl shadow-sm border border-outline-variant p-4 mb-4">
           <div class="d-flex justify-content-between align-items-start mb-1 gap-2">
             <h5 class="text-lg font-bold text-primary mb-0 flex items-center">
-              <i class="bi bi-search me-2 text-primary-container"></i>Consulta y Edición de Estudios por Colega
+              <i class="bi bi-search me-2 text-primary-container"></i>Consulta y Edición de estudios por laboratorio procesante
             </h5>
             <button @click="openNewEstudioForColega" v-if="isAdmin && selectedColegaId"
               class="btn btn-primary bg-primary border-primary shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors rounded-lg px-3 py-1.5 text-sm flex-shrink-0">
@@ -664,7 +686,7 @@
             catálogo de análisis autorizados.</p>
           <div class="row g-3">
             <div class="col-md-6">
-              <label class="block text-xs font-semibold text-on-surface mb-1">Seleccionar Colega:</label>
+              <label class="block text-xs font-semibold text-on-surface mb-1">Seleccionar laboratorio procesante:</label>
               <select @change="onColegaSelectorChange"
                 class="form-select form-select-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
                 v-model="selectedColegaId">
@@ -790,30 +812,30 @@
                         </span>
                       </span>
 
-                      <!-- Muestra: círculo con la cantidad, o "No disponible" en gris -->
+                      <!-- Muestra: círculo con la cantidad, o "Sin muestras" en gris -->
                       <span v-else-if="col.field === 'muestra'">
                         <span v-if="item.muestra_count" :title="item.muestra"
                           class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary text-white font-bold"
                           style="width: 24px; height: 24px; font-size: .7rem;">{{ item.muestra_count }}</span>
+                        <span class="text-britlab-gray font-medium" v-else>Sin muestras</span>
+                      </span>
+
+                      <!-- Indicaciones Paciente: ojo para ver en el panel lateral (descripción + PDFs), o "No disponible" en gris -->
+                      <span v-else-if="col.field === 'indicaciones_pacientes'">
+                        <button v-if="item.indicaciones_pacientes || item.pdfs_paciente_count" @click.stop="openIndicacionesPanel(item)"
+                          class="btn btn-xs btn-light border" title="Ver indicaciones al paciente" type="button">
+                          <i class="bi bi-eye"></i><span class="badge rounded-pill bg-tertiary ms-1" v-if="item.pdfs_paciente_count">{{ item.pdfs_paciente_count }}</span>
+                        </button>
                         <span class="text-britlab-gray font-medium" v-else>No disponible</span>
                       </span>
 
-                      <!-- Indicaciones Paciente: ojo para ver en el panel lateral, o "No disponible" en rojo -->
-                      <span v-else-if="col.field === 'indicaciones_pacientes'">
-                        <button v-if="item.indicaciones_pacientes" @click.stop="openIndicacionesPanel(item)"
-                          class="btn btn-xs btn-light border" title="Ver indicaciones al paciente" type="button">
-                          <i class="bi bi-eye"></i>
-                        </button>
-                        <span class="text-error font-medium" v-else>No disponible</span>
-                      </span>
-
-                      <!-- Modelo Colega: ojo para ver PDFs + indicaciones al colega, o "No disponible" en rojo -->
+                      <!-- Modelo Colega: ojo para ver observaciones + PDFs del derivante (y las indicaciones al profesional), o "No disponible" en gris -->
                       <span v-else-if="col.field === 'indicaciones_colega'">
-                        <button v-if="item.modelos_count > 0 || item.indicaciones_colega" @click.stop="openModeloColegaPanel(item)"
+                        <button v-if="item.pdfs_colega_count > 0 || item.indicaciones_colega || item.modelo_derivante_observaciones" @click.stop="openModeloColegaPanel(item)"
                           class="btn btn-xs btn-light border" title="Ver modelo de informe del colega" type="button">
-                          <i class="bi bi-eye"></i><span class="badge rounded-pill bg-tertiary ms-1" v-if="item.modelos_count">{{ item.modelos_count }}</span>
+                          <i class="bi bi-eye"></i><span class="badge rounded-pill bg-tertiary ms-1" v-if="item.pdfs_colega_count">{{ item.pdfs_colega_count }}</span>
                         </button>
-                        <span class="text-error font-medium" v-else>No disponible</span>
+                        <span class="text-britlab-gray font-medium" v-else>No disponible</span>
                       </span>
 
                       <strong :title="item[col.field]" v-else-if="col.field === 'codigo_hexalis'">{{ item[col.field] || '-' }}</strong>
@@ -845,59 +867,7 @@
                               <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Cód. Laboratorio</dt><dd class="mb-0 font-medium">{{ item.codigo_laboratorio || '-' }}</dd></div>
                               <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Método</dt><dd class="mb-0 font-medium">{{ item.metodo || '-' }}</dd></div>
                               <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Demora</dt><dd class="mb-0 font-medium">{{ item.dias_demora ?? '-' }} días</dd></div>
-                              <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Revisor</dt><dd class="mb-0 font-medium">{{ item.revisor || '-' }}</dd></div>
-                            </dl>
-                          </div>
-                        </div>
-
-                        <!-- Muestras Admitidas -->
-                        <div class="col-md-4">
-                          <div class="bg-white border border-outline-variant rounded-lg p-3 h-100">
-                            <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">MUESTRAS ADMITIDAS</h6>
-                            <div class="text-center py-3" v-if="rowMuestrasLoading.has(item.id)">
-                              <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
-                            </div>
-                            <p class="text-on-surface-variant text-xs mb-0" v-else-if="!(rowMuestrasCache[item.id] || []).length">
-                              Sin muestras estructuradas cargadas.
-                            </p>
-                            <div :key="m.id" class="border border-outline-variant rounded-lg p-2 mb-2"
-                              v-else v-for="(m, idx) in (rowMuestrasCache[item.id] || [])">
-                              <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="font-bold text-xs">Muestra {{ idx + 1 }}: {{ m.tipo_muestra || '-' }}</span>
-                              </div>
-                              <dl class="mb-0 text-xs">
-                                <div class="d-flex justify-content-between py-1" v-if="m.volumen"><dt class="text-on-surface-variant">Volumen</dt><dd class="mb-0">{{ m.volumen }} {{ m.unidad_medida || '' }}</dd></div>
-                                <div class="d-flex justify-content-between py-1" v-if="m.aditivo"><dt class="text-on-surface-variant">Aditivo</dt><dd class="mb-0">{{ m.aditivo }}</dd></div>
-                                <div class="d-flex justify-content-between py-1" v-if="m.recipiente"><dt class="text-on-surface-variant">Recipiente</dt><dd class="mb-0">{{ m.recipiente }}</dd></div>
-                                <div class="d-flex justify-content-between py-1" v-if="m.conservacion"><dt class="text-on-surface-variant">Conservación</dt><dd class="mb-0">{{ m.conservacion }}</dd></div>
-                                <div class="d-flex justify-content-between py-1" v-if="m.modalidad_recoleccion"><dt class="text-on-surface-variant">Modalidad</dt><dd class="mb-0">{{ m.modalidad_recoleccion }}</dd></div>
-                                <div class="d-flex justify-content-between py-1" v-if="m.tecnica_recoleccion"><dt class="text-on-surface-variant">Técnica</dt><dd class="mb-0">{{ m.tecnica_recoleccion }}</dd></div>
-                                <div class="d-flex justify-content-between py-1" v-if="m.condicion_especial"><dt class="text-on-surface-variant">Condición</dt><dd class="mb-0">{{ m.condicion_especial }}</dd></div>
-                                <div class="d-flex justify-content-between py-1" v-if="m.prioridad_envio"><dt class="text-on-surface-variant">Prioridad</dt><dd class="mb-0">{{ m.prioridad_envio }}</dd></div>
-                              </dl>
-                              <div :key="a.id" class="border-top border-outline-variant mt-2 pt-2 ps-2" v-for="(a, aidx) in (m.alternativas || [])">
-                                <span class="badge rounded-pill badge-xs bg-tertiary mb-1">Alternativa {{ aidx + 1 }}: {{ a.tipo_muestra || '-' }}</span>
-                                <dl class="mb-0 text-xs">
-                                  <div class="d-flex justify-content-between py-1" v-if="a.volumen"><dt class="text-on-surface-variant">Volumen</dt><dd class="mb-0">{{ a.volumen }} {{ a.unidad_medida || '' }}</dd></div>
-                                  <div class="d-flex justify-content-between py-1" v-if="a.aditivo"><dt class="text-on-surface-variant">Aditivo</dt><dd class="mb-0">{{ a.aditivo }}</dd></div>
-                                  <div class="d-flex justify-content-between py-1" v-if="a.recipiente"><dt class="text-on-surface-variant">Recipiente</dt><dd class="mb-0">{{ a.recipiente }}</dd></div>
-                                  <div class="d-flex justify-content-between py-1" v-if="a.conservacion"><dt class="text-on-surface-variant">Conservación</dt><dd class="mb-0">{{ a.conservacion }}</dd></div>
-                                  <div class="d-flex justify-content-between py-1" v-if="a.modalidad_recoleccion"><dt class="text-on-surface-variant">Modalidad</dt><dd class="mb-0">{{ a.modalidad_recoleccion }}</dd></div>
-                                  <div class="d-flex justify-content-between py-1" v-if="a.tecnica_recoleccion"><dt class="text-on-surface-variant">Técnica</dt><dd class="mb-0">{{ a.tecnica_recoleccion }}</dd></div>
-                                  <div class="d-flex justify-content-between py-1" v-if="a.condicion_especial"><dt class="text-on-surface-variant">Condición</dt><dd class="mb-0">{{ a.condicion_especial }}</dd></div>
-                                  <div class="d-flex justify-content-between py-1" v-if="a.prioridad_envio"><dt class="text-on-surface-variant">Prioridad</dt><dd class="mb-0">{{ a.prioridad_envio }}</dd></div>
-                                </dl>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <!-- Pre-analítico e Indicaciones -->
-                        <div class="col-md-4">
-                          <div class="bg-white border border-outline-variant rounded-lg p-3 h-100">
-                            <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">PRE-ANALÍTICO E INDICACIONES</h6>
-                            <dl class="mb-0 text-xs">
-                              <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Pre-analítico</dt><dd class="mb-0 font-medium">{{ item.preanalitico || '-' }}</dd></div>
+                              <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Preanalítico</dt><dd class="mb-0 font-medium">{{ item.preanalitico || '-' }}</dd></div>
                               <div class="d-flex justify-content-between py-1">
                                 <dt class="text-on-surface-variant">Val. referencia</dt>
                                 <dd class="mb-0">
@@ -905,21 +875,103 @@
                                   <span class="font-medium" v-else>{{ item.valor_referencia || '-' }}</span>
                                 </dd>
                               </div>
+                              <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Revisor</dt><dd class="mb-0 font-medium">{{ item.revisor || '-' }}</dd></div>
                             </dl>
+                          </div>
+                        </div>
 
-                            <div class="mt-3 pt-2 border-top border-outline-variant">
-                              <p class="text-xs font-bold text-on-surface mb-1">Ver Indicaciones Paciente</p>
-                              <a :href="item.indicaciones_pacientes" target="_blank" rel="noopener" class="text-xs"
-                                v-if="item.indicaciones_pacientes && item.indicaciones_pacientes.startsWith('http')">Ver informe</a>
-                              <div class="text-xs rich-display" v-else-if="item.indicaciones_pacientes" v-html="item.indicaciones_pacientes"></div>
-                              <p class="text-xs text-on-surface-variant mb-0" v-else>Sin indicaciones cargadas.</p>
+                        <!-- Muestras: un botón "paginado" por muestra (elige cuál mostrar
+                             abajo) + "Todas" para verlas todas, en orden, en el panel lateral. -->
+                        <div class="col-md-4">
+                          <div class="bg-white border border-outline-variant rounded-lg p-3 h-100">
+                            <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">MUESTRAS</h6>
+                            <div class="text-center py-3" v-if="rowMuestrasLoading.has(item.id)">
+                              <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
+                            </div>
+                            <p class="text-britlab-gray font-medium text-xs mb-0" v-else-if="!(rowMuestrasCache[item.id] || []).length">
+                              Sin muestras
+                            </p>
+                            <template v-else>
+                              <div class="d-flex flex-wrap gap-1 mb-2">
+                                <button :key="m.id" v-for="(m, idx) in (rowMuestrasCache[item.id] || [])"
+                                  @click="seleccionarMuestraFila(item.id, idx)"
+                                  :class="['btn btn-xs rounded-circle', (muestraSeleccionadaPorFila[item.id] ?? 0) === idx ? 'btn-primary bg-primary border-primary text-white' : 'btn-light border']"
+                                  style="width: 24px; height: 24px; padding: 0; line-height: 1;" type="button">{{ idx + 1 }}</button>
+                                <button @click="openMuestrasPanel(item)" class="btn btn-xs btn-outline-primary border-primary text-primary rounded-pill px-2" type="button">
+                                  Ver todas
+                                </button>
+                              </div>
+                              <template :key="m.id" v-for="(m, idx) in (rowMuestrasCache[item.id] || [])">
+                                <div class="border border-outline-variant rounded-lg p-2 mb-2" v-if="(muestraSeleccionadaPorFila[item.id] ?? 0) === idx">
+                                  <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="font-bold text-xs">Muestra {{ idx + 1 }}: {{ m.tipo_muestra || '-' }}</span>
+                                  </div>
+                                  <dl class="mb-0 text-xs">
+                                    <div class="d-flex justify-content-between py-1" v-if="m.volumen"><dt class="text-on-surface-variant">Volumen</dt><dd class="mb-0">{{ m.volumen }} {{ m.unidad_medida || '' }}</dd></div>
+                                    <div class="d-flex justify-content-between py-1" v-if="m.aditivo"><dt class="text-on-surface-variant">Aditivo</dt><dd class="mb-0">{{ m.aditivo }}</dd></div>
+                                    <div class="d-flex justify-content-between py-1" v-if="m.recipiente"><dt class="text-on-surface-variant">Recipiente</dt><dd class="mb-0">{{ m.recipiente }}</dd></div>
+                                    <div class="d-flex justify-content-between py-1" v-if="m.conservacion"><dt class="text-on-surface-variant">Conservación</dt><dd class="mb-0">{{ m.conservacion }}</dd></div>
+                                    <div class="d-flex justify-content-between py-1" v-if="m.modalidad_recoleccion"><dt class="text-on-surface-variant">Modalidad</dt><dd class="mb-0">{{ m.modalidad_recoleccion }}</dd></div>
+                                    <div class="d-flex justify-content-between py-1" v-if="m.tecnica_recoleccion"><dt class="text-on-surface-variant">Técnica</dt><dd class="mb-0">{{ m.tecnica_recoleccion }}</dd></div>
+                                    <div class="d-flex justify-content-between py-1" v-if="m.condicion_especial"><dt class="text-on-surface-variant">Condición</dt><dd class="mb-0">{{ m.condicion_especial }}</dd></div>
+                                    <div class="d-flex justify-content-between py-1" v-if="m.prioridad_envio"><dt class="text-on-surface-variant">Prioridad</dt><dd class="mb-0">{{ m.prioridad_envio }}</dd></div>
+                                  </dl>
+                                  <div :key="a.id" class="border-top border-outline-variant mt-2 pt-2 ps-2" v-for="(a, aidx) in (m.alternativas || [])">
+                                    <span class="badge rounded-pill badge-xs bg-tertiary mb-1">Alternativa {{ aidx + 1 }}: {{ a.tipo_muestra || '-' }}</span>
+                                    <dl class="mb-0 text-xs">
+                                      <div class="d-flex justify-content-between py-1" v-if="a.volumen"><dt class="text-on-surface-variant">Volumen</dt><dd class="mb-0">{{ a.volumen }} {{ a.unidad_medida || '' }}</dd></div>
+                                      <div class="d-flex justify-content-between py-1" v-if="a.aditivo"><dt class="text-on-surface-variant">Aditivo</dt><dd class="mb-0">{{ a.aditivo }}</dd></div>
+                                      <div class="d-flex justify-content-between py-1" v-if="a.recipiente"><dt class="text-on-surface-variant">Recipiente</dt><dd class="mb-0">{{ a.recipiente }}</dd></div>
+                                      <div class="d-flex justify-content-between py-1" v-if="a.conservacion"><dt class="text-on-surface-variant">Conservación</dt><dd class="mb-0">{{ a.conservacion }}</dd></div>
+                                      <div class="d-flex justify-content-between py-1" v-if="a.modalidad_recoleccion"><dt class="text-on-surface-variant">Modalidad</dt><dd class="mb-0">{{ a.modalidad_recoleccion }}</dd></div>
+                                      <div class="d-flex justify-content-between py-1" v-if="a.tecnica_recoleccion"><dt class="text-on-surface-variant">Técnica</dt><dd class="mb-0">{{ a.tecnica_recoleccion }}</dd></div>
+                                      <div class="d-flex justify-content-between py-1" v-if="a.condicion_especial"><dt class="text-on-surface-variant">Condición</dt><dd class="mb-0">{{ a.condicion_especial }}</dd></div>
+                                      <div class="d-flex justify-content-between py-1" v-if="a.prioridad_envio"><dt class="text-on-surface-variant">Prioridad</dt><dd class="mb-0">{{ a.prioridad_envio }}</dd></div>
+                                    </dl>
+                                  </div>
+                                </div>
+                              </template>
+                            </template>
+                          </div>
+                        </div>
+
+                        <!-- Documentación e Indicaciones: Preanalítico, Indicaciones Paciente y Modelo
+                             Colega (Indicaciones al Profesional/Derivante + Modelo Derivante), cada
+                             uno con su "Ver →" al panel lateral y una vista previa del texto cargado. -->
+                        <div class="col-md-4">
+                          <div class="bg-white border border-outline-variant rounded-lg p-3 h-100">
+                            <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">DOCUMENTACIÓN E INDICACIONES</h6>
+
+                            <div class="py-2 border-bottom border-outline-variant">
+                              <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-xs font-bold text-on-surface">Preanalítico</span>
+                                <button v-if="item.preanalitico_descripcion || item.pdfs_preanalitico_count" @click="openPreanaliticoPanel(item)"
+                                  class="btn btn-xs btn-link text-primary p-0 text-decoration-none" type="button">Ver &rarr;</button>
+                                <span class="text-xs text-britlab-gray" v-else>No disponible</span>
+                              </div>
+                              <p class="text-xs text-on-surface-variant mb-0 mt-1" v-if="item.preanalitico_descripcion">{{ textoPlano(item.preanalitico_descripcion) }}</p>
                             </div>
 
-                            <div class="mt-3 pt-2 border-top border-outline-variant d-flex justify-content-between align-items-center">
-                              <p class="text-xs font-bold text-on-surface mb-0">Indicaciones Profesional / Derivante</p>
-                              <button @click="openModeloColegaPanel(item)" class="btn btn-xs btn-outline-primary border-primary text-primary d-flex align-items-center justify-content-center" type="button">
-                                <i class="bi bi-eye me-1"></i>Ver
-                              </button>
+                            <div class="py-2 border-bottom border-outline-variant">
+                              <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-xs font-bold text-on-surface">Indicaciones Paciente</span>
+                                <button v-if="item.indicaciones_pacientes || item.pdfs_paciente_count" @click="openIndicacionesPanel(item)"
+                                  class="btn btn-xs btn-link text-primary p-0 text-decoration-none" type="button">Ver &rarr;</button>
+                                <span class="text-xs text-britlab-gray" v-else>No disponible</span>
+                              </div>
+                              <p class="text-xs text-on-surface-variant mb-0 mt-1" v-if="item.indicaciones_pacientes">{{ textoPlano(item.indicaciones_pacientes) }}</p>
+                            </div>
+
+                            <div class="py-2">
+                              <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-xs font-bold text-on-surface">Modelo Colega</span>
+                                <button v-if="item.indicaciones_colega || item.modelo_derivante_observaciones || item.pdfs_colega_count" @click="openModeloColegaPanel(item)"
+                                  class="btn btn-xs btn-link text-primary p-0 text-decoration-none" type="button">Ver &rarr;</button>
+                                <span class="text-xs text-britlab-gray" v-else>No disponible</span>
+                              </div>
+                              <p class="text-xs text-on-surface-variant mb-0 mt-1" v-if="item.modelo_derivante_observaciones || item.indicaciones_colega">
+                                {{ textoPlano(item.modelo_derivante_observaciones || item.indicaciones_colega) }}
+                              </p>
                             </div>
 
                             <div class="mt-3 pt-2 border-top border-outline-variant">
@@ -1003,6 +1055,20 @@
                     v-else-if="col.type === 'boolean'">{{ item[col.field] ? 'Sí' : 'No' }}</span>
                   <span :class="['badge rounded-pill badge-xs', item[col.field] ? 'bg-success-teal' : 'bg-tertiary']"
                     v-else-if="col.type === 'estado-habilitado'">{{ item[col.field] ? 'Habilitado' : 'Deshabilitado' }}</span>
+                  <!-- Portal del colega: link (si hay) + credenciales sensibles, redactadas
+                       salvo admin o permiso puntual (portal_usuario/_cargado en la respuesta) -->
+                  <span v-else-if="col.type === 'portal'">
+                    <a v-if="item.portal_url" :href="item.portal_url" target="_blank" rel="noopener"
+                      class="btn btn-xs btn-light border me-1" title="Abrir portal">
+                      <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                    <button v-if="item.portal_usuario_cargado || item.portal_password_cargado" @click="verCredencialesColega(item)"
+                      class="btn btn-xs btn-light border"
+                      :title="(item.portal_usuario !== null || item.portal_password !== null) ? 'Ver credenciales' : 'Credenciales restringidas'">
+                      <i :class="['bi', (item.portal_usuario !== null || item.portal_password !== null) ? 'bi-eye' : 'bi-lock']"></i>
+                    </button>
+                    <span class="text-britlab-gray font-medium" v-if="!item.portal_url && !item.portal_usuario_cargado && !item.portal_password_cargado">Sin datos</span>
+                  </span>
                   <span class="text-on-surface font-medium" :title="item[col.field]" v-else>{{ item[col.field] ?? '-' }}</span>
                 </td>
                 <td class="text-center">
@@ -1175,6 +1241,15 @@
                               :checked="permisosEditForm.columnas_ocultas_estudios.includes(c.field)" @change="togglePermisoColumnaOculta(c.field)" />
                             <label :for="'col_' + u.id + '_' + c.field" class="form-check-label text-xs">{{ c.label }}</label>
                           </div>
+
+                          <h6 class="text-xs font-bold text-britlab-gray mb-2 mt-4" style="letter-spacing: .05em;">INFORMACIÓN SENSIBLE</h6>
+                          <p class="text-xs text-on-surface-variant mb-2">
+                            A diferencia de lo anterior, esto es al revés: por defecto NADIE que no sea admin lo ve, hay que habilitarlo acá puntualmente.
+                          </p>
+                          <div class="form-check">
+                            <input :id="'cred_' + u.id" class="form-check-input" type="checkbox" v-model="permisosEditForm.ver_credenciales_colegas" />
+                            <label :for="'cred_' + u.id" class="form-check-label text-xs">Ver usuario/contraseña del portal de los Colegas</label>
+                          </div>
                         </div>
                       </div>
                       <div class="mt-3 text-end">
@@ -1215,7 +1290,9 @@
         <form @submit.prevent="saveItem">
           <div :key="section.key" class="border border-outline-variant rounded-lg mb-3 overflow-hidden"
             v-for="section in ESTUDIO_COLEGA_SECCIONES">
-            <button @click="toggleSection(section.key)" class="section-toggle d-flex justify-content-between align-items-center p-3" type="button">
+            <button @click="toggleSection(section.key)"
+              :class="['section-toggle d-flex justify-content-between align-items-center p-3', sectionsOpen[section.key] ? 'section-toggle-open' : '']"
+              type="button">
               <span class="text-start">
                 <span class="d-block font-bold text-primary">{{ section.title }}</span>
                 <span class="d-block text-xs text-on-surface-variant">{{ section.desc }}</span>
@@ -1223,7 +1300,7 @@
               <i :class="['bi', sectionsOpen[section.key] ? 'bi-chevron-up' : 'bi-chevron-down']"></i>
             </button>
 
-            <div class="p-3 border-t border-outline-variant" v-if="sectionsOpen[section.key]">
+            <div class="section-content p-3 border-t border-outline-variant" v-if="sectionsOpen[section.key]">
               <!-- Sección Muestras: editor de N muestras con alternativas y orden -->
               <template v-if="section.key === 'muestras'">
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -1362,10 +1439,16 @@
                      type="text" :value="codigoHexalisSeleccionado" />
                 </div>
                 <div :key="col.field" class="col-md-6" v-for="col in fieldsForSection(section.key)">
-                  <label class="form-label text-xs font-semibold text-on-surface mb-1">{{ col.label }}</label>
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label class="form-label text-xs font-semibold text-on-surface mb-0">{{ col.label }}</label>
+                    <button v-if="col.type === 'richtext'" @click="abrirEditorAmpliado(col.field, col.label)"
+                      class="btn btn-xs btn-link text-primary p-0 text-decoration-none" type="button">
+                      <i class="bi bi-arrows-angle-expand me-1"></i>Ampliar
+                    </button>
+                  </div>
                   <input :required="col.required" :type="col.type"
                     class="form-control form-control-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
-                    v-if="col.type === 'text' || col.type === 'number' || col.type === 'date'"
+                    v-if="col.type === 'text' || col.type === 'number' || col.type === 'date' || col.type === 'password'"
                     v-model="formData[col.field]" />
                   <textarea
                     class="form-control form-control-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
@@ -1404,48 +1487,64 @@
                 </div>
               </div>
 
-              <!-- Modelos de informe del Colega (PDF): si el registro todavía no
-                   se guardó, los elegidos quedan bufferados y se suben recién al
-                   guardar (igual que las muestras); si ya existe, se suben al toque. -->
-              <div class="mt-3 pt-3 border-top border-outline-variant" v-if="section.key === 'indicaciones_colega'">
+              <!-- Documentación (PDF) de este dropdown: Preanalítico, Indicaciones
+                   Paciente y Modelo Derivante admiten 1..N archivos cada uno (por
+                   categoría propia). Si el registro todavía no se guardó, los
+                   elegidos quedan bufferados y se suben recién al guardar (igual
+                   que las muestras); si ya existe, se suben al toque. Sólo
+                   "Modelo Derivante" permite ponerle una descripción a cada PDF. -->
+              <div class="mt-3 pt-3 border-top border-outline-variant" v-if="SECCIONES_CON_PDF.includes(section.key)">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                  <label class="form-label text-xs font-semibold text-on-surface mb-0">Modelos de Informe del Colega (PDF)</label>
+                  <label class="form-label text-xs font-semibold text-on-surface mb-0">{{ LABEL_PDF_POR_SECCION[section.key] }}</label>
                   <label class="btn btn-xs btn-outline-primary border-primary text-primary rounded-lg mb-0"
                     :class="{ disabled: modeloSubiendo }">
                     <i class="bi bi-plus-lg me-1"></i>{{ modeloSubiendo ? 'Subiendo...' : 'Agregar PDF' }}
-                    <input accept="application/pdf" :disabled="modeloSubiendo" @change="onSeleccionarPdf" hidden type="file" />
+                    <input accept="application/pdf" :disabled="modeloSubiendo"
+                      @change="onSeleccionarPdf($event, CATEGORIA_PDF_POR_SECCION[section.key])" hidden type="file" />
                   </label>
                 </div>
                 <div class="text-center py-2" v-if="modelosLoading">
                   <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
                 </div>
-                <p class="text-on-surface-variant text-xs" v-else-if="!modelosEstudio.length && !modelosPendientes.length">
-                  Todavía no se cargó ningún PDF para este estudio.
+                <p class="text-on-surface-variant text-xs"
+                  v-else-if="!modelosPorCategoria[CATEGORIA_PDF_POR_SECCION[section.key]].length && !modelosPendientesPorCategoria[CATEGORIA_PDF_POR_SECCION[section.key]].length">
+                  Todavía no se cargó ningún PDF acá.
                 </p>
                 <ul class="list-unstyled mb-0" v-else>
-                  <li :key="m.id" class="d-flex justify-content-between align-items-center border border-outline-variant rounded-lg px-3 py-2 mb-2"
-                    v-for="m in modelosEstudio">
-                    <button @click="abrirModelo(m)" class="d-flex align-items-center gap-2 text-decoration-none btn btn-link p-0 border-0" type="button">
-                      <i class="bi bi-file-earmark-pdf text-danger"></i>
-                      <span class="text-xs font-medium">{{ m.nombre_archivo }}</span>
-                    </button>
-                    <button @click="eliminarModelo(m)" class="btn btn-xs btn-outline-danger" title="Eliminar" type="button">
-                      <i class="bi bi-trash"></i>
-                    </button>
+                  <li :key="m.id" class="border border-outline-variant rounded-lg px-3 py-2 mb-2"
+                    v-for="m in modelosPorCategoria[CATEGORIA_PDF_POR_SECCION[section.key]]">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <button @click="abrirModelo(m)" class="d-flex align-items-center gap-2 text-decoration-none btn btn-link p-0 border-0" type="button">
+                        <i class="bi bi-file-earmark-pdf text-danger"></i>
+                        <span class="text-xs font-medium">{{ m.nombre_archivo }}</span>
+                      </button>
+                      <button @click="eliminarModelo(m, CATEGORIA_PDF_POR_SECCION[section.key])" class="btn btn-xs btn-outline-danger" title="Eliminar" type="button">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+                    <input v-if="section.key === 'modelo_derivante'" @change="actualizarDescripcionModelo(m)"
+                      class="form-control form-control-sm rounded-lg border-outline-variant mt-2" placeholder="Descripción de este archivo (opcional)"
+                      type="text" v-model="m.descripcion" />
                   </li>
-                  <li :key="m._key" class="d-flex justify-content-between align-items-center border border-dashed border-outline-variant rounded-lg px-3 py-2 mb-2 bg-surface-container-low"
-                    v-for="m in modelosPendientes">
-                    <span class="d-flex align-items-center gap-2">
-                      <i class="bi bi-file-earmark-pdf text-danger"></i>
-                      <span class="text-xs font-medium">{{ m.file.name }}</span>
-                      <span class="badge rounded-pill bg-tertiary badge-xs">Pendiente</span>
-                    </span>
-                    <button @click="quitarModeloPendiente(m)" class="btn btn-xs btn-outline-danger" title="Quitar" type="button">
-                      <i class="bi bi-trash"></i>
-                    </button>
+                  <li :key="m._key" class="border border-dashed border-outline-variant rounded-lg px-3 py-2 mb-2 bg-surface-container-low"
+                    v-for="m in modelosPendientesPorCategoria[CATEGORIA_PDF_POR_SECCION[section.key]]">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="d-flex align-items-center gap-2">
+                        <i class="bi bi-file-earmark-pdf text-danger"></i>
+                        <span class="text-xs font-medium">{{ m.file.name }}</span>
+                        <span class="badge rounded-pill bg-tertiary badge-xs">Pendiente</span>
+                      </span>
+                      <button @click="quitarModeloPendiente(CATEGORIA_PDF_POR_SECCION[section.key], m)" class="btn btn-xs btn-outline-danger" title="Quitar" type="button">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+                    <input v-if="section.key === 'modelo_derivante'"
+                      class="form-control form-control-sm rounded-lg border-outline-variant mt-2" placeholder="Descripción de este archivo (opcional)"
+                      type="text" v-model="m.descripcion" />
                   </li>
                 </ul>
-                <p class="text-on-surface-variant text-xs mb-0 mt-1" v-if="modalMode === 'create' && modelosPendientes.length">
+                <p class="text-on-surface-variant text-xs mb-0 mt-1"
+                  v-if="modalMode === 'create' && modelosPendientesPorCategoria[CATEGORIA_PDF_POR_SECCION[section.key]].length">
                   Se van a subir al guardar el estudio.
                 </p>
               </div>
@@ -1454,7 +1553,13 @@
 
           <!-- Observaciones: editor de texto enriquecido simple, no desplegable -->
           <div class="mt-3">
-            <label class="form-label text-xs font-semibold text-on-surface mb-1">Observaciones</label>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label class="form-label text-xs font-semibold text-on-surface mb-0">Observaciones</label>
+              <button @click="abrirEditorAmpliado('observacion', 'Observaciones')"
+                class="btn btn-xs btn-link text-primary p-0 text-decoration-none" type="button">
+                <i class="bi bi-arrows-angle-expand me-1"></i>Ampliar
+              </button>
+            </div>
             <rich-editor placeholder="Escribí acá..." v-model="formData.observacion"></rich-editor>
           </div>
 
@@ -1488,7 +1593,7 @@
                   <label class="form-label text-xs font-semibold text-on-surface mb-1">{{ col.label }}</label>
                   <input :required="col.required" :type="col.type"
                     class="form-control form-control-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
-                    v-if="col.type === 'text' || col.type === 'number' || col.type === 'date'"
+                    v-if="col.type === 'text' || col.type === 'number' || col.type === 'date' || col.type === 'password'"
                     v-model="formData[col.field]" />
                   <textarea
                     class="form-control form-control-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
@@ -1530,42 +1635,118 @@
       </div>
     </div>
 
+    <!-- Modal "Ver ampliado": el mismo campo de texto enriquecido del formulario,
+         en grande, para escribir más cómodo. Edita formData[richModalField] en
+         vivo (no hay draft/cancelar: cerrar el modal no descarta nada). -->
+    <div aria-hidden="true" class="modal fade" id="richEditorModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+        <div class="modal-content border-0 shadow-lg rounded-xl">
+          <div class="modal-header bg-surface-container-low border-b border-outline-variant rounded-t-xl">
+            <h5 class="modal-title font-bold text-primary text-base">{{ richModalLabel }}</h5>
+            <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+          </div>
+          <div class="modal-body p-4">
+            <rich-editor v-if="richModalField" large placeholder="Escribí acá..." v-model="formData[richModalField]"></rich-editor>
+          </div>
+          <div class="modal-footer border-t border-outline-variant">
+            <button class="btn btn-sm btn-primary bg-primary border-primary shadow-sm rounded-lg px-3"
+              data-bs-dismiss="modal" type="button">Listo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Panel lateral: Indicaciones al Paciente / Modelo de Informe del Colega -->
     <div class="side-panel-backdrop" @click="closeSidePanel" v-if="sidePanel.open"></div>
     <transition name="side-panel">
       <aside class="side-panel" v-if="sidePanel.open">
         <div class="side-panel-header">
           <h5 class="mb-0 text-primary font-bold text-base">
-            {{ sidePanel.kind === 'paciente' ? 'Indicaciones al Paciente' : 'Modelo de Informe del Colega' }}
+            {{ sidePanel.kind === 'preanalitico' ? 'Preanalítico' : sidePanel.kind === 'paciente' ? 'Indicaciones al Paciente' : sidePanel.kind === 'muestras' ? 'Muestras' : 'Modelo de Informe del Colega' }}
           </h5>
           <button @click="closeSidePanel" class="btn-close" type="button"></button>
         </div>
         <div class="side-panel-body">
-          <template v-if="sidePanel.kind === 'paciente'">
-            <a v-if="sidePanel.item.indicaciones_pacientes && sidePanel.item.indicaciones_pacientes.startsWith('http')"
-              :href="sidePanel.item.indicaciones_pacientes" target="_blank" rel="noopener"
-              class="btn btn-sm btn-primary bg-primary border-primary">
-              <i class="bi bi-box-arrow-up-right me-1"></i>Abrir enlace
-            </a>
-            <div class="rich-display" v-else v-html="sidePanel.item.indicaciones_pacientes"></div>
-          </template>
+          <div class="text-center py-4" v-if="sidePanel.loadingModelos">
+            <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
+          </div>
           <template v-else>
-            <div class="text-center py-4" v-if="sidePanel.loadingModelos">
-              <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
-            </div>
-            <template v-else>
-              <p class="text-on-surface-variant text-xs" v-if="!sidePanel.modelos.length">Sin PDFs cargados.</p>
-              <ul class="list-unstyled mb-4" v-else>
-                <li :key="m.id" class="mb-2" v-for="m in sidePanel.modelos">
-                  <button @click="abrirModelo(m)" class="d-flex align-items-center gap-2 text-decoration-none btn btn-link p-0 border-0" type="button">
-                    <i class="bi bi-file-earmark-pdf text-danger"></i>
-                    <span class="text-sm font-medium">{{ m.nombre_archivo }}</span>
-                  </button>
-                </li>
-              </ul>
-              <h6 class="text-xs font-bold text-britlab-gray" style="letter-spacing: .05em;">INDICACIONES AL COLEGA</h6>
-              <div class="rich-display" v-if="sidePanel.item.indicaciones_colega" v-html="sidePanel.item.indicaciones_colega"></div>
-              <p class="text-on-surface-variant text-xs" v-else>Sin indicaciones adicionales.</p>
+            <!-- Preanalítico: descripción + PDFs -->
+            <template v-if="sidePanel.kind === 'preanalitico'">
+              <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">DESCRIPCIÓN</h6>
+              <div class="rich-display mb-4" v-if="sidePanel.item.preanalitico_descripcion" v-html="sidePanel.item.preanalitico_descripcion"></div>
+              <p class="text-on-surface-variant text-xs mb-4" v-else>Sin descripción cargada.</p>
+            </template>
+
+            <!-- Indicaciones al Paciente: descripción (o link) + PDFs -->
+            <template v-if="sidePanel.kind === 'paciente'">
+              <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">DESCRIPCIÓN</h6>
+              <a v-if="sidePanel.item.indicaciones_pacientes && sidePanel.item.indicaciones_pacientes.startsWith('http')"
+                :href="sidePanel.item.indicaciones_pacientes" target="_blank" rel="noopener"
+                class="btn btn-sm btn-primary bg-primary border-primary mb-4">
+                <i class="bi bi-box-arrow-up-right me-1"></i>Abrir enlace
+              </a>
+              <div class="rich-display mb-4" v-else-if="sidePanel.item.indicaciones_pacientes" v-html="sidePanel.item.indicaciones_pacientes"></div>
+              <p class="text-on-surface-variant text-xs mb-4" v-else>Sin descripción cargada.</p>
+            </template>
+
+            <!-- Modelo Colega: Indicaciones al Profesional/Derivante + Observaciones de Modelo Derivante + PDFs (con descripción propia) -->
+            <template v-if="sidePanel.kind === 'colega'">
+              <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">INDICACIONES AL PROFESIONAL / DERIVANTE</h6>
+              <div class="rich-display mb-4" v-if="sidePanel.item.indicaciones_colega" v-html="sidePanel.item.indicaciones_colega"></div>
+              <p class="text-on-surface-variant text-xs mb-4" v-else>Sin indicaciones cargadas.</p>
+
+              <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">OBSERVACIONES DEL MODELO DERIVANTE</h6>
+              <div class="rich-display mb-4" v-if="sidePanel.item.modelo_derivante_observaciones" v-html="sidePanel.item.modelo_derivante_observaciones"></div>
+              <p class="text-on-surface-variant text-xs mb-4" v-else>Sin observaciones cargadas.</p>
+            </template>
+
+            <!-- Muestras: todas, en orden, cada una con sus alternativas -->
+            <template v-if="sidePanel.kind === 'muestras'">
+              <p class="text-britlab-gray font-medium text-xs" v-if="!sidePanel.muestras.length">Sin muestras</p>
+              <div :key="m.id" class="border border-outline-variant rounded-lg p-2 mb-2" v-else v-for="(m, idx) in sidePanel.muestras">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="font-bold text-xs">Muestra {{ idx + 1 }}: {{ m.tipo_muestra || '-' }}</span>
+                </div>
+                <dl class="mb-0 text-xs">
+                  <div class="d-flex justify-content-between py-1" v-if="m.volumen"><dt class="text-on-surface-variant">Volumen</dt><dd class="mb-0">{{ m.volumen }} {{ m.unidad_medida || '' }}</dd></div>
+                  <div class="d-flex justify-content-between py-1" v-if="m.aditivo"><dt class="text-on-surface-variant">Aditivo</dt><dd class="mb-0">{{ m.aditivo }}</dd></div>
+                  <div class="d-flex justify-content-between py-1" v-if="m.recipiente"><dt class="text-on-surface-variant">Recipiente</dt><dd class="mb-0">{{ m.recipiente }}</dd></div>
+                  <div class="d-flex justify-content-between py-1" v-if="m.conservacion"><dt class="text-on-surface-variant">Conservación</dt><dd class="mb-0">{{ m.conservacion }}</dd></div>
+                  <div class="d-flex justify-content-between py-1" v-if="m.modalidad_recoleccion"><dt class="text-on-surface-variant">Modalidad</dt><dd class="mb-0">{{ m.modalidad_recoleccion }}</dd></div>
+                  <div class="d-flex justify-content-between py-1" v-if="m.tecnica_recoleccion"><dt class="text-on-surface-variant">Técnica</dt><dd class="mb-0">{{ m.tecnica_recoleccion }}</dd></div>
+                  <div class="d-flex justify-content-between py-1" v-if="m.condicion_especial"><dt class="text-on-surface-variant">Condición</dt><dd class="mb-0">{{ m.condicion_especial }}</dd></div>
+                  <div class="d-flex justify-content-between py-1" v-if="m.prioridad_envio"><dt class="text-on-surface-variant">Prioridad</dt><dd class="mb-0">{{ m.prioridad_envio }}</dd></div>
+                </dl>
+                <div :key="a.id" class="border-top border-outline-variant mt-2 pt-2 ps-2" v-for="(a, aidx) in (m.alternativas || [])">
+                  <span class="badge rounded-pill badge-xs bg-tertiary mb-1">Alternativa {{ aidx + 1 }}: {{ a.tipo_muestra || '-' }}</span>
+                  <dl class="mb-0 text-xs">
+                    <div class="d-flex justify-content-between py-1" v-if="a.volumen"><dt class="text-on-surface-variant">Volumen</dt><dd class="mb-0">{{ a.volumen }} {{ a.unidad_medida || '' }}</dd></div>
+                    <div class="d-flex justify-content-between py-1" v-if="a.aditivo"><dt class="text-on-surface-variant">Aditivo</dt><dd class="mb-0">{{ a.aditivo }}</dd></div>
+                    <div class="d-flex justify-content-between py-1" v-if="a.recipiente"><dt class="text-on-surface-variant">Recipiente</dt><dd class="mb-0">{{ a.recipiente }}</dd></div>
+                    <div class="d-flex justify-content-between py-1" v-if="a.conservacion"><dt class="text-on-surface-variant">Conservación</dt><dd class="mb-0">{{ a.conservacion }}</dd></div>
+                    <div class="d-flex justify-content-between py-1" v-if="a.modalidad_recoleccion"><dt class="text-on-surface-variant">Modalidad</dt><dd class="mb-0">{{ a.modalidad_recoleccion }}</dd></div>
+                    <div class="d-flex justify-content-between py-1" v-if="a.tecnica_recoleccion"><dt class="text-on-surface-variant">Técnica</dt><dd class="mb-0">{{ a.tecnica_recoleccion }}</dd></div>
+                    <div class="d-flex justify-content-between py-1" v-if="a.condicion_especial"><dt class="text-on-surface-variant">Condición</dt><dd class="mb-0">{{ a.condicion_especial }}</dd></div>
+                    <div class="d-flex justify-content-between py-1" v-if="a.prioridad_envio"><dt class="text-on-surface-variant">Prioridad</dt><dd class="mb-0">{{ a.prioridad_envio }}</dd></div>
+                  </dl>
+                </div>
+              </div>
+            </template>
+
+            <!-- PDFs de la categoría abierta (todas las pantallas de documentación comparten este listado) -->
+            <template v-if="sidePanel.kind !== 'muestras'">
+            <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">DOCUMENTACIÓN (PDF)</h6>
+            <p class="text-on-surface-variant text-xs" v-if="!sidePanel.modelos.length">Sin PDFs cargados.</p>
+            <ul class="list-unstyled mb-0" v-else>
+              <li :key="m.id" class="mb-2" v-for="m in sidePanel.modelos">
+                <button @click="abrirModelo(m)" class="d-flex align-items-center gap-2 text-decoration-none btn btn-link p-0 border-0" type="button">
+                  <i class="bi bi-file-earmark-pdf text-danger"></i>
+                  <span class="text-sm font-medium">{{ m.nombre_archivo }}</span>
+                </button>
+                <p class="text-on-surface-variant text-xs mb-0 ms-4" v-if="m.descripcion">{{ m.descripcion }}</p>
+              </li>
+            </ul>
             </template>
           </template>
         </div>
