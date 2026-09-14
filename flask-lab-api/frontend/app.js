@@ -108,7 +108,7 @@ const INDICACIONES_COLUMNAS = [
   { field: 'muestra', label: 'Muestra' },
   { field: 'dias_demora', label: 'Dem.' },
   { field: 'indicaciones_pacientes', label: 'Ind. Paciente' },
-  { field: 'indicaciones_colega', label: 'Modelo Colega' },
+  { field: 'indicaciones_colega', label: 'Modelo Laboratorio Procesante' },
   { field: 'estado', label: 'Estado' },
   { field: 'paridad_datatech_hexalis', label: 'Paridad' },
   { field: 'preanalitico', label: 'Pre-analítico' },
@@ -189,6 +189,9 @@ const app = createApp({
         if (primeraPermitida) {
           currentView.value = 'crud';
           currentEntityKey.value = primeraPermitida;
+        } else {
+          const primeraVistaSuelta = ['obras_sociales', 'web_britlab', 'faq'].find(pantallaPermitida);
+          if (primeraVistaSuelta) currentView.value = primeraVistaSuelta;
         }
       }
       await fetchRefData();
@@ -484,12 +487,12 @@ const app = createApp({
         ]
       },
       colegas: {
-        label: 'Colegas',
-        singular: 'Colega',
+        label: 'Laboratorios Procesantes',
+        singular: 'Laboratorio Procesante',
         endpoint: 'colegas',
         icon: 'bi-building',
         searchable: true,
-        searchPlaceholder: 'Buscar por nombre de colega...',
+        searchPlaceholder: 'Buscar por nombre de laboratorio procesante...',
         hasEnableToggle: true,
         columns: [
           { field: 'descripcion', label: 'Descripción' },
@@ -693,7 +696,7 @@ const app = createApp({
           { field: 'id', label: 'ID' },
           { field: 'nemonico_datatech', label: 'Nemónico' },
           { field: 'id_estudio', label: 'Estudio', type: 'fk', ref: 'estudios' },
-          { field: 'colega_id', label: 'Colega', type: 'fk', ref: 'colegas' },
+          { field: 'colega_id', label: 'Laboratorio Procesante', type: 'fk', ref: 'colegas' },
           { field: 'estado', label: 'Estado' },
           { field: 'paridad_datatech_hexalis', label: 'Paridad' },
           { field: 'revisor', label: 'Revisor' }
@@ -743,6 +746,9 @@ const app = createApp({
       { key: 'estudios', label: 'Estudios' },
       ...TOP_NAV_ENTITY_KEYS.map(k => ({ key: k, label: entities[k].label })),
       ...MUESTRAS_CATALOGO_KEYS.map(k => ({ key: k, label: entities[k].label })),
+      { key: 'obras_sociales', label: 'Obras Sociales' },
+      { key: 'web_britlab', label: 'Web BritLab' },
+      { key: 'faq', label: 'FAQ' },
     ];
 
     // --- Panel de administración de usuarios ---
@@ -882,6 +888,19 @@ const app = createApp({
     const modalEntity = computed(() => entities[modalEntityKey.value]);
     const isAllEstudiosMode = computed(() => currentView.value === 'indicaciones' && selectedColegaId.value === ALL_ESTUDIOS);
     const muestrasDropdownActive = computed(() => currentView.value === 'crud' && MUESTRAS_CATALOGO_KEYS.includes(currentEntityKey.value));
+    // El nav "Estudios" agrupa Estudios + Laboratorios Procesantes + Métodos +
+    // Preanalíticos + Muestras (con su propio sub-menú): queda "activo" si la
+    // vista actual es cualquiera de esas.
+    const estudiosDropdownActive = computed(() =>
+      currentView.value === 'indicaciones' ||
+      (currentView.value === 'crud' && (TOP_NAV_ENTITY_KEYS.includes(currentEntityKey.value) || MUESTRAS_CATALOGO_KEYS.includes(currentEntityKey.value)))
+    );
+    // "Obras Sociales" / "Web BritLab" / "FAQ": pantallas propias, todavía sin
+    // contenido funcional (placeholders explícitos, no simulan datos).
+    const switchToPlaceholder = (view) => {
+      if (!pantallaPermitida(view)) return;
+      currentView.value = view;
+    };
 
     // Un estudio está "en conflicto" cuando figura como 'listo' (activo) en
     // más de un colega a la vez: normalmente debería estar activo en uno solo.
@@ -1003,16 +1022,16 @@ const app = createApp({
           const res = await axios.post(`${API_BASE}/colegas/${item.id}/deshabilitar`, { marcar_pendiente: marcarPendiente });
           showAlert(
             marcarPendiente
-              ? `Colega deshabilitado. ${res.data.estudios_marcados_pendiente} estudio(s) pasaron a "pendiente".`
-              : 'Colega deshabilitado correctamente.'
+              ? `Laboratorio procesante deshabilitado. ${res.data.estudios_marcados_pendiente} estudio(s) pasaron a "pendiente".`
+              : 'Laboratorio procesante deshabilitado correctamente.'
           );
         } else {
           await axios.post(`${API_BASE}/colegas/${item.id}/habilitar`);
-          showAlert('Colega habilitado correctamente.');
+          showAlert('Laboratorio procesante habilitado correctamente.');
         }
         fetchItems(pagination.value.page);
       } catch (err) {
-        showAlert(apiErrorMessage(err, 'No se pudo cambiar el estado del colega'), 'danger');
+        showAlert(apiErrorMessage(err, 'No se pudo cambiar el estado del laboratorio procesante'), 'danger');
       }
     };
 
@@ -1022,7 +1041,7 @@ const app = createApp({
     // se avisa en vez de mostrar "vacío" como si no hubiera nada cargado.
     const verCredencialesColega = (item) => {
       if (item.portal_usuario == null && item.portal_password == null && (item.portal_usuario_cargado || item.portal_password_cargado)) {
-        showAlert('Este colega tiene credenciales de portal cargadas, pero no tenés permiso para verlas.', 'danger');
+        showAlert('Este laboratorio procesante tiene credenciales de portal cargadas, pero no tenés permiso para verlas.', 'danger');
         return;
       }
       window.alert(`Credenciales del portal de "${item.descripcion}":\n\nUsuario: ${item.portal_usuario || '(sin usuario)'}\nContraseña: ${item.portal_password || '(sin contraseña)'}`);
@@ -1146,6 +1165,12 @@ const app = createApp({
       } finally {
         sidePanel.value.loadingModelos = false;
       }
+    };
+
+    // Observaciones generales del registro: no tiene PDFs propios, así que no
+    // hace falta pedir nada, sólo mostrar lo que ya está en memoria.
+    const openObservacionPanel = (item) => {
+      sidePanel.value = { open: true, kind: 'observacion', item, modelos: [], muestras: [], loadingModelos: false };
     };
 
     const closeSidePanel = () => { sidePanel.value.open = false; };
@@ -1720,6 +1745,7 @@ const app = createApp({
       topNavEntitiesVisibles,
       muestrasCatalogoEntitiesVisibles,
       muestrasDropdownActive,
+      estudiosDropdownActive,
       currentEntityKey,
       currentEntity,
       modalEntity,
@@ -1760,6 +1786,7 @@ const app = createApp({
       ESTADOS_PARIDAD,
       switchCrudEntity,
       switchToIndicaciones,
+      switchToPlaceholder,
       onColegaSelectorChange,
       editEstudioColega,
       openNewEstudioForColega,
@@ -1823,6 +1850,7 @@ const app = createApp({
       openPreanaliticoPanel,
       openModeloColegaPanel,
       openMuestrasPanel,
+      openObservacionPanel,
       closeSidePanel,
       textoPlano
     };

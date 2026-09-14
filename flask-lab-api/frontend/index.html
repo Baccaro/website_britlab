@@ -171,6 +171,26 @@
       background-color: #f0f3ff;
     }
 
+    /* La fila de detalle desplegable de "Todos los Estudios" vive dentro de
+       .table-auto-layout, cuyo <td> fuerza white-space:nowrap (para truncar
+       columnas normales con "..."). Ese nowrap se hereda a todo lo de adentro
+       (las tarjetas del detalle), haciendo que el texto se desborde del marco
+       en vez de ajustarse: se lo reinicia acá explícitamente. */
+    .fila-detalle-expandida {
+      white-space: normal;
+    }
+
+    /* Vista previa acotada (2 líneas, con "…") de un texto largo dentro de
+       las tarjetas del detalle: para ver el resto hay que abrir el panel
+       lateral con el botón "Ver". */
+    .texto-recortado-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
     /* Inputs súper compactos para edición en línea */
     .input-compact {
       font-size: 0.72rem;
@@ -256,6 +276,23 @@
     }
 
     .hover-dropdown:hover > .dropdown-menu {
+      display: block;
+    }
+
+    /* Sub-menú anidado ("Muestras" dentro del dropdown "Estudios"): mismo
+       truco de hover que arriba, pero se abre hacia la derecha (flyout) en
+       vez de hacia abajo, porque ya está dentro de otro dropdown abierto. */
+    .dropdown-submenu {
+      position: relative;
+    }
+
+    .dropdown-submenu > .dropdown-menu {
+      top: -0.5rem;
+      left: 100%;
+      margin-left: 2px;
+    }
+
+    .dropdown-submenu:hover > .dropdown-menu {
       display: block;
     }
 
@@ -612,29 +649,53 @@
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8xjJ6dJRSLRqt7KpYtEpbz7Gh2PWgyJUdtyTzFH-v9uJDhLskF5kdd21XrWw0IH6pe_CyvdbVHVIAwOYaYfLJIXcw9N_OLSidR66D8ARKIULP_I68ylkIQO5vjPAVIJBIy_7aMTj_u6_-njf2z5pqj6ZW9-t-hpkWer-ohlfI_WjkoGXsfBE9zNJizKcgb2Czsn6Kr4aWF1_DGKMzcbWVXgYQrBnlWgaE76HTgG9FXxyFbz63URtfyjA2Oz-puz5kkw" />
           <div class="h-8 w-px bg-outline-variant hidden md:block"></div>
           <ul class="nav gap-1 mb-0 flex-wrap">
-            <li class="nav-item" v-if="pantallaPermitida('estudios')">
-              <button :class="['nav-btn', currentView === 'indicaciones' ? 'active' : '']" @click="switchToIndicaciones" type="button">
+            <!-- Estudios: agrupa Estudios, Laboratorios Procesantes, Métodos,
+                 Preanalíticos y Muestras (ésta con su propio sub-menú). -->
+            <li class="nav-item dropdown hover-dropdown">
+              <button :class="['nav-btn dropdown-toggle', estudiosDropdownActive ? 'active' : '']" type="button">
                 <i class="bi bi-file-earmark-medical me-1"></i>Estudios
               </button>
-            </li>
-            <li class="nav-item" :key="key" v-for="[key, entity] in topNavEntitiesVisibles">
-              <button :class="['nav-btn', (currentView === 'crud' && currentEntityKey === key) ? 'active' : '']"
-                @click="switchCrudEntity(key)" type="button">
-                <i :class="['bi', entity.icon, 'me-1']"></i>{{ entity.label }}
-              </button>
-            </li>
-            <li class="nav-item dropdown hover-dropdown" v-if="muestrasCatalogoEntitiesVisibles.length">
-              <button :class="['nav-btn dropdown-toggle', muestrasDropdownActive ? 'active' : '']" type="button">
-                <i class="bi bi-droplet me-1"></i>Muestras
-              </button>
               <ul class="dropdown-menu shadow-sm">
-                <li :key="key" v-for="[key, entity] in muestrasCatalogoEntitiesVisibles">
+                <li v-if="pantallaPermitida('estudios')">
+                  <button class="dropdown-item" :class="currentView === 'indicaciones' ? 'active' : ''" @click="switchToIndicaciones" type="button">
+                    <i class="bi bi-file-earmark-medical me-2"></i>Estudios
+                  </button>
+                </li>
+                <li :key="key" v-for="[key, entity] in topNavEntitiesVisibles">
                   <button class="dropdown-item" :class="(currentView === 'crud' && currentEntityKey === key) ? 'active' : ''"
                     @click="switchCrudEntity(key)" type="button">
                     <i :class="['bi', entity.icon, 'me-2']"></i>{{ entity.label }}
                   </button>
                 </li>
+                <li class="dropdown-submenu hover-dropdown" v-if="muestrasCatalogoEntitiesVisibles.length">
+                  <button class="dropdown-item dropdown-toggle" :class="muestrasDropdownActive ? 'active' : ''" type="button">
+                    <i class="bi bi-droplet me-2"></i>Muestras
+                  </button>
+                  <ul class="dropdown-menu shadow-sm">
+                    <li :key="key" v-for="[key, entity] in muestrasCatalogoEntitiesVisibles">
+                      <button class="dropdown-item" :class="(currentView === 'crud' && currentEntityKey === key) ? 'active' : ''"
+                        @click="switchCrudEntity(key)" type="button">
+                        <i :class="['bi', entity.icon, 'me-2']"></i>{{ entity.label }}
+                      </button>
+                    </li>
+                  </ul>
+                </li>
               </ul>
+            </li>
+            <li class="nav-item" v-if="pantallaPermitida('obras_sociales')">
+              <button :class="['nav-btn', currentView === 'obras_sociales' ? 'active' : '']" @click="switchToPlaceholder('obras_sociales')" type="button">
+                <i class="bi bi-shield-plus me-1"></i>Obras Sociales
+              </button>
+            </li>
+            <li class="nav-item" v-if="pantallaPermitida('web_britlab')">
+              <button :class="['nav-btn', currentView === 'web_britlab' ? 'active' : '']" @click="switchToPlaceholder('web_britlab')" type="button">
+                <i class="bi bi-globe me-1"></i>Web BritLab
+              </button>
+            </li>
+            <li class="nav-item" v-if="pantallaPermitida('faq')">
+              <button :class="['nav-btn', currentView === 'faq' ? 'active' : '']" @click="switchToPlaceholder('faq')" type="button">
+                <i class="bi bi-question-circle me-1"></i>FAQ
+              </button>
             </li>
             <li class="nav-item" v-if="isAdmin">
               <button :class="['nav-btn', currentView === 'admin_usuarios' ? 'active' : '']" @click="switchToAdminUsuarios" type="button">
@@ -682,7 +743,7 @@
               <i class="bi bi-plus-lg me-1"></i> Nuevo Estudio
             </button>
           </div>
-          <p class="text-on-surface-variant text-xs mb-4">Selecciona un colega para consultar y editar el
+          <p class="text-on-surface-variant text-xs mb-4">Selecciona un laboratorio procesante para consultar y editar el
             catálogo de análisis autorizados.</p>
           <div class="row g-3">
             <div class="col-md-6">
@@ -690,9 +751,9 @@
               <select @change="onColegaSelectorChange"
                 class="form-select form-select-sm rounded-lg border-outline-variant focus:border-primary focus:ring-primary shadow-sm"
                 v-model="selectedColegaId">
-                <option :value="null">-- Seleccione un Colega --</option>
+                <option :value="null">-- Seleccione un Laboratorio Procesante --</option>
                 <option :value="ALL_ESTUDIOS">Todos los Estudios</option>
-                <optgroup label="Colegas">
+                <optgroup label="Laboratorios Procesantes">
                   <option :key="d.id" :value="d.id" v-for="d in colegasList">
                     {{ d.descripcion }}
                   </option>
@@ -738,7 +799,7 @@
           <div class="d-flex justify-content-between align-items-start gap-2">
             <div>
               <i class="bi bi-exclamation-triangle-fill me-2"></i>
-              <strong>{{ gruposConflicto.length }}</strong> estudio(s) figuran "listo" (activo) en más de un colega al mismo tiempo
+              <strong>{{ gruposConflicto.length }}</strong> estudio(s) figuran "listo" (activo) en más de un laboratorio procesante al mismo tiempo
             </div>
             <button @click="toggleSoloConflictos" class="btn btn-xs btn-outline-dark flex-shrink-0" type="button">
               {{ soloConflictos ? 'Ver todos los estudios' : 'Ver estos estudios' }}
@@ -775,7 +836,7 @@
                 <tr v-if="loadingIndicaciones">
                   <td class="text-center py-5" :colspan="visibleColumnasList.length + 2">
                     <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
-                    <p class="mt-2 text-on-surface-variant font-medium text-xs mb-0">Cargando estudios del colega...
+                    <p class="mt-2 text-on-surface-variant font-medium text-xs mb-0">Cargando estudios del laboratorio procesante...
                     </p>
                   </td>
                 </tr>
@@ -783,7 +844,7 @@
                 <tr v-else-if="!selectedColegaId">
                   <td class="text-center text-on-surface-variant py-5" :colspan="visibleColumnasList.length + 2">
                     <i class="bi bi-arrow-up-circle text-3xl d-block mb-2 text-primary-container"></i>
-                    <span class="font-medium text-xs">Selecciona un colega del menú desplegable superior para cargar
+                    <span class="font-medium text-xs">Selecciona un laboratorio procesante del menú desplegable superior para cargar
                       sus estudios.</span>
                   </td>
                 </tr>
@@ -791,7 +852,7 @@
                 <tr v-else-if="filteredEstudios.length === 0">
                   <td class="text-center text-on-surface-variant py-5" :colspan="visibleColumnasList.length + 2">
                     <i class="bi bi-exclamation-triangle text-3xl d-block mb-2 text-warning"></i>
-                    <span class="font-medium text-xs">No se encontraron estudios para el colega seleccionado.</span>
+                    <span class="font-medium text-xs">No se encontraron estudios para el laboratorio procesante seleccionado.</span>
                   </td>
                 </tr>
                 <!-- Lista de Estudios (fila resumen + fila desplegable de detalle), paginada -->
@@ -832,7 +893,7 @@
                       <!-- Modelo Colega: ojo para ver observaciones + PDFs del derivante (y las indicaciones al profesional), o "No disponible" en gris -->
                       <span v-else-if="col.field === 'indicaciones_colega'">
                         <button v-if="item.pdfs_colega_count > 0 || item.indicaciones_colega || item.modelo_derivante_observaciones" @click.stop="openModeloColegaPanel(item)"
-                          class="btn btn-xs btn-light border" title="Ver modelo de informe del colega" type="button">
+                          class="btn btn-xs btn-light border" title="Ver modelo de informe del laboratorio procesante" type="button">
                           <i class="bi bi-eye"></i><span class="badge rounded-pill bg-tertiary ms-1" v-if="item.pdfs_colega_count">{{ item.pdfs_colega_count }}</span>
                         </button>
                         <span class="text-britlab-gray font-medium" v-else>No disponible</span>
@@ -854,14 +915,14 @@
 
                   <!-- Fila de detalle desplegable -->
                   <tr v-if="expandedRows.has(item.id)">
-                    <td :colspan="visibleColumnasList.length + 2" class="bg-surface-container-low p-0">
+                    <td :colspan="visibleColumnasList.length + 2" class="bg-surface-container-low p-0 fila-detalle-expandida">
                       <div class="row g-3 p-3">
                         <!-- Información General -->
                         <div class="col-md-4">
                           <div class="bg-white border border-outline-variant rounded-lg p-3 h-100">
                             <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">INFORMACIÓN GENERAL</h6>
                             <dl class="mb-0 text-xs">
-                              <div class="d-flex justify-content-between py-1" v-if="isAllEstudiosMode"><dt class="text-on-surface-variant">Colega</dt><dd class="mb-0 font-medium">{{ item.colega_descripcion || '-' }}</dd></div>
+                              <div class="d-flex justify-content-between py-1" v-if="isAllEstudiosMode"><dt class="text-on-surface-variant">Laboratorio Procesante</dt><dd class="mb-0 font-medium">{{ item.colega_descripcion || '-' }}</dd></div>
                               <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Nemónico</dt><dd class="mb-0 font-medium">{{ item.nemonico_datatech || '-' }}</dd></div>
                               <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Cód. Hexalis</dt><dd class="mb-0 font-medium">{{ item.codigo_hexalis || '-' }}</dd></div>
                               <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Cód. Laboratorio</dt><dd class="mb-0 font-medium">{{ item.codigo_laboratorio || '-' }}</dd></div>
@@ -949,7 +1010,7 @@
                                   class="btn btn-xs btn-link text-primary p-0 text-decoration-none" type="button">Ver &rarr;</button>
                                 <span class="text-xs text-britlab-gray" v-else>No disponible</span>
                               </div>
-                              <p class="text-xs text-on-surface-variant mb-0 mt-1" v-if="item.preanalitico_descripcion">{{ textoPlano(item.preanalitico_descripcion) }}</p>
+                              <p class="text-xs text-on-surface-variant mb-0 mt-1 texto-recortado-2" v-if="item.preanalitico_descripcion">{{ textoPlano(item.preanalitico_descripcion, 200) }}</p>
                             </div>
 
                             <div class="py-2 border-bottom border-outline-variant">
@@ -959,25 +1020,29 @@
                                   class="btn btn-xs btn-link text-primary p-0 text-decoration-none" type="button">Ver &rarr;</button>
                                 <span class="text-xs text-britlab-gray" v-else>No disponible</span>
                               </div>
-                              <p class="text-xs text-on-surface-variant mb-0 mt-1" v-if="item.indicaciones_pacientes">{{ textoPlano(item.indicaciones_pacientes) }}</p>
+                              <p class="text-xs text-on-surface-variant mb-0 mt-1 texto-recortado-2" v-if="item.indicaciones_pacientes">{{ textoPlano(item.indicaciones_pacientes, 200) }}</p>
                             </div>
 
-                            <div class="py-2">
+                            <div class="py-2 border-bottom border-outline-variant">
                               <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-xs font-bold text-on-surface">Modelo Colega</span>
+                                <span class="text-xs font-bold text-on-surface">Modelo Laboratorio Procesante</span>
                                 <button v-if="item.indicaciones_colega || item.modelo_derivante_observaciones || item.pdfs_colega_count" @click="openModeloColegaPanel(item)"
                                   class="btn btn-xs btn-link text-primary p-0 text-decoration-none" type="button">Ver &rarr;</button>
                                 <span class="text-xs text-britlab-gray" v-else>No disponible</span>
                               </div>
-                              <p class="text-xs text-on-surface-variant mb-0 mt-1" v-if="item.modelo_derivante_observaciones || item.indicaciones_colega">
-                                {{ textoPlano(item.modelo_derivante_observaciones || item.indicaciones_colega) }}
+                              <p class="text-xs text-on-surface-variant mb-0 mt-1 texto-recortado-2" v-if="item.modelo_derivante_observaciones || item.indicaciones_colega">
+                                {{ textoPlano(item.modelo_derivante_observaciones || item.indicaciones_colega, 200) }}
                               </p>
                             </div>
 
-                            <div class="mt-3 pt-2 border-top border-outline-variant">
-                              <p class="text-xs font-bold text-on-surface mb-1">Observaciones</p>
-                              <div class="text-xs rich-display" v-if="item.observacion" v-html="item.observacion"></div>
-                              <p class="text-xs text-on-surface-variant mb-0" v-else>-</p>
+                            <div class="py-2">
+                              <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-xs font-bold text-on-surface">Observaciones</span>
+                                <button v-if="item.observacion" @click="openObservacionPanel(item)"
+                                  class="btn btn-xs btn-link text-primary p-0 text-decoration-none" type="button">Ver &rarr;</button>
+                                <span class="text-xs text-britlab-gray" v-else>No disponible</span>
+                              </div>
+                              <p class="text-xs text-on-surface-variant mb-0 mt-1 texto-recortado-2" v-if="item.observacion">{{ textoPlano(item.observacion, 200) }}</p>
                             </div>
                           </div>
                         </div>
@@ -1248,7 +1313,7 @@
                           </p>
                           <div class="form-check">
                             <input :id="'cred_' + u.id" class="form-check-input" type="checkbox" v-model="permisosEditForm.ver_credenciales_colegas" />
-                            <label :for="'cred_' + u.id" class="form-check-label text-xs">Ver usuario/contraseña del portal de los Colegas</label>
+                            <label :for="'cred_' + u.id" class="form-check-label text-xs">Ver usuario/contraseña del portal de los Laboratorios Procesantes</label>
                           </div>
                         </div>
                       </div>
@@ -1270,6 +1335,22 @@
             <i class="bi bi-inbox text-4xl d-block mb-2 text-tertiary-fixed-dim"></i>
             <span class="font-medium text-sm">No hay usuarios cargados.</span>
           </div>
+        </div>
+      </div>
+
+      <!-- ========================================================= -->
+      <!-- VISTAS: Obras Sociales / Web BritLab / FAQ                  -->
+      <!-- Todavía sin contenido funcional: placeholders honestos, no  -->
+      <!-- simulan datos que no existen.                               -->
+      <!-- ========================================================= -->
+      <div v-if="currentView === 'obras_sociales' || currentView === 'web_britlab' || currentView === 'faq'">
+        <h4 class="mb-4 text-primary font-bold text-xl">
+          <i :class="['bi me-2', currentView === 'obras_sociales' ? 'bi-shield-plus' : currentView === 'web_britlab' ? 'bi-globe' : 'bi-question-circle']"></i>
+          {{ currentView === 'obras_sociales' ? 'Obras Sociales' : currentView === 'web_britlab' ? 'Web BritLab' : 'FAQ' }}
+        </h4>
+        <div class="bg-white rounded-xl shadow-sm border border-outline-variant p-5 text-center text-on-surface-variant">
+          <i class="bi bi-cone-striped text-4xl d-block mb-2 text-tertiary-fixed-dim"></i>
+          <span class="font-medium text-sm">Esta sección todavía no tiene contenido cargado.</span>
         </div>
       </div>
 
@@ -1662,7 +1743,7 @@
       <aside class="side-panel" v-if="sidePanel.open">
         <div class="side-panel-header">
           <h5 class="mb-0 text-primary font-bold text-base">
-            {{ sidePanel.kind === 'preanalitico' ? 'Preanalítico' : sidePanel.kind === 'paciente' ? 'Indicaciones al Paciente' : sidePanel.kind === 'muestras' ? 'Muestras' : 'Modelo de Informe del Colega' }}
+            {{ sidePanel.kind === 'preanalitico' ? 'Preanalítico' : sidePanel.kind === 'paciente' ? 'Indicaciones al Paciente' : sidePanel.kind === 'muestras' ? 'Muestras' : sidePanel.kind === 'observacion' ? 'Observaciones' : 'Modelo de Informe del Laboratorio Procesante' }}
           </h5>
           <button @click="closeSidePanel" class="btn-close" type="button"></button>
         </div>
@@ -1701,6 +1782,12 @@
               <p class="text-on-surface-variant text-xs mb-4" v-else>Sin observaciones cargadas.</p>
             </template>
 
+            <!-- Observaciones generales del registro (sin PDFs propios) -->
+            <template v-if="sidePanel.kind === 'observacion'">
+              <div class="rich-display mb-4" v-if="sidePanel.item.observacion" v-html="sidePanel.item.observacion"></div>
+              <p class="text-on-surface-variant text-xs mb-4" v-else>Sin observaciones cargadas.</p>
+            </template>
+
             <!-- Muestras: todas, en orden, cada una con sus alternativas -->
             <template v-if="sidePanel.kind === 'muestras'">
               <p class="text-britlab-gray font-medium text-xs" v-if="!sidePanel.muestras.length">Sin muestras</p>
@@ -1735,7 +1822,7 @@
             </template>
 
             <!-- PDFs de la categoría abierta (todas las pantallas de documentación comparten este listado) -->
-            <template v-if="sidePanel.kind !== 'muestras'">
+            <template v-if="sidePanel.kind !== 'muestras' && sidePanel.kind !== 'observacion'">
             <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">DOCUMENTACIÓN (PDF)</h6>
             <p class="text-on-surface-variant text-xs" v-if="!sidePanel.modelos.length">Sin PDFs cargados.</p>
             <ul class="list-unstyled mb-0" v-else>
