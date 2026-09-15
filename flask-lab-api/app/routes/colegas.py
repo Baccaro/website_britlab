@@ -3,7 +3,7 @@ from app.crud import make_crud_blueprint, _commit_or_400
 from app.database import db
 from app.models import Colega, EstudioColega
 from app.schemas import ColegaCreate, ColegaUpdate, ColegaOut
-from app.auth import admin_required
+from app.auth import modulo_escritura_required
 
 bp = make_crud_blueprint(
     'colegas', '/api/colegas', Colega,
@@ -16,7 +16,7 @@ bp = make_crud_blueprint(
 
 
 @bp.route('/<int:id>/deshabilitar', methods=['POST'])
-@admin_required
+@modulo_escritura_required('estudios')
 def deshabilitar(id):
     """Deshabilita un colega (no se borra: dejaría huérfanos sus estudios).
     Opcionalmente pasa a 'pendiente' todos sus registros Estudio x Colega."""
@@ -43,7 +43,7 @@ def deshabilitar(id):
 
 
 @bp.route('/<int:id>/habilitar', methods=['POST'])
-@admin_required
+@modulo_escritura_required('estudios')
 def habilitar(id):
     colega = Colega.query.get_or_404(id)
     colega.habilitado = True

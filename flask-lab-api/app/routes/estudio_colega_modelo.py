@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify, Response
 from app.crud import _commit_or_400
 from app.database import db
 from app.models import EstudioColegaModelo, EstudioColega
-from app.auth import token_required, admin_required
+from app.auth import modulo_lectura_required, modulo_escritura_required
 
 bp = Blueprint('estudio_colega_modelo', __name__, url_prefix='/api/estudio-colega-modelo')
 
@@ -23,7 +23,7 @@ def _serialize(m):
 
 
 @bp.route('/estudio-colega/<int:id_estudio_colega>', methods=['GET'])
-@token_required
+@modulo_lectura_required('estudios')
 def list_por_estudio_colega(id_estudio_colega):
     # ?categoria= filtra a un solo dropdown (preanalitico/paciente/colega);
     # sin filtro trae todo (usado antes de que existiera esta distinción).
@@ -36,7 +36,7 @@ def list_por_estudio_colega(id_estudio_colega):
 
 
 @bp.route('', methods=['POST'])
-@admin_required
+@modulo_escritura_required('estudios')
 def upload():
     id_estudio_colega = request.form.get('id_estudio_colega', type=int)
     archivo = request.files.get('archivo')
@@ -75,7 +75,7 @@ def upload():
 
 
 @bp.route('/<int:id>', methods=['PUT'])
-@admin_required
+@modulo_escritura_required('estudios')
 def update_descripcion(id):
     """Sólo permite editar la descripción de un archivo ya subido (nombre,
     contenido y categoría no se pueden cambiar: para eso hay que volver a
@@ -91,7 +91,7 @@ def update_descripcion(id):
 
 
 @bp.route('/<int:id>/descargar', methods=['GET'])
-@token_required
+@modulo_lectura_required('estudios')
 def descargar(id):
     m = EstudioColegaModelo.query.get_or_404(id)
     return Response(
@@ -102,7 +102,7 @@ def descargar(id):
 
 
 @bp.route('/<int:id>', methods=['DELETE'])
-@admin_required
+@modulo_escritura_required('estudios')
 def delete(id):
     m = EstudioColegaModelo.query.get_or_404(id)
     db.session.delete(m)

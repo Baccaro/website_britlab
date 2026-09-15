@@ -5,10 +5,11 @@
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>Gestión de Laboratorio Clinical API</title>
-  <!-- Google Fonts: Inter (con fallback a fuentes del sistema) -->
+  <!-- Google Fonts: Manrope (tipografía principal, sans-serif), con Inter y las
+       fuentes del sistema como respaldo -->
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap"
     rel="stylesheet" />
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -65,7 +66,7 @@
             "surface": "#f9f9ff",
             "on-tertiary-container": "#415062",
             "on-error-container": "#93000a",
-            "primary": "#006877",
+            "primary": "#3cbad6",
             "on-secondary-container": "#0e7144",
             "on-secondary-fixed-variant": "#00522f",
             "surface-bright": "#f9f9ff",
@@ -85,16 +86,55 @@
             "full": "9999px"
           },
           "fontFamily": {
-            "sans": ["Inter", "Segoe UI", "Roboto", "Arial", "sans-serif"]
+            "sans": ["Manrope", "Inter", "Segoe UI", "Roboto", "Arial", "sans-serif"]
           }
         },
       }
     }
   </script>
   <style>
+    /* Bootstrap define sus utilidades de color ("text-primary", "bg-primary",
+       "border-primary") con !important, así que ganan siempre por sobre el
+       "primary" de Tailwind (que no lleva !important) sin importar el orden:
+       cambiar sólo el token de Tailwind no alcanza. La solución real es pisar
+       la variable de Bootstrap, de la que esas utilidades leen el color. */
+    :root {
+      --bs-primary: #3cbad6;
+      --bs-primary-rgb: 60, 186, 214;
+    }
+
+    /* .btn-primary no lee de --bs-primary en tiempo real: Bootstrap compila
+       sus propias variables --bs-btn-* con el azul por defecto ya fijo en el
+       CSS. Hay que pisarlas acá directamente para que "Nuevo Estudio",
+       "Guardar", "Crear cuenta", etc. usen el color de marca. */
+    .btn-primary {
+      --bs-btn-bg: #3cbad6;
+      --bs-btn-border-color: #3cbad6;
+      --bs-btn-hover-bg: #2fa5c0;
+      --bs-btn-hover-border-color: #2a97b0;
+      --bs-btn-active-bg: #2895ad;
+      --bs-btn-active-border-color: #2895ad;
+      --bs-btn-disabled-bg: #3cbad6;
+      --bs-btn-disabled-border-color: #3cbad6;
+      --bs-btn-focus-shadow-rgb: 60, 186, 214;
+    }
+
+    /* Mismo caso para los botones "outline" (íconos de Editar, etc.). */
+    .btn-outline-primary {
+      --bs-btn-color: #3cbad6;
+      --bs-btn-border-color: #3cbad6;
+      --bs-btn-hover-bg: #3cbad6;
+      --bs-btn-hover-border-color: #3cbad6;
+      --bs-btn-active-bg: #2fa5c0;
+      --bs-btn-active-border-color: #2fa5c0;
+      --bs-btn-disabled-color: #3cbad6;
+      --bs-btn-disabled-border-color: #3cbad6;
+      --bs-btn-focus-shadow-rgb: 60, 186, 214;
+    }
+
     body {
       background-color: #f8fafc;
-      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: Manrope, Inter, "Segoe UI", Roboto, Arial, sans-serif;
     }
 
     /* El plugin "forms" de Tailwind le agrega su propio alto a <select>,
@@ -115,6 +155,23 @@
       overflow-x: hidden;
       /* Garantiza que NO haya desplazamiento lateral */
       width: 100%;
+      /* Ancho estable de referencia (no crece con la tabla de adentro) para
+         que la fila de detalle desplegable pueda anclarse a él: ver
+         .fila-detalle-contenido más abajo. */
+      container-type: inline-size;
+    }
+
+    /* Contenido de la fila de detalle desplegable (p.ej. al hacer click en un
+       estudio): si se suman columnas visibles, la tabla de auto-layout que la
+       contiene se ensancha y el <td colspan> crece con ella, corriendo este
+       contenido hacia la derecha. Ranclarlo (sticky) al borde izquierdo del
+       contenedor scrolleable y darle el ancho ESTABLE de .table-container-fixed
+       (no el de la tabla) lo deja fijo en la vista pase lo que pase con las columnas. */
+    .fila-detalle-contenido {
+      position: sticky;
+      left: 0;
+      width: 100cqw;
+      box-sizing: border-box;
     }
 
     /* Forzar distribución fija de la tabla */
@@ -230,7 +287,7 @@
     }
 
     .section-toggle.section-toggle-open {
-      border-left-color: #006877;
+      border-left-color: #3cbad6;
     }
 
     .section-content {
@@ -257,9 +314,21 @@
       border-color: #d8e3fb;
     }
 
+    /* Botón activo (pantalla actual): tinte muy sutil de #3cbad6, no el color
+       sólido (ése queda para botones de acción como "Nuevo Estudio" y para
+       los títulos, vía el token "primary" de Tailwind). */
     .nav-btn.active {
-      background: #006b3f;
-      color: #ffffff;
+      background: rgba(60, 186, 214, 0.14);
+      color: #0f7f97;
+      border-color: rgba(60, 186, 214, 0.3);
+    }
+
+    /* Mismo criterio para los ítems activos de los dropdowns/sub-menús de la
+       barra de navegación (Bootstrap los pintaría de azul por defecto). */
+    .dropdown-item.active,
+    .dropdown-item:active {
+      background: rgba(60, 186, 214, 0.14) !important;
+      color: #0f7f97 !important;
     }
 
     /* Dropdown "Muestras" de la barra de navegación: se abre con hover, no
@@ -328,7 +397,7 @@
     }
 
     .combo-input:focus + .combo-field-icon {
-      color: #006877;
+      color: #3cbad6;
     }
 
     .combo-create-btn {
@@ -341,7 +410,7 @@
       padding: 0.2rem 0.65rem;
       font-size: 0.7rem;
       font-weight: 600;
-      color: #006877;
+      color: #3cbad6;
       margin-top: 0.35rem;
       transition: background .15s ease;
       animation: comboCreateIn .15s ease;
@@ -388,7 +457,7 @@
 
     .rich-toolbar button:hover {
       background: #d8e3fb;
-      color: #006877;
+      color: #3cbad6;
     }
 
     .rich-content {
@@ -697,7 +766,7 @@
                 <i class="bi bi-question-circle me-1"></i>FAQ
               </button>
             </li>
-            <li class="nav-item" v-if="isAdmin">
+            <li class="nav-item" v-if="isSuperAdmin">
               <button :class="['nav-btn', currentView === 'admin_usuarios' ? 'active' : '']" @click="switchToAdminUsuarios" type="button">
                 <i class="bi bi-people me-1"></i>Administración
               </button>
@@ -916,7 +985,7 @@
                   <!-- Fila de detalle desplegable -->
                   <tr v-if="expandedRows.has(item.id)">
                     <td :colspan="visibleColumnasList.length + 2" class="bg-surface-container-low p-0 fila-detalle-expandida">
-                      <div class="row g-3 p-3">
+                      <div class="row g-3 p-3 fila-detalle-contenido">
                         <!-- Información General -->
                         <div class="col-md-4">
                           <div class="bg-white border border-outline-variant rounded-lg p-3 h-100">
@@ -928,14 +997,6 @@
                               <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Cód. Laboratorio</dt><dd class="mb-0 font-medium">{{ item.codigo_laboratorio || '-' }}</dd></div>
                               <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Método</dt><dd class="mb-0 font-medium">{{ item.metodo || '-' }}</dd></div>
                               <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Demora</dt><dd class="mb-0 font-medium">{{ item.dias_demora ?? '-' }} días</dd></div>
-                              <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Preanalítico</dt><dd class="mb-0 font-medium">{{ item.preanalitico || '-' }}</dd></div>
-                              <div class="d-flex justify-content-between py-1">
-                                <dt class="text-on-surface-variant">Val. referencia</dt>
-                                <dd class="mb-0">
-                                  <a :href="item.valor_referencia" target="_blank" rel="noopener" v-if="item.valor_referencia && item.valor_referencia.startsWith('http')">Ver detalle</a>
-                                  <span class="font-medium" v-else>{{ item.valor_referencia || '-' }}</span>
-                                </dd>
-                              </div>
                               <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Revisor</dt><dd class="mb-0 font-medium">{{ item.revisor || '-' }}</dd></div>
                             </dl>
                           </div>
@@ -1084,8 +1145,8 @@
       </div>
 
       <!-- ========================================================= -->
-      <!-- VISTA 2: ABMs STANDARD (Colegas, Métodos, Pre-analíticos, catálogos -->
-      <!-- de Muestras, y demás entidades sin botón propio en la barra)       -->
+      <!-- VISTA 2: ABMs STANDARD (Laboratorios Procesantes, Métodos, catálogos -->
+      <!-- de Muestras, y demás entidades sin botón propio en la barra)         -->
       <!-- ========================================================= -->
       <div v-if="currentView === 'crud'">
         <div class="d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
@@ -1223,8 +1284,8 @@
             <div class="col-md-2">
               <label class="form-label text-xs font-semibold mb-1">Rol</label>
               <select class="form-select form-select-sm rounded-lg" v-model="adminUsuarioForm.rol">
-                <option value="user">user (consulta)</option>
-                <option value="admin">admin (full)</option>
+                <option value="user">Usuario (por módulo)</option>
+                <option value="superadmin">SuperAdmin (full)</option>
               </select>
             </div>
             <div class="col-md-2">
@@ -1256,9 +1317,9 @@
                   <td>{{ u.email || '-' }}</td>
                   <td>
                     <select :value="u.rol" @change="cambiarRolUsuario(u, $event.target.value)"
-                      class="form-select form-select-sm rounded-lg" style="width: 130px;">
-                      <option value="user">user (consulta)</option>
-                      <option value="admin">admin (full)</option>
+                      class="form-select form-select-sm rounded-lg" style="width: 150px;">
+                      <option value="user">Usuario (por módulo)</option>
+                      <option value="superadmin">SuperAdmin (full)</option>
                     </select>
                   </td>
                   <td>
@@ -1282,21 +1343,35 @@
                     </div>
                   </td>
                 </tr>
-                <!-- Editor de permisos (pantallas visibles / columnas ocultas de Estudios) -->
+                <!-- Editor de permisos: rol por módulo (Consultor/Administrador) +
+                     restricciones extra dentro del módulo Estudios -->
                 <tr v-if="expandedUsuarioId === u.id">
                   <td colspan="6" class="bg-surface-container-low">
-                    <div class="p-3">
+                    <div class="p-3" v-if="u.rol === 'superadmin'">
+                      <p class="text-xs text-on-surface-variant mb-0">
+                        <i class="bi bi-shield-check me-1"></i>
+                        SuperAdmin: acceso íntegro a todos los módulos y a la administración de usuarios. No requiere asignación por módulo.
+                      </p>
+                      <div class="mt-3 text-end">
+                        <button @click="expandedUsuarioId = null" class="btn btn-sm btn-light border-outline-variant rounded-lg" type="button">Cerrar</button>
+                      </div>
+                    </div>
+                    <div class="p-3" v-else>
                       <p class="text-xs text-on-surface-variant mb-3">
-                        Sin nada marcado, este usuario ve todas las pantallas y columnas (el rol "user" ya es de sólo lectura).
-                        Marcar acá restringe puntualmente lo que puede ver.
+                        Un módulo sin rol asignado queda sin acceso para este usuario (ni lectura). "Consultor" es sólo lectura;
+                        "Administrador" agrega alta, edición y baja/deshabilitación dentro de ese módulo — ninguno de los dos
+                        administra usuarios: eso es exclusivo de SuperAdmin.
                       </p>
                       <div class="row g-3">
                         <div class="col-md-6">
-                          <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">PANTALLAS VISIBLES</h6>
-                          <div class="form-check" :key="p.key" v-for="p in PANTALLAS_DISPONIBLES">
-                            <input :id="'pant_' + u.id + '_' + p.key" class="form-check-input" type="checkbox"
-                              :checked="permisosEditForm.pantallas.includes(p.key)" @change="togglePermisoPantalla(p.key)" />
-                            <label :for="'pant_' + u.id + '_' + p.key" class="form-check-label text-xs">{{ p.label }}</label>
+                          <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">ROL POR MÓDULO</h6>
+                          <div class="mb-2" :key="m.key" v-for="m in MODULOS_DISPONIBLES">
+                            <label class="form-label text-xs font-semibold mb-1">{{ m.label }}</label>
+                            <select :value="rolModuloEnEdicion(m.key)" @change="establecerRolModulo(m.key, $event.target.value)"
+                              class="form-select form-select-sm rounded-lg">
+                              <option value="">Sin acceso</option>
+                              <option :key="r.key" :value="r.key" v-for="r in ROLES_MODULO_DISPONIBLES">{{ r.label }}</option>
+                            </select>
                           </div>
                         </div>
                         <div class="col-md-6">
@@ -1309,7 +1384,7 @@
 
                           <h6 class="text-xs font-bold text-britlab-gray mb-2 mt-4" style="letter-spacing: .05em;">INFORMACIÓN SENSIBLE</h6>
                           <p class="text-xs text-on-surface-variant mb-2">
-                            A diferencia de lo anterior, esto es al revés: por defecto NADIE que no sea admin lo ve, hay que habilitarlo acá puntualmente.
+                            A diferencia de lo anterior, esto es al revés: por defecto nadie que no sea SuperAdmin lo ve, hay que habilitarlo acá puntualmente.
                           </p>
                           <div class="form-check">
                             <input :id="'cred_' + u.id" class="form-check-input" type="checkbox" v-model="permisosEditForm.ver_credenciales_colegas" />

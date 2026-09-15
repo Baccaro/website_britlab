@@ -8,6 +8,13 @@ from app.models import Usuario
 
 TOKEN_TTL_HORAS = 12
 
+# Módulos del sistema (ver especificación de roles y permisos): cada uno
+# admite, por usuario, un rol independiente ('consultor' o 'administrador')
+# en permisos.modulos. 'administracion' no está acá a propósito: gestionar
+# usuarios es exclusivo de SuperAdmin, no se asigna por módulo.
+MODULOS_VALIDOS = ('estudios', 'obras_sociales', 'web', 'faq')
+ROLES_MODULO_VALIDOS = ('consultor', 'administrador')
+
 
 def generar_token(usuario):
     payload = {
@@ -45,8 +52,24 @@ def _resolver_usuario():
     return usuario, None
 
 
+def rol_en_modulo(usuario, modulo):
+    """Rol efectivo de 'usuario' en 'modulo': None (sin acceso), 'consultor' o
+    'administrador'. SuperAdmin siempre resuelve a 'administrador' en
+    cualquier módulo (acceso íntegro). Para el resto, un módulo ausente de
+    permisos.modulos = sin acceso — a diferencia del esquema anterior
+    (pantallas), acá el default es NO ver el módulo hasta que un SuperAdmin
+    se lo asigne explícitamente."""
+    if usuario.rol == 'superadmin':
+        return 'administrador'
+    modulos = (usuario.permisos or {}).get('modulos') or {}
+    rol = modulos.get(modulo)
+    return rol if rol in ROLES_MODULO_VALIDOS else None
+
+
 def token_required(f):
-    """Exige una sesión válida (cualquier rol). Deja al usuario en g.current_user."""
+    """Exige una sesión válida (cualquier rol/módulo). Deja al usuario en
+    g.current_user. Uso: endpoints que no dependen de un módulo puntual
+    (p.ej. /api/auth/me)."""
     @wraps(f)
     def wrapper(*args, **kwargs):
         usuario, error = _resolver_usuario()
@@ -57,17 +80,53 @@ def token_required(f):
     return wrapper
 
 
-def admin_required(f):
-    """Exige una sesión válida Y rol 'admin': todo lo que escribe (crear,
-    modificar, borrar, habilitar/deshabilitar) pasa por acá, porque el rol
-    'user' es de sólo lectura en toda la aplicación."""
+def modulo_lectura_required(modulo):
+    """Exige rol 'consultor' o 'administrador' en 'modulo' (o SuperAdmin).
+    Cubre lectura, filtros/búsquedas, ver detalle y exportar — todo lo que en
+    la especificación puede hacer un Consultor."""
+    def decorador(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            usuario, error = _resolver_usuario()
+            if error:
+                return error
+            if rol_en_modulo(usuario, modulo) not in ROLES_MODULO_VALIDOS:
+                return jsonify({'error': f'No tenés acceso al módulo "{modulo}"'}), 403
+            g.current_user = usuario
+            return f(*args, **kwargs)
+        return wrapper
+    return decorador
+
+
+def modulo_escritura_required(modulo):
+    """Exige rol 'administrador' en 'modulo' (o SuperAdmin): crear, modificar,
+    cambiar estado, eliminar/deshabilitar. Un Consultor en ese módulo (o sin
+    ningún rol asignado) recibe 403."""
+    def decorador(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            usuario, error = _resolver_usuario()
+            if error:
+                return error
+            if rol_en_modulo(usuario, modulo) != 'administrador':
+                return jsonify({'error': f'No tenés permisos de Administrador en el módulo "{modulo}" para esta acción'}), 403
+            g.current_user = usuario
+            return f(*args, **kwargs)
+        return wrapper
+    return decorador
+
+
+def superadmin_required(f):
+    """Exige rol 'superadmin': administración de usuarios, roles y permisos,
+    y configuración global del sistema — según la especificación, ni siquiera
+    un 'administrador' de módulo tiene acceso a esto."""
     @wraps(f)
     def wrapper(*args, **kwargs):
         usuario, error = _resolver_usuario()
         if error:
             return error
-        if usuario.rol != 'admin':
-            return jsonify({'error': 'No tenés permisos de administrador para esta acción'}), 403
+        if usuario.rol != 'superadmin':
+            return jsonify({'error': 'Esta acción requiere el rol SuperAdmin'}), 403
         g.current_user = usuario
         return f(*args, **kwargs)
     return wrapper

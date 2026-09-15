@@ -8,29 +8,48 @@ from app.database import db
 from app.crud import _commit_or_400
 from app.models import Usuario
 from app.schemas import UsuarioCreate, UsuarioUpdate, UsuarioOut, AdminResetearContrasenaRequest
-from app.auth import admin_required
+from app.auth import superadmin_required, MODULOS_VALIDOS, ROLES_MODULO_VALIDOS
 
 bp = Blueprint('usuarios', __name__, url_prefix='/api/usuarios')
 
-ROLES_VALIDOS = ('admin', 'user')
+ROLES_VALIDOS = ('superadmin', 'user')
+
+
+def _validar_permisos_modulos(permisos):
+    """Valida permisos.modulos: cada clave debe ser un módulo real y cada
+    valor un rol de módulo válido ('consultor'/'administrador'). No exige
+    que estén todos presentes: un módulo ausente = sin acceso, a propósito."""
+    if not permisos:
+        return None
+    modulos = permisos.get('modulos')
+    if modulos is None:
+        return None
+    if not isinstance(modulos, dict):
+        return 'permisos.modulos debe ser un objeto {modulo: rol}'
+    for modulo, rol in modulos.items():
+        if modulo not in MODULOS_VALIDOS:
+            return f"Módulo inválido: \"{modulo}\". Debe ser uno de: {', '.join(MODULOS_VALIDOS)}"
+        if rol not in ROLES_MODULO_VALIDOS:
+            return f"Rol de módulo inválido para \"{modulo}\": \"{rol}\". Debe ser uno de: {', '.join(ROLES_MODULO_VALIDOS)}"
+    return None
 
 
 @bp.route('', methods=['GET'])
-@admin_required
+@superadmin_required
 def list_items():
     items = Usuario.query.order_by(Usuario.username.asc()).all()
     return jsonify([UsuarioOut.model_validate(u).model_dump(mode='json') for u in items]), 200
 
 
 @bp.route('/<int:id>', methods=['GET'])
-@admin_required
+@superadmin_required
 def get_item(id):
     usuario = Usuario.query.get_or_404(id)
     return jsonify(UsuarioOut.model_validate(usuario).model_dump(mode='json')), 200
 
 
 @bp.route('', methods=['POST'])
-@admin_required
+@superadmin_required
 def create_item():
     try:
         data = UsuarioCreate(**(request.get_json() or {}))
@@ -42,6 +61,9 @@ def create_item():
         return jsonify({'error': 'El usuario es obligatorio y la contraseña debe tener al menos 6 caracteres'}), 400
     if data.rol not in ROLES_VALIDOS:
         return jsonify({'error': f"Rol inválido, debe ser uno de: {', '.join(ROLES_VALIDOS)}"}), 400
+    error_modulos = _validar_permisos_modulos(data.permisos)
+    if error_modulos:
+        return jsonify({'error': error_modulos}), 400
 
     nuevo = Usuario(
         username=username,
@@ -60,10 +82,11 @@ def create_item():
 
 
 @bp.route('/<int:id>', methods=['PUT'])
-@admin_required
+@superadmin_required
 def update_item(id):
-    """Edita datos, rol, activo y/o permisos (pantallas/columnas visibles) de
-    un usuario. No toca la contraseña: para eso está /resetear-password."""
+    """Edita datos, rol y/o permisos (roles por módulo, columnas ocultas de
+    Estudios, ver credenciales de colegas) de un usuario. No toca la
+    contraseña: para eso está /resetear-password."""
     usuario = Usuario.query.get_or_404(id)
     try:
         data = UsuarioUpdate(**(request.get_json() or {}))
@@ -72,6 +95,10 @@ def update_item(id):
 
     if data.rol is not None and data.rol not in ROLES_VALIDOS:
         return jsonify({'error': f"Rol inválido, debe ser uno de: {', '.join(ROLES_VALIDOS)}"}), 400
+    if 'permisos' in data.model_dump(exclude_unset=True):
+        error_modulos = _validar_permisos_modulos(data.permisos)
+        if error_modulos:
+            return jsonify({'error': error_modulos}), 400
 
     for field, value in data.model_dump(exclude_unset=True).items():
         setattr(usuario, field, value)
@@ -82,11 +109,11 @@ def update_item(id):
 
 
 @bp.route('/<int:id>/resetear-password', methods=['POST'])
-@admin_required
+@superadmin_required
 def resetear_password(id):
-    """Reseteo directo de contraseña por un admin (sin token/email): si no
-    mandan 'password' se genera una provisoria al azar y se devuelve en la
-    respuesta para que el admin se la pase al usuario."""
+    """Reseteo directo de contraseña por un SuperAdmin (sin token/email): si
+    no mandan 'password' se genera una provisoria al azar y se devuelve en la
+    respuesta para que se la pase al usuario."""
     usuario = Usuario.query.get_or_404(id)
     try:
         data = AdminResetearContrasenaRequest(**(request.get_json(silent=True) or {}))

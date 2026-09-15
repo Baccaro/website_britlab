@@ -8,28 +8,28 @@ from app.schemas import (
     EstudioColegaMuestraAlternativaOut,
 )
 from app.utils import paginate_query
-from app.auth import token_required, admin_required
+from app.auth import modulo_lectura_required, modulo_escritura_required
 from pydantic import ValidationError
 
 bp = Blueprint('estudio_colega_muestra_alternativa', __name__, url_prefix='/api/estudio-colega-muestra-alternativa')
 
 
 @bp.route('', methods=['GET'])
-@token_required
+@modulo_lectura_required('estudios')
 def list_items():
     query = EstudioColegaMuestraAlternativa.query.order_by(EstudioColegaMuestraAlternativa.id.asc())
     return paginate_query(query, EstudioColegaMuestraAlternativaOut, default_limit=25)
 
 
 @bp.route('/<int:id>', methods=['GET'])
-@token_required
+@modulo_lectura_required('estudios')
 def get_item(id):
     item = EstudioColegaMuestraAlternativa.query.get_or_404(id)
     return jsonify(EstudioColegaMuestraAlternativaOut.model_validate(item).model_dump(mode='json')), 200
 
 
 @bp.route('', methods=['POST'])
-@admin_required
+@modulo_escritura_required('estudios')
 def create_item():
     try:
         data = EstudioColegaMuestraAlternativaCreate(**(request.get_json() or {}))
@@ -44,7 +44,7 @@ def create_item():
 
 
 @bp.route('/<int:id>', methods=['PUT'])
-@admin_required
+@modulo_escritura_required('estudios')
 def update_item(id):
     item = EstudioColegaMuestraAlternativa.query.get_or_404(id)
     try:
@@ -60,7 +60,7 @@ def update_item(id):
 
 
 @bp.route('/<int:id>', methods=['DELETE'])
-@admin_required
+@modulo_escritura_required('estudios')
 def delete_item(id):
     item = EstudioColegaMuestraAlternativa.query.get_or_404(id)
     db.session.delete(item)

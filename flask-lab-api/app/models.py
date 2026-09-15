@@ -51,15 +51,6 @@ class Muestra(db.Model):
     observacion = db.Column(db.Text, nullable=True)
 
 
-class Preanalitico(db.Model):
-    __tablename__ = 'preanalitico'
-    __table_args__ = {'schema': 'public'}
-
-    id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(150), unique=True, nullable=False)
-    descripcion = db.Column(db.Text, nullable=True)
-
-
 class Sector(db.Model):
     __tablename__ = 'sector'
     __table_args__ = {'schema': 'public'}
@@ -95,17 +86,16 @@ class EstudioColega(db.Model):
     paridad_datatech_hexalis = db.Column(db.String(20), nullable=False, default='pendiente')
     id_estudio = db.Column(db.Integer, db.ForeignKey('public.estudio.id', ondelete='RESTRICT'), nullable=False)
     id_metodo = db.Column(db.Integer, db.ForeignKey('public.metodo.id', ondelete='SET NULL'), nullable=True)
-    id_preanalitico = db.Column(db.Integer, db.ForeignKey('public.preanalitico.id', ondelete='SET NULL'), nullable=True)
     id_muestra = db.Column(db.Integer, db.ForeignKey('public.muestra.id', ondelete='SET NULL'), nullable=True)
     id_sector_laboratorio = db.Column(db.Integer, db.ForeignKey('public.valor_estudio_sector.id', ondelete='SET NULL'), nullable=True)
     indicaciones_pacientes = db.Column(db.Text, nullable=True)
     indicaciones_colega = db.Column(db.Text, nullable=True)
-    # Descripción propia del dropdown "Preanalítico" (independiente del
-    # catálogo id_preanalitico) y Observaciones del dropdown "Modelo
-    # Derivante" (independiente de indicaciones_colega, que quedó sólo texto).
+    # Descripción propia del dropdown "Preanalítico" (ya no hay catálogo
+    # id_preanalitico: se eliminó junto con la tabla preanalitico) y
+    # Observaciones del dropdown "Modelo Derivante" (independiente de
+    # indicaciones_colega, que quedó sólo texto).
     preanalitico_descripcion = db.Column(db.Text, nullable=True)
     modelo_derivante_observaciones = db.Column(db.Text, nullable=True)
-    valor_referencia = db.Column(db.Text, nullable=True)
     dias_demora = db.Column(db.Integer, default=0)
     estado = db.Column(db.String(20), nullable=False, default='pendiente')
     codigo_laboratorio = db.Column(db.String(50), nullable=True)
@@ -118,7 +108,6 @@ class EstudioColega(db.Model):
 
     estudio = db.relationship('Estudio')
     metodo = db.relationship('Metodo')
-    preanalitico = db.relationship('Preanalitico')
     muestra = db.relationship('Muestra')
     sector_laboratorio = db.relationship('ValorEstudioSector')
     colega = db.relationship('Colega')

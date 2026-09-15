@@ -69,21 +69,6 @@ CREATE TABLE public.muestra (
 );
 
 
--- public.preanalitico definition
-
--- Drop table
-
--- DROP TABLE public.preanalitico;
-
-CREATE TABLE public.preanalitico (
-	id serial4 NOT NULL,
-	nombre varchar(150) NOT NULL,
-	descripcion text NULL,
-	CONSTRAINT preanalitico_nombre_key UNIQUE (nombre),
-	CONSTRAINT preanalitico_pkey PRIMARY KEY (id)
-);
-
-
 -- public.sector definition
 
 -- Drop table
@@ -129,17 +114,16 @@ CREATE TABLE public.estudio_colega (
 	paridad_datatech_hexalis public.estado_paridad_enum DEFAULT 'pendiente'::estado_paridad_enum NOT NULL,
 	id_estudio int4 NOT NULL,
 	id_metodo int4 NULL,
-	id_preanalitico int4 NULL,
 	id_muestra int4 NULL,
 	id_sector_laboratorio int4 NULL,
 	indicaciones text NULL,
-	-- preanalitico_descripcion: texto propio del dropdown "Preanalítico" (aparte
-	-- del catálogo id_preanalitico). modelo_derivante_observaciones: texto propio
-	-- del dropdown "Modelo Derivante" (aparte de indicaciones_colega/"Indicaciones
+	-- preanalitico_descripcion: texto propio del dropdown "Preanalítico" (ya no
+	-- hay catálogo id_preanalitico: se eliminó junto con la tabla preanalitico
+	-- y con valor_referencia). modelo_derivante_observaciones: texto propio del
+	-- dropdown "Modelo Derivante" (aparte de indicaciones_colega/"Indicaciones
 	-- al Profesional-Derivante", que quedó sólo texto, sin documentación).
 	preanalitico_descripcion text NULL,
 	modelo_derivante_observaciones text NULL,
-	valor_referencia text NULL,
 	dias_demora int4 DEFAULT 0 NULL,
 	estado public.estado_registro_enum DEFAULT 'pendiente'::estado_registro_enum NOT NULL,
 	codigo_laboratorio varchar(50) DEFAULT NULL::character varying NULL,
@@ -153,7 +137,6 @@ CREATE TABLE public.estudio_colega (
 	CONSTRAINT estudio_colega_id_estudio_fkey FOREIGN KEY (id_estudio) REFERENCES public.estudio(id) ON DELETE RESTRICT,
 	CONSTRAINT estudio_colega_id_metodo_fkey FOREIGN KEY (id_metodo) REFERENCES public.metodo(id) ON DELETE SET NULL,
 	CONSTRAINT estudio_colega_id_muestra_fkey FOREIGN KEY (id_muestra) REFERENCES public.muestra(id) ON DELETE SET NULL,
-	CONSTRAINT estudio_colega_id_preanalitico_fkey FOREIGN KEY (id_preanalitico) REFERENCES public.preanalitico(id) ON DELETE SET NULL,
 	CONSTRAINT estudio_colega_id_sector_laboratorio_fkey FOREIGN KEY (id_sector_laboratorio) REFERENCES public.valor_estudio_sector(id) ON DELETE SET NULL,
 	CONSTRAINT fk_estudio_colega_colega FOREIGN KEY (colega_id) REFERENCES public.colega(id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -310,9 +293,13 @@ CREATE TABLE public.estudio_colega_modelo (
 CREATE INDEX idx_ecm_id_estudio_colega ON public.estudio_colega_modelo (id_estudio_colega);
 
 -- public.usuario definition
--- Cuentas de acceso al sistema. rol 'admin' = acceso total (incluye el panel
--- de usuarios); rol 'user' = sólo lectura, acotado a lo que 'permisos'
--- restrinja (NULL/vacío = puede ver todo).
+-- Cuentas de acceso al sistema. rol 'superadmin' = administración íntegra
+-- (todos los módulos + administración de usuarios/roles/permisos); rol
+-- 'user' = su nivel real de acceso se define POR MÓDULO en
+-- permisos.modulos ({"estudios": "consultor"|"administrador", ...}) — un
+-- módulo ausente de ahí es SIN acceso (opt-in, a diferencia de
+-- columnas_ocultas_estudios/ver_credenciales_colegas, que siguen siendo
+-- restricciones opt-out/opt-in puntuales dentro del módulo Estudios).
 
 CREATE TABLE public.usuario (
 	id serial4 NOT NULL,
@@ -327,12 +314,14 @@ CREATE TABLE public.usuario (
 	CONSTRAINT usuario_pkey PRIMARY KEY (id),
 	CONSTRAINT usuario_username_key UNIQUE (username),
 	CONSTRAINT usuario_email_key UNIQUE (email),
-	CONSTRAINT chk_usuario_rol CHECK (rol IN ('admin', 'user'))
+	CONSTRAINT chk_usuario_rol CHECK (rol IN ('superadmin', 'user'))
 );
 
--- Seed inicial: nbojanich, ccarletti, rbaccaro (rol admin, contraseña
+-- Seed inicial: nbojanich, ccarletti, rbaccaro (rol superadmin, contraseña
 -- admin123 hasheada con werkzeug generate_password_hash/scrypt) — ver
--- migracion_usuarios.sql para los INSERT con los hashes.
+-- migracion_usuarios.sql para los INSERT con los hashes (rol seedeado
+-- originalmente como 'admin'; migracion_roles_modulos.sql lo renombra a
+-- 'superadmin').
 
 
 -- public.password_reset_token definition

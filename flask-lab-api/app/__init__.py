@@ -13,7 +13,6 @@ def create_app():
     from app.routes.estudios import bp as estudios_bp
     from app.routes.metodos import bp as metodos_bp
     from app.routes.muestras import bp as muestras_bp
-    from app.routes.preanaliticos import bp as preanaliticos_bp
     from app.routes.sectores import bp as sectores_bp
     from app.routes.valores_estudio_sector import bp as valores_estudio_sector_bp
     from app.routes.estudio_colega import bp as estudio_colega_bp
@@ -28,7 +27,6 @@ def create_app():
     app.register_blueprint(estudios_bp)
     app.register_blueprint(metodos_bp)
     app.register_blueprint(muestras_bp)
-    app.register_blueprint(preanaliticos_bp)
     app.register_blueprint(sectores_bp)
     app.register_blueprint(valores_estudio_sector_bp)
     app.register_blueprint(estudio_colega_bp)

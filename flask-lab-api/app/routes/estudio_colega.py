@@ -1,18 +1,18 @@
 from flask import Blueprint, request, jsonify
 from app.crud import _commit_or_400
 from app.database import db
-from app.models import EstudioColega, Estudio, Colega, Metodo, Muestra, Preanalitico, ValorEstudioSector, EstudioColegaMuestra, EstudioColegaModelo
+from app.models import EstudioColega, Estudio, Colega, Metodo, Muestra, ValorEstudioSector, EstudioColegaMuestra, EstudioColegaModelo
 from app.schemas import EstudioColegaCreate, EstudioColegaUpdate, EstudioColegaOut
 from app.utils import paginate_query
-from app.auth import token_required, admin_required
+from app.auth import modulo_lectura_required, modulo_escritura_required
 from pydantic import ValidationError
 
 bp = Blueprint('estudio_colega', __name__, url_prefix='/api/estudio-colega')
 
 
 def _get_or_create_by_nombre(model, nombre):
-    """Resuelve el id de una tabla maestra (metodo/muestra/preanalitico) a partir
-    de su nombre, creándola si no existe. Permite que el frontend siga editando
+    """Resuelve el id de una tabla maestra (metodo/muestra) a partir de su
+    nombre, creándola si no existe. Permite que el frontend siga editando
     estos campos como texto libre aunque en la BD sean claves foráneas."""
     nombre = (nombre or '').strip()
     if not nombre:
@@ -53,21 +53,21 @@ def _componer_texto_muestra(m):
 
 
 @bp.route('', methods=['GET'])
-@token_required
+@modulo_lectura_required('estudios')
 def list_items():
     query = EstudioColega.query.order_by(EstudioColega.id.asc())
     return paginate_query(query, EstudioColegaOut, default_limit=25)
 
 
 @bp.route('/<int:id>', methods=['GET'])
-@token_required
+@modulo_lectura_required('estudios')
 def get_item(id):
     item = EstudioColega.query.get_or_404(id)
     return jsonify(EstudioColegaOut.model_validate(item).model_dump(mode='json')), 200
 
 
 @bp.route('', methods=['POST'])
-@admin_required
+@modulo_escritura_required('estudios')
 def create_item():
     try:
         data = EstudioColegaCreate(**(request.get_json() or {}))
@@ -82,14 +82,14 @@ def create_item():
 
 
 @bp.route('/<int:id>', methods=['PUT'])
-@admin_required
+@modulo_escritura_required('estudios')
 def update_item(id):
     item = EstudioColega.query.get_or_404(id)
     payload = request.get_json() or {}
 
-    # El frontend edita método/muestra/preanalítico como texto libre: se resuelven
-    # (o crean) contra las tablas maestras antes de validar el resto de campos.
-    for field, model in (('metodo', Metodo), ('muestra', Muestra), ('preanalitico', Preanalitico)):
+    # El frontend edita método/muestra como texto libre: se resuelven (o
+    # crean) contra las tablas maestras antes de validar el resto de campos.
+    for field, model in (('metodo', Metodo), ('muestra', Muestra)):
         if field in payload:
             payload[f'id_{field}'] = _get_or_create_by_nombre(model, payload.pop(field))
 
@@ -107,7 +107,7 @@ def update_item(id):
 
 
 @bp.route('/<int:id>', methods=['DELETE'])
-@admin_required
+@modulo_escritura_required('estudios')
 def delete_item(id):
     item = EstudioColega.query.get_or_404(id)
     db.session.delete(item)
@@ -128,7 +128,6 @@ def _listar_estudios_colega(colega_id=None):
         .join(Colega, EstudioColega.colega_id == Colega.id)
         .outerjoin(Metodo, EstudioColega.id_metodo == Metodo.id)
         .outerjoin(Muestra, EstudioColega.id_muestra == Muestra.id)
-        .outerjoin(Preanalitico, EstudioColega.id_preanalitico == Preanalitico.id)
         .outerjoin(ValorEstudioSector, EstudioColega.id_sector_laboratorio == ValorEstudioSector.id)
     )
     if colega_id is not None:
@@ -181,7 +180,6 @@ def _listar_estudios_colega(colega_id=None):
             'codigo_hexalis': estudio.codigo_hexalis,
             'estudio_descripcion': estudio.descripcion,
             'metodo': reg.metodo.nombre if reg.metodo else None,
-            'preanalitico': reg.preanalitico.nombre if reg.preanalitico else None,
             'muestra': muestras_texto,
             'muestra_count': len(muestras_por_registro.get(reg.id, [])),
             'indicaciones_pacientes': reg.indicaciones_pacientes,
@@ -191,7 +189,6 @@ def _listar_estudios_colega(colega_id=None):
             'pdfs_preanalitico_count': pdfs_por_registro.get(reg.id, {}).get('preanalitico', 0),
             'pdfs_paciente_count': pdfs_por_registro.get(reg.id, {}).get('paciente', 0),
             'pdfs_colega_count': pdfs_por_registro.get(reg.id, {}).get('colega', 0),
-            'valor_referencia': reg.valor_referencia,
             'dias_demora': reg.dias_demora,
             'estado': reg.estado,
             'codigo_laboratorio': reg.codigo_laboratorio,
@@ -207,12 +204,12 @@ def _listar_estudios_colega(colega_id=None):
 
 
 @bp.route('/todos', methods=['GET'])
-@token_required
+@modulo_lectura_required('estudios')
 def get_todos_los_estudios():
     return jsonify(_listar_estudios_colega()), 200
 
 
 @bp.route('/colega/<int:colega_id>', methods=['GET'])
-@token_required
+@modulo_lectura_required('estudios')
 def get_estudios_por_colega(colega_id):
     return jsonify(_listar_estudios_colega(colega_id)), 200

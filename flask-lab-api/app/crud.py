@@ -2,25 +2,25 @@ from flask import Blueprint, request, jsonify, g
 from sqlalchemy.exc import IntegrityError
 from app.database import db
 from app.utils import paginate_query, normalizar_nombre
-from app.auth import token_required, admin_required
+from app.auth import modulo_lectura_required, modulo_escritura_required
 from pydantic import ValidationError
 
 
 def _redactar_sensibles(data, sensitive_fields, sensitive_permiso):
     """Oculta campos sensibles (p.ej. credenciales de un portal externo) de un
-    dict ya serializado, salvo que quien pide sea admin o tenga el permiso
-    puntual habilitado. A diferencia de 'pantallas'/'columnas_ocultas_estudios'
-    (opt-out: por defecto se ve todo), este chequeo es opt-in: por defecto,
-    ni siquiera un 'user' con permisos=null ve estos campos — hay que
-    habilitárselo explícitamente. Además de ocultarlos, deja un
-    '<campo>_cargado' (bool) calculado ANTES de redactar, para que el
-    frontend pueda distinguir "sin dato" de "dato oculto por permisos"."""
+    dict ya serializado, salvo que quien pide sea SuperAdmin o tenga el
+    permiso puntual habilitado. A diferencia del rol por módulo (opt-in: sin
+    asignación no se ve el módulo), esto es una restricción adicional DENTRO
+    de un módulo ya accesible: por defecto ni un Administrador de módulo ve
+    estos campos — hay que habilitárselo explícitamente. Además de
+    ocultarlos, deja un '<campo>_cargado' (bool) calculado ANTES de redactar,
+    para que el frontend pueda distinguir "sin dato" de "dato oculto"."""
     if not sensitive_fields:
         return data
     for field in sensitive_fields:
         data[f'{field}_cargado'] = bool(data.get(field))
     usuario = getattr(g, 'current_user', None)
-    if usuario and usuario.rol == 'admin':
+    if usuario and usuario.rol == 'superadmin':
         return data
     permisos = (usuario.permisos if usuario else None) or {}
     if permisos.get(sensitive_permiso):
@@ -44,20 +44,24 @@ def _commit_or_400():
         return jsonify({"error": "No se pudo guardar: violación de una restricción de la base de datos.", "detail": msg}), 409
 
 
-def make_crud_blueprint(name, url_prefix, model, create_schema, update_schema, out_schema, order_by='id', allow_delete=True, search_field=None, sensitive_fields=None, sensitive_permiso=None, unique_name_field=None):
+def make_crud_blueprint(name, url_prefix, model, create_schema, update_schema, out_schema, order_by='id', allow_delete=True, search_field=None, sensitive_fields=None, sensitive_permiso=None, unique_name_field=None, modulo='estudios'):
     """Fábrica de Blueprints CRUD genéricos (list/get/create/update[/delete]) para
     las tablas maestras simples del esquema (colega, estudio, metodo, muestra,
-    preanalitico, sector, valor_estudio_sector). Con allow_delete=False no se
-    registra la ruta DELETE: catálogos como método o tipo de muestra sólo se
-    pueden modificar, nunca borrar (evita dejar referencias rotas). Con
-    search_field, ?q=texto filtra ese campo (ILIKE) antes de paginar. Con
-    sensitive_fields (+ sensitive_permiso), esos campos se redactan en las
-    respuestas de lectura salvo admin o el permiso puntual (ver
-    _redactar_sensibles); no aplica a create/update porque esas rutas ya son
-    sólo-admin. Con unique_name_field, create/update rechazan (409) un nombre
-    que ya existe ignorando mayúsculas y tildes ('Cálculo' == 'calculo') — es
-    un chequeo a nivel aplicación, no una constraint de la BD, así que no le
-    afecta si ya hay datos históricos duplicados cargados de antes."""
+    sector, valor_estudio_sector). Con allow_delete=False no se registra la
+    ruta DELETE: catálogos como método o tipo de muestra sólo se pueden
+    modificar, nunca borrar (evita dejar referencias rotas). Con search_field,
+    ?q=texto filtra ese campo (ILIKE) antes de paginar. Con sensitive_fields
+    (+ sensitive_permiso), esos campos se redactan en las respuestas de
+    lectura salvo SuperAdmin o el permiso puntual (ver _redactar_sensibles);
+    no aplica a create/update porque esas rutas ya requieren rol Administrador
+    en el módulo. Con unique_name_field, create/update rechazan (409) un
+    nombre que ya existe ignorando mayúsculas y tildes ('Cálculo' ==
+    'calculo') — es un chequeo a nivel aplicación, no una constraint de la
+    BD, así que no le afecta si ya hay datos históricos duplicados cargados
+    de antes. 'modulo' (default 'estudios') es el módulo del nuevo esquema de
+    roles/permisos que gobierna el acceso a este blueprint: todas las tablas
+    maestras actuales (colega, método, muestras estructuradas, etc.)
+    pertenecen al módulo Estudios."""
     bp = Blueprint(name, __name__, url_prefix=url_prefix)
 
     def _nombre_duplicado(valor, excluir_id=None):
@@ -75,7 +79,7 @@ def make_crud_blueprint(name, url_prefix, model, create_schema, update_schema, o
         return None
 
     @bp.route('', methods=['GET'])
-    @token_required
+    @modulo_lectura_required(modulo)
     def list_items():
         query = model.query.order_by(getattr(model, order_by).asc())
         if search_field:
@@ -86,7 +90,7 @@ def make_crud_blueprint(name, url_prefix, model, create_schema, update_schema, o
         return paginate_query(query, out_schema, default_limit=25, post_process=post_process)
 
     @bp.route('/<int:id>', methods=['GET'])
-    @token_required
+    @modulo_lectura_required(modulo)
     def get_item(id):
         item = model.query.get_or_404(id)
         data = out_schema.model_validate(item).model_dump(mode='json')
@@ -94,7 +98,7 @@ def make_crud_blueprint(name, url_prefix, model, create_schema, update_schema, o
         return jsonify(data), 200
 
     @bp.route('', methods=['POST'])
-    @admin_required
+    @modulo_escritura_required(modulo)
     def create_item():
         try:
             data = create_schema(**(request.get_json() or {}))
@@ -111,7 +115,7 @@ def make_crud_blueprint(name, url_prefix, model, create_schema, update_schema, o
         return jsonify(out_schema.model_validate(new_item).model_dump(mode='json')), 201
 
     @bp.route('/<int:id>', methods=['PUT'])
-    @admin_required
+    @modulo_escritura_required(modulo)
     def update_item(id):
         item = model.query.get_or_404(id)
         try:
@@ -132,7 +136,7 @@ def make_crud_blueprint(name, url_prefix, model, create_schema, update_schema, o
 
     if allow_delete:
         @bp.route('/<int:id>', methods=['DELETE'])
-        @admin_required
+        @modulo_escritura_required(modulo)
         def delete_item(id):
             item = model.query.get_or_404(id)
             db.session.delete(item)

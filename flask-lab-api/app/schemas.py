@@ -87,22 +87,6 @@ class MuestraOut(MuestraBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
 
-# --- Preanalitico ---
-class PreanaliticoBase(BaseModel):
-    nombre: str
-    descripcion: Optional[str] = None
-
-class PreanaliticoCreate(PreanaliticoBase):
-    pass
-
-class PreanaliticoUpdate(BaseModel):
-    nombre: Optional[str] = None
-    descripcion: Optional[str] = None
-
-class PreanaliticoOut(PreanaliticoBase):
-    id: int
-    model_config = ConfigDict(from_attributes=True)
-
 # --- Sector ---
 class SectorBase(BaseModel):
     nombre: str
@@ -143,14 +127,12 @@ class EstudioColegaBase(BaseModel):
     paridad_datatech_hexalis: Optional[str] = 'pendiente'
     id_estudio: int
     id_metodo: Optional[int] = None
-    id_preanalitico: Optional[int] = None
     id_muestra: Optional[int] = None
     id_sector_laboratorio: Optional[int] = None
     indicaciones_pacientes: Optional[str] = None
     indicaciones_colega: Optional[str] = None
     preanalitico_descripcion: Optional[str] = None
     modelo_derivante_observaciones: Optional[str] = None
-    valor_referencia: Optional[str] = None
     dias_demora: Optional[int] = 0
     estado: Optional[str] = 'pendiente'
     codigo_laboratorio: Optional[str] = None
@@ -167,14 +149,12 @@ class EstudioColegaUpdate(BaseModel):
     paridad_datatech_hexalis: Optional[str] = None
     id_estudio: Optional[int] = None
     id_metodo: Optional[int] = None
-    id_preanalitico: Optional[int] = None
     id_muestra: Optional[int] = None
     id_sector_laboratorio: Optional[int] = None
     indicaciones_pacientes: Optional[str] = None
     indicaciones_colega: Optional[str] = None
     preanalitico_descripcion: Optional[str] = None
     modelo_derivante_observaciones: Optional[str] = None
-    valor_referencia: Optional[str] = None
     dias_demora: Optional[int] = None
     estado: Optional[str] = None
     codigo_laboratorio: Optional[str] = None

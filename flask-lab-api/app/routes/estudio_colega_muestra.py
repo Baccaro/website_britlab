@@ -4,28 +4,28 @@ from app.database import db
 from app.models import EstudioColegaMuestra
 from app.schemas import EstudioColegaMuestraCreate, EstudioColegaMuestraUpdate, EstudioColegaMuestraOut
 from app.utils import paginate_query
-from app.auth import token_required, admin_required
+from app.auth import modulo_lectura_required, modulo_escritura_required
 from pydantic import ValidationError
 
 bp = Blueprint('estudio_colega_muestra', __name__, url_prefix='/api/estudio-colega-muestra')
 
 
 @bp.route('', methods=['GET'])
-@token_required
+@modulo_lectura_required('estudios')
 def list_items():
     query = EstudioColegaMuestra.query.order_by(EstudioColegaMuestra.id.asc())
     return paginate_query(query, EstudioColegaMuestraOut, default_limit=25)
 
 
 @bp.route('/<int:id>', methods=['GET'])
-@token_required
+@modulo_lectura_required('estudios')
 def get_item(id):
     item = EstudioColegaMuestra.query.get_or_404(id)
     return jsonify(EstudioColegaMuestraOut.model_validate(item).model_dump(mode='json')), 200
 
 
 @bp.route('', methods=['POST'])
-@admin_required
+@modulo_escritura_required('estudios')
 def create_item():
     try:
         data = EstudioColegaMuestraCreate(**(request.get_json() or {}))
@@ -40,7 +40,7 @@ def create_item():
 
 
 @bp.route('/<int:id>', methods=['PUT'])
-@admin_required
+@modulo_escritura_required('estudios')
 def update_item(id):
     item = EstudioColegaMuestra.query.get_or_404(id)
     try:
@@ -56,7 +56,7 @@ def update_item(id):
 
 
 @bp.route('/<int:id>', methods=['DELETE'])
-@admin_required
+@modulo_escritura_required('estudios')
 def delete_item(id):
     item = EstudioColegaMuestra.query.get_or_404(id)
     db.session.delete(item)
@@ -100,7 +100,7 @@ def _serialize_dimensiones(m):
 
 
 @bp.route('/estudio-colega/<int:id_estudio_colega>', methods=['GET'])
-@token_required
+@modulo_lectura_required('estudios')
 def list_por_estudio_colega(id_estudio_colega):
     """Muestras de un estudio_colega puntual, con los catálogos ya resueltos
     a su nombre y sus alternativas anidadas (para mostrar directo en el

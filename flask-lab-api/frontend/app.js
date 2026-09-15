@@ -4,12 +4,36 @@ const { createApp, ref, computed, watch, onMounted } = Vue;
 const ALL_ESTUDIOS = '__ALL_ESTUDIOS__';
 
 // Entidades con botón propio en la barra de navegación superior.
-const TOP_NAV_ENTITY_KEYS = ['colegas', 'metodos', 'preanaliticos'];
+const TOP_NAV_ENTITY_KEYS = ['colegas', 'metodos'];
 
 // Catálogos de Muestras: quedan agrupados en el dropdown "Muestras" de la
 // barra de navegación superior (mismas opciones que tenía antes en el sidebar).
 const MUESTRAS_CATALOGO_KEYS = ['tipos_muestra', 'aditivos', 'unidades_medida', 'recipientes',
   'modalidades_recoleccion', 'tecnicas_recoleccion', 'conservaciones', 'condiciones_especiales', 'prioridades_envio'];
+
+// Esquema de roles y permisos por módulo: cada "pantalla" del front pertenece
+// a uno de los módulos del sistema (Estudios, Obras Sociales, Web, FAQ — la
+// administración de usuarios NO es un módulo asignable, es exclusiva de
+// SuperAdmin). Todo lo agrupado bajo el dropdown "Estudios" de la barra de
+// navegación (Estudios, Laboratorios Procesantes, Métodos, Muestras) cae bajo
+// el módulo "estudios".
+const MODULOS_DISPONIBLES = [
+  { key: 'estudios', label: 'Estudios' },
+  { key: 'obras_sociales', label: 'Obras Sociales' },
+  { key: 'web', label: 'Web' },
+  { key: 'faq', label: 'FAQ' },
+];
+const ROLES_MODULO_DISPONIBLES = [
+  { key: 'consultor', label: 'Consultor (sólo lectura)' },
+  { key: 'administrador', label: 'Administrador (lectura y escritura)' },
+];
+const MODULO_POR_PANTALLA = {
+  estudios: 'estudios', colegas: 'estudios', metodos: 'estudios',
+  tipos_muestra: 'estudios', aditivos: 'estudios', unidades_medida: 'estudios', recipientes: 'estudios',
+  modalidades_recoleccion: 'estudios', tecnicas_recoleccion: 'estudios', conservaciones: 'estudios',
+  condiciones_especiales: 'estudios', prioridades_envio: 'estudios',
+  obras_sociales: 'obras_sociales', web_britlab: 'web', faq: 'faq',
+};
 
 // Clase de color del badge de estado, tanto en los filtros como en la
 // columna "Estado" de la tabla.
@@ -60,7 +84,7 @@ const ESTUDIO_COLEGA_SECCIONES = [
   },
   {
     key: 'indicaciones_colega', title: 'Indicaciones al Profesional / Derivante',
-    desc: 'Descripción de las indicaciones para el colega derivante.',
+    desc: 'Descripción de las indicaciones para el laboratorio procesante.',
     fields: ['indicaciones_colega']
   },
   {
@@ -111,8 +135,6 @@ const INDICACIONES_COLUMNAS = [
   { field: 'indicaciones_colega', label: 'Modelo Laboratorio Procesante' },
   { field: 'estado', label: 'Estado' },
   { field: 'paridad_datatech_hexalis', label: 'Paridad' },
-  { field: 'preanalitico', label: 'Pre-analítico' },
-  { field: 'valor_referencia', label: 'Val. Ref.' },
   { field: 'codigo_laboratorio', label: 'Cód. Lab.' },
   { field: 'revisor', label: 'Revisor' },
   { field: 'observacion', label: 'Observaciones' }
@@ -146,14 +168,32 @@ const app = createApp({
     const resetResult = ref('');
 
     const isLoggedIn = computed(() => !!currentUser.value);
-    const isAdmin = computed(() => !!currentUser.value && currentUser.value.rol === 'admin');
+    // SuperAdmin: administración íntegra del sistema (usuarios, roles,
+    // permisos, todos los módulos). Es lo único que da acceso al panel de
+    // Administración — un Administrador de módulo NO alcanza para eso.
+    const isSuperAdmin = computed(() => !!currentUser.value && currentUser.value.rol === 'superadmin');
 
-    // Permisos opt-out: null/vacío en cualquiera de las dos listas = sin
-    // restricción (ve todo). El admin sólo los acota explícitamente.
+    // Rol efectivo del usuario logueado en un módulo (null = sin acceso,
+    // 'consultor' o 'administrador'). SuperAdmin resuelve siempre a
+    // 'administrador' en cualquier módulo. A diferencia del esquema anterior
+    // (pantallas, opt-out), acá un módulo ausente de permisos.modulos es
+    // sin acceso — hay que asignárselo explícitamente desde Administración.
+    const rolEnModulo = (modulo) => {
+      if (isSuperAdmin.value) return 'administrador';
+      const modulos = (currentUser.value && currentUser.value.permisos && currentUser.value.permisos.modulos) || {};
+      const rol = modulos[modulo];
+      return (rol === 'consultor' || rol === 'administrador') ? rol : null;
+    };
+    // Puede crear/editar/deshabilitar en el módulo Estudios (Estudios,
+    // Laboratorios Procesantes, Métodos, Muestras): usado en todos los
+    // botones de escritura de esas pantallas.
+    const isAdmin = computed(() => rolEnModulo('estudios') === 'administrador');
+
     const misPermisos = computed(() => (currentUser.value && currentUser.value.permisos) || {});
     const pantallaPermitida = (key) => {
-      const pantallas = misPermisos.value.pantallas;
-      return !pantallas || !pantallas.length || pantallas.includes(key);
+      if (isSuperAdmin.value) return true;
+      const modulo = MODULO_POR_PANTALLA[key] || key;
+      return !!rolEnModulo(modulo);
     };
     const columnaOcultaPorPermiso = (field) => {
       const ocultas = misPermisos.value.columnas_ocultas_estudios;
@@ -397,7 +437,7 @@ const app = createApp({
 
     // Listas maestras cacheadas para armar los selectores de claves foráneas
     const refData = ref({
-      estudios: [], colegas: [], metodos: [], muestras: [], preanaliticos: [], sectores: [], valores_estudio_sector: [],
+      estudios: [], colegas: [], metodos: [], muestras: [], sectores: [], valores_estudio_sector: [],
       tipos_muestra: [], aditivos: [], unidades_medida: [], recipientes: [], modalidades_recoleccion: [],
       tecnicas_recoleccion: [], conservaciones: [], condiciones_especiales: [], prioridades_envio: []
     });
@@ -412,7 +452,6 @@ const app = createApp({
       colegas: d => d.descripcion,
       metodos: m => m.nombre,
       muestras: m => m.nombre,
-      preanaliticos: p => p.nombre,
       sectores: s => s.nombre,
       valores_estudio_sector: v => {
         const est = refData.value.estudios.find(e => e.id === v.id_estudio);
@@ -433,7 +472,7 @@ const app = createApp({
     // endpoint de la API para cada clave de refData
     const REF_ENDPOINT = {
       estudios: 'estudios', colegas: 'colegas', metodos: 'metodos', muestras: 'muestras',
-      preanaliticos: 'preanaliticos', sectores: 'sectores', valores_estudio_sector: 'valores-estudio-sector',
+      sectores: 'sectores', valores_estudio_sector: 'valores-estudio-sector',
       tipos_muestra: 'tipos-muestra', aditivos: 'aditivos', unidades_medida: 'unidades-medida',
       recipientes: 'recipientes', modalidades_recoleccion: 'modalidades-recoleccion',
       tecnicas_recoleccion: 'tecnicas-recoleccion', conservaciones: 'conservaciones',
@@ -541,20 +580,6 @@ const app = createApp({
         fields: [
           { field: 'nombre', label: 'Nombre / Tipo de Muestra', type: 'text', required: true },
           { field: 'observacion', label: 'Observación', type: 'textarea' }
-        ]
-      },
-      preanaliticos: {
-        label: 'Pre-analíticos',
-        singular: 'Pre-analítico',
-        endpoint: 'preanaliticos',
-        icon: 'bi-clipboard-pulse',
-        columns: [
-          { field: 'nombre', label: 'Nombre' },
-          { field: 'descripcion', label: 'Descripción' }
-        ],
-        fields: [
-          { field: 'nombre', label: 'Nombre', type: 'text', required: true },
-          { field: 'descripcion', label: 'Descripción', type: 'textarea' }
         ]
       },
       sectores: {
@@ -706,11 +731,9 @@ const app = createApp({
           { field: 'id_estudio', label: 'Estudio', type: 'fk', ref: 'estudios', required: true, allowCreateNew: true },
           { field: 'colega_id', label: 'Laboratorio Procesante', type: 'fk', ref: 'colegas', required: true },
           { field: 'id_metodo', label: 'Método', type: 'fk', ref: 'metodos' },
-          { field: 'id_preanalitico', label: 'Pre-analítico', type: 'fk', ref: 'preanaliticos' },
           { field: 'id_sector_laboratorio', label: 'Área', type: 'fk', ref: 'valores_estudio_sector' },
           { field: 'paridad_datatech_hexalis', label: 'Paridad Datatech-Hexalis', type: 'select', options: ESTADOS_PARIDAD, default: 'pendiente' },
           { field: 'estado', label: 'Estado', type: 'select', options: ESTADOS_REGISTRO, default: 'pendiente' },
-          { field: 'valor_referencia', label: 'Valor de Referencia', type: 'textarea' },
           { field: 'preanalitico_descripcion', label: 'Descripción', type: 'richtext' },
           { field: 'indicaciones_pacientes', label: 'Descripción', type: 'richtext' },
           { field: 'indicaciones_colega', label: 'Descripción', type: 'richtext' },
@@ -734,22 +757,11 @@ const app = createApp({
 
     const topNavEntities = TOP_NAV_ENTITY_KEYS.map(key => [key, entities[key]]);
     const muestrasCatalogoEntities = MUESTRAS_CATALOGO_KEYS.map(key => [key, entities[key]]);
-    // Filtradas por permisos.pantallas del usuario logueado (ver más abajo,
-    // pantallaPermitida): separado de las listas de arriba porque Vue 3 no
-    // permite combinar v-for y v-if en el mismo elemento.
+    // Filtradas por el rol del usuario logueado en el módulo "estudios" (ver
+    // más abajo, pantallaPermitida): separado de las listas de arriba porque
+    // Vue 3 no permite combinar v-for y v-if en el mismo elemento.
     const topNavEntitiesVisibles = computed(() => topNavEntities.filter(([key]) => pantallaPermitida(key)));
     const muestrasCatalogoEntitiesVisibles = computed(() => muestrasCatalogoEntities.filter(([key]) => pantallaPermitida(key)));
-
-    // "Pantallas" configurables desde el panel de usuarios (permisos.pantallas):
-    // Estudios + cada entidad con botón propio + cada catálogo de Muestras.
-    const PANTALLAS_DISPONIBLES = [
-      { key: 'estudios', label: 'Estudios' },
-      ...TOP_NAV_ENTITY_KEYS.map(k => ({ key: k, label: entities[k].label })),
-      ...MUESTRAS_CATALOGO_KEYS.map(k => ({ key: k, label: entities[k].label })),
-      { key: 'obras_sociales', label: 'Obras Sociales' },
-      { key: 'web_britlab', label: 'Web BritLab' },
-      { key: 'faq', label: 'FAQ' },
-    ];
 
     // --- Panel de administración de usuarios ---
     const adminUsuarios = ref([]);
@@ -757,7 +769,7 @@ const app = createApp({
     const adminUsuarioForm = ref({ username: '', password: '', nombre_completo: '', email: '', rol: 'user' });
     const adminCreandoUsuario = ref(false);
     const expandedUsuarioId = ref(null);
-    const permisosEditForm = ref({ pantallas: [], columnas_ocultas_estudios: [] });
+    const permisosEditForm = ref({ modulos: {}, columnas_ocultas_estudios: [], ver_credenciales_colegas: false });
 
     const fetchAdminUsuarios = async () => {
       adminUsuariosLoading.value = true;
@@ -843,16 +855,21 @@ const app = createApp({
       expandedUsuarioId.value = usuario.id;
       const p = usuario.permisos || {};
       permisosEditForm.value = {
-        pantallas: [...(p.pantallas || [])],
+        modulos: { ...(p.modulos || {}) },
         columnas_ocultas_estudios: [...(p.columnas_ocultas_estudios || [])],
         ver_credenciales_colegas: !!p.ver_credenciales_colegas,
       };
     };
 
-    const togglePermisoPantalla = (key) => {
-      const arr = permisosEditForm.value.pantallas;
-      const i = arr.indexOf(key);
-      if (i >= 0) arr.splice(i, 1); else arr.push(key);
+    // Rol de un módulo en el formulario de edición ('' = sin acceso).
+    const rolModuloEnEdicion = (modulo) => permisosEditForm.value.modulos[modulo] || '';
+
+    const establecerRolModulo = (modulo, rol) => {
+      if (!rol) {
+        delete permisosEditForm.value.modulos[modulo];
+      } else {
+        permisosEditForm.value.modulos[modulo] = rol;
+      }
     };
 
     const togglePermisoColumnaOculta = (field) => {
@@ -863,14 +880,14 @@ const app = createApp({
 
     const guardarPermisosUsuario = async (usuario) => {
       try {
-        const pantallas = permisosEditForm.value.pantallas.length ? permisosEditForm.value.pantallas : null;
+        const modulos = Object.keys(permisosEditForm.value.modulos).length ? { ...permisosEditForm.value.modulos } : null;
         const columnasOcultas = permisosEditForm.value.columnas_ocultas_estudios.length
           ? permisosEditForm.value.columnas_ocultas_estudios : null;
-        // A diferencia de pantallas/columnasOcultas (opt-out), este flag es
-        // opt-in: sólo se manda si está marcado, nunca se "limpia a null" por
-        // estar vacío (acá "vacío" significa false, no "sin restricción").
-        const permisos = (pantallas || columnasOcultas || permisosEditForm.value.ver_credenciales_colegas)
-          ? { pantallas, columnas_ocultas_estudios: columnasOcultas, ver_credenciales_colegas: permisosEditForm.value.ver_credenciales_colegas }
+        // A diferencia de "modulos" (opt-in: sin asignación no ve nada),
+        // columnasOcultas y ver_credenciales_colegas son restricciones extra
+        // DENTRO del módulo Estudios; se guardan sólo si están marcadas.
+        const permisos = (modulos || columnasOcultas || permisosEditForm.value.ver_credenciales_colegas)
+          ? { modulos, columnas_ocultas_estudios: columnasOcultas, ver_credenciales_colegas: permisosEditForm.value.ver_credenciales_colegas }
           : null;
         await axios.put(`${API_BASE}/usuarios/${usuario.id}`, { permisos });
         showAlert('Permisos actualizados correctamente');
@@ -889,8 +906,8 @@ const app = createApp({
     const isAllEstudiosMode = computed(() => currentView.value === 'indicaciones' && selectedColegaId.value === ALL_ESTUDIOS);
     const muestrasDropdownActive = computed(() => currentView.value === 'crud' && MUESTRAS_CATALOGO_KEYS.includes(currentEntityKey.value));
     // El nav "Estudios" agrupa Estudios + Laboratorios Procesantes + Métodos +
-    // Preanalíticos + Muestras (con su propio sub-menú): queda "activo" si la
-    // vista actual es cualquiera de esas.
+    // Muestras (con su propio sub-menú): queda "activo" si la vista actual es
+    // cualquiera de esas.
     const estudiosDropdownActive = computed(() =>
       currentView.value === 'indicaciones' ||
       (currentView.value === 'crud' && (TOP_NAV_ENTITY_KEYS.includes(currentEntityKey.value) || MUESTRAS_CATALOGO_KEYS.includes(currentEntityKey.value)))
@@ -1699,6 +1716,10 @@ const app = createApp({
       // Autenticación
       isLoggedIn,
       isAdmin,
+      isSuperAdmin,
+      rolEnModulo,
+      MODULOS_DISPONIBLES,
+      ROLES_MODULO_DISPONIBLES,
       authView,
       authLoading,
       authError,
@@ -1716,7 +1737,6 @@ const app = createApp({
       logout,
       pantallaPermitida,
       // Panel de administración de usuarios
-      PANTALLAS_DISPONIBLES,
       adminUsuarios,
       adminUsuariosLoading,
       adminUsuarioForm,
@@ -1729,7 +1749,8 @@ const app = createApp({
       cambiarRolUsuario,
       resetearPasswordUsuario,
       toggleEditarPermisos,
-      togglePermisoPantalla,
+      rolModuloEnEdicion,
+      establecerRolModulo,
       togglePermisoColumnaOculta,
       guardarPermisosUsuario,
       // Paginado: tamaño de página elegible
