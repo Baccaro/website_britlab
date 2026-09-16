@@ -124,27 +124,30 @@ let _muestraKeySeq = 0;
 const nextMuestraKey = () => `m${_muestraKeySeq++}`;
 
 // Columnas disponibles en la tabla "Estudios por Colega" (para el selector de
-// columnas visibles). Las primeras 10 son las que se muestran por defecto,
-// en el orden pedido; el resto queda disponible para activar desde "Columnas".
+// columnas visibles). Las primeras 14 son las que se muestran por defecto, en
+// el orden pedido; el resto (por ahora sólo Estado) queda disponible para
+// activar desde "Columnas" pero fuera del orden solicitado.
 const INDICACIONES_COLUMNAS = [
   { field: 'estudio_descripcion', label: 'Estudio' },
-  { field: 'codigo_hexalis', label: 'Cód. Hex.' },
+  { field: 'colega_descripcion', label: 'Laboratorio Procesante' },
+  { field: 'codigo_hexalis', label: 'Cód. Hexa' },
   { field: 'nemonico_datatech', label: 'Nemónico' },
-  { field: 'colega_descripcion', label: 'Procesador' },
+  { field: 'codigo_laboratorio', label: 'Cód. Lab. Externo' },
   { field: 'metodo', label: 'Método' },
   { field: 'muestra', label: 'Muestra' },
-  { field: 'dias_demora', label: 'Dem.' },
-  { field: 'indicaciones_pacientes', label: 'Ind. Paciente' },
-  { field: 'indicaciones_colega', label: 'Modelo Laboratorio Procesante' },
-  { field: 'estado', label: 'Estado' },
+  { field: 'dias_demora', label: 'Demora' },
+  { field: 'preanalitico_descripcion', label: 'Pre-Analítico' },
+  { field: 'indicaciones_pacientes', label: 'Indicaciones Paciente' },
+  { field: 'indicaciones_colega', label: 'Modelo Derivante' },
   { field: 'paridad_datatech_hexalis', label: 'Paridad' },
-  { field: 'codigo_laboratorio', label: 'Cód. Lab.' },
   { field: 'revisor', label: 'Revisor' },
-  { field: 'observacion', label: 'Observaciones' }
+  { field: 'observacion', label: 'Observaciones' },
+  { field: 'estado', label: 'Estado' }
 ];
 const INDICACIONES_COLUMNAS_DEFAULT = [
-  'estudio_descripcion', 'codigo_hexalis', 'nemonico_datatech', 'colega_descripcion', 'metodo',
-  'muestra', 'dias_demora', 'indicaciones_pacientes', 'indicaciones_colega', 'estado'
+  'estudio_descripcion', 'colega_descripcion', 'codigo_hexalis', 'nemonico_datatech', 'codigo_laboratorio',
+  'metodo', 'muestra', 'dias_demora', 'preanalitico_descripcion', 'indicaciones_pacientes',
+  'indicaciones_colega', 'paridad_datatech_hexalis', 'revisor', 'observacion'
 ];
 
 // Tamaños de página disponibles para los listados paginados (Estudios,

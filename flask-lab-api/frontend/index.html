@@ -950,6 +950,15 @@
                         <span class="text-britlab-gray font-medium" v-else>Sin muestras</span>
                       </span>
 
+                      <!-- Pre-Analítico: ojo para ver en el panel lateral (descripción + PDFs), o "No disponible" en gris -->
+                      <span v-else-if="col.field === 'preanalitico_descripcion'">
+                        <button v-if="item.preanalitico_descripcion || item.pdfs_preanalitico_count" @click.stop="openPreanaliticoPanel(item)"
+                          class="btn btn-xs btn-light border" title="Ver preanalítico" type="button">
+                          <i class="bi bi-eye"></i><span class="badge rounded-pill bg-tertiary ms-1" v-if="item.pdfs_preanalitico_count">{{ item.pdfs_preanalitico_count }}</span>
+                        </button>
+                        <span class="text-britlab-gray font-medium" v-else>No disponible</span>
+                      </span>
+
                       <!-- Indicaciones Paciente: ojo para ver en el panel lateral (descripción + PDFs), o "No disponible" en gris -->
                       <span v-else-if="col.field === 'indicaciones_pacientes'">
                         <button v-if="item.indicaciones_pacientes || item.pdfs_paciente_count" @click.stop="openIndicacionesPanel(item)"
