@@ -42,7 +42,10 @@ const ESTADO_CHIP_CLASS = {
   verificado: 'bg-blue-600',
   pendiente: 'bg-tertiary',
   revisar: 'bg-warning text-dark',
-  borrador: 'bg-white text-on-surface-variant border border-outline-variant'
+  borrador: 'bg-white text-on-surface-variant border border-outline-variant',
+  // Estados propios de FAQ (RN-FAQ-04): 'borrador' ya está definido arriba.
+  activo: 'bg-success-teal',
+  inactivo: 'bg-tertiary'
 };
 
 
@@ -188,6 +191,8 @@ const app = createApp({
     // Laboratorios Procesantes, Métodos, Muestras): usado en todos los
     // botones de escritura de esas pantallas.
     const isAdmin = computed(() => rolEnModulo('estudios') === 'administrador');
+    // Puede crear/editar/eliminar preguntas frecuentes (módulo FAQ).
+    const puedeEscribirFaq = computed(() => rolEnModulo('faq') === 'administrador');
 
     const misPermisos = computed(() => (currentUser.value && currentUser.value.permisos) || {});
     const pantallaPermitida = (key) => {
@@ -361,13 +366,16 @@ const app = createApp({
       return modalInstance;
     };
 
-    // --- "Ver ampliado": abre cualquier campo de texto enriquecido del
-    // formulario de Estudio x Colega en un modal grande, para escribir más
-    // cómodo. Edita el mismo formData[campo] en vivo (no hay "aceptar/cancelar"
-    // por separado: es sólo una vista más grande del mismo campo). ---
+    // --- "Ver ampliado": abre cualquier campo de texto enriquecido (del
+    // formulario de Estudio x Colega, o de cualquier otro, como FAQ) en un
+    // modal grande, para escribir más cómodo. Edita el mismo campo en vivo
+    // (no hay "aceptar/cancelar" por separado: es sólo una vista más grande
+    // del mismo campo). 'targetKey' identifica qué objeto reactivo editar. ---
     let richModalInstance = null;
     const richModalField = ref(null);
     const richModalLabel = ref('');
+    const richModalTargetKey = ref('formData');
+    const richModalTargetObj = computed(() => (richModalTargetKey.value === 'faqForm' ? faqForm.value : formData.value));
     const ensureRichModalInstance = () => {
       if (!richModalInstance) {
         const modalEl = document.getElementById('richEditorModal');
@@ -375,9 +383,10 @@ const app = createApp({
       }
       return richModalInstance;
     };
-    const abrirEditorAmpliado = (field, label) => {
+    const abrirEditorAmpliado = (field, label, targetKey = 'formData') => {
       richModalField.value = field;
       richModalLabel.value = label;
+      richModalTargetKey.value = targetKey;
       ensureRichModalInstance().show();
     };
     // Secciones desplegables abiertas/cerradas del formulario de Estudio x Colega
@@ -917,6 +926,139 @@ const app = createApp({
     const switchToPlaceholder = (view) => {
       if (!pantallaPermitida(view)) return;
       currentView.value = view;
+    };
+
+    // --- Módulo FAQ (Preguntas Frecuentes) ---
+    const ESTADOS_FAQ = ['borrador', 'activo', 'inactivo'];
+    const faqItems = ref([]);
+    const faqLoading = ref(false);
+    const faqPagination = ref({ page: 1, limit: 25, total: 0, total_pages: 1 });
+    const faqPageSize = ref(Number(localStorage.getItem('britlab_faq_pagina_size')) || 25);
+    const faqCategoriasDisponibles = ref([]);
+    const faqBusqueda = ref('');
+    const faqCategoriaFiltro = ref('');
+    const faqDisponibilidadFiltro = ref({ web: false, ia: false, interno: false });
+    const faqEstadoFiltro = ref('');
+    const expandedFaqId = ref(null);
+    const faqForm = ref({});
+    const faqModalMode = ref('create');
+    const faqGuardando = ref(false);
+
+    const fetchFaqCategorias = async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/faq/categorias`);
+        faqCategoriasDisponibles.value = res.data;
+      } catch (err) {
+        faqCategoriasDisponibles.value = [];
+      }
+    };
+
+    const fetchFaqItems = async (page = 1) => {
+      faqLoading.value = true;
+      try {
+        const params = { page, limit: faqPageSize.value };
+        if (faqBusqueda.value.trim()) params.q = faqBusqueda.value.trim();
+        if (faqCategoriaFiltro.value) params.categoria = faqCategoriaFiltro.value;
+        if (faqEstadoFiltro.value) params.estado = faqEstadoFiltro.value;
+        if (faqDisponibilidadFiltro.value.web) params.web = 'true';
+        if (faqDisponibilidadFiltro.value.ia) params.ia = 'true';
+        if (faqDisponibilidadFiltro.value.interno) params.interno = 'true';
+        const res = await axios.get(`${API_BASE}/faq`, { params });
+        faqItems.value = res.data.items;
+        faqPagination.value = {
+          page: res.data.page, limit: res.data.limit,
+          total: res.data.total, total_pages: res.data.total_pages,
+        };
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudieron cargar las preguntas frecuentes'), 'danger');
+      } finally {
+        faqLoading.value = false;
+      }
+    };
+
+    const switchToFaq = () => {
+      if (!pantallaPermitida('faq')) return;
+      currentView.value = 'faq';
+      expandedFaqId.value = null;
+      fetchFaqCategorias();
+      fetchFaqItems(1);
+    };
+
+    const cambiarPaginaFaq = (page) => {
+      if (page >= 1 && page <= faqPagination.value.total_pages) fetchFaqItems(page);
+    };
+    const cambiarTamanioPaginaFaq = (size) => {
+      faqPageSize.value = Number(size);
+      localStorage.setItem('britlab_faq_pagina_size', String(faqPageSize.value));
+      fetchFaqItems(1);
+    };
+    const onFaqFiltroChange = () => { fetchFaqItems(1); };
+
+    const toggleFaqRowExpand = (id) => {
+      expandedFaqId.value = expandedFaqId.value === id ? null : id;
+    };
+
+    // Texto informativo de disponibilidad, según RN-FAQ-03/05/06/07: refleja
+    // dónde va a aparecer (o no) la pregunta según canal + estado elegidos.
+    const textoDisponibilidadFaq = (item) => {
+      const canal = item.disponible_web && item.disponible_ia ? 'Web + Asistente IA'
+        : item.disponible_web ? 'Web'
+        : item.disponible_ia ? 'Asistente IA'
+        : 'Exclusivamente interno';
+      if (item.estado === 'borrador') return `En preparación (Borrador). Cuando pase a Activo, se publicará en: ${canal}.`;
+      if (item.estado === 'inactivo') return `Inactiva: no visible al público, sólo consultable desde Administración. Canal configurado: ${canal}.`;
+      return `Publicada en: ${canal}.`;
+    };
+
+    const abrirFaqForm = (mode, item = null) => {
+      faqModalMode.value = mode;
+      if (mode === 'edit' && item) {
+        faqForm.value = { ...item };
+      } else {
+        faqForm.value = { pregunta: '', respuesta: '', categoria: '', disponible_web: false, disponible_ia: false, estado: 'borrador' };
+      }
+      currentView.value = 'faq_form';
+    };
+    const cancelarFaqForm = () => { currentView.value = 'faq'; };
+
+    const guardarFaq = async () => {
+      if (!faqForm.value.pregunta || !faqForm.value.pregunta.trim()) {
+        showAlert('La pregunta es obligatoria', 'danger'); return;
+      }
+      if (!faqForm.value.respuesta || !faqForm.value.respuesta.trim()) {
+        showAlert('La respuesta es obligatoria', 'danger'); return;
+      }
+      if (!faqForm.value.categoria || !faqForm.value.categoria.trim()) {
+        showAlert('La categoría es obligatoria', 'danger'); return;
+      }
+      faqGuardando.value = true;
+      try {
+        if (faqModalMode.value === 'create') {
+          await axios.post(`${API_BASE}/faq`, faqForm.value);
+          showAlert('Pregunta frecuente creada correctamente');
+        } else {
+          await axios.put(`${API_BASE}/faq/${faqForm.value.id}`, faqForm.value);
+          showAlert('Pregunta frecuente actualizada correctamente');
+        }
+        currentView.value = 'faq';
+        fetchFaqCategorias();
+        fetchFaqItems(faqPagination.value.page);
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo guardar la pregunta frecuente'), 'danger');
+      } finally {
+        faqGuardando.value = false;
+      }
+    };
+
+    const eliminarFaq = async (item) => {
+      if (!confirm(`¿Eliminar la pregunta "${item.pregunta}"?`)) return;
+      try {
+        await axios.delete(`${API_BASE}/faq/${item.id}`);
+        showAlert('Pregunta frecuente eliminada correctamente');
+        fetchFaqItems(faqPagination.value.page);
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo eliminar la pregunta frecuente'), 'danger');
+      }
     };
 
     // Un estudio está "en conflicto" cuando figura como 'listo' (activo) en
@@ -1808,6 +1950,31 @@ const app = createApp({
       switchCrudEntity,
       switchToIndicaciones,
       switchToPlaceholder,
+      puedeEscribirFaq,
+      ESTADOS_FAQ,
+      faqItems,
+      faqLoading,
+      faqPagination,
+      faqPageSize,
+      faqCategoriasDisponibles,
+      faqBusqueda,
+      faqCategoriaFiltro,
+      faqDisponibilidadFiltro,
+      faqEstadoFiltro,
+      expandedFaqId,
+      faqForm,
+      faqModalMode,
+      faqGuardando,
+      switchToFaq,
+      cambiarPaginaFaq,
+      cambiarTamanioPaginaFaq,
+      onFaqFiltroChange,
+      toggleFaqRowExpand,
+      textoDisponibilidadFaq,
+      abrirFaqForm,
+      cancelarFaqForm,
+      guardarFaq,
+      eliminarFaq,
       onColegaSelectorChange,
       editEstudioColega,
       openNewEstudioForColega,
@@ -1830,6 +1997,8 @@ const app = createApp({
       toggleSection,
       richModalField,
       richModalLabel,
+      richModalTargetKey,
+      richModalTargetObj,
       abrirEditorAmpliado,
       fieldsForSection,
       muestrasForm,
@@ -1891,6 +2060,9 @@ app.component('rich-editor', {
     // 'large': usado dentro del modal de edición ampliada, le da mucho más
     // alto al área de texto para trabajar cómodo en pantalla completa.
     large: { type: Boolean, default: false },
+    // 'links': suma insertar/editar enlace y quitar enlace a la barra (lo
+    // pide la respuesta de FAQ; el resto de los usos no lo necesitan).
+    links: { type: Boolean, default: false },
   },
   emits: ['update:modelValue'],
   template: `
@@ -1900,6 +2072,10 @@ app.component('rich-editor', {
         <button type="button" title="Cursiva" @mousedown.prevent="exec('italic')"><i class="bi bi-type-italic"></i></button>
         <button type="button" title="Lista con viñetas" @mousedown.prevent="exec('insertUnorderedList')"><i class="bi bi-list-ul"></i></button>
         <button type="button" title="Lista numerada" @mousedown.prevent="exec('insertOrderedList')"><i class="bi bi-list-ol"></i></button>
+        <template v-if="links">
+          <button type="button" title="Insertar/editar enlace" @mousedown.prevent="insertarEnlace"><i class="bi bi-link-45deg"></i></button>
+          <button type="button" title="Quitar enlace" @mousedown.prevent="quitarEnlace"><i class="bi bi-link-45deg" style="text-decoration: line-through;"></i></button>
+        </template>
       </div>
       <div ref="editor" class="rich-content form-control form-control-sm" contenteditable="true"
         :data-placeholder="placeholder" @input="onInput" @paste="onPaste"></div>
@@ -1918,6 +2094,31 @@ app.component('rich-editor', {
     exec(cmd) {
       this.$refs.editor.focus();
       document.execCommand(cmd);
+      this.onInput();
+    },
+    insertarEnlace() {
+      // Si el cursor está sobre un enlace existente, precarga su URL (editar
+      // en vez de crear uno nuevo encima).
+      let urlActual = '';
+      const seleccion = window.getSelection();
+      let nodo = seleccion && seleccion.anchorNode;
+      while (nodo && nodo !== this.$refs.editor) {
+        if (nodo.nodeName === 'A') { urlActual = nodo.getAttribute('href') || ''; break; }
+        nodo = nodo.parentNode;
+      }
+      const url = window.prompt('URL del enlace (página web, https://wa.me/549... para WhatsApp, o tel:+549... para teléfono):', urlActual);
+      if (url === null) return;
+      this.$refs.editor.focus();
+      if (!url.trim()) {
+        document.execCommand('unlink');
+      } else {
+        document.execCommand('createLink', false, url.trim());
+      }
+      this.onInput();
+    },
+    quitarEnlace() {
+      this.$refs.editor.focus();
+      document.execCommand('unlink');
       this.onInput();
     },
     onInput() {

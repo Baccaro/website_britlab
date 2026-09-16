@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict apgLjcsfLwLfUmMzrUg5T98WMviCvxLul34gN4iFU7Het9pE7AFgonlTlJvObi5
+\restrict rKGFsm0DJlkA0ol9iFHXdxgiGVaUcYKjMqzmuke1ZVqcjJyV1RwJJjyC81ylWks
 
 -- Dumped from database version 15.18
 -- Dumped by pg_dump version 15.18
@@ -368,6 +368,46 @@ CREATE SEQUENCE public.estudio_id_seq
 --
 
 ALTER SEQUENCE public.estudio_id_seq OWNED BY public.estudio.id;
+
+
+--
+-- Name: faq; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.faq (
+    id integer NOT NULL,
+    pregunta text NOT NULL,
+    respuesta text NOT NULL,
+    categoria character varying(150) NOT NULL,
+    disponible_web boolean DEFAULT false NOT NULL,
+    disponible_ia boolean DEFAULT false NOT NULL,
+    estado character varying(20) DEFAULT 'borrador'::character varying NOT NULL,
+    creado_por_id integer,
+    actualizado_por_id integer,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
+    CONSTRAINT chk_faq_estado CHECK (((estado)::text = ANY ((ARRAY['borrador'::character varying, 'activo'::character varying, 'inactivo'::character varying])::text[])))
+);
+
+
+--
+-- Name: faq_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.faq_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: faq_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.faq_id_seq OWNED BY public.faq.id;
 
 
 --
@@ -839,6 +879,13 @@ ALTER TABLE ONLY public.estudio_colega_muestra ALTER COLUMN id SET DEFAULT nextv
 --
 
 ALTER TABLE ONLY public.estudio_colega_muestra_alternativa ALTER COLUMN id SET DEFAULT nextval('public.estudio_colega_muestra_alternativa_id_seq'::regclass);
+
+
+--
+-- Name: faq id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.faq ALTER COLUMN id SET DEFAULT nextval('public.faq_id_seq'::regclass);
 
 
 --
@@ -2589,6 +2636,14 @@ COPY public.estudio_colega_muestra_alternativa (id, id_estudio_colega_muestra, i
 
 
 --
+-- Data for Name: faq; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.faq (id, pregunta, respuesta, categoria, disponible_web, disponible_ia, estado, creado_por_id, actualizado_por_id, created_at, updated_at) FROM stdin;
+\.
+
+
+--
 -- Data for Name: metodo; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -3109,6 +3164,7 @@ COPY public.usuario (id, username, nombre_completo, email, password_hash, rol, a
 3	rbaccaro	rbaccaro	\N	scrypt:32768:8:1$xKmP2lSFVdj38lIm$245e98e6fb6d0fd60c79d2d62736dce3dde38a95feea071d9dc5b7ee6c48f5dead2f55ceca368cdff1068b7b8d884bd4587a5d84a4e329384ca918aeafdf5986	superadmin	t	\N	2026-09-09 15:32:03.530391
 8	test	test gonzales	tgonzales@gmail.com	scrypt:32768:8:1$4E91aeoxbBXatWhq$1c56abdb3236e011f010403440914cd2c8ffb214a26e9f73d3c0732ac3d23391debcac5d670ea1e57c72552a27103ad2ebcffb533acf70aec1e7a94e07439c1c	user	t	{"modulos": {"estudios": "consultor"}, "columnas_ocultas_estudios": ["estudio_descripcion", "codigo_hexalis", "nemonico_datatech", "colega_descripcion", "muestra", "indicaciones_pacientes", "estado", "observacion"]}	2026-09-09 16:02:46.471077
 2	ccarletti	ccarletti	\N	scrypt:32768:8:1$hTlXxdD77lNvONAD$5a96c5333c760db74d941d8a8222ec0a3ba9cb90a357eeec9521b3453e12b9433c129f158a57f1a701ea71785bcced7e1b471889d2bebc0c75ab701e2005a288	superadmin	t	{"columnas_ocultas_estudios": null}	2026-09-09 15:32:03.530391
+15	test2	testi	testo@gmail.com	scrypt:32768:8:1$6IrfZIgg7CwP6Xg3$5e2a61406b0265b341d2bfae3ae5f5e6f73dec96297920df7b9e40024d714a056af2c66725397e7881dde3aa2becc2176db717d448690302e6cdf7faf65f2d39	user	t	{"modulos": {"estudios": "consultor"}, "ver_credenciales_colegas": false, "columnas_ocultas_estudios": ["revisor"]}	2026-09-15 17:09:22.097073
 \.
 
 
@@ -3752,6 +3808,13 @@ SELECT pg_catalog.setval('public.estudio_id_seq', 2919, true);
 
 
 --
+-- Name: faq_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.faq_id_seq', 5, true);
+
+
+--
 -- Name: metodo_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
@@ -3825,7 +3888,7 @@ SELECT pg_catalog.setval('public.unidad_medida_id_seq', 6, true);
 -- Name: usuario_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.usuario_id_seq', 14, true);
+SELECT pg_catalog.setval('public.usuario_id_seq', 17, true);
 
 
 --
@@ -3937,6 +4000,14 @@ ALTER TABLE ONLY public.estudio_colega
 
 ALTER TABLE ONLY public.estudio
     ADD CONSTRAINT estudio_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: faq faq_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.faq
+    ADD CONSTRAINT faq_pkey PRIMARY KEY (id);
 
 
 --
@@ -4155,6 +4226,13 @@ CREATE INDEX idx_ecm_id_estudio_colega ON public.estudio_colega_modelo USING btr
 
 
 --
+-- Name: idx_faq_categoria; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_faq_categoria ON public.faq USING btree (categoria);
+
+
+--
 -- Name: idx_password_reset_token_usuario; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4362,6 +4440,22 @@ ALTER TABLE ONLY public.estudio_colega
 
 
 --
+-- Name: faq faq_actualizado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.faq
+    ADD CONSTRAINT faq_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL;
+
+
+--
+-- Name: faq faq_creado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.faq
+    ADD CONSTRAINT faq_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL;
+
+
+--
 -- Name: estudio_colega fk_estudio_colega_colega; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4397,5 +4491,5 @@ ALTER TABLE ONLY public.valor_estudio_sector
 -- PostgreSQL database dump complete
 --
 
-\unrestrict apgLjcsfLwLfUmMzrUg5T98WMviCvxLul34gN4iFU7Het9pE7AFgonlTlJvObi5
+\unrestrict rKGFsm0DJlkA0ol9iFHXdxgiGVaUcYKjMqzmuke1ZVqcjJyV1RwJJjyC81ylWks
 

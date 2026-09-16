@@ -762,7 +762,7 @@
               </button>
             </li>
             <li class="nav-item" v-if="pantallaPermitida('faq')">
-              <button :class="['nav-btn', currentView === 'faq' ? 'active' : '']" @click="switchToPlaceholder('faq')" type="button">
+              <button :class="['nav-btn', (currentView === 'faq' || currentView === 'faq_form') ? 'active' : '']" @click="switchToFaq" type="button">
                 <i class="bi bi-question-circle me-1"></i>FAQ
               </button>
             </li>
@@ -1414,19 +1414,292 @@
       </div>
 
       <!-- ========================================================= -->
-      <!-- VISTAS: Obras Sociales / Web BritLab / FAQ                  -->
+      <!-- VISTAS: Obras Sociales / Web BritLab                        -->
       <!-- Todavía sin contenido funcional: placeholders honestos, no  -->
       <!-- simulan datos que no existen.                               -->
       <!-- ========================================================= -->
-      <div v-if="currentView === 'obras_sociales' || currentView === 'web_britlab' || currentView === 'faq'">
+      <div v-if="currentView === 'obras_sociales' || currentView === 'web_britlab'">
         <h4 class="mb-4 text-primary font-bold text-xl">
-          <i :class="['bi me-2', currentView === 'obras_sociales' ? 'bi-shield-plus' : currentView === 'web_britlab' ? 'bi-globe' : 'bi-question-circle']"></i>
-          {{ currentView === 'obras_sociales' ? 'Obras Sociales' : currentView === 'web_britlab' ? 'Web BritLab' : 'FAQ' }}
+          <i :class="['bi me-2', currentView === 'obras_sociales' ? 'bi-shield-plus' : 'bi-globe']"></i>
+          {{ currentView === 'obras_sociales' ? 'Obras Sociales' : 'Web BritLab' }}
         </h4>
         <div class="bg-white rounded-xl shadow-sm border border-outline-variant p-5 text-center text-on-surface-variant">
           <i class="bi bi-cone-striped text-4xl d-block mb-2 text-tertiary-fixed-dim"></i>
           <span class="font-medium text-sm">Esta sección todavía no tiene contenido cargado.</span>
         </div>
+      </div>
+
+      <!-- ========================================================= -->
+      <!-- VISTA: FAQ (Listado y Alta de Preguntas Frecuentes)         -->
+      <!-- ========================================================= -->
+      <div v-if="currentView === 'faq'">
+        <div class="bg-white rounded-xl shadow-sm border border-outline-variant p-4 mb-4">
+          <h5 class="text-lg font-bold text-primary mb-3 flex items-center">
+            <i class="bi bi-funnel me-2 text-primary-container"></i>Filtros y búsqueda
+          </h5>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="block text-xs font-semibold text-on-surface mb-1">Buscar pregunta o respuesta:</label>
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-surface-container border-outline-variant text-primary"><i class="bi bi-search"></i></span>
+                <input @input="onFaqFiltroChange" class="form-control rounded-e-lg border-outline-variant" placeholder="Buscar..." type="text" v-model="faqBusqueda" />
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label class="block text-xs font-semibold text-on-surface mb-1">Categoría:</label>
+              <select @change="onFaqFiltroChange" class="form-select form-select-sm rounded-lg border-outline-variant" v-model="faqCategoriaFiltro">
+                <option value="">Todas las categorías</option>
+                <option :key="c" :value="c" v-for="c in faqCategoriasDisponibles">{{ c }}</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label class="block text-xs font-semibold text-on-surface mb-1">Estado:</label>
+              <select @change="onFaqFiltroChange" class="form-select form-select-sm rounded-lg border-outline-variant" v-model="faqEstadoFiltro">
+                <option value="">Todos</option>
+                <option :key="e" :value="e" v-for="e in ESTADOS_FAQ">{{ e }}</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="block text-xs font-semibold text-on-surface mb-1">Disponibilidad:</label>
+              <div class="d-flex gap-3 flex-wrap pt-1">
+                <div class="form-check form-check-inline mb-0">
+                  <input @change="onFaqFiltroChange" class="form-check-input" id="faq_disp_web" type="checkbox" v-model="faqDisponibilidadFiltro.web" />
+                  <label class="form-check-label text-xs" for="faq_disp_web">Web</label>
+                </div>
+                <div class="form-check form-check-inline mb-0">
+                  <input @change="onFaqFiltroChange" class="form-check-input" id="faq_disp_ia" type="checkbox" v-model="faqDisponibilidadFiltro.ia" />
+                  <label class="form-check-label text-xs" for="faq_disp_ia">IA</label>
+                </div>
+                <div class="form-check form-check-inline mb-0">
+                  <input @change="onFaqFiltroChange" class="form-check-input" id="faq_disp_interno" type="checkbox" v-model="faqDisponibilidadFiltro.interno" />
+                  <label class="form-check-label text-xs" for="faq_disp_interno">Interno</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <h4 class="mb-0 text-primary font-bold text-xl">Preguntas frecuentes</h4>
+            <span class="text-on-surface-variant text-xs">{{ faqItems.length }} de {{ faqPagination.total }} preguntas frecuentes</span>
+          </div>
+          <button @click="abrirFaqForm('create')" v-if="puedeEscribirFaq"
+            class="btn btn-primary bg-primary border-primary shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors rounded-lg px-3 py-1.5 text-sm flex-shrink-0">
+            <i class="bi bi-plus-lg me-1"></i> Nueva pregunta
+          </button>
+        </div>
+
+        <div class="table-container-fixed mb-4">
+          <div class="overflow-auto">
+            <table class="table table-hover table-auto-layout">
+              <thead class="table-dark">
+                <tr>
+                  <th style="width: 2rem;"></th>
+                  <th>Pregunta</th>
+                  <th>Categoría</th>
+                  <th>Disponibilidad</th>
+                  <th>Estado</th>
+                  <th>Última actividad</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="faqLoading">
+                  <td class="text-center py-5" colspan="7">
+                    <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
+                    <p class="mt-2 text-on-surface-variant font-medium text-xs mb-0">Cargando preguntas frecuentes...</p>
+                  </td>
+                </tr>
+                <tr v-else-if="!faqItems.length">
+                  <td class="text-center text-on-surface-variant py-5" colspan="7">
+                    <i class="bi bi-inbox text-3xl d-block mb-2 text-primary-container"></i>
+                    <span class="font-medium text-xs">No se encontraron preguntas frecuentes con estos filtros.</span>
+                  </td>
+                </tr>
+                <template :key="item.id" v-else v-for="item in faqItems">
+                  <tr @click="toggleFaqRowExpand(item.id)" class="cursor-pointer" style="cursor: pointer;">
+                    <td class="text-center"><i :class="['bi', expandedFaqId === item.id ? 'bi-chevron-down' : 'bi-chevron-right']"></i></td>
+                    <td>
+                      <span class="font-semibold text-primary d-block">{{ item.pregunta }}</span>
+                      <span class="text-britlab-gray">{{ textoPlano(item.respuesta, 90) }}</span>
+                    </td>
+                    <td>{{ item.categoria }}</td>
+                    <td>
+                      <span class="badge rounded-pill badge-xs bg-tertiary me-1" v-if="item.disponible_web">Web</span>
+                      <span class="badge rounded-pill badge-xs bg-tertiary me-1" v-if="item.disponible_ia">IA</span>
+                      <span class="text-britlab-gray" v-if="!item.disponible_web && !item.disponible_ia">Interno</span>
+                    </td>
+                    <td>
+                      <span :class="['badge rounded-pill badge-xs', estadoChipClass(item.estado)]">{{ item.estado }}</span>
+                    </td>
+                    <td>
+                      {{ item.actualizado_por || item.creado_por || '-' }}<br>
+                      <span class="text-britlab-gray">{{ item.updated_at ? new Date(item.updated_at).toLocaleString() : '-' }}</span>
+                    </td>
+                    <td class="text-center">
+                      <div class="d-flex justify-content-center gap-1" v-if="puedeEscribirFaq">
+                        <button @click.stop="abrirFaqForm('edit', item)" class="btn btn-xs btn-outline-primary border-primary text-primary hover:bg-primary hover:text-white" title="Editar">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button @click.stop="eliminarFaq(item)" class="btn btn-xs btn-outline-danger" title="Eliminar">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                      <span class="text-britlab-gray" v-else>&mdash;</span>
+                    </td>
+                  </tr>
+                  <tr v-if="expandedFaqId === item.id">
+                    <td colspan="7" class="bg-surface-container-low fila-detalle-contenido">
+                      <div class="row g-3 p-3">
+                        <div class="col-md-4">
+                          <div class="bg-white border border-outline-variant rounded-lg p-3 h-100">
+                            <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">DATOS DEL REGISTRO</h6>
+                            <dl class="mb-0 text-xs">
+                              <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">ID</dt><dd class="mb-0 font-medium">{{ item.id }}</dd></div>
+                              <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Categoría</dt><dd class="mb-0 font-medium">{{ item.categoria }}</dd></div>
+                              <div class="d-flex justify-content-between py-1"><dt class="text-on-surface-variant">Estado</dt><dd class="mb-0 font-medium">{{ item.estado }}</dd></div>
+                            </dl>
+                            <p class="text-xs text-on-surface-variant mt-2 mb-0">{{ textoDisponibilidadFaq(item) }}</p>
+                            <hr class="my-2" />
+                            <p class="text-xs text-on-surface-variant mb-1">Creado por <strong>{{ item.creado_por || '-' }}</strong><br>{{ item.created_at ? new Date(item.created_at).toLocaleString() : '-' }}</p>
+                            <p class="text-xs text-on-surface-variant mb-0">Última edición por <strong>{{ item.actualizado_por || '-' }}</strong><br>{{ item.updated_at ? new Date(item.updated_at).toLocaleString() : '-' }}</p>
+                          </div>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="bg-white border border-outline-variant rounded-lg p-3 h-100">
+                            <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">RESPUESTA COMPLETA</h6>
+                            <p class="font-bold text-sm mb-2">{{ item.pregunta }}</p>
+                            <div class="text-sm rich-display" v-html="item.respuesta"></div>
+                            <button @click="abrirFaqForm('edit', item)" v-if="puedeEscribirFaq" class="btn btn-sm btn-outline-primary border-primary text-primary rounded-lg mt-3" type="button">
+                              <i class="bi bi-pencil me-1"></i>Editar respuesta
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <nav class="d-flex justify-content-between align-items-center bg-white p-3 rounded-lg border border-outline-variant shadow-sm mb-4 flex-wrap gap-2" v-if="faqItems.length > 0">
+          <span class="text-on-surface-variant text-xs font-medium">Mostrando página {{ faqPagination.page }} de {{ faqPagination.total_pages }} (Total: {{ faqPagination.total }} registros)</span>
+          <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2">
+              <label class="text-on-surface-variant text-xs font-medium mb-0">Por página:</label>
+              <select :value="faqPageSize" @change="cambiarTamanioPaginaFaq($event.target.value)"
+                class="form-select form-select-sm rounded-lg border-outline-variant" style="width: 80px;">
+                <option :key="n" :value="n" v-for="n in PAGE_SIZE_OPTIONS">{{ n }}</option>
+              </select>
+            </div>
+            <ul class="pagination pagination-sm mb-0" v-if="faqPagination.total_pages > 1">
+              <li :class="['page-item', faqPagination.page === 1 ? 'disabled' : '']">
+                <button @click="cambiarPaginaFaq(faqPagination.page - 1)" class="page-link text-primary border-outline-variant">Anterior</button>
+              </li>
+              <li :class="['page-item', faqPagination.page === faqPagination.total_pages ? 'disabled' : '']">
+                <button @click="cambiarPaginaFaq(faqPagination.page + 1)" class="page-link text-primary border-outline-variant">Siguiente</button>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+      <!-- ========================================================= -->
+      <!-- VISTA: ALTA / EDICIÓN DE PREGUNTA FRECUENTE (pantalla       -->
+      <!-- completa, mismo criterio que Estudio x Colega)              -->
+      <!-- ========================================================= -->
+      <div v-if="currentView === 'faq_form'">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4 class="mb-0 text-primary font-bold text-xl">{{ faqModalMode === 'create' ? 'Nueva pregunta' : 'Editar pregunta' }}</h4>
+          <button @click="cancelarFaqForm" class="btn btn-sm btn-light border-outline-variant text-on-surface rounded-lg px-3" type="button">
+            <i class="bi bi-arrow-left me-1"></i>Volver
+          </button>
+        </div>
+
+        <form @submit.prevent="guardarFaq">
+          <div class="border border-outline-variant rounded-lg mb-3 overflow-hidden">
+            <div class="section-toggle section-toggle-open p-3">
+              <span class="d-block font-bold text-primary">Identificación</span>
+            </div>
+            <div class="section-content p-3">
+              <div class="row g-3">
+                <div class="col-md-12">
+                  <label class="form-label text-xs font-semibold text-on-surface mb-1">Pregunta *</label>
+                  <input class="form-control form-control-sm rounded-lg border-outline-variant" required type="text" v-model="faqForm.pregunta" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-xs font-semibold text-on-surface mb-1">Categoría *</label>
+                  <input list="dl_faq_categoria" class="form-control form-control-sm rounded-lg border-outline-variant" placeholder="Escribí para buscar o creá una nueva..." required type="text" v-model="faqForm.categoria" />
+                  <datalist id="dl_faq_categoria">
+                    <option :key="c" :value="c" v-for="c in faqCategoriasDisponibles"></option>
+                  </datalist>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="border border-outline-variant rounded-lg mb-3 overflow-hidden">
+            <div class="section-toggle section-toggle-open p-3 d-flex justify-content-between align-items-center">
+              <span class="d-block font-bold text-primary">Respuesta</span>
+              <button @click="abrirEditorAmpliado('respuesta', 'Respuesta', 'faqForm')" class="btn btn-xs btn-link text-primary p-0 text-decoration-none" type="button">
+                <i class="bi bi-arrows-angle-expand me-1"></i>Ampliar
+              </button>
+            </div>
+            <div class="section-content p-3">
+              <rich-editor links placeholder="Escribí la respuesta..." v-model="faqForm.respuesta"></rich-editor>
+            </div>
+          </div>
+
+          <div class="border border-outline-variant rounded-lg mb-3 overflow-hidden">
+            <div class="section-toggle section-toggle-open p-3">
+              <span class="d-block font-bold text-primary">Disponibilidad</span>
+            </div>
+            <div class="section-content p-3">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label text-xs font-semibold text-on-surface mb-1 d-block">Disponible en:</label>
+                  <div class="form-check">
+                    <input class="form-check-input" id="faq_form_web" type="checkbox" v-model="faqForm.disponible_web" />
+                    <label class="form-check-label text-xs" for="faq_form_web">Web</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" id="faq_form_ia" type="checkbox" v-model="faqForm.disponible_ia" />
+                    <label class="form-check-label text-xs" for="faq_form_ia">IA</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-xs font-semibold text-on-surface mb-1">Estado</label>
+                  <select class="form-select form-select-sm rounded-lg border-outline-variant" v-model="faqForm.estado">
+                    <option :key="e" :value="e" v-for="e in ESTADOS_FAQ">{{ e }}</option>
+                  </select>
+                </div>
+              </div>
+              <p class="text-xs text-on-surface-variant mt-2 mb-0">{{ textoDisponibilidadFaq(faqForm) }}</p>
+            </div>
+          </div>
+
+          <div class="border border-outline-variant rounded-lg mb-3 overflow-hidden" v-if="faqModalMode === 'edit'">
+            <div class="section-toggle section-toggle-open p-3">
+              <span class="d-block font-bold text-primary">Auditoría</span>
+            </div>
+            <div class="section-content p-3">
+              <dl class="mb-0 text-xs row">
+                <dt class="col-md-3 text-on-surface-variant">Usuario de creación</dt><dd class="col-md-3">{{ faqForm.creado_por || '-' }}</dd>
+                <dt class="col-md-3 text-on-surface-variant">Fecha de creación</dt><dd class="col-md-3">{{ faqForm.created_at ? new Date(faqForm.created_at).toLocaleString() : '-' }}</dd>
+                <dt class="col-md-3 text-on-surface-variant">Usuario de última edición</dt><dd class="col-md-3">{{ faqForm.actualizado_por || '-' }}</dd>
+                <dt class="col-md-3 text-on-surface-variant">Fecha de última edición</dt><dd class="col-md-3">{{ faqForm.updated_at ? new Date(faqForm.updated_at).toLocaleString() : '-' }}</dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="mt-4 text-end pt-3 border-t border-outline-variant">
+            <button @click="cancelarFaqForm" class="btn btn-sm btn-light border-outline-variant text-on-surface me-2 rounded-lg px-3" type="button">Cancelar</button>
+            <button :disabled="faqGuardando" class="btn btn-sm btn-primary bg-primary border-primary shadow-sm rounded-lg px-3" type="submit">{{ faqGuardando ? 'Guardando...' : 'Guardar' }}</button>
+          </div>
+        </form>
       </div>
 
       <!-- ========================================================= -->
@@ -1791,9 +2064,10 @@
       </div>
     </div>
 
-    <!-- Modal "Ver ampliado": el mismo campo de texto enriquecido del formulario,
-         en grande, para escribir más cómodo. Edita formData[richModalField] en
-         vivo (no hay draft/cancelar: cerrar el modal no descarta nada). -->
+    <!-- Modal "Ver ampliado": el mismo campo de texto enriquecido del formulario
+         que se haya abierto (Estudio x Colega o FAQ), en grande, para escribir
+         más cómodo. Edita richModalTargetObj[richModalField] en vivo (no hay
+         draft/cancelar: cerrar el modal no descarta nada). -->
     <div aria-hidden="true" class="modal fade" id="richEditorModal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-content border-0 shadow-lg rounded-xl">
@@ -1802,7 +2076,7 @@
             <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
           </div>
           <div class="modal-body p-4">
-            <rich-editor v-if="richModalField" large placeholder="Escribí acá..." v-model="formData[richModalField]"></rich-editor>
+            <rich-editor v-if="richModalField" large :links="richModalTargetKey === 'faqForm'" placeholder="Escribí acá..." v-model="richModalTargetObj[richModalField]"></rich-editor>
           </div>
           <div class="modal-footer border-t border-outline-variant">
             <button class="btn btn-sm btn-primary bg-primary border-primary shadow-sm rounded-lg px-3"

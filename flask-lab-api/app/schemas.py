@@ -419,3 +419,21 @@ class ResetearContrasenaRequest(BaseModel):
 
 class AdminResetearContrasenaRequest(BaseModel):
     password: Optional[str] = None
+
+
+# --- FAQ ---
+class FaqCreate(BaseModel):
+    pregunta: str
+    respuesta: str
+    categoria: str
+    disponible_web: Optional[bool] = False
+    disponible_ia: Optional[bool] = False
+    estado: Optional[str] = 'borrador'
+
+class FaqUpdate(BaseModel):
+    pregunta: Optional[str] = None
+    respuesta: Optional[str] = None
+    categoria: Optional[str] = None
+    disponible_web: Optional[bool] = None
+    disponible_ia: Optional[bool] = None
+    estado: Optional[str] = None

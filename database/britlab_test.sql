@@ -341,3 +341,30 @@ CREATE TABLE public.password_reset_token (
 	CONSTRAINT prt_id_usuario_fkey FOREIGN KEY (id_usuario) REFERENCES public.usuario(id) ON DELETE CASCADE
 );
 CREATE INDEX idx_password_reset_token_usuario ON public.password_reset_token (id_usuario);
+
+
+-- public.faq definition
+-- Módulo FAQ (Preguntas Frecuentes). categoria es texto libre autocompletable,
+-- sin ABM separado (RN-FAQ-02). estado gobierna visibilidad pública
+-- (borrador/inactivo no son públicas, RN-FAQ-05/06); disponible_web/
+-- disponible_ia son independientes entre sí (RN-FAQ-03). Se audita creación
+-- y última edición con usuario y fecha (RN-FAQ-10).
+
+CREATE TABLE public.faq (
+	id serial4 NOT NULL,
+	pregunta text NOT NULL,
+	respuesta text NOT NULL,
+	categoria varchar(150) NOT NULL,
+	disponible_web bool DEFAULT false NOT NULL,
+	disponible_ia bool DEFAULT false NOT NULL,
+	estado varchar(20) DEFAULT 'borrador' NOT NULL,
+	creado_por_id int4 NULL,
+	actualizado_por_id int4 NULL,
+	created_at timestamp DEFAULT now() NOT NULL,
+	updated_at timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT faq_pkey PRIMARY KEY (id),
+	CONSTRAINT chk_faq_estado CHECK (estado IN ('borrador', 'activo', 'inactivo')),
+	CONSTRAINT faq_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL,
+	CONSTRAINT faq_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL
+);
+CREATE INDEX idx_faq_categoria ON public.faq (categoria);

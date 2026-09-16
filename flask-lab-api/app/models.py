@@ -307,3 +307,31 @@ class PasswordResetToken(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     usuario = db.relationship('Usuario')
+
+
+class Faq(db.Model):
+    """Pregunta frecuente del Laboratorio Británico (módulo FAQ). 'categoria'
+    es texto libre autocompletable, sin ABM separado (RN-FAQ-02): las
+    opciones del autocompletado salen de las categorías ya usadas en otras
+    FAQ. 'estado' gobierna visibilidad pública (borrador/inactivo no son
+    públicas); disponible_web/disponible_ia son independientes entre sí."""
+    __tablename__ = 'faq'
+    __table_args__ = (
+        db.CheckConstraint("estado IN ('borrador', 'activo', 'inactivo')", name='chk_faq_estado'),
+        {'schema': 'public'}
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    pregunta = db.Column(db.Text, nullable=False)
+    respuesta = db.Column(db.Text, nullable=False)
+    categoria = db.Column(db.String(150), nullable=False)
+    disponible_web = db.Column(db.Boolean, nullable=False, default=False)
+    disponible_ia = db.Column(db.Boolean, nullable=False, default=False)
+    estado = db.Column(db.String(20), nullable=False, default='borrador')
+    creado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    actualizado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    creado_por = db.relationship('Usuario', foreign_keys=[creado_por_id])
+    actualizado_por = db.relationship('Usuario', foreign_keys=[actualizado_por_id])
