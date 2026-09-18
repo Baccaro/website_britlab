@@ -124,7 +124,7 @@ class ValorEstudioSectorOut(ValorEstudioSectorBase):
 # --- Estudio Colega ---
 class EstudioColegaBase(BaseModel):
     nemonico_datatech: str
-    paridad_datatech_hexalis: Optional[str] = 'pendiente'
+    paridad_datatech_hexalis: Optional[str] = 'No'
     id_estudio: int
     id_metodo: Optional[int] = None
     id_muestra: Optional[int] = None
@@ -136,6 +136,9 @@ class EstudioColegaBase(BaseModel):
     dias_demora: Optional[int] = 0
     estado: Optional[str] = 'pendiente'
     codigo_laboratorio: Optional[str] = None
+    codigo_ams: Optional[str] = None
+    habilitar_web: Optional[bool] = False
+    habilitar_ia: Optional[bool] = False
     version: Optional[int] = 1
     revisor: str
     observacion: Optional[str] = None
@@ -158,6 +161,9 @@ class EstudioColegaUpdate(BaseModel):
     dias_demora: Optional[int] = None
     estado: Optional[str] = None
     codigo_laboratorio: Optional[str] = None
+    codigo_ams: Optional[str] = None
+    habilitar_web: Optional[bool] = None
+    habilitar_ia: Optional[bool] = None
     version: Optional[int] = None
     revisor: Optional[str] = None
     observacion: Optional[str] = None
@@ -165,6 +171,8 @@ class EstudioColegaUpdate(BaseModel):
 
 class EstudioColegaOut(EstudioColegaBase):
     id: int
+    creado_por_username: Optional[str] = None
+    actualizado_por_username: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     model_config = ConfigDict(from_attributes=True)

@@ -83,7 +83,7 @@ class EstudioColega(db.Model):
     nemonico_datatech = db.Column(db.String(50), nullable=False)
     # Enums de Postgres (estado_paridad_enum / estado_registro_enum) manejados como texto plano
     # del lado de SQLAlchemy; la validación de valores permitidos vive en el propio tipo de la BD.
-    paridad_datatech_hexalis = db.Column(db.String(20), nullable=False, default='pendiente')
+    paridad_datatech_hexalis = db.Column(db.String(20), nullable=False, default='No')
     id_estudio = db.Column(db.Integer, db.ForeignKey('public.estudio.id', ondelete='RESTRICT'), nullable=False)
     id_metodo = db.Column(db.Integer, db.ForeignKey('public.metodo.id', ondelete='SET NULL'), nullable=True)
     id_muestra = db.Column(db.Integer, db.ForeignKey('public.muestra.id', ondelete='SET NULL'), nullable=True)
@@ -99,9 +99,14 @@ class EstudioColega(db.Model):
     dias_demora = db.Column(db.Integer, default=0)
     estado = db.Column(db.String(20), nullable=False, default='pendiente')
     codigo_laboratorio = db.Column(db.String(50), nullable=True)
+    codigo_ams = db.Column(db.String(100), nullable=True)
+    habilitar_web = db.Column(db.Boolean, nullable=False, default=False)
+    habilitar_ia = db.Column(db.Boolean, nullable=False, default=False)
     version = db.Column(db.Integer, nullable=False, default=1)
     revisor = db.Column(db.String(100), nullable=False)
     observacion = db.Column(db.Text, nullable=True)
+    creado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    actualizado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     colega_id = db.Column(db.Integer, db.ForeignKey('public.colega.id', ondelete='RESTRICT'), nullable=False)
@@ -111,6 +116,16 @@ class EstudioColega(db.Model):
     muestra = db.relationship('Muestra')
     sector_laboratorio = db.relationship('ValorEstudioSector')
     colega = db.relationship('Colega')
+    creado_por = db.relationship('Usuario', foreign_keys=[creado_por_id])
+    actualizado_por = db.relationship('Usuario', foreign_keys=[actualizado_por_id])
+
+    @property
+    def creado_por_username(self):
+        return self.creado_por.username if self.creado_por else None
+
+    @property
+    def actualizado_por_username(self):
+        return self.actualizado_por.username if self.actualizado_por else None
 
 
 # --- Muestras estructuradas (1..N por estudio_colega) ------------------------

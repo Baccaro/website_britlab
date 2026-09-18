@@ -102,21 +102,25 @@ const ESTUDIO_COLEGA_SECCIONES = [
   },
   {
     key: 'paridad_publicacion', title: 'Paridad y Publicación',
-    desc: 'Identificadores del registro, estado y visibilidad.',
+    desc: 'Identificadores del registro y visibilidad.',
     // 'codigo_hexalis' no es un campo propio (pertenece al Estudio elegido):
     // se muestra aparte, de sólo lectura, antes de estos campos.
-    fields: ['nemonico_datatech', 'tharsis', 'codigo_laboratorio', 'estado', 'habilitar_ia', 'habilitar_web']
+    fields: ['nemonico_datatech', 'codigo_ams', 'codigo_laboratorio', 'paridad_datatech_hexalis', 'habilitar_ia', 'habilitar_web']
+  },
+  {
+    key: 'estado_observaciones', title: 'Estado y Observaciones',
+    desc: 'Estado del registro y observaciones generales.',
+    fields: ['estado', 'observacion']
   }
 ];
 
 // Qué secciones del formulario llevan además un cargador de PDFs (1..N), y a
 // qué categoría de estudio_colega_modelo corresponde cada una. Sólo
 // 'modelo_derivante' permite ponerle una descripción propia a cada archivo.
-const CATEGORIA_PDF_POR_SECCION = { preanalitico: 'preanalitico', indicaciones_pacientes: 'paciente', modelo_derivante: 'colega' };
+const CATEGORIA_PDF_POR_SECCION = { preanalitico: 'preanalitico', modelo_derivante: 'colega' };
 const SECCIONES_CON_PDF = Object.keys(CATEGORIA_PDF_POR_SECCION);
 const LABEL_PDF_POR_SECCION = {
   preanalitico: 'Documentación de Preanalítico (PDF)',
-  indicaciones_pacientes: 'Documentación para el Paciente (PDF)',
   modelo_derivante: 'Modelos de Informe del Derivante (PDF)',
 };
 
@@ -124,30 +128,40 @@ let _muestraKeySeq = 0;
 const nextMuestraKey = () => `m${_muestraKeySeq++}`;
 
 // Columnas disponibles en la tabla "Estudios por Colega" (para el selector de
-// columnas visibles). Las primeras 14 son las que se muestran por defecto, en
-// el orden pedido; el resto (por ahora sólo Estado) queda disponible para
-// activar desde "Columnas" pero fuera del orden solicitado.
+// columnas visibles), en el orden fijo pedido. Las marcadas con "fija: true"
+// (Estudio, Laboratorio Procesante, Estado) no se pueden sacar desde
+// "Columnas": quedan siempre visibles y ancladas (sticky) al hacer scroll
+// horizontal (ver .col-pin-* en index.html).
 const INDICACIONES_COLUMNAS = [
-  { field: 'estudio_descripcion', label: 'Estudio' },
-  { field: 'colega_descripcion', label: 'Laboratorio Procesante' },
+  { field: 'estudio_descripcion', label: 'Estudio', fija: true },
+  { field: 'colega_descripcion', label: 'Laboratorio Procesante', fija: true },
+  { field: 'estado', label: 'Estado', fija: true },
   { field: 'codigo_hexalis', label: 'Cód. Hexa' },
   { field: 'nemonico_datatech', label: 'Nemónico' },
   { field: 'codigo_laboratorio', label: 'Cód. Lab. Externo' },
+  { field: 'codigo_ams', label: 'Cód AMS' },
   { field: 'metodo', label: 'Método' },
   { field: 'muestra', label: 'Muestra' },
   { field: 'dias_demora', label: 'Demora' },
-  { field: 'preanalitico_descripcion', label: 'Pre-Analítico' },
   { field: 'indicaciones_pacientes', label: 'Indicaciones Paciente' },
-  { field: 'indicaciones_colega', label: 'Modelo Derivante' },
+  { field: 'preanalitico_descripcion', label: 'Pre-Analítico' },
+  { field: 'indicaciones_colega', label: 'Indicaciones Profesional / Derivante' },
+  { field: 'sector', label: 'Área' },
+  { field: 'disponibilidad', label: 'Disponibilidad (Web/IA)' },
   { field: 'paridad_datatech_hexalis', label: 'Paridad' },
   { field: 'revisor', label: 'Revisor' },
-  { field: 'observacion', label: 'Observaciones' },
-  { field: 'estado', label: 'Estado' }
+  { field: 'observacion', label: 'Observaciones' }
 ];
+// Clase CSS sticky (ver .col-pin-* en index.html) de cada columna "fija".
+const PIN_CLASS_POR_CAMPO = {
+  estudio_descripcion: 'col-pin-estudio',
+  colega_descripcion: 'col-pin-colega',
+  estado: 'col-pin-estado',
+};
 const INDICACIONES_COLUMNAS_DEFAULT = [
-  'estudio_descripcion', 'colega_descripcion', 'codigo_hexalis', 'nemonico_datatech', 'codigo_laboratorio',
-  'metodo', 'muestra', 'dias_demora', 'preanalitico_descripcion', 'indicaciones_pacientes',
-  'indicaciones_colega', 'paridad_datatech_hexalis', 'revisor', 'observacion'
+  'estudio_descripcion', 'colega_descripcion', 'estado', 'codigo_hexalis', 'nemonico_datatech', 'codigo_laboratorio',
+  'codigo_ams', 'metodo', 'muestra', 'dias_demora', 'indicaciones_pacientes', 'preanalitico_descripcion',
+  'indicaciones_colega', 'sector', 'disponibilidad', 'paridad_datatech_hexalis', 'revisor', 'observacion'
 ];
 
 // Tamaños de página disponibles para los listados paginados (Estudios,
@@ -440,12 +454,18 @@ const app = createApp({
 
     // Además del propio filtro de columnas del usuario, un admin puede haberle
     // ocultado columnas puntuales desde el panel de usuarios (permisos.columnas_ocultas_estudios).
+    // Las columnas "fija" (Estudio, Laboratorio Procesante, Estado) se muestran
+    // siempre, sin depender de si el usuario las tildó en "Columnas".
     const visibleColumnasList = computed(() =>
-      INDICACIONES_COLUMNAS.filter(c => visibleColumns.value.has(c.field) && !columnaOcultaPorPermiso(c.field))
+      INDICACIONES_COLUMNAS.filter(c => (c.fija || visibleColumns.value.has(c.field)) && !columnaOcultaPorPermiso(c.field))
     );
+    // Columnas que sí se pueden tildar/destildar desde el selector "Columnas"
+    // (las fijas ni siquiera se listan ahí).
+    const columnasTogglables = computed(() => INDICACIONES_COLUMNAS.filter(c => !c.fija));
 
     const ESTADOS_REGISTRO = ['listo', 'pendiente', 'revisar', 'verificado', 'borrador'];
-    const ESTADOS_PARIDAD = ['listo', 'pendiente', 'revisar', 'inactivo', 'discontinuado'];
+    // "Paridad" (campo paridad_datatech_hexalis): sólo Sí/No.
+    const ESTADOS_PARIDAD = ['Sí', 'No'];
 
     // Listas maestras cacheadas para armar los selectores de claves foráneas
     const refData = ref({
@@ -744,7 +764,7 @@ const app = createApp({
           { field: 'colega_id', label: 'Laboratorio Procesante', type: 'fk', ref: 'colegas', required: true },
           { field: 'id_metodo', label: 'Método', type: 'fk', ref: 'metodos' },
           { field: 'id_sector_laboratorio', label: 'Área', type: 'fk', ref: 'valores_estudio_sector' },
-          { field: 'paridad_datatech_hexalis', label: 'Paridad Datatech-Hexalis', type: 'select', options: ESTADOS_PARIDAD, default: 'pendiente' },
+          { field: 'paridad_datatech_hexalis', label: 'Paridad', type: 'select', options: ESTADOS_PARIDAD, default: 'No' },
           { field: 'estado', label: 'Estado', type: 'select', options: ESTADOS_REGISTRO, default: 'pendiente' },
           { field: 'preanalitico_descripcion', label: 'Descripción', type: 'richtext' },
           { field: 'indicaciones_pacientes', label: 'Descripción', type: 'richtext' },
@@ -755,14 +775,12 @@ const app = createApp({
           // del servidor ignora cualquier campo que no reconoce).
           { field: 'observaciones_operativas', label: 'Observaciones Operativas', type: 'richtext' },
           { field: 'codigo_laboratorio', label: 'Código Laboratorio Procesante', type: 'text' },
-          // 'tharsis', 'habilitar_ia' y 'habilitar_web' son placeholders
-          // visuales de una futura integración: tampoco se persisten aún.
-          { field: 'tharsis', label: 'Tharsis', type: 'text' },
+          { field: 'codigo_ams', label: 'Código AMS', type: 'text' },
           { field: 'habilitar_ia', label: '¿Habilitar para Asistente IA?', type: 'switch', default: false },
           { field: 'habilitar_web', label: '¿Habilitar para Página Web?', type: 'switch', default: false },
           { field: 'version', label: 'Versión', type: 'number', default: 1 },
           { field: 'revisor', label: 'Revisor', type: 'text', required: true, default: 'Laboratorio SBLab' },
-          { field: 'observacion', label: 'Observación', type: 'textarea' }
+          { field: 'observacion', label: 'Observación', type: 'richtext' }
         ]
       }
     };
@@ -1563,7 +1581,7 @@ const app = createApp({
     // bufferan en memoria (como las muestras) y recién se suben al guardar,
     // con el id real que devuelve la creación. Sólo 'colega' (Modelo
     // Derivante) permite ponerle una descripción propia a cada archivo. ---
-    const blankModelosPorCategoria = () => ({ preanalitico: [], paciente: [], colega: [] });
+    const blankModelosPorCategoria = () => ({ preanalitico: [], colega: [] });
     const modelosPorCategoria = ref(blankModelosPorCategoria());
     const modelosLoading = ref(false);
     const modeloSubiendo = ref(false);
@@ -2017,6 +2035,8 @@ const app = createApp({
       INDICACIONES_COLUMNAS,
       visibleColumns,
       visibleColumnasList,
+      columnasTogglables,
+      PIN_CLASS_POR_CAMPO,
       toggleColumn,
       showColumnPicker,
       expandedRows,

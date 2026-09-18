@@ -111,25 +111,39 @@ CREATE TABLE public.valor_estudio_sector (
 CREATE TABLE public.estudio_colega (
 	id serial4 NOT NULL,
 	nemonico_datatech varchar(50) NOT NULL,
-	paridad_datatech_hexalis public.estado_paridad_enum DEFAULT 'pendiente'::estado_paridad_enum NOT NULL,
+	-- Paridad Sí/No (antes un enum de 5 valores: se convirtió a texto libre
+	-- para el nuevo desplegable "Paridad" de Paridad y Publicación).
+	paridad_datatech_hexalis varchar(20) DEFAULT 'No'::varchar NOT NULL,
 	id_estudio int4 NOT NULL,
 	id_metodo int4 NULL,
 	id_muestra int4 NULL,
 	id_sector_laboratorio int4 NULL,
-	indicaciones text NULL,
+	-- indicaciones_pacientes: texto del dropdown "Indicaciones Pacientes"
+	-- (ya no admite subida de PDF nuevos, sólo descripción). indicaciones_colega:
+	-- texto del dropdown "Indicaciones al Profesional/Derivante".
 	-- preanalitico_descripcion: texto propio del dropdown "Preanalítico" (ya no
 	-- hay catálogo id_preanalitico: se eliminó junto con la tabla preanalitico
 	-- y con valor_referencia). modelo_derivante_observaciones: texto propio del
-	-- dropdown "Modelo Derivante" (aparte de indicaciones_colega/"Indicaciones
-	-- al Profesional-Derivante", que quedó sólo texto, sin documentación).
+	-- dropdown "Modelo Derivante".
+	indicaciones_pacientes text NULL,
+	indicaciones_colega text NULL,
 	preanalitico_descripcion text NULL,
 	modelo_derivante_observaciones text NULL,
 	dias_demora int4 DEFAULT 0 NULL,
 	estado public.estado_registro_enum DEFAULT 'pendiente'::estado_registro_enum NOT NULL,
 	codigo_laboratorio varchar(50) DEFAULT NULL::character varying NULL,
+	-- codigo_ams: reemplaza al placeholder "Tharsis" (nunca persistido).
+	-- habilitar_web/habilitar_ia: antes sólo placeholders visuales, ahora
+	-- persistidos de verdad (columna "Disponibilidad" del listado).
+	codigo_ams varchar(100) NULL,
+	habilitar_web bool DEFAULT false NOT NULL,
+	habilitar_ia bool DEFAULT false NOT NULL,
 	"version" int4 DEFAULT 1 NOT NULL,
 	revisor varchar(100) NOT NULL,
 	observacion text NULL,
+	-- Auditoría de creación/edición (mismo patrón que public.faq).
+	creado_por_id int4 NULL,
+	actualizado_por_id int4 NULL,
 	created_at timestamptz DEFAULT CURRENT_TIMESTAMP NULL,
 	updated_at timestamptz DEFAULT CURRENT_TIMESTAMP NULL,
 	colega_id int4 NOT NULL,
@@ -138,6 +152,8 @@ CREATE TABLE public.estudio_colega (
 	CONSTRAINT estudio_colega_id_metodo_fkey FOREIGN KEY (id_metodo) REFERENCES public.metodo(id) ON DELETE SET NULL,
 	CONSTRAINT estudio_colega_id_muestra_fkey FOREIGN KEY (id_muestra) REFERENCES public.muestra(id) ON DELETE SET NULL,
 	CONSTRAINT estudio_colega_id_sector_laboratorio_fkey FOREIGN KEY (id_sector_laboratorio) REFERENCES public.valor_estudio_sector(id) ON DELETE SET NULL,
+	CONSTRAINT estudio_colega_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL,
+	CONSTRAINT estudio_colega_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL,
 	CONSTRAINT fk_estudio_colega_colega FOREIGN KEY (colega_id) REFERENCES public.colega(id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 

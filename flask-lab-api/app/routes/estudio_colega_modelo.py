@@ -7,7 +7,10 @@ from app.auth import modulo_lectura_required, modulo_escritura_required
 bp = Blueprint('estudio_colega_modelo', __name__, url_prefix='/api/estudio-colega-modelo')
 
 MAX_BYTES = 15 * 1024 * 1024  # 15 MB por archivo
-CATEGORIAS_VALIDAS = ('preanalitico', 'paciente', 'colega')
+# 'paciente' (Indicaciones Paciente) ya no admite subida de PDFs nuevos, pero
+# se mantiene como categoría válida para poder seguir listando/descargando
+# los que ya se hubieran subido antes de este cambio.
+CATEGORIAS_VALIDAS = ('preanalitico', 'colega')
 
 
 def _serialize(m):

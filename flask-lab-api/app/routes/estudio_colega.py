@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, g
 from app.crud import _commit_or_400
 from app.database import db
 from app.models import EstudioColega, Estudio, Colega, Metodo, Muestra, ValorEstudioSector, EstudioColegaMuestra, EstudioColegaModelo
@@ -73,7 +73,7 @@ def create_item():
         data = EstudioColegaCreate(**(request.get_json() or {}))
     except ValidationError as e:
         return jsonify(e.errors()), 400
-    new_item = EstudioColega(**data.model_dump())
+    new_item = EstudioColega(**data.model_dump(), creado_por_id=g.current_user.id, actualizado_por_id=g.current_user.id)
     db.session.add(new_item)
     error_response = _commit_or_400()
     if error_response:
@@ -100,6 +100,7 @@ def update_item(id):
 
     for field, value in data.model_dump(exclude_unset=True).items():
         setattr(item, field, value)
+    item.actualizado_por_id = g.current_user.id
     error_response = _commit_or_400()
     if error_response:
         return error_response
@@ -192,12 +193,20 @@ def _listar_estudios_colega(colega_id=None):
             'dias_demora': reg.dias_demora,
             'estado': reg.estado,
             'codigo_laboratorio': reg.codigo_laboratorio,
+            'codigo_ams': reg.codigo_ams,
+            'habilitar_web': reg.habilitar_web,
+            'habilitar_ia': reg.habilitar_ia,
             'version': reg.version,
             'revisor': reg.revisor,
             'observacion': reg.observacion,
             'sector': reg.sector_laboratorio.sector.nombre if (reg.sector_laboratorio and reg.sector_laboratorio.sector) else None,
+            'id_sector_laboratorio': reg.id_sector_laboratorio,
             'posicion_informe': reg.sector_laboratorio.posicion_informe if reg.sector_laboratorio else None,
             'rango': reg.sector_laboratorio.rango if reg.sector_laboratorio else None,
+            'creado_por': reg.creado_por_username,
+            'actualizado_por': reg.actualizado_por_username,
+            'created_at': reg.created_at.isoformat() if reg.created_at else None,
+            'updated_at': reg.updated_at.isoformat() if reg.updated_at else None,
         })
 
     return respuesta
