@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict r8CLMGSQuhRFyoWAjX0rnWEWRrv5oPKosunbf6AqLFV0tUsdhR9afSx6SyYlTNi
+\restrict 7aDz1iwPdClkLz87Ctq1GDFLkjJudOxP9dxbsHw51g1Z4o2od1Xf1QcXX9PxkUA
 
 -- Dumped from database version 15.18
 -- Dumped by pg_dump version 15.18
@@ -76,6 +76,47 @@ CREATE SEQUENCE public.aditivo_id_seq
 --
 
 ALTER SEQUENCE public.aditivo_id_seq OWNED BY public.aditivo.id;
+
+
+--
+-- Name: autorizador; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.autorizador (
+    id integer NOT NULL,
+    nombre character varying(255) NOT NULL,
+    tipo character varying(30) DEFAULT 'Portal externo'::character varying NOT NULL,
+    link text,
+    instructivo text,
+    observacion text,
+    estado character varying(20) DEFAULT 'activo'::character varying NOT NULL,
+    creado_por_id integer,
+    actualizado_por_id integer,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
+    CONSTRAINT chk_autorizador_estado CHECK (((estado)::text = ANY (ARRAY[('activo'::character varying)::text, ('inactivo'::character varying)::text]))),
+    CONSTRAINT chk_autorizador_tipo CHECK (((tipo)::text = ANY (ARRAY[('Portal externo'::character varying)::text, ('Sistema interno'::character varying)::text])))
+);
+
+
+--
+-- Name: autorizador_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.autorizador_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: autorizador_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.autorizador_id_seq OWNED BY public.autorizador.id;
 
 
 --
@@ -508,6 +549,303 @@ ALTER SEQUENCE public.muestra_id_seq OWNED BY public.muestra.id;
 
 
 --
+-- Name: nomenclador; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.nomenclador (
+    id integer NOT NULL,
+    nombre character varying(255) NOT NULL,
+    tipo character varying(30) DEFAULT 'NBU'::character varying NOT NULL,
+    version_o_fecha character varying(100),
+    vigencia character varying(100),
+    link text,
+    observacion text,
+    estado character varying(20) DEFAULT 'activo'::character varying NOT NULL,
+    creado_por_id integer,
+    actualizado_por_id integer,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
+    CONSTRAINT chk_nomenclador_estado CHECK (((estado)::text = ANY (ARRAY[('activo'::character varying)::text, ('inactivo'::character varying)::text]))),
+    CONSTRAINT chk_nomenclador_tipo CHECK (((tipo)::text = ANY (ARRAY[('NBU'::character varying)::text, ('especial'::character varying)::text, ('convenio_particular'::character varying)::text, ('listado_anexo'::character varying)::text])))
+);
+
+
+--
+-- Name: nomenclador_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.nomenclador_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: nomenclador_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.nomenclador_id_seq OWNED BY public.nomenclador.id;
+
+
+--
+-- Name: obra_social; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.obra_social (
+    id integer NOT NULL,
+    nombre character varying(255) NOT NULL,
+    estado character varying(20) DEFAULT 'activo'::character varying NOT NULL,
+    estado_informacion character varying(20) DEFAULT 'borrador'::character varying NOT NULL,
+    mostrar_web boolean DEFAULT false NOT NULL,
+    habilitar_ia boolean DEFAULT false NOT NULL,
+    modalidad_autorizacion character varying(50),
+    observacion_general text,
+    informacion_publica text,
+    fecha_ultima_validacion timestamp without time zone,
+    validado_por_id integer,
+    creado_por_id integer,
+    actualizado_por_id integer,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
+    CONSTRAINT chk_obra_social_estado CHECK (((estado)::text = ANY (ARRAY[('activo'::character varying)::text, ('limitada'::character varying)::text, ('suspendida'::character varying)::text, ('sin_atencion'::character varying)::text]))),
+    CONSTRAINT chk_obra_social_estado_info CHECK (((estado_informacion)::text = ANY (ARRAY[('borrador'::character varying)::text, ('validada'::character varying)::text])))
+);
+
+
+--
+-- Name: obra_social_alias; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.obra_social_alias (
+    id integer NOT NULL,
+    id_obra_social integer NOT NULL,
+    alias character varying(150) NOT NULL
+);
+
+
+--
+-- Name: obra_social_alias_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.obra_social_alias_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: obra_social_alias_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.obra_social_alias_id_seq OWNED BY public.obra_social_alias.id;
+
+
+--
+-- Name: obra_social_autorizador; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.obra_social_autorizador (
+    id integer NOT NULL,
+    id_obra_social integer NOT NULL,
+    id_autorizador integer NOT NULL,
+    prioridad character varying(20) DEFAULT 'principal'::character varying NOT NULL,
+    usuario character varying(150),
+    password character varying(255),
+    observacion text,
+    CONSTRAINT chk_obra_social_autorizador_prioridad CHECK (((prioridad)::text = ANY (ARRAY[('principal'::character varying)::text, ('alternativo'::character varying)::text])))
+);
+
+
+--
+-- Name: obra_social_autorizador_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.obra_social_autorizador_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: obra_social_autorizador_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.obra_social_autorizador_id_seq OWNED BY public.obra_social_autorizador.id;
+
+
+--
+-- Name: obra_social_contacto; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.obra_social_contacto (
+    id integer NOT NULL,
+    id_obra_social integer NOT NULL,
+    tipo character varying(30) DEFAULT 'General'::character varying NOT NULL,
+    nombre character varying(150),
+    telefono character varying(50),
+    whatsapp character varying(50),
+    email character varying(150),
+    observacion text,
+    CONSTRAINT chk_obra_social_contacto_tipo CHECK (((tipo)::text = ANY (ARRAY[('General'::character varying)::text, ('Autorizaciones'::character varying)::text, ('Auditoría'::character varying)::text, ('Convenios'::character varying)::text, ('Facturación'::character varying)::text, ('Otro'::character varying)::text])))
+);
+
+
+--
+-- Name: obra_social_contacto_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.obra_social_contacto_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: obra_social_contacto_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.obra_social_contacto_id_seq OWNED BY public.obra_social_contacto.id;
+
+
+--
+-- Name: obra_social_historial_estado; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.obra_social_historial_estado (
+    id integer NOT NULL,
+    id_obra_social integer NOT NULL,
+    id_plan integer,
+    estado_anterior character varying(20),
+    estado_nuevo character varying(20) NOT NULL,
+    comunicado_por character varying(150),
+    motivo text,
+    creado_por_id integer,
+    created_at timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: obra_social_historial_estado_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.obra_social_historial_estado_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: obra_social_historial_estado_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.obra_social_historial_estado_id_seq OWNED BY public.obra_social_historial_estado.id;
+
+
+--
+-- Name: obra_social_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.obra_social_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: obra_social_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.obra_social_id_seq OWNED BY public.obra_social.id;
+
+
+--
+-- Name: obra_social_nomenclador; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.obra_social_nomenclador (
+    id integer NOT NULL,
+    id_obra_social integer NOT NULL,
+    id_nomenclador integer NOT NULL
+);
+
+
+--
+-- Name: obra_social_nomenclador_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.obra_social_nomenclador_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: obra_social_nomenclador_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.obra_social_nomenclador_id_seq OWNED BY public.obra_social_nomenclador.id;
+
+
+--
+-- Name: obra_social_plan; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.obra_social_plan (
+    id integer NOT NULL,
+    id_obra_social integer NOT NULL,
+    nombre character varying(150) NOT NULL,
+    codigo_datatech_gravado character varying(50),
+    codigo_datatech_exento character varying(50),
+    estado character varying(20) DEFAULT 'activo'::character varying NOT NULL,
+    observacion text,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
+    CONSTRAINT chk_obra_social_plan_estado CHECK (((estado)::text = ANY (ARRAY[('activo'::character varying)::text, ('limitada'::character varying)::text, ('suspendida'::character varying)::text, ('sin_atencion'::character varying)::text])))
+);
+
+
+--
+-- Name: obra_social_plan_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.obra_social_plan_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: obra_social_plan_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.obra_social_plan_id_seq OWNED BY public.obra_social_plan.id;
+
+
+--
 -- Name: password_reset_token; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -629,6 +967,121 @@ CREATE SEQUENCE public.sector_id_seq
 --
 
 ALTER SEQUENCE public.sector_id_seq OWNED BY public.sector.id;
+
+
+--
+-- Name: tarifario; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tarifario (
+    id integer NOT NULL,
+    nombre character varying(255) NOT NULL,
+    tipo character varying(20) DEFAULT 'TARIFARIO'::character varying NOT NULL,
+    tipo_relacionado character varying(50) DEFAULT 'Laboratorio / Procesador externo'::character varying NOT NULL,
+    entidad character varying(255),
+    moneda character varying(10) DEFAULT 'ARS'::character varying NOT NULL,
+    estado character varying(20) DEFAULT 'activo'::character varying NOT NULL,
+    observaciones text,
+    creado_por_id integer,
+    actualizado_por_id integer,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
+    CONSTRAINT chk_tarifario_estado CHECK (((estado)::text = ANY (ARRAY[('activo'::character varying)::text, ('inactivo'::character varying)::text]))),
+    CONSTRAINT chk_tarifario_tipo CHECK (((tipo)::text = ANY (ARRAY[('TARIFARIO'::character varying)::text, ('CONVENIO'::character varying)::text, ('DERIVACION'::character varying)::text, ('LISTA'::character varying)::text, ('ANEXO'::character varying)::text])))
+);
+
+
+--
+-- Name: tarifario_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.tarifario_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: tarifario_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.tarifario_id_seq OWNED BY public.tarifario.id;
+
+
+--
+-- Name: tarifario_item; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tarifario_item (
+    id integer NOT NULL,
+    id_tarifario integer NOT NULL,
+    id_estudio integer NOT NULL,
+    nemonico character varying(50),
+    codigo character varying(50),
+    estado character varying(20) DEFAULT 'Activo'::character varying NOT NULL,
+    nota text,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    CONSTRAINT chk_tarifario_item_estado CHECK (((estado)::text = ANY (ARRAY[('Activo'::character varying)::text, ('Inactivo'::character varying)::text])))
+);
+
+
+--
+-- Name: tarifario_item_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.tarifario_item_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: tarifario_item_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.tarifario_item_id_seq OWNED BY public.tarifario_item.id;
+
+
+--
+-- Name: tarifario_item_periodo; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tarifario_item_periodo (
+    id integer NOT NULL,
+    id_tarifario_item integer NOT NULL,
+    periodo character varying(100) NOT NULL,
+    precio numeric(14,2) NOT NULL,
+    creado_por_id integer,
+    actualizado_por_id integer,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: tarifario_item_periodo_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.tarifario_item_periodo_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: tarifario_item_periodo_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.tarifario_item_periodo_id_seq OWNED BY public.tarifario_item_periodo.id;
 
 
 --
@@ -838,6 +1291,13 @@ ALTER TABLE ONLY public.aditivo ALTER COLUMN id SET DEFAULT nextval('public.adit
 
 
 --
+-- Name: autorizador id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.autorizador ALTER COLUMN id SET DEFAULT nextval('public.autorizador_id_seq'::regclass);
+
+
+--
 -- Name: condicion_especial id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -915,6 +1375,62 @@ ALTER TABLE ONLY public.muestra ALTER COLUMN id SET DEFAULT nextval('public.mues
 
 
 --
+-- Name: nomenclador id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.nomenclador ALTER COLUMN id SET DEFAULT nextval('public.nomenclador_id_seq'::regclass);
+
+
+--
+-- Name: obra_social id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social ALTER COLUMN id SET DEFAULT nextval('public.obra_social_id_seq'::regclass);
+
+
+--
+-- Name: obra_social_alias id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_alias ALTER COLUMN id SET DEFAULT nextval('public.obra_social_alias_id_seq'::regclass);
+
+
+--
+-- Name: obra_social_autorizador id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_autorizador ALTER COLUMN id SET DEFAULT nextval('public.obra_social_autorizador_id_seq'::regclass);
+
+
+--
+-- Name: obra_social_contacto id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_contacto ALTER COLUMN id SET DEFAULT nextval('public.obra_social_contacto_id_seq'::regclass);
+
+
+--
+-- Name: obra_social_historial_estado id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_historial_estado ALTER COLUMN id SET DEFAULT nextval('public.obra_social_historial_estado_id_seq'::regclass);
+
+
+--
+-- Name: obra_social_nomenclador id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_nomenclador ALTER COLUMN id SET DEFAULT nextval('public.obra_social_nomenclador_id_seq'::regclass);
+
+
+--
+-- Name: obra_social_plan id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_plan ALTER COLUMN id SET DEFAULT nextval('public.obra_social_plan_id_seq'::regclass);
+
+
+--
 -- Name: password_reset_token id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -940,6 +1456,27 @@ ALTER TABLE ONLY public.recipiente ALTER COLUMN id SET DEFAULT nextval('public.r
 --
 
 ALTER TABLE ONLY public.sector ALTER COLUMN id SET DEFAULT nextval('public.sector_id_seq'::regclass);
+
+
+--
+-- Name: tarifario id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tarifario ALTER COLUMN id SET DEFAULT nextval('public.tarifario_id_seq'::regclass);
+
+
+--
+-- Name: tarifario_item id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tarifario_item ALTER COLUMN id SET DEFAULT nextval('public.tarifario_item_id_seq'::regclass);
+
+
+--
+-- Name: tarifario_item_periodo id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tarifario_item_periodo ALTER COLUMN id SET DEFAULT nextval('public.tarifario_item_periodo_id_seq'::regclass);
 
 
 --
@@ -987,6 +1524,15 @@ COPY public.aditivo (id, nombre) FROM stdin;
 3	EDTA
 4	Heparina
 5	Heparina Sódica
+\.
+
+
+--
+-- Data for Name: autorizador; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.autorizador (id, nombre, tipo, link, instructivo, observacion, estado, creado_por_id, actualizado_por_id, created_at, updated_at) FROM stdin;
+1	AMR	Portal externo	https://amr.example	\N	\N	activo	1	3	2026-09-23 00:36:44.794114	2026-09-23 01:06:04.559233
 \.
 
 
@@ -1981,6 +2527,7 @@ COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_
 2441	T4L	listo	2798	532	507	1796	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N	\N	\N	\N	f	f	\N	\N
 2442	T4	listo	2799	532	507	1797	\N	1	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N	\N	\N	\N	f	f	\N	\N
 2443	TDM	listo	2800	\N	\N	\N	\N	0	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N	\N	\N	\N	f	f	\N	\N
+2488	CD4	listo	2327	608	563	2150	https://drive.google.com/file/d/10tO8tb5w4595dKMDni8nOur5kgnQ210Y/view?usp=sharing	11	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N	\N	\N	\N	f	f	\N	\N
 2444	TOXIGG	listo	2806	532	507	1944	https://drive.google.com/file/d/1eGTcEt7YZcIfaPibCrflqmmAKl5SjZxB/view?usp=sharing	1	listo	\N	1	Laboratorio SBLab	El analisis solo tiene una determinacion en Datatech: RESULTADO CUANTITATIVO, no se informa la INTERPRETACION, deberia cambiarse agregando una determinacion	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N	\N	\N	\N	f	f	\N	\N
 2491	CEPBA	pendiente	2861	607	565	\N	\N	21	listo	\N	1	Laboratorio SBLab	Revisar informe de 22I 330805 PISTONE, SANDRA para ver formato de estudio. Agregar al area general.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N	\N	\N	\N	f	f	\N	\N
 2445	TOXIGM	listo	2808	532	507	1943	https://drive.google.com/file/d/1Yaysn9mhIf8T3rhc0ixPkL7a0lXb9UTs/view?usp=sharing	1	listo	\N	1	Laboratorio SBLab	Se informa el RESULTADO CUALITATIVO y el INDEX	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	49	\N	\N	\N	\N	f	f	\N	\N
@@ -2026,7 +2573,6 @@ COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_
 2485	CD25	listo	2323	608	526	\N	https://drive.google.com/file/d/18LNgDkm8yojcj1OaBlAGBbU1WBrPDV4-/view?usp=sharing	6	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N	\N	\N	\N	f	f	\N	\N
 2486	LINFO NK	listo	2325	608	563	2154	\N	6	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N	\N	\N	\N	f	f	\N	\N
 2487	CD34	listo	2326	608	563	2151	\N	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N	\N	\N	\N	f	f	\N	\N
-2488	CD4	listo	2327	608	563	2150	https://drive.google.com/file/d/10tO8tb5w4595dKMDni8nOur5kgnQ210Y/view?usp=sharing	11	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N	\N	\N	\N	f	f	\N	\N
 2489	CD56	listo	2328	608	563	2153	https://drive.google.com/file/d/1F_uJ7evtGxjf__-E85b9ec9yj5XUJh61/view?usp=sharing	6	listo	\N	1	Laboratorio SBLab	Se actualiza el modelo de informe segun lo que remite IICT.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N	\N	\N	\N	f	f	\N	\N
 2490	CD8	listo	2329	608	563	2149	\N	11	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N	\N	\N	\N	f	f	\N	\N
 2492	CLAPG	listo	2341	605	559	1960	\N	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	50	\N	\N	\N	\N	f	f	\N	\N
@@ -2133,6 +2679,7 @@ COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_
 2586	FOSFO G	listo	2459	605	559	1645	\N	11	listo	FFL	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
 2587	FOSFO M	listo	2460	605	559	1644	\N	11	listo	FFL M	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
 2588	ANTI-GAD	listo	2465	619	576	1819	\N	27	verificado	GADA	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
+2635	MN-S	listo	2638	626	559	1776	MANGANESO SERICO\n\nNo deben realizarse el estudio en pacientes que hayan recibido gadolinio, iodo, bario en las últimas 96 horas.\nConsultar con su medico previo a la realización del estudio.	21	listo	MN S	1	Laboratorio SBLab	Se actualiza tipo de muestra desde SANGRE HEPARINIZADA a SUERO. Se actualiza unidades y valores de referencia de 4,7 a 18,3 ug/l a menor a 0,24 ug/dl	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
 2589	GASTRINA	listo	2470	634	576	1888	GASTRINA SERICA\n\nPACIENTE\n24 horas previas a la extracción suspender la toma de antiácidos, drogas anticolinérgicas y antagonistas de receptor H2, inhibidores de la bomba de protones. Consultar con el médico antes de suspender cualquier medicación.	15	listo	GA	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar) Anteriormente se derivaba a TURNER	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
 2590	GLU 6PDH	listo	2486	635	587	1760	\N	10	verificado	G6	1	Laboratorio SBLab	04/06/2026 Se cambia demora de 20 a 10 dias.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
 2591	HELI	listo	2494	634	559	1993	\N	11	listo	AHP G I	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
@@ -2174,7 +2721,6 @@ COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_
 2632	LPG	listo	2877	616	559	\N	\N	6	listo	LPG	1	Laboratorio SBLab	HACER MODELO Y AGRERGAR AL AREA PRINCIPAL	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
 2633	LI S	listo	2632	638	559	2090	LITIO\n\nNo se requiere ayuno y/o preparación previa. Tomar la muestra 8 a 10 horas luego de la última dosis.\nPunción venosa, 8 a 10 horas luego de la última dosis.\nIndicar dosis y horario de la última toma. Indicar otras medicaciones.	5	listo	LI S	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
 2634	ANTI-LKM	listo	2633	622	559	2046	\N	8	listo	ALKM	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
-2635	MN-S	listo	2638	626	559	1776	MANGANESO SERICO\n\nNo deben realizarse el estudio en pacientes que hayan recibido gadolinio, iodo, bario en las últimas 96 horas.\nConsultar con su medico previo a la realización del estudio.	21	listo	MN S	1	Laboratorio SBLab	Se actualiza tipo de muestra desde SANGRE HEPARINIZADA a SUERO. Se actualiza unidades y valores de referencia de 4,7 a 18,3 ug/l a menor a 0,24 ug/dl	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
 2636	AMB1	listo	2642	622	559	2059	\N	8	listo	AMB	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
 2637	MERCURIO	listo	2643	639	559	\N	https://drive.google.com/file/d/1kgYgJjNYzqUjjK9dxkA21mpGVTROAI4A/view?usp=sharing	21	listo	HG S	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
 2638	MTHFR	listo	2648	609	582	1651	https://drive.google.com/file/d/11AOTdI9PyTh_3_eA6EANR5_sm8-HkyDJ/view?usp=sharing	21	verificado	BMD100	1	Laboratorio SBLab	Se actualiza el modelo de informe en base a los resultados del protocolo 22N 264276	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
@@ -2211,6 +2757,8 @@ COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_
 2669	TOPIRAMA	listo	2801	643	581	2098	https://drive.google.com/file/d/1REhX1cNVAa7mthf3GFMMoMM_po63molw/view?usp=sharing	23	listo	TOPI	1	Laboratorio SBLab	Se completa el valor de referencia.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
 2670	VIT A	listo	2845	621	591	2114	LABORATORIO\nSeparar muestra en tubo opaco (proteger de la luz).	27	listo	VA	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
 2671	VITA B1	listo	2846	644	591	2116	LABORATORIO\nSeparar muestra en tubo opaco (proteger de la luz).	37	listo	VB1	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
+2732	INT 1-B	listo	2607	634	559	2109	\N	8	listo	INT	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
+2771	ECHOVI-G	listo	2412	669	559	1968	\N	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
 2672	VITA B6	listo	2848	644	591	2117	https://drive.google.com/file/d/1zw7g4vyPoQL48T7YaPHxbDMAMMaV6-M5/view?usp=sharing	27	verificado	VB6	1	Laboratorio SBLab	Se configuro envio CONGELADO solo miercoles (se agregan 6 dias a la demora estándar). Se corrigen los valores de referencia (estaba mal configurado en la web de Labmedicina). Se elimina texto con valores de referencia.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
 2714	CORSAL22	listo	2386	634	610	1827	CORTISOL SALIVAL\n\nPACIENTE\nSe recomienda no comer, beber (excepto agua), fumar, ni cepillarse los dientes durante las 2-3 horas previas a la toma de muestra. \nEnjuagar la boca con agua, sin cepillar los dientes.\nEn el horario indicado en la orden médica, salivar en un frasco estéril (recolectar la mayor cantidad posible).\nConservar en heladera hasta su entrega.	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2673	VIT C	discontinuado	2878	621	592	\N	LABORATORIO\nSeparar muestra en tubo opaco con conservante, congelar (proteger de la luz en tubo especial).	16	verificado	VC	1	mariangel. rinaudo@sanbritanico.com.ar	Se configuro envio CONGELADO. Cambio de metodología de electroforesis capilar a HPLC-UV, y cambio de muestra de plasma con heparina refrigerada en tubo opaco a plasma con EDTA con conservante congelada en tubo opaco. Etiqueta DATA: 59 EDTA(POC) 19 / Etiqueta HEXA: 19- PLASMA CON EDTA TUBO OPACO. 26/06/2026 Se inactiva debido a problemas con los envios.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	51	\N	\N	\N	\N	f	f	\N	\N
@@ -2228,6 +2776,12 @@ COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_
 2683	HOMO PL	listo	2205	644	581	2147	\N	19	listo	HVAP	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2684	OROTICO	listo	2210	648	597	2123	ACIDO OROTICO URINARIO\n\nPACIENTE\nRecolectar de 4 a 6 orinas durante todo un dia, previa higiene y en condiciones de asepsia. Refrigerar.\n\nLABORATORIO\nRecolectar de 4 a 6 orinas durante todo un día, previa higiene y en condiciones de asepsia. Refrigerar.\nMezclar las muestras, tomar una alícuota de 50 ml y congelarla a -20°C no menos de 12 h.\nEnviar bien refrigerada.\nEl desarrollo bacteriano invalida el estudio debido a los productos metabólicos de los microorganismos.\nAdjuntar planilla de errores congénitos del metabolismo.	22	listo	ORO	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2685	ACPIRU	listo	2212	601	598	2126	\N	5	listo	ACPIRU	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
+2733	INTER-8	listo	2608	634	551	2110	\N	8	listo	INT8	1	Laboratorio SBLab	Se modifica en tipo de muestra (estaba cargada por error SUERO)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
+2734	IOMF	listo	2609	661	579	1693	\N	8	listo	IOMF	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
+2772	ECHOVI-M	listo	2413	669	559	1967	\N	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
+2773	AAE-IGA	listo	2417	669	559	2084	\N	4	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
+2774	AAE-IGG	listo	2418	669	559	2085	\N	4	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
+2775	FAN	listo	2444	671	559	2043	\N	5	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
 2686	AVMHPLC	listo	2213	644	599	2144	ACIDO VANILLIN MANDELICO\n\nPACIENTE\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24h: a las 7h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el dia y hasta las 7h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\nDIETA: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, paltas, berenjenas, ananá, chocolate, ciruelas, maní, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), té ni café.\n\nLABORATORIO\nRemitir 100 ml de orina de 24h con pH<3, recolectada con dieta previa. Indicar diuresis y datos del paciente.	19	listo	AVMHPLC	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2687	TD-VAL	inactivo	2214	634	559	2095	Extracción de la muestra 1 hora antes de tomar la medicación. Ayuno de 4h.	7	pendiente	VAL	1	Laboratorio SBLab	Se pasa a derivar a LABMEDICINA	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2688	AC GRASO	listo	2216	590	559	1725	\N	7	listo	NEFA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
@@ -2247,6 +2801,8 @@ COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_
 2699	WRIC	listo	2286	653	588	1906	\N	4	listo	WRIC	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2700	CAL/ASPI	listo	2306	634	603	1831	CALCITONINA EN ASPIRADO DE NODULO\n\nLABORATORIO\nRemitir el lavado de aguja con el material de punción en un vial con 1.0 ml de Sol. Fisiológica. Refrigerar.	5	listo	CLN	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2701	CAR LAM	listo	2313	654	604	1892	https://drive.google.com/file/d/1ccZ0fbrjBFdRTob6zP_8eYYbdZKJCgc2/view?usp=sharing	35	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
+2735	JA	listo	2616	644	594	2165	JARABE DE ARCE - LEUCINA, NEONATAL\n\nLABORATORIO\nRemitir el papel impregnado con sangre y datos del paciente. Conservar a temperatura ambiente.\nObtener la muestra dentro del primer mes de vida. Se recomienda la toma de muestra entre el 2° y 6° día de vida, 24h después de iniciada la alimentación láctea.\nUtilizar el papel de filtro adecuado: S&S 903.\nNo superponer gotas de sangre sobre el mismo punto del papel.	18	listo	JA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
+2736	LAMOTRIG	discontinuado	2622	621	559	2096	\N	15	pendiente	LAMO	1	Laboratorio SBLab	Se deriva a LABMEDICINA.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2702	CAR ABOR	listo	2314	654	605	1891	LABORATORIO\n\nTOMA DE MUESTRA DE MATERIAL DE ABORTO\na) Extracción: \n- Cuando hacen legrado el médico debe tomar una porción de la zona de vellosidades de la placenta o de lo que va a dar origen a la placenta y enviarlo a las condiciones más estériles posibles, por lo general en un recipiente estéril de urocultivo.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en el mismo recipiente en que se realizó la extracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No debe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	63	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes. Se aumenta el tiempo de demora de 21 a 63 dias.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2703	CITOGEN	listo	2315	654	606	1890	LABORATORIO\n\nTOMA DE MUESTRA DE MEDULA OSEA PARA ESTUDIO CITOGENETICO\na) Extracción: \n- Colocar en una jeringa de 5 ml Heparina sódica ESTERIL (0,05 a 0,10 ml aproximadamente). \n- Extraer al menos 2 ml de MEDULA OSEA. Para citogenética está indicado que se debe mandar la primera o segunda porción de extracción. Evite maniobras que impidan la conservación de la\nmuestra en condiciones de estricta esterilidad.\n- Colocar inmediatamente el capuchón en la aguja, o colocar una aguja nueva impidiendo el contacto de la muestra con el aire. No doblar la aguja ni taparla\ncon otros elementos como tapones de goma, gasas, algodón, no estériles. Fijar el émbolo y aguja o tapón estéril con cinta adhesiva.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en la misma jeringa en que se realizó la extracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No debe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\nc) También es posible realizar la extracción en tubos vacutainer con heparina sódica y enviarlos en los mismos.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	21	verificado	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2784	LEPTMAT	discontinuado	2883	675	559	\N	\N	4	pendiente	\N	1	SIN ASIGNAR	Codigo de facturacion inactivo. Se envia mail a Fernanda.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
@@ -2260,6 +2816,11 @@ COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_
 2796	SINCI-M	listo	2764	669	559	1951	\N	5	listo	\N	1	Laboratorio SBLab	No tiene valores de referencia en Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
 2705	CARIO AL	listo	2317	654	607	1893	LABORATORIO\n\nTOMA DE MUESTRA DE SANGRE PERIFERICA PARA ESTUDIO CITOGENETICO\na) Extracción: \n- Colocar en una jeringa de 5 ml o 10 ml Heparina sódica ESTERIL (0,05 a 0,10 ml aproximadamente).\n- Cambiar la aguja y extraer preferentemente entre 4 y 5 ml de sangre venosa en niños , en caso de bebes puede ser menos ( en lo posible al menos 2ml) y\nentre 8 a 10 ml en adultos. Evite maniobras que impidan la conservación de la\nmuestra en condiciones de estricta esterilidad.\n- Colocar inmediatamente el capuchón en la aguja, o colocar una aguja nueva\nimpidiendo el contacto de la muestra con el aire. No doblar la aguja ni taparla\ncon otros elementos como tapones de goma, gasas, algodón, no estériles. Fijar\nel émbolo y aguja o tapón estéril con cinta adhesiva.\n\nb) Conservación y envío:\n- La muestra deber ser enviada en la misma jeringa en que se realizó la extracción, sin trasvasar y a temperatura ambiente (o con refrigerante). No debe transportarse con hielo seco.\nMantener en la heladera hasta el momento del envío.\nc) También es posible realizar la extracción en tubos vacuteiner con heparina sódica y enviarlos en los mismos.\n\nLa muestra debe enviarse en el menor tiempo posible luego de su extracción para asegurar la viabilidad de las células.\nNo remitir muestras los días viernes.	61	listo	\N	1	Laboratorio SBLab	Los derivantes no deberian remitir las muestras los dias viernes.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2706	CARNITIN	listo	2318	649	559	2130	https://drive.google.com/file/d/1aLzqVr5mz3uk1CI111N8LeAD49r1xlbw/view?usp=sharing	22	listo	CAR	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
+2737	LEPTINA	listo	2624	662	559	2133	https://drive.google.com/file/d/1FPz7Ql9VJbNStd9xxuB5y626f_1XVZcr/view?usp=sharing	22	listo	LEPT	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
+2738	MACROPRL	listo	2634	663	559	1840	https://drive.google.com/file/d/1zTgHA-KIgX-WDAgm6E2NcEd520IhAKUY/view?usp=sharing	3	listo	PROPEG	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
+2739	MAG.SGPG	listo	2635	664	588	2069	\N	29	listo	MAG	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
+2776	FTA ABS	listo	2464	669	559	1902	\N	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
+2777	HEPBEAC	listo	2508	672	559	1925	\N	5	verificado	\N	1	Laboratorio SBLab	Se incluyen valores normales en Hexalis y se actualiza el método en Hexalis y Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
 2707	CATOHPLC	listo	2319	644	608	2142	CATECOLAMINAS URINARIAS\n\nPACIENTE: ORINA DE 24 HORAS.\nDebe recolectarse con DIETA previa: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, palta, berenjenas, ananá, chocolate, ciruelas, maní, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), te ni café.\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24hs: a las 07:00 h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 07:00 h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\n\nLABORATORIO\nRemitir 30 ml de orina de 24hs con pH 2-3, recolectada con dieta previa. Indicar diuresis y datos del paciente.	22	listo	CATFU	1	Laboratorio SBLab	En Datatech tiene una determinacion fantasma (4), pasa por defecto un guion.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2708	CD20	discontinuado	2860	608	564	\N	\N	4	listo	LBCD20	1	Laboratorio SBLab	Se transfiere a IICT.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2709	CORURI-N	listo	2381	634	609	1828	CORTISOL LIBRE URINARIO\n\nPACIENTE\nEl día previo a concurrir al laboratorio comenzar con la recolección de la ORINA DE 24h.\n- Vaciar completamente su vejiga (orinar en el inodoro y desechar esa primera muestra) a las 8 horas o la hora que elija.\n- Anotar la hora de descarte para tomarla como hora de inicio.\n- Recolectar TODAS las micciones de orina del día hasta la primera del siguiente día inclusive, que coincida con la hora de inicio dentro de un recipiente limpio de boca ancha. No perder ninguna muestra de orina.\n- Conservar en heladera hasta su entrega.	3	verificado	CORURI	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
@@ -2276,14 +2837,6 @@ COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_
 2729	AR5	listo	2532	660	588	1913	\N	3	listo	AR5	1	Laboratorio SBLab	Se corrigio el codigo de Hexalis porque estaba asignado equivocadamente. Se superponia con la derivacion a SEMIR.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2730	ANTIHIST	listo	2533	641	588	2044	\N	8	listo	HIST	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2731	ANTI-HU	discontinuado	2551	622	588	2073	\N	29	listo	HUAC	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
-2732	INT 1-B	listo	2607	634	559	2109	\N	8	listo	INT	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
-2733	INTER-8	listo	2608	634	551	2110	\N	8	listo	INT8	1	Laboratorio SBLab	Se modifica en tipo de muestra (estaba cargada por error SUERO)	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
-2734	IOMF	listo	2609	661	579	1693	\N	8	listo	IOMF	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
-2735	JA	listo	2616	644	594	2165	JARABE DE ARCE - LEUCINA, NEONATAL\n\nLABORATORIO\nRemitir el papel impregnado con sangre y datos del paciente. Conservar a temperatura ambiente.\nObtener la muestra dentro del primer mes de vida. Se recomienda la toma de muestra entre el 2° y 6° día de vida, 24h después de iniciada la alimentación láctea.\nUtilizar el papel de filtro adecuado: S&S 903.\nNo superponer gotas de sangre sobre el mismo punto del papel.	18	listo	JA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
-2736	LAMOTRIG	discontinuado	2622	621	559	2096	\N	15	pendiente	LAMO	1	Laboratorio SBLab	Se deriva a LABMEDICINA.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
-2737	LEPTINA	listo	2624	662	559	2133	https://drive.google.com/file/d/1FPz7Ql9VJbNStd9xxuB5y626f_1XVZcr/view?usp=sharing	22	listo	LEPT	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
-2738	MACROPRL	listo	2634	663	559	1840	https://drive.google.com/file/d/1zTgHA-KIgX-WDAgm6E2NcEd520IhAKUY/view?usp=sharing	3	listo	PROPEG	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
-2739	MAG.SGPG	listo	2635	664	588	2069	\N	29	listo	MAG	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2740	METANEF	listo	2645	644	599	2143	METANEFRINAS FRACCIONADAS URINARIAS\n\nPACIENTE: ORINA DE 24 HORAS.\nDebe recolectarse con DIETA previa: durante dos días previos a la recolección de la muestra no ingerir bananas, tomates, palta, berenjenas, ananá, chocolate, ciruelas, maní, nueces, vainilla ni ningún alimento que la contenga (tortas, postres, cremas, golosinas, etc.), te ni café.\nDurante dos días hacer la dieta indicada. Al tercer día y continuando con la dieta, recolectar la orina de 24hs: a las 07:00 h orinar y descartar esa orina. A partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 07:00 h del día siguiente inclusive en un brocal. Mantener refrigerada hasta el momento de llevarla al laboratorio.\n\nLABORATORIO\nRemitir 30 ml de orina de 24hs con pH 2-3, recolectada con dieta previa. Indicar diuresis y datos del paciente.	17	listo	METANE	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2741	MOFEG	listo	2658	665	615	2141	\N	19	listo	MOFEGP	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
 2742	TELOPEP	listo	2667	605	616	1768	\N	2	listo	NTX	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	52	\N	\N	\N	\N	f	f	\N	\N
@@ -2317,13 +2870,6 @@ COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_
 2768	COXSA-G	pendiente	2882	670	559	\N	\N	5	listo	\N	1	Laboratorio SBLab	Codigo de facturacion inactivo. Se envia mail a Fernanda.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
 2769	COXSA-M	listo	2388	669	559	1966	\N	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
 2770	DNA	listo	2408	669	559	\N	\N	5	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
-2771	ECHOVI-G	listo	2412	669	559	1968	\N	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
-2772	ECHOVI-M	listo	2413	669	559	1967	\N	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
-2773	AAE-IGA	listo	2417	669	559	2084	\N	4	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
-2774	AAE-IGG	listo	2418	669	559	2085	\N	4	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
-2775	FAN	listo	2444	671	559	2043	\N	5	verificado	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
-2776	FTA ABS	listo	2464	669	559	1902	\N	4	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
-2777	HEPBEAC	listo	2508	672	559	1925	\N	5	verificado	\N	1	Laboratorio SBLab	Se incluyen valores normales en Hexalis y se actualiza el método en Hexalis y Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
 2778	HEPBCG	listo	2510	673	559	1922	\N	5	listo	\N	1	Laboratorio SBLab	No inclui valores normales en Hexalis porque no se como se informa.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
 2779	HEPBEAG	listo	2513	674	559	1924	\N	5	verificado	\N	1	Laboratorio SBLab	Se incluyen valores normales en Hexalis y se actualiza el método en Hexalis y Datatech	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
 2780	HERPE6 G	listo	2528	669	559	1938	\N	5	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	53	\N	\N	\N	\N	f	f	\N	\N
@@ -2354,6 +2900,7 @@ COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_
 2814	CALCITO	listo	2305	615	588	1830	\N	3	listo	137.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N	\N	\N	\N	f	f	\N	\N
 2815	CHAPCR	listo	2339	679	587	2001	https://drive.google.com/file/d/1DEq3GSi3ktYTLD2r-ye8Y2GEJBA4eim2/view?usp=sharing	12	listo	1486.0	1	Laboratorio SBLab	Agregar modelo de informe	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N	\N	\N	\N	f	f	\N	\N
 2816	ChlaPAg	listo	2340	609	624	\N	https://drive.google.com/file/d/1TF6ToZbCMQCxonPwYMh5zgCM3xgLKiK4/view?usp=sharing	5	listo	2513.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N	\N	\N	\N	f	f	\N	\N
+2904	LEPTOSV	listo	2883	698	576	\N	\N	7	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	59	\N	\N	\N	\N	f	f	\N	\N
 2817	CMVPCR-M	listo	2351	609	625	2016	https://drive.google.com/file/d/1R9g6IKF32cjG5uiVWEVxu-s-mpIctJtn/view?usp=sharing	4	listo	1543.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N	\N	\N	\N	f	f	\N	\N
 2818	C1	listo	2374	541	559	\N	\N	4	listo	1802.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N	\N	\N	\N	f	f	\N	\N
 2819	PCR-ENTE	listo	2420	680	626	1970	https://drive.google.com/file/d/1ordOsqaUU2N-uxgceG8Nw6zv1Swr8_zH/view?usp=sharing	4	listo	1471.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N	\N	\N	\N	f	f	\N	\N
@@ -2388,6 +2935,7 @@ COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_
 2848	PREALB (16)	listo	2715	541	559	\N	\N	4	listo	2285.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N	\N	\N	\N	f	f	\N	\N
 2849	PREECLAM (17)	listo	2716	629	559	\N	https://drive.google.com/file/d/1cGulIixm3Zngk-EPcIuBfHI_me9wdunS/view?usp=sharing	3	listo	2331.0	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N	\N	\N	\N	f	f	\N	\N
 2850	AC.RECOV (32)	listo	2736	605	578	2075	https://drive.google.com/file/d/1epmZt2FUoTmQG3PVL4XmuvTE6rX5pM53/view?usp=sharing	10	listo	6784.0	1	Laboratorio SBLab	Se modifica el modelo de informe.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N	\N	\N	\N	f	f	\N	\N
+2869	FENILE	listo	2446	648	644	\N	PACIENTE\n\nMuestra: ORINA DE 24 HORAS.\nPreparación previa:\nDebe recolectarse con DIETA previa: durante tres días previos a la recolección de la muestra no ingerir bananas, tomates, chocolate, cacao, vainilla, ni ningún alimento que los contenga (tortas, cremas, postres, helados, etc.). \nNo debe beber té, café, mate ni gaseosas. Debe realizar poco ejercicio físico. \n\nToma de muestra:\nHacer durante tres días la dieta indicada. Al cuarto día y continuando con la dieta, recolectar la orina de 24h:\nA las 07:00 h orinar y descartar esa orina. \nA partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 07:00 h del día siguiente inclusive en un brocal.\nMantener refrigerada hasta el momento de llevarla al laboratorio. \nRemitir la muestra dentro de las 24h de completada la recolección.\n\nLABORATORIO\nRemitir al menos 300 ml de orina refrigerada.	17	listo	FEA	1	Laboratorio SBLab	Falta configurar indicaciones al paciente	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N	\N	\N	\N	f	f	\N	\N
 2851	RENINA (14)	listo	2737	634	581	1867	Determinación:\nRENINA-ANGIOTENSINA PLASMATICA\nMuestra: SANGRE.\nPreparación previa: Ayuno de 8 horas. No ingerir alcohol desde dos días antes de la prueba. Hay medicamentos que pueden alterar los resultados, de cualquier manera sólo debería suspender cualquier medicación que esté tomando si esa fue la indicación de su médico al prescribir los análisis.\nDe no existir alguna indicación médica con respecto al consumo de sal, se debe hacer una dieta balanceada y normal, sin restringir el consumo de sodio, durante 3 días previos a la toma de muestra. \nToma de muestra: Concurrir al laboratorio con 8 horas de ayuno, entre las 7:00 y 10:00 h. No ingerir alcohol desde dos días antes de la prueba. Si la orden médica indica posición "acostado" o supina, el paciente deberá permanecer acostado en el laboratorio 30 minutos antes de la extracción, si indica de pie, debe permanecer de pie (ya sea inmóvil o en movimiento) durante los 30 minutos inmediatamente anteriores a la extracción de sangre. En ambos casos, la extracción se realizará sentado. El estímulo será el indicado por el médico. \nDatos adicionales: Medicación habitual.\nVersión: 1.0 (12-JUN-2025)	8	listo	2821.0	1	Laboratorio SBLab	Se configuro envio CONGELADO en el flujo de trabajo de AMS. 660812 SI	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	54	\N	\N	\N	\N	f	f	\N	\N
 2968	PIV PCR	listo	2915	609	655	\N	\N	3	listo	\N	1	SIN ASIGNAR	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N	\N	\N	\N	f	f	\N	\N
 2934	ADV	listo	2222	609	655	\N	https://drive.google.com/file/d/1YIBHucnIsDS8OkJvut_1-f4x_zmt-CpK/view?usp=sharing	3	listo	\N	1	Hematologia SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	63	\N	\N	\N	\N	f	f	\N	\N
@@ -2411,7 +2959,6 @@ COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_
 2866	BUFO O	listo	2289	689	644	2136	https://drive.google.com/file/d/1FBAzQdf37jdi9D8GOHnIhEUv25AcVLkU/view?usp=sharing	17	listo	BUF	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N	\N	\N	\N	f	f	\N	\N
 2867	CAD-LIBR	listo	2299	541	559	1751	https://drive.google.com/file/d/1N5jEk1eE8lEPJwMNmFJZYmW-HEuERkaS/view?usp=sharing	8	listo	KLSL	1	Laboratorio SBLab	Cambiar modelo de informe	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N	\N	\N	\N	f	f	\N	\N
 2868	TD-DIG	inactivo	2405	629	559	2091	\N	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N	\N	\N	\N	f	f	\N	\N
-2869	FENILE	listo	2446	648	644	\N	PACIENTE\n\nMuestra: ORINA DE 24 HORAS.\nPreparación previa:\nDebe recolectarse con DIETA previa: durante tres días previos a la recolección de la muestra no ingerir bananas, tomates, chocolate, cacao, vainilla, ni ningún alimento que los contenga (tortas, cremas, postres, helados, etc.). \nNo debe beber té, café, mate ni gaseosas. Debe realizar poco ejercicio físico. \n\nToma de muestra:\nHacer durante tres días la dieta indicada. Al cuarto día y continuando con la dieta, recolectar la orina de 24h:\nA las 07:00 h orinar y descartar esa orina. \nA partir de ese momento deben recolectarse TODAS las orinas en su totalidad durante todo el día y hasta las 07:00 h del día siguiente inclusive en un brocal.\nMantener refrigerada hasta el momento de llevarla al laboratorio. \nRemitir la muestra dentro de las 24h de completada la recolección.\n\nLABORATORIO\nRemitir al menos 300 ml de orina refrigerada.	17	listo	FEA	1	Laboratorio SBLab	Falta configurar indicaciones al paciente	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N	\N	\N	\N	f	f	\N	\N
 2870	GPX	inactivo	2488	647	589	\N	\N	16	listo	GPX	1	Laboratorio SBLab	desactivada momentáneamente por falta de reactivo 24/07/26	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N	\N	\N	\N	f	f	\N	\N
 2871	INHIBINA	listo	2585	690	559	\N	\N	45	listo	INH	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N	\N	\N	\N	f	f	\N	\N
 2872	IFS	listo	2588	691	559	1748	\N	11	listo	IFS	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	55	\N	\N	\N	\N	f	f	\N	\N
@@ -2450,7 +2997,6 @@ COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_
 2901	HANTAPCR	listo	2891	609	651	\N	\N	5	listo	HANPCR	1	Laboratorio SBLab	Cambio de codigo en Hexalis.	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	59	\N	\N	\N	\N	f	f	\N	\N
 2902	LEPTO	listo	2892	697	576	\N	\N	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	59	\N	\N	\N	\N	f	f	\N	\N
 2903	LEPTOM	listo	2893	605	576	\N	\N	3	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	59	\N	\N	\N	\N	f	f	\N	\N
-2904	LEPTOSV	listo	2883	698	576	\N	\N	7	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	59	\N	\N	\N	\N	f	f	\N	\N
 2905	F.H.A.	listo	2894	609	652	\N	\N	15	listo	830FHA	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	59	\N	\N	\N	\N	f	f	\N	\N
 2906	LEPPCR	listo	2895	609	651	\N	\N	10	listo	LEPPCR	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	59	\N	\N	\N	\N	f	f	\N	\N
 2907	HANTA	listo	2896	605	576	\N	\N	15	listo	\N	1	Laboratorio SBLab	\N	2026-08-24 17:57:54.97231+00	2026-08-24 17:57:54.97231+00	59	\N	\N	\N	\N	f	f	\N	\N
@@ -3040,6 +3586,90 @@ COPY public.muestra (id, nombre, observacion) FROM stdin;
 
 
 --
+-- Data for Name: nomenclador; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.nomenclador (id, nombre, tipo, version_o_fecha, vigencia, link, observacion, estado, creado_por_id, actualizado_por_id, created_at, updated_at) FROM stdin;
+1	NBU 2012	NBU	2012	\N	https://cubra.org.ar/wp-content/uploads/2024/07/NBU-Version-2012-Act.-2016.pdf	\N	inactivo	1	3	2026-09-23 00:36:44.723696	2026-09-23 11:59:33.900601
+\.
+
+
+--
+-- Data for Name: obra_social; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.obra_social (id, nombre, estado, estado_informacion, mostrar_web, habilitar_ia, modalidad_autorizacion, observacion_general, informacion_publica, fecha_ultima_validacion, validado_por_id, creado_por_id, actualizado_por_id, created_at, updated_at) FROM stdin;
+3	IOSFA	activo	borrador	t	f		COBERTURA GENERAL. Consultar excepciones por plan cuando corresponda.	Si la autorización queda pendiente, verificar con Convenios antes de continuar.	2026-09-23 02:19:09.607682	3	3	1	2026-09-23 01:02:24.303365	2026-09-23 11:50:05.691128
+\.
+
+
+--
+-- Data for Name: obra_social_alias; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.obra_social_alias (id, id_obra_social, alias) FROM stdin;
+16	3	OSFA
+17	3	Fuerza Aérea
+18	3	Ejército
+19	3	Armada
+\.
+
+
+--
+-- Data for Name: obra_social_autorizador; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.obra_social_autorizador (id, id_obra_social, id_autorizador, prioridad, usuario, password, observacion) FROM stdin;
+3	3	1	principal	rbaccaro	1234	
+\.
+
+
+--
+-- Data for Name: obra_social_contacto; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.obra_social_contacto (id, id_obra_social, tipo, nombre, telefono, whatsapp, email, observacion) FROM stdin;
+3	3	Facturación	Jorge	3412354841	3412354841	baccarodrigo1@gmail.com	
+\.
+
+
+--
+-- Data for Name: obra_social_historial_estado; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.obra_social_historial_estado (id, id_obra_social, id_plan, estado_anterior, estado_nuevo, comunicado_por, motivo, creado_por_id, created_at) FROM stdin;
+3	3	4	activo	limitada		SE ENCUENTRA ACTIVO SOLO EL PLAN PLATA	3	2026-09-23 01:16:00.150994
+4	3	3	activo	suspendida		SE DEJO DE TENER COBERTURA	3	2026-09-23 01:18:19.534214
+5	3	3	suspendida	activo		hubo una confunsion y el plan nunca se suspendio	3	2026-09-23 01:18:54.295587
+6	3	3	activo	suspendida	rbaccaro		3	2026-09-23 02:08:53.166593
+7	3	6	activo	sin_atencion	rbaccaro		3	2026-09-23 02:10:37.185941
+8	3	\N	activo	suspendida	nbojanich	\N	1	2026-09-23 11:49:25.820419
+9	3	\N	suspendida	activo	nbojanich (revertido automáticamente: cambio accidental de una prueba)	\N	1	2026-09-23 11:50:05.691513
+\.
+
+
+--
+-- Data for Name: obra_social_nomenclador; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.obra_social_nomenclador (id, id_obra_social, id_nomenclador) FROM stdin;
+3	3	1
+\.
+
+
+--
+-- Data for Name: obra_social_plan; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.obra_social_plan (id, id_obra_social, nombre, codigo_datatech_gravado, codigo_datatech_exento, estado, observacion, created_at, updated_at) FROM stdin;
+4	3	RESTO DE PLANES	/SC	DASDAS	limitada	CACA	2026-09-23 01:15:31.107871	2026-09-23 01:16:00.149419
+3	3	PEDIATRIA	S/C	025Q	suspendida		2026-09-23 01:04:52.431976	2026-09-23 02:08:53.165138
+5	3	test 			activo		2026-09-23 02:10:22.970483	2026-09-23 02:10:22.970485
+6	3	testtest			sin_atencion		2026-09-23 02:10:30.804008	2026-09-23 02:10:37.18515
+\.
+
+
+--
 -- Data for Name: password_reset_token; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -3091,6 +3721,34 @@ COPY public.sector (id, nombre) FROM stdin;
 14	Orina (no dosajes)
 15	Química
 16	Serología y Virología
+\.
+
+
+--
+-- Data for Name: tarifario; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.tarifario (id, nombre, tipo, tipo_relacionado, entidad, moneda, estado, observaciones, creado_por_id, actualizado_por_id, created_at, updated_at) FROM stdin;
+4	test	TARIFARIO	Laboratorio / Procesador externo	test test	ARS	activo		3	3	2026-09-22 23:33:21.825326	2026-09-22 23:33:21.825329
+\.
+
+
+--
+-- Data for Name: tarifario_item; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.tarifario_item (id, id_tarifario, id_estudio, nemonico, codigo, estado, nota, created_at) FROM stdin;
+3	4	2205	asdasdas	dasdsadsa	Activo	dsadsadsa	2026-09-22 23:33:56.903799
+\.
+
+
+--
+-- Data for Name: tarifario_item_periodo; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.tarifario_item_periodo (id, id_tarifario_item, periodo, precio, creado_por_id, actualizado_por_id, created_at, updated_at) FROM stdin;
+5	3	FEBRERO	18899.00	3	3	2026-09-22 23:33:56.90634	2026-09-22 23:33:56.906342
+6	3	MARZO	2000.00	3	3	2026-09-23 00:13:02.640428	2026-09-23 00:13:02.64044
 \.
 
 
@@ -3171,6 +3829,7 @@ COPY public.usuario (id, username, nombre_completo, email, password_hash, rol, a
 8	test	test gonzales	tgonzales@gmail.com	scrypt:32768:8:1$4E91aeoxbBXatWhq$1c56abdb3236e011f010403440914cd2c8ffb214a26e9f73d3c0732ac3d23391debcac5d670ea1e57c72552a27103ad2ebcffb533acf70aec1e7a94e07439c1c	user	t	{"modulos": {"estudios": "consultor"}, "columnas_ocultas_estudios": ["estudio_descripcion", "codigo_hexalis", "nemonico_datatech", "colega_descripcion", "muestra", "indicaciones_pacientes", "estado", "observacion"]}	2026-09-09 16:02:46.471077
 2	ccarletti	ccarletti	\N	scrypt:32768:8:1$hTlXxdD77lNvONAD$5a96c5333c760db74d941d8a8222ec0a3ba9cb90a357eeec9521b3453e12b9433c129f158a57f1a701ea71785bcced7e1b471889d2bebc0c75ab701e2005a288	superadmin	t	{"columnas_ocultas_estudios": null}	2026-09-09 15:32:03.530391
 15	test2	testi	testo@gmail.com	scrypt:32768:8:1$6IrfZIgg7CwP6Xg3$5e2a61406b0265b341d2bfae3ae5f5e6f73dec96297920df7b9e40024d714a056af2c66725397e7881dde3aa2becc2176db717d448690302e6cdf7faf65f2d39	user	t	{"modulos": {"estudios": "consultor"}, "ver_credenciales_colegas": false, "columnas_ocultas_estudios": ["revisor"]}	2026-09-15 17:09:22.097073
+19	qa_tarifarios	QA Tarifarios	\N	scrypt:32768:8:1$831eIaUlVhWlKJJU$8c99841f9ec55e6ad54c7ceed6ac223cebc0679ebfc6184641705b274de25126904c7fbe4b29ca96daec6d2cc68d252ac6d6dec84ca6ce8e40190a5373458362	user	f	{"modulos": {"obras_sociales": "administrador"}}	2026-09-22 23:07:45.389103
 \.
 
 
@@ -3758,6 +4417,13 @@ SELECT pg_catalog.setval('public.aditivo_id_seq', 5, true);
 
 
 --
+-- Name: autorizador_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.autorizador_id_seq', 1, true);
+
+
+--
 -- Name: colega_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
@@ -3842,6 +4508,62 @@ SELECT pg_catalog.setval('public.muestra_id_seq', 672, true);
 
 
 --
+-- Name: nomenclador_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.nomenclador_id_seq', 1, true);
+
+
+--
+-- Name: obra_social_alias_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.obra_social_alias_id_seq', 19, true);
+
+
+--
+-- Name: obra_social_autorizador_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.obra_social_autorizador_id_seq', 3, true);
+
+
+--
+-- Name: obra_social_contacto_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.obra_social_contacto_id_seq', 3, true);
+
+
+--
+-- Name: obra_social_historial_estado_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.obra_social_historial_estado_id_seq', 10, true);
+
+
+--
+-- Name: obra_social_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.obra_social_id_seq', 6, true);
+
+
+--
+-- Name: obra_social_nomenclador_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.obra_social_nomenclador_id_seq', 3, true);
+
+
+--
+-- Name: obra_social_plan_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.obra_social_plan_id_seq', 6, true);
+
+
+--
 -- Name: password_reset_token_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
@@ -3870,6 +4592,27 @@ SELECT pg_catalog.setval('public.sector_id_seq', 16, true);
 
 
 --
+-- Name: tarifario_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.tarifario_id_seq', 4, true);
+
+
+--
+-- Name: tarifario_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.tarifario_item_id_seq', 3, true);
+
+
+--
+-- Name: tarifario_item_periodo_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.tarifario_item_periodo_id_seq', 6, true);
+
+
+--
 -- Name: tecnica_recoleccion_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
@@ -3894,7 +4637,7 @@ SELECT pg_catalog.setval('public.unidad_medida_id_seq', 6, true);
 -- Name: usuario_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.usuario_id_seq', 18, true);
+SELECT pg_catalog.setval('public.usuario_id_seq', 19, true);
 
 
 --
@@ -3918,6 +4661,14 @@ ALTER TABLE ONLY public.aditivo
 
 ALTER TABLE ONLY public.aditivo
     ADD CONSTRAINT aditivo_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: autorizador autorizador_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.autorizador
+    ADD CONSTRAINT autorizador_pkey PRIMARY KEY (id);
 
 
 --
@@ -4065,6 +4816,70 @@ ALTER TABLE ONLY public.muestra
 
 
 --
+-- Name: nomenclador nomenclador_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.nomenclador
+    ADD CONSTRAINT nomenclador_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: obra_social_alias obra_social_alias_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_alias
+    ADD CONSTRAINT obra_social_alias_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: obra_social_autorizador obra_social_autorizador_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_autorizador
+    ADD CONSTRAINT obra_social_autorizador_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: obra_social_contacto obra_social_contacto_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_contacto
+    ADD CONSTRAINT obra_social_contacto_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: obra_social_historial_estado obra_social_historial_estado_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_historial_estado
+    ADD CONSTRAINT obra_social_historial_estado_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: obra_social_nomenclador obra_social_nomenclador_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_nomenclador
+    ADD CONSTRAINT obra_social_nomenclador_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: obra_social obra_social_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social
+    ADD CONSTRAINT obra_social_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: obra_social_plan obra_social_plan_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_plan
+    ADD CONSTRAINT obra_social_plan_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: password_reset_token password_reset_token_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4126,6 +4941,30 @@ ALTER TABLE ONLY public.sector
 
 ALTER TABLE ONLY public.sector
     ADD CONSTRAINT sector_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tarifario_item_periodo tarifario_item_periodo_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tarifario_item_periodo
+    ADD CONSTRAINT tarifario_item_periodo_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tarifario_item tarifario_item_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tarifario_item
+    ADD CONSTRAINT tarifario_item_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tarifario tarifario_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tarifario
+    ADD CONSTRAINT tarifario_pkey PRIMARY KEY (id);
 
 
 --
@@ -4193,6 +5032,30 @@ ALTER TABLE ONLY public.valor_estudio_sector
 
 
 --
+-- Name: obra_social_autorizador uq_obra_social_autorizador; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_autorizador
+    ADD CONSTRAINT uq_obra_social_autorizador UNIQUE (id_obra_social, id_autorizador);
+
+
+--
+-- Name: obra_social_nomenclador uq_obra_social_nomenclador; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_nomenclador
+    ADD CONSTRAINT uq_obra_social_nomenclador UNIQUE (id_obra_social, id_nomenclador);
+
+
+--
+-- Name: tarifario_item_periodo uq_tarifario_item_periodo; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tarifario_item_periodo
+    ADD CONSTRAINT uq_tarifario_item_periodo UNIQUE (id_tarifario_item, periodo);
+
+
+--
 -- Name: usuario usuario_email_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4239,10 +5102,68 @@ CREATE INDEX idx_faq_categoria ON public.faq USING btree (categoria);
 
 
 --
+-- Name: idx_obra_social_alias_obra_social; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_obra_social_alias_obra_social ON public.obra_social_alias USING btree (id_obra_social);
+
+
+--
+-- Name: idx_obra_social_contacto_obra_social; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_obra_social_contacto_obra_social ON public.obra_social_contacto USING btree (id_obra_social);
+
+
+--
+-- Name: idx_obra_social_historial_obra_social; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_obra_social_historial_obra_social ON public.obra_social_historial_estado USING btree (id_obra_social, created_at);
+
+
+--
+-- Name: idx_obra_social_plan_obra_social; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_obra_social_plan_obra_social ON public.obra_social_plan USING btree (id_obra_social);
+
+
+--
 -- Name: idx_password_reset_token_usuario; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_password_reset_token_usuario ON public.password_reset_token USING btree (id_usuario);
+
+
+--
+-- Name: idx_tarifario_item_periodo_item; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_tarifario_item_periodo_item ON public.tarifario_item_periodo USING btree (id_tarifario_item, created_at);
+
+
+--
+-- Name: idx_tarifario_item_tarifario; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_tarifario_item_tarifario ON public.tarifario_item USING btree (id_tarifario);
+
+
+--
+-- Name: autorizador autorizador_actualizado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.autorizador
+    ADD CONSTRAINT autorizador_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL;
+
+
+--
+-- Name: autorizador autorizador_creado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.autorizador
+    ADD CONSTRAINT autorizador_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL;
 
 
 --
@@ -4486,11 +5407,187 @@ ALTER TABLE ONLY public.estudio_colega
 
 
 --
+-- Name: nomenclador nomenclador_actualizado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.nomenclador
+    ADD CONSTRAINT nomenclador_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL;
+
+
+--
+-- Name: nomenclador nomenclador_creado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.nomenclador
+    ADD CONSTRAINT nomenclador_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL;
+
+
+--
+-- Name: obra_social obra_social_actualizado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social
+    ADD CONSTRAINT obra_social_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL;
+
+
+--
+-- Name: obra_social_alias obra_social_alias_id_obra_social_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_alias
+    ADD CONSTRAINT obra_social_alias_id_obra_social_fkey FOREIGN KEY (id_obra_social) REFERENCES public.obra_social(id) ON DELETE CASCADE;
+
+
+--
+-- Name: obra_social_autorizador obra_social_autorizador_id_autorizador_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_autorizador
+    ADD CONSTRAINT obra_social_autorizador_id_autorizador_fkey FOREIGN KEY (id_autorizador) REFERENCES public.autorizador(id) ON DELETE RESTRICT;
+
+
+--
+-- Name: obra_social_autorizador obra_social_autorizador_id_obra_social_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_autorizador
+    ADD CONSTRAINT obra_social_autorizador_id_obra_social_fkey FOREIGN KEY (id_obra_social) REFERENCES public.obra_social(id) ON DELETE CASCADE;
+
+
+--
+-- Name: obra_social_contacto obra_social_contacto_id_obra_social_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_contacto
+    ADD CONSTRAINT obra_social_contacto_id_obra_social_fkey FOREIGN KEY (id_obra_social) REFERENCES public.obra_social(id) ON DELETE CASCADE;
+
+
+--
+-- Name: obra_social obra_social_creado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social
+    ADD CONSTRAINT obra_social_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL;
+
+
+--
+-- Name: obra_social_historial_estado obra_social_historial_estado_creado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_historial_estado
+    ADD CONSTRAINT obra_social_historial_estado_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL;
+
+
+--
+-- Name: obra_social_historial_estado obra_social_historial_estado_id_obra_social_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_historial_estado
+    ADD CONSTRAINT obra_social_historial_estado_id_obra_social_fkey FOREIGN KEY (id_obra_social) REFERENCES public.obra_social(id) ON DELETE CASCADE;
+
+
+--
+-- Name: obra_social_historial_estado obra_social_historial_estado_id_plan_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_historial_estado
+    ADD CONSTRAINT obra_social_historial_estado_id_plan_fkey FOREIGN KEY (id_plan) REFERENCES public.obra_social_plan(id) ON DELETE CASCADE;
+
+
+--
+-- Name: obra_social_nomenclador obra_social_nomenclador_id_nomenclador_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_nomenclador
+    ADD CONSTRAINT obra_social_nomenclador_id_nomenclador_fkey FOREIGN KEY (id_nomenclador) REFERENCES public.nomenclador(id) ON DELETE RESTRICT;
+
+
+--
+-- Name: obra_social_nomenclador obra_social_nomenclador_id_obra_social_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_nomenclador
+    ADD CONSTRAINT obra_social_nomenclador_id_obra_social_fkey FOREIGN KEY (id_obra_social) REFERENCES public.obra_social(id) ON DELETE CASCADE;
+
+
+--
+-- Name: obra_social_plan obra_social_plan_id_obra_social_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social_plan
+    ADD CONSTRAINT obra_social_plan_id_obra_social_fkey FOREIGN KEY (id_obra_social) REFERENCES public.obra_social(id) ON DELETE CASCADE;
+
+
+--
+-- Name: obra_social obra_social_validado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.obra_social
+    ADD CONSTRAINT obra_social_validado_por_id_fkey FOREIGN KEY (validado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL;
+
+
+--
 -- Name: password_reset_token password_reset_token_id_usuario_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.password_reset_token
     ADD CONSTRAINT password_reset_token_id_usuario_fkey FOREIGN KEY (id_usuario) REFERENCES public.usuario(id) ON DELETE CASCADE;
+
+
+--
+-- Name: tarifario tarifario_actualizado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tarifario
+    ADD CONSTRAINT tarifario_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL;
+
+
+--
+-- Name: tarifario tarifario_creado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tarifario
+    ADD CONSTRAINT tarifario_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL;
+
+
+--
+-- Name: tarifario_item tarifario_item_id_estudio_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tarifario_item
+    ADD CONSTRAINT tarifario_item_id_estudio_fkey FOREIGN KEY (id_estudio) REFERENCES public.estudio(id) ON DELETE RESTRICT;
+
+
+--
+-- Name: tarifario_item tarifario_item_id_tarifario_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tarifario_item
+    ADD CONSTRAINT tarifario_item_id_tarifario_fkey FOREIGN KEY (id_tarifario) REFERENCES public.tarifario(id) ON DELETE CASCADE;
+
+
+--
+-- Name: tarifario_item_periodo tarifario_item_periodo_actualizado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tarifario_item_periodo
+    ADD CONSTRAINT tarifario_item_periodo_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL;
+
+
+--
+-- Name: tarifario_item_periodo tarifario_item_periodo_creado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tarifario_item_periodo
+    ADD CONSTRAINT tarifario_item_periodo_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL;
+
+
+--
+-- Name: tarifario_item_periodo tarifario_item_periodo_id_tarifario_item_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tarifario_item_periodo
+    ADD CONSTRAINT tarifario_item_periodo_id_tarifario_item_fkey FOREIGN KEY (id_tarifario_item) REFERENCES public.tarifario_item(id) ON DELETE CASCADE;
 
 
 --
@@ -4513,5 +5610,5 @@ ALTER TABLE ONLY public.valor_estudio_sector
 -- PostgreSQL database dump complete
 --
 
-\unrestrict r8CLMGSQuhRFyoWAjX0rnWEWRrv5oPKosunbf6AqLFV0tUsdhR9afSx6SyYlTNi
+\unrestrict 7aDz1iwPdClkLz87Ctq1GDFLkjJudOxP9dxbsHw51g1Z4o2od1Xf1QcXX9PxkUA
 

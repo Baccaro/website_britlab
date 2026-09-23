@@ -33,6 +33,7 @@ const MODULO_POR_PANTALLA = {
   modalidades_recoleccion: 'estudios', tecnicas_recoleccion: 'estudios', conservaciones: 'estudios',
   condiciones_especiales: 'estudios', prioridades_envio: 'estudios',
   obras_sociales: 'obras_sociales', web_britlab: 'web', faq: 'faq',
+  tarifarios: 'obras_sociales', nomencladores: 'obras_sociales', autorizadores: 'obras_sociales',
 };
 
 // Clase de color del badge de estado, tanto en los filtros como en la
@@ -131,7 +132,7 @@ const nextMuestraKey = () => `m${_muestraKeySeq++}`;
 // columnas visibles), en el orden fijo pedido. Las marcadas con "fija: true"
 // (Estudio, Laboratorio Procesante, Estado) no se pueden sacar desde
 // "Columnas": quedan siempre visibles y ancladas (sticky) al hacer scroll
-// horizontal (ver .col-pin-* en index.html).
+// horizontal (ver .col-pin en index.html y pinStyle/getColWidth más abajo).
 const INDICACIONES_COLUMNAS = [
   { field: 'estudio_descripcion', label: 'Estudio', fija: true },
   { field: 'colega_descripcion', label: 'Laboratorio Procesante', fija: true },
@@ -152,11 +153,16 @@ const INDICACIONES_COLUMNAS = [
   { field: 'revisor', label: 'Revisor' },
   { field: 'observacion', label: 'Observaciones' }
 ];
-// Clase CSS sticky (ver .col-pin-* en index.html) de cada columna "fija".
-const PIN_CLASS_POR_CAMPO = {
-  estudio_descripcion: 'col-pin-estudio',
-  colega_descripcion: 'col-pin-colega',
-  estado: 'col-pin-estado',
+// Orden de las columnas "fija" (para calcular el "left" acumulado de cada
+// una al anclarlas) y ancho inicial de cada columna (el usuario lo puede
+// cambiar arrastrando el borde; ver columnWidths/getColWidth más abajo).
+const PINNED_FIELDS_ORDER = ['estudio_descripcion', 'colega_descripcion', 'estado'];
+const CHEVRON_WIDTH = 32; // 2rem, la columna del ">" para expandir la fila
+const DEFAULT_COL_WIDTH = 150;
+const DEFAULT_COL_WIDTHS = {
+  estudio_descripcion: 200,
+  colega_descripcion: 170,
+  estado: 90,
 };
 const INDICACIONES_COLUMNAS_DEFAULT = [
   'estudio_descripcion', 'colega_descripcion', 'estado', 'codigo_hexalis', 'nemonico_datatech', 'codigo_laboratorio',
@@ -210,6 +216,11 @@ const app = createApp({
     const isAdmin = computed(() => rolEnModulo('estudios') === 'administrador');
     // Puede crear/editar/eliminar preguntas frecuentes (módulo FAQ).
     const puedeEscribirFaq = computed(() => rolEnModulo('faq') === 'administrador');
+    // Puede crear/editar/eliminar tarifarios, ítems y precios (módulo Obras
+    // Sociales). La auditoría de cada período (quién/cuándo) es aparte: sólo
+    // la ve SuperAdmin (isSuperAdmin), ni siquiera un Administrador de este
+    // módulo, ver periodosConAuditoria más abajo.
+    const puedeEscribirTarifarios = computed(() => rolEnModulo('obras_sociales') === 'administrador');
 
     const misPermisos = computed(() => (currentUser.value && currentUser.value.permisos) || {});
     const pantallaPermitida = (key) => {
@@ -463,6 +474,75 @@ const app = createApp({
     // (las fijas ni siquiera se listan ahí).
     const columnasTogglables = computed(() => INDICACIONES_COLUMNAS.filter(c => !c.fija));
 
+    // Ancho de cada columna de "Todos los Estudios": el usuario lo puede
+    // cambiar arrastrando el borde derecho del encabezado (ver
+    // startResize/col-resize-handle); se persiste por navegador, igual que
+    // las columnas visibles.
+    const columnWidths = ref(
+      JSON.parse(localStorage.getItem('britlab_anchos_indicaciones') || 'null') || { ...DEFAULT_COL_WIDTHS }
+    );
+    const getColWidth = (field) => columnWidths.value[field] || DEFAULT_COL_WIDTH;
+    const persistColumnWidths = () => {
+      localStorage.setItem('britlab_anchos_indicaciones', JSON.stringify(columnWidths.value));
+    };
+
+    // Offset "left" acumulado de una columna fija (Estudio/Laboratorio
+    // Procesante/Estado), sumando el ancho de la columna del ">" y de las
+    // fijas anteriores: recalcula solo cuando alguna cambia de ancho.
+    const pinLeftOffset = (field) => {
+      const idx = PINNED_FIELDS_ORDER.indexOf(field);
+      let left = CHEVRON_WIDTH;
+      for (let i = 0; i < idx; i++) left += getColWidth(PINNED_FIELDS_ORDER[i]);
+      return left;
+    };
+    const pinStyle = (field) => {
+      const w = getColWidth(field) + 'px';
+      // "position: sticky" va acá (inline, máxima prioridad) porque
+      // ".th-resizable" pisa el "position: sticky" de ".col-pin" al tener la
+      // misma especificidad y venir después en la hoja de estilos.
+      return { position: 'sticky', left: pinLeftOffset(field) + 'px', width: w, minWidth: w, maxWidth: w };
+    };
+
+    let resizingField = null;
+    let resizeStartX = 0;
+    let resizeStartWidth = 0;
+    const onResizeMove = (e) => {
+      if (!resizingField) return;
+      const next = Math.max(60, resizeStartWidth + (e.clientX - resizeStartX));
+      columnWidths.value[resizingField] = next;
+    };
+    const onResizeEnd = () => {
+      if (!resizingField) return;
+      resizingField = null;
+      document.removeEventListener('mousemove', onResizeMove);
+      document.removeEventListener('mouseup', onResizeEnd);
+      persistColumnWidths();
+    };
+    const startResize = (event, field) => {
+      event.preventDefault();
+      event.stopPropagation();
+      resizingField = field;
+      resizeStartX = event.clientX;
+      resizeStartWidth = getColWidth(field);
+      document.addEventListener('mousemove', onResizeMove);
+      document.addEventListener('mouseup', onResizeEnd);
+    };
+
+    // Botones "<"/">" junto a "Columnas": alternativa al scrollbar nativo,
+    // que con muchas columnas visibles y la tabla muy alta queda al fondo de
+    // la página y cuesta encontrarlo/agarrarlo.
+    const scrollTablaEstudios = (delta) => {
+      const el = document.getElementById('tablaEstudiosScroll');
+      if (el) el.scrollBy({ left: delta, behavior: 'smooth' });
+    };
+
+    // Cuánto se scrolleó horizontalmente la tabla: la fila de detalle
+    // desplegable (colspan a todo el ancho) lo usa para no irse de la vista
+    // con translateX (position:sticky no calza bien ahí con el
+    // table-layout:fixed + colgroup del resize de columnas).
+    const tablaScrollLeft = ref(0);
+    const onTablaEstudiosScroll = (e) => { tablaScrollLeft.value = e.target.scrollLeft; };
+
     const ESTADOS_REGISTRO = ['listo', 'pendiente', 'revisar', 'verificado', 'borrador'];
     // "Paridad" (campo paridad_datatech_hexalis): sólo Sí/No.
     const ESTADOS_PARIDAD = ['Sí', 'No'];
@@ -511,18 +591,21 @@ const app = createApp({
       condiciones_especiales: 'condiciones-especiales', prioridades_envio: 'prioridades-envio'
     };
 
+    // allSettled (no all): estos catálogos son todos del módulo "estudios",
+    // así que a un usuario con acceso sólo a otro módulo (p.ej. Obras
+    // Sociales/Tarifarios) el backend le va a rechazar cada uno con 403 — no
+    // tiene sentido tirar abajo la carga de TODO ni mostrarle una alerta de
+    // error por algo a lo que de entrada no tiene (ni necesita) acceso.
     const fetchRefData = async () => {
       const keys = Object.keys(REF_ENDPOINT);
-      try {
-        const responses = await Promise.all(
-          keys.map(k => axios.get(`${API_BASE}/${REF_ENDPOINT[k]}`, { params: { limit: 3000 } }))
-        );
-        const nuevo = {};
-        keys.forEach((k, i) => { nuevo[k] = responses[i].data.items; });
-        refData.value = nuevo;
-      } catch (err) {
-        showAlert('No se pudieron cargar los datos de referencia (FKs)', 'danger');
-      }
+      const resultados = await Promise.allSettled(
+        keys.map(k => axios.get(`${API_BASE}/${REF_ENDPOINT[k]}`, { params: { limit: 3000 } }))
+      );
+      const nuevo = { ...refData.value };
+      resultados.forEach((r, i) => {
+        if (r.status === 'fulfilled') nuevo[keys[i]] = r.value.data.items;
+      });
+      refData.value = nuevo;
     };
 
     // Etiqueta legible para un id de una tabla de referencia (usada en tablas y modal)
@@ -942,8 +1025,14 @@ const app = createApp({
       currentView.value === 'indicaciones' ||
       (currentView.value === 'crud' && (TOP_NAV_ENTITY_KEYS.includes(currentEntityKey.value) || MUESTRAS_CATALOGO_KEYS.includes(currentEntityKey.value)))
     );
-    // "Obras Sociales" / "Web BritLab" / "FAQ": pantallas propias, todavía sin
-    // contenido funcional (placeholders explícitos, no simulan datos).
+    // El nav "Obras Sociales" agrupa Obras Sociales, Nomencladores,
+    // Autorizadores y Tarifarios.
+    const VISTAS_DROPDOWN_OBRAS_SOCIALES = [
+      'obras_sociales', 'obra_social_form', 'tarifarios', 'tarifario_form', 'nomencladores', 'autorizadores',
+    ];
+    const obrasSocialesDropdownActive = computed(() => VISTAS_DROPDOWN_OBRAS_SOCIALES.includes(currentView.value));
+    // "Web BritLab": pantalla propia, todavía sin contenido funcional
+    // (placeholder explícito, no simula datos).
     const switchToPlaceholder = (view) => {
       if (!pantallaPermitida(view)) return;
       currentView.value = view;
@@ -1079,6 +1168,947 @@ const app = createApp({
         fetchFaqItems(faqPagination.value.page);
       } catch (err) {
         showAlert(apiErrorMessage(err, 'No se pudo eliminar la pregunta frecuente'), 'danger');
+      }
+    };
+
+    // --- Módulo Tarifarios (Obras Sociales): tarifarios/convenios (master),
+    // cada uno con sus ítems (un Estudio con precio) y el historial de
+    // precios por período de cada ítem (detail). Vista master-detail: lista
+    // de tarifarios a la izquierda, detalle del elegido a la derecha. ---
+    const TIPOS_TARIFARIO = ['TARIFARIO', 'CONVENIO', 'DERIVACION', 'LISTA', 'ANEXO'];
+    const TIPOS_TARIFARIO_LABEL = {
+      TARIFARIO: 'Tarifario', CONVENIO: 'Convenio particular', DERIVACION: 'Derivación externa',
+      LISTA: 'Lista de precios', ANEXO: 'Anexo',
+    };
+    const TIPOS_RELACIONADO_TARIFARIO = ['Laboratorio / Procesador externo', 'Obra Social'];
+    const ESTADOS_TARIFARIO = ['activo', 'inactivo'];
+    const ESTADOS_TARIFARIO_ITEM = ['Activo', 'Inactivo'];
+
+    const tarifarios = ref([]);
+    const tarifariosLoading = ref(false);
+    const tarifariosPagination = ref({ page: 1, limit: 25, total: 0, total_pages: 1 });
+    const tarifariosBusqueda = ref('');
+    const tarifariosTipoFiltro = ref('');
+    const tarifariosEstadoFiltro = ref('');
+
+    const tarifarioSeleccionado = ref(null);
+    const tarifarioDetalleLoading = ref(false);
+    const tarifarioItemBusqueda = ref('');
+
+    const tarifarioForm = ref({});
+    const tarifarioModalMode = ref('create');
+    const tarifarioGuardando = ref(false);
+
+    const fetchTarifarios = async (page = 1) => {
+      tarifariosLoading.value = true;
+      try {
+        const params = { page, limit: tarifariosPagination.value.limit };
+        if (tarifariosBusqueda.value.trim()) params.q = tarifariosBusqueda.value.trim();
+        if (tarifariosTipoFiltro.value) params.tipo = tarifariosTipoFiltro.value;
+        if (tarifariosEstadoFiltro.value) params.estado = tarifariosEstadoFiltro.value;
+        const res = await axios.get(`${API_BASE}/tarifarios`, { params });
+        tarifarios.value = res.data.items;
+        tarifariosPagination.value = {
+          page: res.data.page, limit: res.data.limit, total: res.data.total, total_pages: res.data.total_pages,
+        };
+        // Si el tarifario elegido ya no está en la lista (p.ej. se lo borró
+        // desde otra pestaña) o todavía no hay ninguno elegido, se pasa al primero.
+        if (tarifarios.value.length && !tarifarios.value.some(t => t.id === (tarifarioSeleccionado.value || {}).id)) {
+          seleccionarTarifario(tarifarios.value[0].id);
+        } else if (!tarifarios.value.length) {
+          tarifarioSeleccionado.value = null;
+        }
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudieron cargar los tarifarios'), 'danger');
+      } finally {
+        tarifariosLoading.value = false;
+      }
+    };
+
+    // Catálogo de Estudios para el picker de ítems: propio (no refData.estudios,
+    // que requiere el módulo 'estudios') porque a este módulo se accede sólo
+    // con permiso de 'obras_sociales' (ver /tarifarios/estudios-disponibles).
+    const tarifarioEstudiosDisponibles = ref([]);
+    const tarifarioEstudioLabel = (e) => `${e.codigo_hexalis} — ${e.descripcion}`;
+    const fetchTarifarioEstudiosDisponibles = async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/tarifarios/estudios-disponibles`);
+        tarifarioEstudiosDisponibles.value = res.data;
+      } catch (err) {
+        tarifarioEstudiosDisponibles.value = [];
+      }
+    };
+
+    const switchToTarifarios = () => {
+      if (!pantallaPermitida('tarifarios')) return;
+      currentView.value = 'tarifarios';
+      fetchTarifarios(1);
+      fetchTarifarioEstudiosDisponibles();
+    };
+
+    const cambiarPaginaTarifarios = (page) => {
+      if (page >= 1 && page <= tarifariosPagination.value.total_pages) fetchTarifarios(page);
+    };
+    const onTarifariosFiltroChange = () => fetchTarifarios(1);
+
+    const seleccionarTarifario = async (id) => {
+      tarifarioDetalleLoading.value = true;
+      tarifarioItemBusqueda.value = '';
+      try {
+        const res = await axios.get(`${API_BASE}/tarifarios/${id}`);
+        tarifarioSeleccionado.value = res.data;
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo cargar el detalle del tarifario'), 'danger');
+      } finally {
+        tarifarioDetalleLoading.value = false;
+      }
+    };
+
+    const tarifarioItemsFiltrados = computed(() => {
+      const t = tarifarioSeleccionado.value;
+      if (!t) return [];
+      const q = tarifarioItemBusqueda.value.trim().toLowerCase();
+      if (!q) return t.items;
+      return t.items.filter(i => [i.estudio_descripcion, i.estudio_codigo_hexalis, i.nemonico, i.codigo]
+        .join(' ').toLowerCase().includes(q));
+    });
+
+    const abrirTarifarioForm = (mode, item = null) => {
+      tarifarioModalMode.value = mode;
+      if (mode === 'edit' && item) {
+        tarifarioForm.value = { ...item };
+      } else {
+        tarifarioForm.value = {
+          nombre: '', tipo: 'TARIFARIO', tipo_relacionado: 'Laboratorio / Procesador externo',
+          entidad: '', moneda: 'ARS', estado: 'activo', observaciones: '',
+        };
+      }
+      currentView.value = 'tarifario_form';
+    };
+    const cancelarTarifarioForm = () => { currentView.value = 'tarifarios'; };
+
+    const guardarTarifario = async () => {
+      if (!tarifarioForm.value.nombre || !tarifarioForm.value.nombre.trim()) {
+        showAlert('El nombre es obligatorio', 'danger'); return;
+      }
+      tarifarioGuardando.value = true;
+      try {
+        let id = tarifarioForm.value.id;
+        if (tarifarioModalMode.value === 'create') {
+          const res = await axios.post(`${API_BASE}/tarifarios`, tarifarioForm.value);
+          id = res.data.id;
+          showAlert('Tarifario creado correctamente');
+        } else {
+          await axios.put(`${API_BASE}/tarifarios/${id}`, tarifarioForm.value);
+          showAlert('Tarifario actualizado correctamente');
+        }
+        currentView.value = 'tarifarios';
+        await fetchTarifarios(tarifariosPagination.value.page);
+        seleccionarTarifario(id);
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo guardar el tarifario'), 'danger');
+      } finally {
+        tarifarioGuardando.value = false;
+      }
+    };
+
+    const eliminarTarifario = async (item) => {
+      if (!confirm(`¿Eliminar el tarifario "${item.nombre}" y todos sus ítems y precios?`)) return;
+      try {
+        await axios.delete(`${API_BASE}/tarifarios/${item.id}`);
+        showAlert('Tarifario eliminado correctamente');
+        fetchTarifarios(1);
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo eliminar el tarifario'), 'danger');
+      }
+    };
+
+    // --- Ítems de un tarifario (modal chico: Estudio + metadatos; si es
+    // nuevo, además pide el período/precio inicial) ---
+    let tarifarioItemModalInstance = null;
+    const ensureTarifarioItemModalInstance = () => {
+      if (!tarifarioItemModalInstance) {
+        const el = document.getElementById('tarifarioItemModal');
+        if (el) tarifarioItemModalInstance = new bootstrap.Modal(el);
+      }
+      return tarifarioItemModalInstance;
+    };
+    const tarifarioItemForm = ref({});
+    const tarifarioItemModalMode = ref('create');
+    const tarifarioItemFkText = ref('');
+    const tarifarioItemGuardando = ref(false);
+
+    const onTarifarioItemEstudioInput = (value) => {
+      tarifarioItemFkText.value = value;
+      const match = tarifarioEstudiosDisponibles.value.find(e => tarifarioEstudioLabel(e) === value);
+      tarifarioItemForm.value.id_estudio = match ? match.id : null;
+    };
+
+    const abrirTarifarioItemModal = (mode, item = null) => {
+      tarifarioItemModalMode.value = mode;
+      if (mode === 'edit' && item) {
+        tarifarioItemForm.value = { ...item };
+        const est = tarifarioEstudiosDisponibles.value.find(e => e.id === item.id_estudio);
+        tarifarioItemFkText.value = est ? tarifarioEstudioLabel(est) : (item.estudio_codigo_hexalis ? `${item.estudio_codigo_hexalis} — ${item.estudio_descripcion}` : '');
+      } else {
+        tarifarioItemForm.value = { id_estudio: null, nemonico: '', codigo: '', estado: 'Activo', nota: '', periodo: '', precio: null };
+        tarifarioItemFkText.value = '';
+      }
+      ensureTarifarioItemModalInstance().show();
+    };
+
+    const guardarTarifarioItem = async () => {
+      const f = tarifarioItemForm.value;
+      if (!f.id_estudio) { showAlert('Elegí un Estudio de la lista', 'danger'); return; }
+      if (tarifarioItemModalMode.value === 'create' && (!f.periodo || !f.periodo.trim())) {
+        showAlert('El período inicial es obligatorio', 'danger'); return;
+      }
+      if (tarifarioItemModalMode.value === 'create' && (f.precio === null || f.precio === '' || Number(f.precio) < 0)) {
+        showAlert('Ingresá un precio inicial válido', 'danger'); return;
+      }
+      tarifarioItemGuardando.value = true;
+      try {
+        if (tarifarioItemModalMode.value === 'create') {
+          await axios.post(`${API_BASE}/tarifarios/${tarifarioSeleccionado.value.id}/items`, f);
+          showAlert('Ítem agregado correctamente');
+        } else {
+          await axios.put(`${API_BASE}/tarifarios/items/${f.id}`, f);
+          showAlert('Ítem actualizado correctamente');
+        }
+        ensureTarifarioItemModalInstance().hide();
+        seleccionarTarifario(tarifarioSeleccionado.value.id);
+        fetchTarifarios(tarifariosPagination.value.page);
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo guardar el ítem'), 'danger');
+      } finally {
+        tarifarioItemGuardando.value = false;
+      }
+    };
+
+    const eliminarTarifarioItem = async (item) => {
+      if (!confirm(`¿Eliminar "${item.estudio_descripcion}" de este tarifario?`)) return;
+      try {
+        await axios.delete(`${API_BASE}/tarifarios/items/${item.id}`);
+        showAlert('Ítem eliminado correctamente');
+        seleccionarTarifario(tarifarioSeleccionado.value.id);
+        fetchTarifarios(tarifariosPagination.value.page);
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo eliminar el ítem'), 'danger');
+      }
+    };
+
+    // --- Actualizar precio de un ítem: SIEMPRE pide un período nuevo (nunca
+    // pisa el precio vigente), ver app/routes/tarifarios.py create_periodo. ---
+    let tarifarioPrecioModalInstance = null;
+    const ensureTarifarioPrecioModalInstance = () => {
+      if (!tarifarioPrecioModalInstance) {
+        const el = document.getElementById('tarifarioPrecioModal');
+        if (el) tarifarioPrecioModalInstance = new bootstrap.Modal(el);
+      }
+      return tarifarioPrecioModalInstance;
+    };
+    const tarifarioPrecioForm = ref({ periodo: '', precio: null });
+    const tarifarioPrecioContexto = ref(null);
+    const tarifarioPrecioGuardando = ref(false);
+
+    const abrirPrecioModal = (item) => {
+      tarifarioPrecioContexto.value = item;
+      tarifarioPrecioForm.value = { periodo: '', precio: item.precio_vigente };
+      ensureTarifarioPrecioModalInstance().show();
+    };
+
+    const guardarNuevoPrecio = async () => {
+      const f = tarifarioPrecioForm.value;
+      if (!f.periodo || !f.periodo.trim()) { showAlert('Ingresá el período de este precio', 'danger'); return; }
+      if (f.precio === null || f.precio === '' || Number(f.precio) < 0) { showAlert('Ingresá un precio válido', 'danger'); return; }
+      tarifarioPrecioGuardando.value = true;
+      try {
+        await axios.post(`${API_BASE}/tarifarios/items/${tarifarioPrecioContexto.value.id}/periodos`, f);
+        showAlert('Precio actualizado correctamente');
+        ensureTarifarioPrecioModalInstance().hide();
+        seleccionarTarifario(tarifarioSeleccionado.value.id);
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo actualizar el precio'), 'danger');
+      } finally {
+        tarifarioPrecioGuardando.value = false;
+      }
+    };
+
+    // --- Historial de precios (todos los períodos) de un ítem: la auditoría
+    // (usuario/fecha) sólo se pide y se muestra si isSuperAdmin. ---
+    let tarifarioHistorialModalInstance = null;
+    const ensureTarifarioHistorialModalInstance = () => {
+      if (!tarifarioHistorialModalInstance) {
+        const el = document.getElementById('tarifarioHistorialModal');
+        if (el) tarifarioHistorialModalInstance = new bootstrap.Modal(el);
+      }
+      return tarifarioHistorialModalInstance;
+    };
+    const tarifarioHistorialItem = ref(null);
+    const tarifarioHistorialPeriodos = ref([]);
+    const tarifarioHistorialLoading = ref(false);
+
+    const abrirHistorialModal = async (item) => {
+      tarifarioHistorialItem.value = item;
+      tarifarioHistorialPeriodos.value = [];
+      tarifarioHistorialLoading.value = true;
+      ensureTarifarioHistorialModalInstance().show();
+      try {
+        const res = await axios.get(`${API_BASE}/tarifarios/items/${item.id}/periodos`);
+        tarifarioHistorialPeriodos.value = res.data;
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo cargar el historial de precios'), 'danger');
+      } finally {
+        tarifarioHistorialLoading.value = false;
+      }
+    };
+
+    // --- Catálogos reutilizables entre Obras Sociales: Nomencladores y
+    // Autorizadores. Ninguno se borra (allow_delete=False en el backend):
+    // se inactivan, para no dejar huérfanas las relaciones que ya los usan.
+    // Ambos ofrecen las dos vistas pedidas (tabla con desplegable / split
+    // view maestro-detalle) — como no tienen hijos propios, el "detalle" del
+    // split view es simplemente el mismo registro que ya está en la lista,
+    // sin pedir nada aparte. ---
+    const ESTADOS_SIMPLES = ['activo', 'inactivo'];
+    const TIPOS_NOMENCLADOR = ['NBU', 'especial', 'convenio_particular', 'listado_anexo'];
+    const TIPOS_NOMENCLADOR_LABEL = {
+      NBU: 'NBU', especial: 'Nomenclador especial', convenio_particular: 'Convenio particular', listado_anexo: 'Listado / Anexo',
+    };
+    const TIPOS_AUTORIZADOR = ['Portal externo', 'Sistema interno'];
+
+    function crearEstadoCatalogo(nombreEntidad, endpoint, camposDefault) {
+      const items = ref([]);
+      const loading = ref(false);
+      const pagination = ref({ page: 1, limit: 25, total: 0, total_pages: 1 });
+      const busqueda = ref('');
+      const estadoFiltro = ref('');
+      const vistaModo = ref(localStorage.getItem(`britlab_vista_${nombreEntidad}`) || 'tabla');
+      const expandedId = ref(null);
+      const seleccionado = ref(null);
+      const form = ref({});
+      const modalMode = ref('create');
+      const guardando = ref(false);
+      let modalInstance = null;
+
+      const fetchItems = async (page = 1) => {
+        loading.value = true;
+        try {
+          const params = { page, limit: pagination.value.limit };
+          if (busqueda.value.trim()) params.q = busqueda.value.trim();
+          if (estadoFiltro.value) params.estado = estadoFiltro.value;
+          const res = await axios.get(`${API_BASE}/${endpoint}`, { params });
+          items.value = res.data.items;
+          pagination.value = { page: res.data.page, limit: res.data.limit, total: res.data.total, total_pages: res.data.total_pages };
+          if (seleccionado.value) {
+            seleccionado.value = items.value.find(i => i.id === seleccionado.value.id) || null;
+          }
+          if (!seleccionado.value && items.value.length) seleccionado.value = items.value[0];
+        } catch (err) {
+          showAlert(apiErrorMessage(err, `No se pudieron cargar los registros de ${nombreEntidad}`), 'danger');
+        } finally {
+          loading.value = false;
+        }
+      };
+
+      const setVista = (modo) => {
+        vistaModo.value = modo;
+        localStorage.setItem(`britlab_vista_${nombreEntidad}`, modo);
+      };
+      const onFiltroChange = () => fetchItems(1);
+      const cambiarPagina = (page) => { if (page >= 1 && page <= pagination.value.total_pages) fetchItems(page); };
+      const toggleExpand = (id) => { expandedId.value = expandedId.value === id ? null : id; };
+      const seleccionar = (item) => { seleccionado.value = item; };
+
+      const ensureModal = (modalId) => {
+        if (!modalInstance) {
+          const el = document.getElementById(modalId);
+          if (el) modalInstance = new bootstrap.Modal(el);
+        }
+        return modalInstance;
+      };
+      const abrirForm = (modalId, mode, item = null) => {
+        modalMode.value = mode;
+        form.value = mode === 'edit' && item ? { ...item } : { ...camposDefault };
+        ensureModal(modalId).show();
+      };
+      const guardar = async (modalId) => {
+        if (!form.value.nombre || !form.value.nombre.trim()) { showAlert('El nombre es obligatorio', 'danger'); return; }
+        guardando.value = true;
+        try {
+          if (modalMode.value === 'create') {
+            await axios.post(`${API_BASE}/${endpoint}`, form.value);
+            showAlert('Registro creado correctamente');
+          } else {
+            await axios.put(`${API_BASE}/${endpoint}/${form.value.id}`, form.value);
+            showAlert('Registro actualizado correctamente');
+          }
+          ensureModal(modalId).hide();
+          fetchItems(pagination.value.page);
+        } catch (err) {
+          showAlert(apiErrorMessage(err, 'No se pudo guardar el registro'), 'danger');
+        } finally {
+          guardando.value = false;
+        }
+      };
+      const cambiarEstadoActivoInactivo = async (item) => {
+        const nuevoEstado = item.estado === 'activo' ? 'inactivo' : 'activo';
+        try {
+          await axios.put(`${API_BASE}/${endpoint}/${item.id}`, { estado: nuevoEstado });
+          showAlert(`Registro ${nuevoEstado === 'activo' ? 'activado' : 'inactivado'} correctamente`);
+          fetchItems(pagination.value.page);
+        } catch (err) {
+          showAlert(apiErrorMessage(err, 'No se pudo cambiar el estado'), 'danger');
+        }
+      };
+
+      return {
+        items, loading, pagination, busqueda, estadoFiltro, vistaModo, expandedId, seleccionado,
+        form, modalMode, guardando,
+        fetchItems, setVista, onFiltroChange, cambiarPagina, toggleExpand, seleccionar,
+        abrirForm, guardar, cambiarEstadoActivoInactivo,
+      };
+    }
+
+    const nom = crearEstadoCatalogo('nomencladores', 'nomencladores', { nombre: '', tipo: 'NBU', version_o_fecha: '', vigencia: '', link: '', observacion: '', estado: 'activo' });
+    const aut = crearEstadoCatalogo('autorizadores', 'autorizadores', { nombre: '', tipo: 'Portal externo', link: '', instructivo: '', observacion: '', estado: 'activo' });
+
+    const switchToNomencladores = () => {
+      if (!pantallaPermitida('nomencladores')) return;
+      currentView.value = 'nomencladores';
+      nom.fetchItems(1);
+    };
+    const switchToAutorizadores = () => {
+      if (!pantallaPermitida('autorizadores')) return;
+      currentView.value = 'autorizadores';
+      aut.fetchItems(1);
+    };
+
+    // "nom"/"aut" agrupan cada bloque de estado por prolijidad (misma lógica
+    // de crearEstadoCatalogo), pero se exponen acá con nombres planos porque
+    // son refs "sueltos" adentro de un objeto no-reactivo: Vue sólo
+    // auto-desenvuelve (y v-model sólo funciona bien con) los refs que
+    // quedan como propiedad de primer nivel del objeto que devuelve setup().
+    const abrirNomencladorForm = (mode, item) => nom.abrirForm('nomencladorFormModal', mode, item);
+    const guardarNomenclador = () => nom.guardar('nomencladorFormModal');
+    const abrirAutorizadorForm = (mode, item) => aut.abrirForm('autorizadorFormModal', mode, item);
+    const guardarAutorizador = () => aut.guardar('autorizadorFormModal');
+
+    // --- Módulo Obras Sociales: Obra Social + Planes, historial de estados,
+    // contactos, y relaciones con Nomencladores/Autorizadores (credenciales
+    // redactadas salvo SuperAdmin o permiso puntual, ver
+    // app/routes/obras_sociales.py). Dos vistas (tabla con desplegable /
+    // split view), igual que Nomencladores y Autorizadores. ---
+    const ESTADOS_ATENCION = ['activo', 'limitada', 'suspendida', 'sin_atencion'];
+    const ESTADOS_ATENCION_LABEL = { activo: 'Activo', limitada: 'Limitada', suspendida: 'Suspendida', sin_atencion: 'Sin atención' };
+    const ESTADOS_ATENCION_CHIP = { activo: 'bg-success-teal', limitada: 'bg-warning text-dark', suspendida: 'bg-tertiary', sin_atencion: 'bg-white text-on-surface-variant border border-outline-variant' };
+    // Singular/plural para el resumen de planes por estado en el listado
+    // (ej. "1 activo, 2 suspendidos y 1 limitado"), ver resumenPlanesPorEstado.
+    const ESTADOS_ATENCION_LABEL_CANTIDAD = {
+      activo: { s: 'activo', p: 'activos' },
+      limitada: { s: 'limitado', p: 'limitados' },
+      suspendida: { s: 'suspendido', p: 'suspendidos' },
+      sin_atencion: { s: 'sin atención', p: 'sin atención' },
+    };
+    // Cuántos planes de un ítem del listado hay en cada estado, en orden fijo
+    // y sin mostrar los estados en 0 (ej: 4 planes → "1 activo" / "2
+    // suspendidos" / "1 limitado", cada uno como chip aparte).
+    const resumenPlanesPorEstado = (item) => {
+      const conteos = {};
+      (item.planes_resumen || []).forEach(p => { conteos[p.estado] = (conteos[p.estado] || 0) + 1; });
+      return ESTADOS_ATENCION.filter(e => conteos[e] > 0).map(e => {
+        const n = conteos[e];
+        const label = ESTADOS_ATENCION_LABEL_CANTIDAD[e][n === 1 ? 's' : 'p'];
+        return { estado: e, texto: `${n} ${label}` };
+      });
+    };
+    // Estado "efectivo" que se muestra para la Obra Social: si al menos uno
+    // de sus planes está Limitado, la Obra Social se ve como Limitada aunque
+    // su propio estado guardado sea otro (no modifica el dato, sólo cómo se
+    // pinta el badge en el listado/detalle).
+    const estadoEfectivoObraSocial = (item) => {
+      const hayLimitado = (item.planes_resumen || []).some(p => p.estado === 'limitada');
+      return hayLimitado ? 'limitada' : item.estado;
+    };
+    const TIPOS_CONTACTO = ['General', 'Autorizaciones', 'Auditoría', 'Convenios', 'Facturación', 'Otro'];
+    const PRIORIDADES_AUTORIZADOR = ['principal', 'alternativo'];
+
+    const obrasSociales = ref([]);
+    const obrasSocialesLoading = ref(false);
+    const obrasSocialesPagination = ref({ page: 1, limit: 25, total: 0, total_pages: 1 });
+    const obrasSocialesBusqueda = ref('');
+    const obrasSocialesEstadoFiltro = ref('');
+    const obrasSocialesEstadoInfoFiltro = ref('');
+    const obrasSocialesVistaModo = ref(localStorage.getItem('britlab_vista_obras_sociales') || 'tabla');
+    const expandedObraSocialId = ref(null);
+    const obraSocialSeleccionada = ref(null);
+    const obraSocialDetalleLoading = ref(false);
+
+    const fetchObrasSociales = async (page = 1) => {
+      obrasSocialesLoading.value = true;
+      try {
+        const params = { page, limit: obrasSocialesPagination.value.limit };
+        if (obrasSocialesBusqueda.value.trim()) params.q = obrasSocialesBusqueda.value.trim();
+        if (obrasSocialesEstadoFiltro.value) params.estado = obrasSocialesEstadoFiltro.value;
+        if (obrasSocialesEstadoInfoFiltro.value) params.estado_informacion = obrasSocialesEstadoInfoFiltro.value;
+        const res = await axios.get(`${API_BASE}/obras-sociales`, { params });
+        obrasSociales.value = res.data.items;
+        obrasSocialesPagination.value = { page: res.data.page, limit: res.data.limit, total: res.data.total, total_pages: res.data.total_pages };
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudieron cargar las Obras Sociales'), 'danger');
+      } finally {
+        obrasSocialesLoading.value = false;
+      }
+    };
+
+    const setVistaObrasSociales = (modo) => {
+      obrasSocialesVistaModo.value = modo;
+      localStorage.setItem('britlab_vista_obras_sociales', modo);
+    };
+    const onObrasSocialesFiltroChange = () => fetchObrasSociales(1);
+    const cambiarPaginaObrasSociales = (page) => { if (page >= 1 && page <= obrasSocialesPagination.value.total_pages) fetchObrasSociales(page); };
+
+    const seleccionarObraSocial = async (id) => {
+      obraSocialDetalleLoading.value = true;
+      try {
+        const res = await axios.get(`${API_BASE}/obras-sociales/${id}`);
+        if (!obraSocialSeleccionada.value || obraSocialSeleccionada.value.id !== id) {
+          expandedObraSocialNomencladorId.value = null;
+        }
+        obraSocialSeleccionada.value = res.data;
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo cargar el detalle de la Obra Social'), 'danger');
+      } finally {
+        obraSocialDetalleLoading.value = false;
+      }
+    };
+    const toggleExpandObraSocial = async (id) => {
+      if (expandedObraSocialId.value === id) { expandedObraSocialId.value = null; return; }
+      expandedObraSocialId.value = id;
+      await seleccionarObraSocial(id);
+    };
+
+    const refrescarObraSocialActual = async () => {
+      const id = obraSocialSeleccionada.value && obraSocialSeleccionada.value.id;
+      if (id) await seleccionarObraSocial(id);
+      fetchObrasSociales(obrasSocialesPagination.value.page);
+    };
+
+    const switchToObrasSociales = () => {
+      if (!pantallaPermitida('obras_sociales')) return;
+      currentView.value = 'obras_sociales';
+      fetchObrasSociales(1);
+    };
+
+    // --- Alta / edición de datos generales de la Obra Social: pantalla
+    // completa, mismo criterio que Tarifario/FAQ. Planes, contactos,
+    // nomencladores y autorizadores se manejan desde el detalle (una vez
+    // que la Obra Social ya existe), no en este formulario. ---
+    const obraSocialForm = ref({});
+    // Alias / otros nombres: input tipo "chips" — cada coma que se tipea
+    // cierra un chip nuevo (obraSocialAliasChips) y limpia lo que queda
+    // escrito (obraSocialAliasInputTexto) para seguir cargando el próximo.
+    const obraSocialAliasChips = ref([]);
+    const obraSocialAliasInputTexto = ref('');
+    const obraSocialModalMode = ref('create');
+    const obraSocialGuardando = ref(false);
+    // Estado con el que se abrió el formulario de edición: si al guardar
+    // cambió, el cambio se manda aparte por /estado (deja historial con el
+    // usuario logueado como "quién lo comunicó"), no por el PUT genérico.
+    const obraSocialEstadoAlAbrir = ref(null);
+
+    const onObraSocialAliasInput = (value) => {
+      if (!value.includes(',')) { obraSocialAliasInputTexto.value = value; return; }
+      const partes = value.split(',');
+      const restante = partes.pop();
+      partes.forEach(p => {
+        const limpio = p.trim();
+        if (limpio && !obraSocialAliasChips.value.includes(limpio)) obraSocialAliasChips.value.push(limpio);
+      });
+      obraSocialAliasInputTexto.value = restante;
+    };
+    const confirmarObraSocialAliasPendiente = () => {
+      const limpio = obraSocialAliasInputTexto.value.trim();
+      if (limpio && !obraSocialAliasChips.value.includes(limpio)) obraSocialAliasChips.value.push(limpio);
+      obraSocialAliasInputTexto.value = '';
+    };
+    const onObraSocialAliasKeydown = (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); confirmarObraSocialAliasPendiente(); }
+      else if (e.key === 'Backspace' && !obraSocialAliasInputTexto.value && obraSocialAliasChips.value.length) {
+        obraSocialAliasChips.value.pop();
+      }
+    };
+    const quitarObraSocialAliasChip = (idx) => { obraSocialAliasChips.value.splice(idx, 1); };
+
+    const abrirObraSocialForm = (mode, item = null) => {
+      obraSocialModalMode.value = mode;
+      obraSocialAliasInputTexto.value = '';
+      if (mode === 'edit' && item) {
+        obraSocialForm.value = { ...item };
+        obraSocialAliasChips.value = [...(item.alias || [])];
+        obraSocialEstadoAlAbrir.value = item.estado;
+      } else {
+        obraSocialForm.value = {
+          nombre: '', estado: 'activo', estado_informacion: 'borrador', mostrar_web: false, habilitar_ia: false,
+          modalidad_autorizacion: '', observacion_general: '', informacion_publica: '',
+        };
+        obraSocialAliasChips.value = [];
+        obraSocialEstadoAlAbrir.value = null;
+      }
+      currentView.value = 'obra_social_form';
+    };
+    const cancelarObraSocialForm = () => { currentView.value = 'obras_sociales'; };
+
+    const guardarObraSocial = async () => {
+      if (!obraSocialForm.value.nombre || !obraSocialForm.value.nombre.trim()) {
+        showAlert('El nombre es obligatorio', 'danger'); return;
+      }
+      confirmarObraSocialAliasPendiente();
+      obraSocialGuardando.value = true;
+      try {
+        // El estado se manda aparte (si cambió) para que quede en el
+        // historial con el usuario logueado como "quién lo comunicó" — el
+        // PUT genérico de abajo no deja historial.
+        const estadoCambio = obraSocialModalMode.value === 'edit' && obraSocialForm.value.estado !== obraSocialEstadoAlAbrir.value;
+        const payload = { ...obraSocialForm.value, alias: obraSocialAliasChips.value };
+        if (estadoCambio) delete payload.estado;
+        let id = obraSocialForm.value.id;
+        if (obraSocialModalMode.value === 'create') {
+          const res = await axios.post(`${API_BASE}/obras-sociales`, payload);
+          id = res.data.id;
+          showAlert('Obra Social creada correctamente');
+        } else {
+          await axios.put(`${API_BASE}/obras-sociales/${id}`, payload);
+          if (estadoCambio) {
+            await axios.post(`${API_BASE}/obras-sociales/${id}/estado`, {
+              estado: obraSocialForm.value.estado,
+              comunicado_por: currentUser.value?.username || '',
+            });
+          }
+          showAlert('Obra Social actualizada correctamente');
+        }
+        currentView.value = 'obras_sociales';
+        await fetchObrasSociales(obrasSocialesPagination.value.page);
+        seleccionarObraSocial(id);
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo guardar la Obra Social'), 'danger');
+      } finally {
+        obraSocialGuardando.value = false;
+      }
+    };
+
+    const eliminarObraSocial = async (item) => {
+      if (!confirm(`¿Eliminar la Obra Social "${item.nombre}" y todos sus planes, contactos e historial?`)) return;
+      try {
+        await axios.delete(`${API_BASE}/obras-sociales/${item.id}`);
+        showAlert('Obra Social eliminada correctamente');
+        if (obraSocialSeleccionada.value && obraSocialSeleccionada.value.id === item.id) obraSocialSeleccionada.value = null;
+        fetchObrasSociales(1);
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo eliminar la Obra Social'), 'danger');
+      }
+    };
+
+    const validarObraSocial = async (item) => {
+      try {
+        await axios.post(`${API_BASE}/obras-sociales/${item.id}/validar`);
+        showAlert('Obra Social validada correctamente');
+        refrescarObraSocialActual();
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo validar la Obra Social'), 'danger');
+      }
+    };
+    const volverABorradorObraSocial = async (item) => {
+      try {
+        await axios.post(`${API_BASE}/obras-sociales/${item.id}/volver-a-borrador`);
+        showAlert('Obra Social pasada a Borrador');
+        refrescarObraSocialActual();
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo cambiar el estado de información'), 'danger');
+      }
+    };
+
+    // --- Cambiar estado de atención (Obra Social o un Plan puntual): un
+    // único modal chico, pide período/comunicado_por/motivo y deja
+    // historial (ver ObraSocialHistorialEstado). ---
+    let obraSocialEstadoModalInstance = null;
+    const ensureObraSocialEstadoModal = () => {
+      if (!obraSocialEstadoModalInstance) {
+        const el = document.getElementById('obraSocialEstadoModal');
+        if (el) obraSocialEstadoModalInstance = new bootstrap.Modal(el);
+      }
+      return obraSocialEstadoModalInstance;
+    };
+    const obraSocialEstadoForm = ref({ estado: 'activo', comunicado_por: '', motivo: '' });
+    const obraSocialEstadoContexto = ref(null); // { id, nombre } del Plan
+    const obraSocialEstadoGuardando = ref(false);
+
+    // El estado de la Obra Social misma ya sólo se cambia editándola (botón
+    // Editar): este modal quedó exclusivo para el estado de un Plan puntual.
+    // "Quién lo comunicó" tampoco se tipea a mano acá: queda registrado solo
+    // con el usuario logueado que hizo el cambio (currentUser).
+    const abrirCambioEstadoPlan = (plan) => {
+      obraSocialEstadoContexto.value = { id: plan.id, nombre: plan.nombre };
+      obraSocialEstadoForm.value = { estado: plan.estado, comunicado_por: currentUser.value?.username || '', motivo: '' };
+      ensureObraSocialEstadoModal().show();
+    };
+    const guardarCambioEstado = async () => {
+      const ctx = obraSocialEstadoContexto.value;
+      if (!ctx) return;
+      obraSocialEstadoGuardando.value = true;
+      try {
+        await axios.post(`${API_BASE}/obras-sociales/planes/${ctx.id}/estado`, obraSocialEstadoForm.value);
+        showAlert('Estado actualizado correctamente');
+        ensureObraSocialEstadoModal().hide();
+        refrescarObraSocialActual();
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo cambiar el estado'), 'danger');
+      } finally {
+        obraSocialEstadoGuardando.value = false;
+      }
+    };
+
+    // --- Historial de cambios de estado de la Obra Social (y sus Planes) ---
+    let obraSocialHistorialModalInstance = null;
+    const ensureObraSocialHistorialModal = () => {
+      if (!obraSocialHistorialModalInstance) {
+        const el = document.getElementById('obraSocialHistorialModal');
+        if (el) obraSocialHistorialModalInstance = new bootstrap.Modal(el);
+      }
+      return obraSocialHistorialModalInstance;
+    };
+    const obraSocialHistorial = ref([]);
+    const obraSocialHistorialLoading = ref(false);
+
+    const abrirHistorialObraSocial = async (obraSocial) => {
+      obraSocialHistorial.value = [];
+      obraSocialHistorialLoading.value = true;
+      ensureObraSocialHistorialModal().show();
+      try {
+        const res = await axios.get(`${API_BASE}/obras-sociales/${obraSocial.id}/historial`);
+        obraSocialHistorial.value = res.data;
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo cargar el historial'), 'danger');
+      } finally {
+        obraSocialHistorialLoading.value = false;
+      }
+    };
+
+    // --- Planes ---
+    let obraSocialPlanModalInstance = null;
+    const ensureObraSocialPlanModal = () => {
+      if (!obraSocialPlanModalInstance) {
+        const el = document.getElementById('obraSocialPlanModal');
+        if (el) obraSocialPlanModalInstance = new bootstrap.Modal(el);
+      }
+      return obraSocialPlanModalInstance;
+    };
+    const obraSocialPlanForm = ref({});
+    const obraSocialPlanModalMode = ref('create');
+    const obraSocialPlanGuardando = ref(false);
+
+    const abrirObraSocialPlanForm = (mode, plan = null) => {
+      obraSocialPlanModalMode.value = mode;
+      obraSocialPlanForm.value = mode === 'edit' && plan
+        ? { ...plan }
+        // "S/C" (Sin Código) por default: la mayoría de los planes no tienen
+        // un código propio y así queda explícito en vez de un campo vacío.
+        : { nombre: '', codigo_datatech_gravado: 'S/C', codigo_datatech_exento: 'S/C', estado: 'activo', observacion: '' };
+      ensureObraSocialPlanModal().show();
+    };
+    const guardarObraSocialPlan = async () => {
+      const f = obraSocialPlanForm.value;
+      if (!f.nombre || !f.nombre.trim()) { showAlert('El nombre del plan es obligatorio', 'danger'); return; }
+      obraSocialPlanGuardando.value = true;
+      try {
+        if (obraSocialPlanModalMode.value === 'create') {
+          await axios.post(`${API_BASE}/obras-sociales/${obraSocialSeleccionada.value.id}/planes`, f);
+          showAlert('Plan agregado correctamente');
+        } else {
+          await axios.put(`${API_BASE}/obras-sociales/planes/${f.id}`, f);
+          showAlert('Plan actualizado correctamente');
+        }
+        ensureObraSocialPlanModal().hide();
+        refrescarObraSocialActual();
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo guardar el plan'), 'danger');
+      } finally {
+        obraSocialPlanGuardando.value = false;
+      }
+    };
+    const eliminarObraSocialPlan = async (plan) => {
+      if (!confirm(`¿Eliminar el plan "${plan.nombre}"?`)) return;
+      try {
+        await axios.delete(`${API_BASE}/obras-sociales/planes/${plan.id}`);
+        showAlert('Plan eliminado correctamente');
+        refrescarObraSocialActual();
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo eliminar el plan'), 'danger');
+      }
+    };
+
+    // --- Contactos ---
+    let obraSocialContactoModalInstance = null;
+    const ensureObraSocialContactoModal = () => {
+      if (!obraSocialContactoModalInstance) {
+        const el = document.getElementById('obraSocialContactoModal');
+        if (el) obraSocialContactoModalInstance = new bootstrap.Modal(el);
+      }
+      return obraSocialContactoModalInstance;
+    };
+    const obraSocialContactoForm = ref({});
+    const obraSocialContactoModalMode = ref('create');
+    const obraSocialContactoGuardando = ref(false);
+
+    const abrirObraSocialContactoForm = (mode, contacto = null) => {
+      obraSocialContactoModalMode.value = mode;
+      obraSocialContactoForm.value = mode === 'edit' && contacto
+        ? { ...contacto }
+        : { tipo: 'General', nombre: '', telefono: '', whatsapp: '', email: '', observacion: '' };
+      ensureObraSocialContactoModal().show();
+    };
+    const guardarObraSocialContacto = async () => {
+      obraSocialContactoGuardando.value = true;
+      try {
+        const f = obraSocialContactoForm.value;
+        if (obraSocialContactoModalMode.value === 'create') {
+          await axios.post(`${API_BASE}/obras-sociales/${obraSocialSeleccionada.value.id}/contactos`, f);
+          showAlert('Contacto agregado correctamente');
+        } else {
+          await axios.put(`${API_BASE}/obras-sociales/contactos/${f.id}`, f);
+          showAlert('Contacto actualizado correctamente');
+        }
+        ensureObraSocialContactoModal().hide();
+        refrescarObraSocialActual();
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo guardar el contacto'), 'danger');
+      } finally {
+        obraSocialContactoGuardando.value = false;
+      }
+    };
+    const eliminarObraSocialContacto = async (contacto) => {
+      if (!confirm('¿Eliminar este contacto?')) return;
+      try {
+        await axios.delete(`${API_BASE}/obras-sociales/contactos/${contacto.id}`);
+        showAlert('Contacto eliminado correctamente');
+        refrescarObraSocialActual();
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo eliminar el contacto'), 'danger');
+      }
+    };
+
+    // --- Nomencladores asociados: catálogo propio (nomencladoresDisponibles)
+    // buscado al abrir el modal, independiente de la pantalla "Nomencladores"
+    // (puede no haberse visitado todavía en esta sesión). ---
+    let obraSocialNomencladorModalInstance = null;
+    const ensureObraSocialNomencladorModal = () => {
+      if (!obraSocialNomencladorModalInstance) {
+        const el = document.getElementById('obraSocialNomencladorModal');
+        if (el) obraSocialNomencladorModalInstance = new bootstrap.Modal(el);
+      }
+      return obraSocialNomencladorModalInstance;
+    };
+    const nomencladoresDisponibles = ref([]);
+    const obraSocialNomencladorSeleccionadoId = ref(null);
+    const obraSocialNomencladorGuardando = ref(false);
+
+    const abrirObraSocialNomencladorForm = async () => {
+      obraSocialNomencladorSeleccionadoId.value = null;
+      ensureObraSocialNomencladorModal().show();
+      try {
+        const res = await axios.get(`${API_BASE}/nomencladores`, { params: { limit: 500, estado: 'activo' } });
+        nomencladoresDisponibles.value = res.data.items;
+      } catch (err) {
+        nomencladoresDisponibles.value = [];
+      }
+    };
+    const guardarObraSocialNomenclador = async () => {
+      if (!obraSocialNomencladorSeleccionadoId.value) { showAlert('Elegí un nomenclador', 'danger'); return; }
+      obraSocialNomencladorGuardando.value = true;
+      try {
+        await axios.post(`${API_BASE}/obras-sociales/${obraSocialSeleccionada.value.id}/nomencladores`, { id_nomenclador: obraSocialNomencladorSeleccionadoId.value });
+        showAlert('Nomenclador asociado correctamente');
+        ensureObraSocialNomencladorModal().hide();
+        refrescarObraSocialActual();
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo asociar el nomenclador'), 'danger');
+      } finally {
+        obraSocialNomencladorGuardando.value = false;
+      }
+    };
+    const quitarObraSocialNomenclador = async (rel) => {
+      if (!confirm(`¿Quitar "${rel.nombre}" de esta Obra Social?`)) return;
+      try {
+        await axios.delete(`${API_BASE}/obras-sociales/nomencladores-rel/${rel.id}`);
+        showAlert('Nomenclador desasociado correctamente');
+        refrescarObraSocialActual();
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo desasociar el nomenclador'), 'danger');
+      }
+    };
+    const expandedObraSocialNomencladorId = ref(null);
+    const toggleExpandObraSocialNomenclador = (relId) => {
+      expandedObraSocialNomencladorId.value = expandedObraSocialNomencladorId.value === relId ? null : relId;
+    };
+
+    // --- Autorizadores asociados (con credenciales propias de la relación,
+    // redactadas salvo SuperAdmin o permiso ver_credenciales_autorizadores) ---
+    let obraSocialAutorizadorModalInstance = null;
+    const ensureObraSocialAutorizadorModal = () => {
+      if (!obraSocialAutorizadorModalInstance) {
+        const el = document.getElementById('obraSocialAutorizadorModal');
+        if (el) obraSocialAutorizadorModalInstance = new bootstrap.Modal(el);
+      }
+      return obraSocialAutorizadorModalInstance;
+    };
+    const autorizadoresDisponibles = ref([]);
+    const obraSocialAutorizadorForm = ref({});
+    const obraSocialAutorizadorModalMode = ref('create');
+    const obraSocialAutorizadorGuardando = ref(false);
+
+    const abrirObraSocialAutorizadorForm = async (mode, rel = null) => {
+      obraSocialAutorizadorModalMode.value = mode;
+      obraSocialAutorizadorForm.value = mode === 'edit' && rel
+        ? { ...rel }
+        : { id_autorizador: null, prioridad: 'principal', usuario: '', password: '', observacion: '' };
+      ensureObraSocialAutorizadorModal().show();
+      if (mode === 'create') {
+        try {
+          const res = await axios.get(`${API_BASE}/autorizadores`, { params: { limit: 500, estado: 'activo' } });
+          autorizadoresDisponibles.value = res.data.items;
+        } catch (err) {
+          autorizadoresDisponibles.value = [];
+        }
+      }
+    };
+    const guardarObraSocialAutorizador = async () => {
+      const f = obraSocialAutorizadorForm.value;
+      obraSocialAutorizadorGuardando.value = true;
+      try {
+        if (obraSocialAutorizadorModalMode.value === 'create') {
+          if (!f.id_autorizador) { showAlert('Elegí un autorizador', 'danger'); obraSocialAutorizadorGuardando.value = false; return; }
+          await axios.post(`${API_BASE}/obras-sociales/${obraSocialSeleccionada.value.id}/autorizadores`, f);
+          showAlert('Autorizador asociado correctamente');
+        } else {
+          await axios.put(`${API_BASE}/obras-sociales/autorizadores-rel/${f.id}`, f);
+          showAlert('Autorizador actualizado correctamente');
+        }
+        ensureObraSocialAutorizadorModal().hide();
+        refrescarObraSocialActual();
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo guardar el autorizador'), 'danger');
+      } finally {
+        obraSocialAutorizadorGuardando.value = false;
+      }
+    };
+    const quitarObraSocialAutorizador = async (rel) => {
+      if (!confirm(`¿Quitar "${rel.nombre}" de esta Obra Social?`)) return;
+      try {
+        await axios.delete(`${API_BASE}/obras-sociales/autorizadores-rel/${rel.id}`);
+        showAlert('Autorizador desasociado correctamente');
+        refrescarObraSocialActual();
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo desasociar el autorizador'), 'danger');
       }
     };
 
@@ -1838,6 +2868,11 @@ const app = createApp({
       setTimeout(() => alert.value.message = '', 4000);
     };
 
+    // Link de WhatsApp de un contacto: la API de WhatsApp necesita el
+    // número completo con código de país (549 para celulares de Argentina)
+    // y sin ningún separador.
+    const whatsappLink = (numero) => `https://api.whatsapp.com/send/?phone=549${(numero || '').replace(/\D/g, '')}`;
+
     // Traduce la respuesta de error de la API (validación de Pydantic o
     // conflicto de integridad de la BD) a un mensaje legible. Nunca se
     // muestra el detalle crudo de la base de datos (data.detail) en la web:
@@ -1876,6 +2911,7 @@ const app = createApp({
     });
 
     return {
+      whatsappLink,
       // Autenticación
       isLoggedIn,
       isAdmin,
@@ -1930,6 +2966,7 @@ const app = createApp({
       muestrasCatalogoEntitiesVisibles,
       muestrasDropdownActive,
       estudiosDropdownActive,
+      obrasSocialesDropdownActive,
       currentEntityKey,
       currentEntity,
       modalEntity,
@@ -1996,6 +3033,172 @@ const app = createApp({
       cancelarFaqForm,
       guardarFaq,
       eliminarFaq,
+      puedeEscribirTarifarios,
+      TIPOS_TARIFARIO,
+      TIPOS_TARIFARIO_LABEL,
+      TIPOS_RELACIONADO_TARIFARIO,
+      ESTADOS_TARIFARIO,
+      ESTADOS_TARIFARIO_ITEM,
+      tarifarios,
+      tarifariosLoading,
+      tarifariosPagination,
+      tarifariosBusqueda,
+      tarifariosTipoFiltro,
+      tarifariosEstadoFiltro,
+      tarifarioSeleccionado,
+      tarifarioDetalleLoading,
+      tarifarioItemBusqueda,
+      tarifarioItemsFiltrados,
+      tarifarioForm,
+      tarifarioModalMode,
+      tarifarioGuardando,
+      switchToTarifarios,
+      cambiarPaginaTarifarios,
+      onTarifariosFiltroChange,
+      seleccionarTarifario,
+      abrirTarifarioForm,
+      cancelarTarifarioForm,
+      guardarTarifario,
+      eliminarTarifario,
+      tarifarioEstudiosDisponibles,
+      tarifarioEstudioLabel,
+      tarifarioItemForm,
+      tarifarioItemModalMode,
+      tarifarioItemFkText,
+      tarifarioItemGuardando,
+      onTarifarioItemEstudioInput,
+      abrirTarifarioItemModal,
+      guardarTarifarioItem,
+      eliminarTarifarioItem,
+      tarifarioPrecioForm,
+      tarifarioPrecioContexto,
+      tarifarioPrecioGuardando,
+      abrirPrecioModal,
+      guardarNuevoPrecio,
+      tarifarioHistorialItem,
+      tarifarioHistorialPeriodos,
+      tarifarioHistorialLoading,
+      abrirHistorialModal,
+      ESTADOS_SIMPLES,
+      TIPOS_NOMENCLADOR,
+      TIPOS_NOMENCLADOR_LABEL,
+      TIPOS_AUTORIZADOR,
+      switchToNomencladores,
+      switchToAutorizadores,
+      nomencladores: nom.items,
+      nomencladoresLoading: nom.loading,
+      nomencladoresPagination: nom.pagination,
+      nomencladoresBusqueda: nom.busqueda,
+      nomencladoresEstadoFiltro: nom.estadoFiltro,
+      nomencladoresVistaModo: nom.vistaModo,
+      nomencladorExpandedId: nom.expandedId,
+      nomencladorSeleccionado: nom.seleccionado,
+      nomencladorForm: nom.form,
+      nomencladorModalMode: nom.modalMode,
+      nomencladorGuardando: nom.guardando,
+      fetchNomencladores: nom.fetchItems,
+      setVistaNomencladores: nom.setVista,
+      onNomencladoresFiltroChange: nom.onFiltroChange,
+      cambiarPaginaNomencladores: nom.cambiarPagina,
+      toggleExpandNomenclador: nom.toggleExpand,
+      seleccionarNomenclador: nom.seleccionar,
+      abrirNomencladorForm,
+      guardarNomenclador,
+      cambiarEstadoNomenclador: nom.cambiarEstadoActivoInactivo,
+      autorizadores: aut.items,
+      autorizadoresLoading: aut.loading,
+      autorizadoresPagination: aut.pagination,
+      autorizadoresBusqueda: aut.busqueda,
+      autorizadoresEstadoFiltro: aut.estadoFiltro,
+      autorizadoresVistaModo: aut.vistaModo,
+      autorizadorExpandedId: aut.expandedId,
+      autorizadorSeleccionado: aut.seleccionado,
+      autorizadorForm: aut.form,
+      autorizadorModalMode: aut.modalMode,
+      autorizadorGuardando: aut.guardando,
+      fetchAutorizadores: aut.fetchItems,
+      setVistaAutorizadores: aut.setVista,
+      onAutorizadoresFiltroChange: aut.onFiltroChange,
+      cambiarPaginaAutorizadores: aut.cambiarPagina,
+      toggleExpandAutorizador: aut.toggleExpand,
+      seleccionarAutorizador: aut.seleccionar,
+      abrirAutorizadorForm,
+      guardarAutorizador,
+      cambiarEstadoAutorizador: aut.cambiarEstadoActivoInactivo,
+      ESTADOS_ATENCION,
+      ESTADOS_ATENCION_LABEL,
+      ESTADOS_ATENCION_CHIP,
+      resumenPlanesPorEstado,
+      estadoEfectivoObraSocial,
+      TIPOS_CONTACTO,
+      PRIORIDADES_AUTORIZADOR,
+      obrasSociales,
+      obrasSocialesLoading,
+      obrasSocialesPagination,
+      obrasSocialesBusqueda,
+      obrasSocialesEstadoFiltro,
+      obrasSocialesEstadoInfoFiltro,
+      obrasSocialesVistaModo,
+      expandedObraSocialId,
+      obraSocialSeleccionada,
+      obraSocialDetalleLoading,
+      fetchObrasSociales,
+      setVistaObrasSociales,
+      onObrasSocialesFiltroChange,
+      cambiarPaginaObrasSociales,
+      seleccionarObraSocial,
+      toggleExpandObraSocial,
+      switchToObrasSociales,
+      obraSocialForm,
+      obraSocialAliasChips,
+      obraSocialAliasInputTexto,
+      onObraSocialAliasInput,
+      onObraSocialAliasKeydown,
+      confirmarObraSocialAliasPendiente,
+      quitarObraSocialAliasChip,
+      obraSocialModalMode,
+      obraSocialGuardando,
+      abrirObraSocialForm,
+      cancelarObraSocialForm,
+      guardarObraSocial,
+      eliminarObraSocial,
+      validarObraSocial,
+      volverABorradorObraSocial,
+      obraSocialEstadoForm,
+      obraSocialEstadoContexto,
+      obraSocialEstadoGuardando,
+      abrirCambioEstadoPlan,
+      guardarCambioEstado,
+      obraSocialHistorial,
+      obraSocialHistorialLoading,
+      abrirHistorialObraSocial,
+      obraSocialPlanForm,
+      obraSocialPlanModalMode,
+      obraSocialPlanGuardando,
+      abrirObraSocialPlanForm,
+      guardarObraSocialPlan,
+      eliminarObraSocialPlan,
+      obraSocialContactoForm,
+      obraSocialContactoModalMode,
+      obraSocialContactoGuardando,
+      abrirObraSocialContactoForm,
+      guardarObraSocialContacto,
+      eliminarObraSocialContacto,
+      nomencladoresDisponibles,
+      obraSocialNomencladorSeleccionadoId,
+      obraSocialNomencladorGuardando,
+      abrirObraSocialNomencladorForm,
+      guardarObraSocialNomenclador,
+      quitarObraSocialNomenclador,
+      expandedObraSocialNomencladorId,
+      toggleExpandObraSocialNomenclador,
+      autorizadoresDisponibles,
+      obraSocialAutorizadorForm,
+      obraSocialAutorizadorModalMode,
+      obraSocialAutorizadorGuardando,
+      abrirObraSocialAutorizadorForm,
+      guardarObraSocialAutorizador,
+      quitarObraSocialAutorizador,
       onColegaSelectorChange,
       editEstudioColega,
       openNewEstudioForColega,
@@ -2036,7 +3239,12 @@ const app = createApp({
       visibleColumns,
       visibleColumnasList,
       columnasTogglables,
-      PIN_CLASS_POR_CAMPO,
+      getColWidth,
+      pinStyle,
+      startResize,
+      scrollTablaEstudios,
+      tablaScrollLeft,
+      onTablaEstudiosScroll,
       toggleColumn,
       showColumnPicker,
       expandedRows,

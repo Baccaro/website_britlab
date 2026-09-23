@@ -445,3 +445,184 @@ class FaqUpdate(BaseModel):
     disponible_web: Optional[bool] = None
     disponible_ia: Optional[bool] = None
     estado: Optional[str] = None
+
+
+# --- Tarifarios (módulo Obras Sociales) ---
+class TarifarioCreate(BaseModel):
+    nombre: str
+    tipo: Optional[str] = 'TARIFARIO'
+    tipo_relacionado: Optional[str] = 'Laboratorio / Procesador externo'
+    entidad: Optional[str] = None
+    moneda: Optional[str] = 'ARS'
+    estado: Optional[str] = 'activo'
+    observaciones: Optional[str] = None
+
+class TarifarioUpdate(BaseModel):
+    nombre: Optional[str] = None
+    tipo: Optional[str] = None
+    tipo_relacionado: Optional[str] = None
+    entidad: Optional[str] = None
+    moneda: Optional[str] = None
+    estado: Optional[str] = None
+    observaciones: Optional[str] = None
+
+# Crear un ítem exige además el primer período/precio (todo ítem nuevo
+# arranca con un precio vigente); para actualizar el precio de uno ya
+# existente se usa TarifarioItemPeriodoCreate (un período nuevo, no se pisa).
+class TarifarioItemCreate(BaseModel):
+    id_estudio: int
+    nemonico: Optional[str] = None
+    codigo: Optional[str] = None
+    estado: Optional[str] = 'Activo'
+    nota: Optional[str] = None
+    periodo: str
+    precio: float
+
+class TarifarioItemUpdate(BaseModel):
+    id_estudio: Optional[int] = None
+    nemonico: Optional[str] = None
+    codigo: Optional[str] = None
+    estado: Optional[str] = None
+    nota: Optional[str] = None
+
+class TarifarioItemPeriodoCreate(BaseModel):
+    periodo: str
+    precio: float
+
+class TarifarioItemPeriodoUpdate(BaseModel):
+    periodo: Optional[str] = None
+    precio: Optional[float] = None
+
+
+# --- Nomenclador (ABM propio, make_crud_blueprint) ---
+class NomencladorBase(BaseModel):
+    nombre: str
+    tipo: Optional[str] = 'NBU'
+    version_o_fecha: Optional[str] = None
+    vigencia: Optional[str] = None
+    link: Optional[str] = None
+    observacion: Optional[str] = None
+    estado: Optional[str] = 'activo'
+
+class NomencladorCreate(NomencladorBase):
+    pass
+
+class NomencladorUpdate(BaseModel):
+    nombre: Optional[str] = None
+    tipo: Optional[str] = None
+    version_o_fecha: Optional[str] = None
+    vigencia: Optional[str] = None
+    link: Optional[str] = None
+    observacion: Optional[str] = None
+    estado: Optional[str] = None
+
+class NomencladorOut(NomencladorBase):
+    id: int
+    creado_por_username: Optional[str] = None
+    actualizado_por_username: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+# --- Autorizador (ABM propio, make_crud_blueprint) ---
+class AutorizadorBase(BaseModel):
+    nombre: str
+    tipo: Optional[str] = 'Portal externo'
+    link: Optional[str] = None
+    instructivo: Optional[str] = None
+    observacion: Optional[str] = None
+    estado: Optional[str] = 'activo'
+
+class AutorizadorCreate(AutorizadorBase):
+    pass
+
+class AutorizadorUpdate(BaseModel):
+    nombre: Optional[str] = None
+    tipo: Optional[str] = None
+    link: Optional[str] = None
+    instructivo: Optional[str] = None
+    observacion: Optional[str] = None
+    estado: Optional[str] = None
+
+class AutorizadorOut(AutorizadorBase):
+    id: int
+    creado_por_username: Optional[str] = None
+    actualizado_por_username: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+# --- Obra Social (ABM propio, ruta custom en app/routes/obras_sociales.py) ---
+class ObraSocialCreate(BaseModel):
+    nombre: str
+    estado: Optional[str] = 'activo'
+    estado_informacion: Optional[str] = 'borrador'
+    mostrar_web: Optional[bool] = False
+    habilitar_ia: Optional[bool] = False
+    modalidad_autorizacion: Optional[str] = None
+    observacion_general: Optional[str] = None
+    informacion_publica: Optional[str] = None
+    alias: Optional[List[str]] = None
+
+class ObraSocialUpdate(BaseModel):
+    nombre: Optional[str] = None
+    estado: Optional[str] = None
+    estado_informacion: Optional[str] = None
+    mostrar_web: Optional[bool] = None
+    habilitar_ia: Optional[bool] = None
+    modalidad_autorizacion: Optional[str] = None
+    observacion_general: Optional[str] = None
+    informacion_publica: Optional[str] = None
+    alias: Optional[List[str]] = None
+
+class ObraSocialPlanCreate(BaseModel):
+    nombre: str
+    codigo_datatech_gravado: Optional[str] = None
+    codigo_datatech_exento: Optional[str] = None
+    estado: Optional[str] = 'activo'
+    observacion: Optional[str] = None
+
+class ObraSocialPlanUpdate(BaseModel):
+    nombre: Optional[str] = None
+    codigo_datatech_gravado: Optional[str] = None
+    codigo_datatech_exento: Optional[str] = None
+    estado: Optional[str] = None
+    observacion: Optional[str] = None
+
+class ObraSocialEstadoUpdate(BaseModel):
+    """Cambiar el estado de la Obra Social (o de un Plan puntual, ver
+    id_plan en la ruta) siempre deja un renglón de historial."""
+    estado: str
+    comunicado_por: Optional[str] = None
+    motivo: Optional[str] = None
+
+class ObraSocialContactoCreate(BaseModel):
+    tipo: Optional[str] = 'General'
+    nombre: Optional[str] = None
+    telefono: Optional[str] = None
+    whatsapp: Optional[str] = None
+    email: Optional[str] = None
+    observacion: Optional[str] = None
+
+class ObraSocialContactoUpdate(BaseModel):
+    tipo: Optional[str] = None
+    nombre: Optional[str] = None
+    telefono: Optional[str] = None
+    whatsapp: Optional[str] = None
+    email: Optional[str] = None
+    observacion: Optional[str] = None
+
+class ObraSocialAutorizadorCreate(BaseModel):
+    id_autorizador: int
+    prioridad: Optional[str] = 'principal'
+    usuario: Optional[str] = None
+    password: Optional[str] = None
+    observacion: Optional[str] = None
+
+class ObraSocialAutorizadorUpdate(BaseModel):
+    prioridad: Optional[str] = None
+    usuario: Optional[str] = None
+    password: Optional[str] = None
+    observacion: Optional[str] = None

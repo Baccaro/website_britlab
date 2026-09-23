@@ -384,3 +384,225 @@ CREATE TABLE public.faq (
 	CONSTRAINT faq_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL
 );
 CREATE INDEX idx_faq_categoria ON public.faq (categoria);
+
+
+-- public.tarifario / tarifario_item / tarifario_item_periodo definition
+-- Módulo Tarifarios (dropdown "Obras Sociales" del navbar, RBAC del módulo
+-- 'obras_sociales'). Un tarifario/convenio tiene N ítems (un Estudio con
+-- precio); cada ítem tiene N períodos: actualizar un precio agrega un
+-- período nuevo (uq_tarifario_item_periodo obliga a que sea distinto), nunca
+-- pisa el anterior. El precio "vigente" de un ítem es el de su período con
+-- created_at más reciente. La auditoría de cada período (usuario/fecha de
+-- creación y edición) sólo la ve SuperAdmin (ver app/routes/tarifarios.py).
+
+CREATE TABLE public.tarifario (
+	id serial4 NOT NULL,
+	nombre varchar(255) NOT NULL,
+	tipo varchar(20) DEFAULT 'TARIFARIO' NOT NULL,
+	tipo_relacionado varchar(50) DEFAULT 'Laboratorio / Procesador externo' NOT NULL,
+	entidad varchar(255) NULL,
+	moneda varchar(10) DEFAULT 'ARS' NOT NULL,
+	estado varchar(20) DEFAULT 'activo' NOT NULL,
+	observaciones text NULL,
+	creado_por_id int4 NULL,
+	actualizado_por_id int4 NULL,
+	created_at timestamp DEFAULT now() NOT NULL,
+	updated_at timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT tarifario_pkey PRIMARY KEY (id),
+	CONSTRAINT chk_tarifario_tipo CHECK (tipo IN ('TARIFARIO', 'CONVENIO', 'DERIVACION', 'LISTA', 'ANEXO')),
+	CONSTRAINT chk_tarifario_estado CHECK (estado IN ('activo', 'inactivo')),
+	CONSTRAINT tarifario_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL,
+	CONSTRAINT tarifario_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL
+);
+
+CREATE TABLE public.tarifario_item (
+	id serial4 NOT NULL,
+	id_tarifario int4 NOT NULL,
+	id_estudio int4 NOT NULL,
+	nemonico varchar(50) NULL,
+	codigo varchar(50) NULL,
+	estado varchar(20) DEFAULT 'Activo' NOT NULL,
+	nota text NULL,
+	created_at timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT tarifario_item_pkey PRIMARY KEY (id),
+	CONSTRAINT chk_tarifario_item_estado CHECK (estado IN ('Activo', 'Inactivo')),
+	CONSTRAINT tarifario_item_id_tarifario_fkey FOREIGN KEY (id_tarifario) REFERENCES public.tarifario(id) ON DELETE CASCADE,
+	CONSTRAINT tarifario_item_id_estudio_fkey FOREIGN KEY (id_estudio) REFERENCES public.estudio(id) ON DELETE RESTRICT
+);
+CREATE INDEX idx_tarifario_item_tarifario ON public.tarifario_item (id_tarifario);
+
+CREATE TABLE public.tarifario_item_periodo (
+	id serial4 NOT NULL,
+	id_tarifario_item int4 NOT NULL,
+	periodo varchar(100) NOT NULL,
+	precio numeric(14, 2) NOT NULL,
+	creado_por_id int4 NULL,
+	actualizado_por_id int4 NULL,
+	created_at timestamp DEFAULT now() NOT NULL,
+	updated_at timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT tarifario_item_periodo_pkey PRIMARY KEY (id),
+	CONSTRAINT uq_tarifario_item_periodo UNIQUE (id_tarifario_item, periodo),
+	CONSTRAINT tarifario_item_periodo_id_tarifario_item_fkey FOREIGN KEY (id_tarifario_item) REFERENCES public.tarifario_item(id) ON DELETE CASCADE,
+	CONSTRAINT tarifario_item_periodo_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL,
+	CONSTRAINT tarifario_item_periodo_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL
+);
+CREATE INDEX idx_tarifario_item_periodo_item ON public.tarifario_item_periodo (id_tarifario_item, created_at);
+
+
+-- public.nomenclador / autorizador / obra_social* definition
+-- Módulo Obras Sociales (dropdown "Obras Sociales" del navbar, RBAC del
+-- módulo 'obras_sociales'). Nomenclador y Autorizador son ABMs propios y
+-- reutilizables entre Obras Sociales (no se borran, sólo se inactivan).
+-- Obra Social tiene N Planes, N Contactos, un historial de cambios de
+-- estado (propio o de un Plan puntual) y relaciones M2M con Nomenclador y
+-- Autorizador — ésta última con credenciales propias de la relación
+-- (usuario/password), redactadas salvo SuperAdmin o el permiso puntual
+-- ver_credenciales_autorizadores (ver app/routes/obras_sociales.py).
+-- Reglas/excepciones por práctica quedan para una etapa posterior.
+
+CREATE TABLE public.nomenclador (
+	id serial4 NOT NULL,
+	nombre varchar(255) NOT NULL,
+	tipo varchar(30) DEFAULT 'NBU' NOT NULL,
+	version_o_fecha varchar(100) NULL,
+	vigencia varchar(100) NULL,
+	link text NULL,
+	observacion text NULL,
+	estado varchar(20) DEFAULT 'activo' NOT NULL,
+	creado_por_id int4 NULL,
+	actualizado_por_id int4 NULL,
+	created_at timestamp DEFAULT now() NOT NULL,
+	updated_at timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT nomenclador_pkey PRIMARY KEY (id),
+	CONSTRAINT chk_nomenclador_tipo CHECK (tipo IN ('NBU', 'especial', 'convenio_particular', 'listado_anexo')),
+	CONSTRAINT chk_nomenclador_estado CHECK (estado IN ('activo', 'inactivo')),
+	CONSTRAINT nomenclador_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL,
+	CONSTRAINT nomenclador_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL
+);
+
+CREATE TABLE public.autorizador (
+	id serial4 NOT NULL,
+	nombre varchar(255) NOT NULL,
+	tipo varchar(30) DEFAULT 'Portal externo' NOT NULL,
+	link text NULL,
+	instructivo text NULL,
+	observacion text NULL,
+	estado varchar(20) DEFAULT 'activo' NOT NULL,
+	creado_por_id int4 NULL,
+	actualizado_por_id int4 NULL,
+	created_at timestamp DEFAULT now() NOT NULL,
+	updated_at timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT autorizador_pkey PRIMARY KEY (id),
+	CONSTRAINT chk_autorizador_tipo CHECK (tipo IN ('Portal externo', 'Sistema interno')),
+	CONSTRAINT chk_autorizador_estado CHECK (estado IN ('activo', 'inactivo')),
+	CONSTRAINT autorizador_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL,
+	CONSTRAINT autorizador_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL
+);
+
+CREATE TABLE public.obra_social (
+	id serial4 NOT NULL,
+	nombre varchar(255) NOT NULL,
+	estado varchar(20) DEFAULT 'activo' NOT NULL,
+	estado_informacion varchar(20) DEFAULT 'borrador' NOT NULL,
+	mostrar_web bool DEFAULT false NOT NULL,
+	habilitar_ia bool DEFAULT false NOT NULL,
+	modalidad_autorizacion varchar(50) NULL,
+	observacion_general text NULL,
+	informacion_publica text NULL,
+	fecha_ultima_validacion timestamp NULL,
+	validado_por_id int4 NULL,
+	creado_por_id int4 NULL,
+	actualizado_por_id int4 NULL,
+	created_at timestamp DEFAULT now() NOT NULL,
+	updated_at timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT obra_social_pkey PRIMARY KEY (id),
+	CONSTRAINT chk_obra_social_estado CHECK (estado IN ('activo', 'limitada', 'suspendida', 'sin_atencion')),
+	CONSTRAINT chk_obra_social_estado_info CHECK (estado_informacion IN ('borrador', 'validada')),
+	CONSTRAINT obra_social_validado_por_id_fkey FOREIGN KEY (validado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL,
+	CONSTRAINT obra_social_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL,
+	CONSTRAINT obra_social_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL
+);
+
+CREATE TABLE public.obra_social_alias (
+	id serial4 NOT NULL,
+	id_obra_social int4 NOT NULL,
+	alias varchar(150) NOT NULL,
+	CONSTRAINT obra_social_alias_pkey PRIMARY KEY (id),
+	CONSTRAINT obra_social_alias_id_obra_social_fkey FOREIGN KEY (id_obra_social) REFERENCES public.obra_social(id) ON DELETE CASCADE
+);
+CREATE INDEX idx_obra_social_alias_obra_social ON public.obra_social_alias (id_obra_social);
+
+CREATE TABLE public.obra_social_plan (
+	id serial4 NOT NULL,
+	id_obra_social int4 NOT NULL,
+	nombre varchar(150) NOT NULL,
+	codigo_datatech_gravado varchar(50) NULL,
+	codigo_datatech_exento varchar(50) NULL,
+	estado varchar(20) DEFAULT 'activo' NOT NULL,
+	observacion text NULL,
+	created_at timestamp DEFAULT now() NOT NULL,
+	updated_at timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT obra_social_plan_pkey PRIMARY KEY (id),
+	CONSTRAINT chk_obra_social_plan_estado CHECK (estado IN ('activo', 'limitada', 'suspendida', 'sin_atencion')),
+	CONSTRAINT obra_social_plan_id_obra_social_fkey FOREIGN KEY (id_obra_social) REFERENCES public.obra_social(id) ON DELETE CASCADE
+);
+-- "alcance" (Todos los planes/Plan específico/Resto de los planes) se quitó
+-- (migracion_quitar_alcance_plan.sql): ya no se usa.
+CREATE INDEX idx_obra_social_plan_obra_social ON public.obra_social_plan (id_obra_social);
+
+CREATE TABLE public.obra_social_historial_estado (
+	id serial4 NOT NULL,
+	id_obra_social int4 NOT NULL,
+	id_plan int4 NULL,
+	estado_anterior varchar(20) NULL,
+	estado_nuevo varchar(20) NOT NULL,
+	comunicado_por varchar(150) NULL,
+	motivo text NULL,
+	creado_por_id int4 NULL,
+	created_at timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT obra_social_historial_estado_pkey PRIMARY KEY (id),
+	CONSTRAINT obra_social_historial_estado_id_obra_social_fkey FOREIGN KEY (id_obra_social) REFERENCES public.obra_social(id) ON DELETE CASCADE,
+	CONSTRAINT obra_social_historial_estado_id_plan_fkey FOREIGN KEY (id_plan) REFERENCES public.obra_social_plan(id) ON DELETE CASCADE,
+	CONSTRAINT obra_social_historial_estado_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL
+);
+CREATE INDEX idx_obra_social_historial_obra_social ON public.obra_social_historial_estado (id_obra_social, created_at);
+
+CREATE TABLE public.obra_social_contacto (
+	id serial4 NOT NULL,
+	id_obra_social int4 NOT NULL,
+	tipo varchar(30) DEFAULT 'General' NOT NULL,
+	nombre varchar(150) NULL,
+	telefono varchar(50) NULL,
+	whatsapp varchar(50) NULL,
+	email varchar(150) NULL,
+	observacion text NULL,
+	CONSTRAINT obra_social_contacto_pkey PRIMARY KEY (id),
+	CONSTRAINT chk_obra_social_contacto_tipo CHECK (tipo IN ('General', 'Autorizaciones', 'Auditoría', 'Convenios', 'Facturación', 'Otro')),
+	CONSTRAINT obra_social_contacto_id_obra_social_fkey FOREIGN KEY (id_obra_social) REFERENCES public.obra_social(id) ON DELETE CASCADE
+);
+CREATE INDEX idx_obra_social_contacto_obra_social ON public.obra_social_contacto (id_obra_social);
+
+CREATE TABLE public.obra_social_nomenclador (
+	id serial4 NOT NULL,
+	id_obra_social int4 NOT NULL,
+	id_nomenclador int4 NOT NULL,
+	CONSTRAINT obra_social_nomenclador_pkey PRIMARY KEY (id),
+	CONSTRAINT uq_obra_social_nomenclador UNIQUE (id_obra_social, id_nomenclador),
+	CONSTRAINT obra_social_nomenclador_id_obra_social_fkey FOREIGN KEY (id_obra_social) REFERENCES public.obra_social(id) ON DELETE CASCADE,
+	CONSTRAINT obra_social_nomenclador_id_nomenclador_fkey FOREIGN KEY (id_nomenclador) REFERENCES public.nomenclador(id) ON DELETE RESTRICT
+);
+
+CREATE TABLE public.obra_social_autorizador (
+	id serial4 NOT NULL,
+	id_obra_social int4 NOT NULL,
+	id_autorizador int4 NOT NULL,
+	prioridad varchar(20) DEFAULT 'principal' NOT NULL,
+	usuario varchar(150) NULL,
+	password varchar(255) NULL,
+	observacion text NULL,
+	CONSTRAINT obra_social_autorizador_pkey PRIMARY KEY (id),
+	CONSTRAINT chk_obra_social_autorizador_prioridad CHECK (prioridad IN ('principal', 'alternativo')),
+	CONSTRAINT uq_obra_social_autorizador UNIQUE (id_obra_social, id_autorizador),
+	CONSTRAINT obra_social_autorizador_id_obra_social_fkey FOREIGN KEY (id_obra_social) REFERENCES public.obra_social(id) ON DELETE CASCADE,
+	CONSTRAINT obra_social_autorizador_id_autorizador_fkey FOREIGN KEY (id_autorizador) REFERENCES public.autorizador(id) ON DELETE RESTRICT
+);

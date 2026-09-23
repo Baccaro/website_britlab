@@ -108,6 +108,13 @@ def make_crud_blueprint(name, url_prefix, model, create_schema, update_schema, o
         if error_response:
             return error_response
         new_item = model(**data.model_dump())
+        # Si el modelo tiene columnas de auditoría (Nomenclador, Autorizador,
+        # etc.), se completan solas; los catálogos que no las tienen (Colega,
+        # Método...) quedan exactamente igual que antes.
+        if hasattr(new_item, 'creado_por_id'):
+            new_item.creado_por_id = g.current_user.id
+        if hasattr(new_item, 'actualizado_por_id'):
+            new_item.actualizado_por_id = g.current_user.id
         db.session.add(new_item)
         error_response = _commit_or_400()
         if error_response:
@@ -129,6 +136,8 @@ def make_crud_blueprint(name, url_prefix, model, create_schema, update_schema, o
                 return error_response
         for field, value in campos.items():
             setattr(item, field, value)
+        if hasattr(item, 'actualizado_por_id'):
+            item.actualizado_por_id = g.current_user.id
         error_response = _commit_or_400()
         if error_response:
             return error_response

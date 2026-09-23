@@ -350,3 +350,321 @@ class Faq(db.Model):
 
     creado_por = db.relationship('Usuario', foreign_keys=[creado_por_id])
     actualizado_por = db.relationship('Usuario', foreign_keys=[actualizado_por_id])
+
+
+# --- Tarifarios (módulo Obras Sociales) -------------------------------------
+# Un Tarifario/Convenio tiene N ítems (un Estudio dentro de ese tarifario), y
+# cada ítem tiene N períodos: actualizar un precio no pisa el anterior, agrega
+# un período nuevo (uq_tarifario_item_periodo obliga a que sea distinto). El
+# precio "vigente" de un ítem es el de su período con created_at más reciente.
+
+class Tarifario(db.Model):
+    __tablename__ = 'tarifario'
+    __table_args__ = (
+        db.CheckConstraint("tipo IN ('TARIFARIO', 'CONVENIO', 'DERIVACION', 'LISTA', 'ANEXO')", name='chk_tarifario_tipo'),
+        db.CheckConstraint("estado IN ('activo', 'inactivo')", name='chk_tarifario_estado'),
+        {'schema': 'public'}
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(255), nullable=False)
+    tipo = db.Column(db.String(20), nullable=False, default='TARIFARIO')
+    tipo_relacionado = db.Column(db.String(50), nullable=False, default='Laboratorio / Procesador externo')
+    entidad = db.Column(db.String(255), nullable=True)
+    moneda = db.Column(db.String(10), nullable=False, default='ARS')
+    estado = db.Column(db.String(20), nullable=False, default='activo')
+    observaciones = db.Column(db.Text, nullable=True)
+    creado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    actualizado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    creado_por = db.relationship('Usuario', foreign_keys=[creado_por_id])
+    actualizado_por = db.relationship('Usuario', foreign_keys=[actualizado_por_id])
+    items = db.relationship('TarifarioItem', backref='tarifario', cascade='all, delete-orphan')
+
+    @property
+    def creado_por_username(self):
+        return self.creado_por.username if self.creado_por else None
+
+    @property
+    def actualizado_por_username(self):
+        return self.actualizado_por.username if self.actualizado_por else None
+
+
+class TarifarioItem(db.Model):
+    __tablename__ = 'tarifario_item'
+    __table_args__ = (
+        db.CheckConstraint("estado IN ('Activo', 'Inactivo')", name='chk_tarifario_item_estado'),
+        {'schema': 'public'}
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_tarifario = db.Column(db.Integer, db.ForeignKey('public.tarifario.id', ondelete='CASCADE'), nullable=False)
+    id_estudio = db.Column(db.Integer, db.ForeignKey('public.estudio.id', ondelete='RESTRICT'), nullable=False)
+    nemonico = db.Column(db.String(50), nullable=True)
+    codigo = db.Column(db.String(50), nullable=True)
+    estado = db.Column(db.String(20), nullable=False, default='Activo')
+    nota = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    estudio = db.relationship('Estudio')
+    periodos = db.relationship(
+        'TarifarioItemPeriodo', backref='item', cascade='all, delete-orphan',
+        order_by='TarifarioItemPeriodo.created_at.desc()'
+    )
+
+    @property
+    def periodo_vigente(self):
+        return self.periodos[0] if self.periodos else None
+
+
+class TarifarioItemPeriodo(db.Model):
+    __tablename__ = 'tarifario_item_periodo'
+    __table_args__ = (
+        db.UniqueConstraint('id_tarifario_item', 'periodo', name='uq_tarifario_item_periodo'),
+        {'schema': 'public'}
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_tarifario_item = db.Column(db.Integer, db.ForeignKey('public.tarifario_item.id', ondelete='CASCADE'), nullable=False)
+    periodo = db.Column(db.String(100), nullable=False)
+    precio = db.Column(db.Numeric(14, 2), nullable=False)
+    creado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    actualizado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    creado_por = db.relationship('Usuario', foreign_keys=[creado_por_id])
+    actualizado_por = db.relationship('Usuario', foreign_keys=[actualizado_por_id])
+
+    @property
+    def creado_por_username(self):
+        return self.creado_por.username if self.creado_por else None
+
+    @property
+    def actualizado_por_username(self):
+        return self.actualizado_por.username if self.actualizado_por else None
+
+
+# --- Obras Sociales, Nomencladores y Autorizadores --------------------------
+# Alcance de esta etapa (ver documento de negocio): ABM de Obra Social (+
+# Planes, alias de búsqueda, contactos, historial de estados), Nomencladores
+# y Autorizadores (ambos ABMs propios y reutilizables entre Obras Sociales).
+# Reglas/excepciones por práctica quedan para una etapa posterior.
+
+class Nomenclador(db.Model):
+    __tablename__ = 'nomenclador'
+    __table_args__ = (
+        db.CheckConstraint("tipo IN ('NBU', 'especial', 'convenio_particular', 'listado_anexo')", name='chk_nomenclador_tipo'),
+        db.CheckConstraint("estado IN ('activo', 'inactivo')", name='chk_nomenclador_estado'),
+        {'schema': 'public'}
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(255), nullable=False)
+    tipo = db.Column(db.String(30), nullable=False, default='NBU')
+    version_o_fecha = db.Column(db.String(100), nullable=True)
+    vigencia = db.Column(db.String(100), nullable=True)
+    link = db.Column(db.Text, nullable=True)
+    observacion = db.Column(db.Text, nullable=True)
+    estado = db.Column(db.String(20), nullable=False, default='activo')
+    creado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    actualizado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    creado_por = db.relationship('Usuario', foreign_keys=[creado_por_id])
+    actualizado_por = db.relationship('Usuario', foreign_keys=[actualizado_por_id])
+
+    @property
+    def creado_por_username(self):
+        return self.creado_por.username if self.creado_por else None
+
+    @property
+    def actualizado_por_username(self):
+        return self.actualizado_por.username if self.actualizado_por else None
+
+
+class Autorizador(db.Model):
+    __tablename__ = 'autorizador'
+    __table_args__ = (
+        db.CheckConstraint("tipo IN ('Portal externo', 'Sistema interno')", name='chk_autorizador_tipo'),
+        db.CheckConstraint("estado IN ('activo', 'inactivo')", name='chk_autorizador_estado'),
+        {'schema': 'public'}
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(255), nullable=False)
+    tipo = db.Column(db.String(30), nullable=False, default='Portal externo')
+    link = db.Column(db.Text, nullable=True)
+    instructivo = db.Column(db.Text, nullable=True)
+    observacion = db.Column(db.Text, nullable=True)
+    estado = db.Column(db.String(20), nullable=False, default='activo')
+    creado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    actualizado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    creado_por = db.relationship('Usuario', foreign_keys=[creado_por_id])
+    actualizado_por = db.relationship('Usuario', foreign_keys=[actualizado_por_id])
+
+    @property
+    def creado_por_username(self):
+        return self.creado_por.username if self.creado_por else None
+
+    @property
+    def actualizado_por_username(self):
+        return self.actualizado_por.username if self.actualizado_por else None
+
+
+class ObraSocial(db.Model):
+    __tablename__ = 'obra_social'
+    __table_args__ = (
+        db.CheckConstraint("estado IN ('activo', 'limitada', 'suspendida', 'sin_atencion')", name='chk_obra_social_estado'),
+        db.CheckConstraint("estado_informacion IN ('borrador', 'validada')", name='chk_obra_social_estado_info'),
+        {'schema': 'public'}
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(255), nullable=False)
+    estado = db.Column(db.String(20), nullable=False, default='activo')
+    estado_informacion = db.Column(db.String(20), nullable=False, default='borrador')
+    mostrar_web = db.Column(db.Boolean, nullable=False, default=False)
+    habilitar_ia = db.Column(db.Boolean, nullable=False, default=False)
+    modalidad_autorizacion = db.Column(db.String(50), nullable=True)
+    observacion_general = db.Column(db.Text, nullable=True)
+    informacion_publica = db.Column(db.Text, nullable=True)
+    fecha_ultima_validacion = db.Column(db.DateTime, nullable=True)
+    validado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    creado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    actualizado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    validado_por = db.relationship('Usuario', foreign_keys=[validado_por_id])
+    creado_por = db.relationship('Usuario', foreign_keys=[creado_por_id])
+    actualizado_por = db.relationship('Usuario', foreign_keys=[actualizado_por_id])
+    alias = db.relationship('ObraSocialAlias', backref='obra_social', cascade='all, delete-orphan')
+    planes = db.relationship('ObraSocialPlan', backref='obra_social', cascade='all, delete-orphan')
+    contactos = db.relationship('ObraSocialContacto', backref='obra_social', cascade='all, delete-orphan')
+    historial = db.relationship(
+        'ObraSocialHistorialEstado', backref='obra_social', cascade='all, delete-orphan',
+        order_by='ObraSocialHistorialEstado.created_at.desc()'
+    )
+    nomencladores_rel = db.relationship('ObraSocialNomenclador', backref='obra_social', cascade='all, delete-orphan')
+    autorizadores_rel = db.relationship('ObraSocialAutorizador', backref='obra_social', cascade='all, delete-orphan')
+
+    @property
+    def creado_por_username(self):
+        return self.creado_por.username if self.creado_por else None
+
+    @property
+    def actualizado_por_username(self):
+        return self.actualizado_por.username if self.actualizado_por else None
+
+    @property
+    def validado_por_username(self):
+        return self.validado_por.username if self.validado_por else None
+
+
+class ObraSocialAlias(db.Model):
+    __tablename__ = 'obra_social_alias'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_obra_social = db.Column(db.Integer, db.ForeignKey('public.obra_social.id', ondelete='CASCADE'), nullable=False)
+    alias = db.Column(db.String(150), nullable=False)
+
+
+class ObraSocialPlan(db.Model):
+    __tablename__ = 'obra_social_plan'
+    __table_args__ = (
+        db.CheckConstraint("estado IN ('activo', 'limitada', 'suspendida', 'sin_atencion')", name='chk_obra_social_plan_estado'),
+        {'schema': 'public'}
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_obra_social = db.Column(db.Integer, db.ForeignKey('public.obra_social.id', ondelete='CASCADE'), nullable=False)
+    nombre = db.Column(db.String(150), nullable=False)
+    codigo_datatech_gravado = db.Column(db.String(50), nullable=True)
+    codigo_datatech_exento = db.Column(db.String(50), nullable=True)
+    estado = db.Column(db.String(20), nullable=False, default='activo')
+    observacion = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class ObraSocialHistorialEstado(db.Model):
+    __tablename__ = 'obra_social_historial_estado'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_obra_social = db.Column(db.Integer, db.ForeignKey('public.obra_social.id', ondelete='CASCADE'), nullable=False)
+    id_plan = db.Column(db.Integer, db.ForeignKey('public.obra_social_plan.id', ondelete='CASCADE'), nullable=True)
+    estado_anterior = db.Column(db.String(20), nullable=True)
+    estado_nuevo = db.Column(db.String(20), nullable=False)
+    comunicado_por = db.Column(db.String(150), nullable=True)
+    motivo = db.Column(db.Text, nullable=True)
+    creado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    plan = db.relationship('ObraSocialPlan')
+    creado_por = db.relationship('Usuario', foreign_keys=[creado_por_id])
+
+    @property
+    def creado_por_username(self):
+        return self.creado_por.username if self.creado_por else None
+
+
+class ObraSocialContacto(db.Model):
+    __tablename__ = 'obra_social_contacto'
+    __table_args__ = (
+        db.CheckConstraint(
+            "tipo IN ('General', 'Autorizaciones', 'Auditoría', 'Convenios', 'Facturación', 'Otro')",
+            name='chk_obra_social_contacto_tipo'
+        ),
+        {'schema': 'public'}
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_obra_social = db.Column(db.Integer, db.ForeignKey('public.obra_social.id', ondelete='CASCADE'), nullable=False)
+    tipo = db.Column(db.String(30), nullable=False, default='General')
+    nombre = db.Column(db.String(150), nullable=True)
+    telefono = db.Column(db.String(50), nullable=True)
+    whatsapp = db.Column(db.String(50), nullable=True)
+    email = db.Column(db.String(150), nullable=True)
+    observacion = db.Column(db.Text, nullable=True)
+
+
+class ObraSocialNomenclador(db.Model):
+    __tablename__ = 'obra_social_nomenclador'
+    __table_args__ = (
+        db.UniqueConstraint('id_obra_social', 'id_nomenclador', name='uq_obra_social_nomenclador'),
+        {'schema': 'public'}
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_obra_social = db.Column(db.Integer, db.ForeignKey('public.obra_social.id', ondelete='CASCADE'), nullable=False)
+    id_nomenclador = db.Column(db.Integer, db.ForeignKey('public.nomenclador.id', ondelete='RESTRICT'), nullable=False)
+
+    nomenclador = db.relationship('Nomenclador')
+
+
+class ObraSocialAutorizador(db.Model):
+    __tablename__ = 'obra_social_autorizador'
+    __table_args__ = (
+        db.CheckConstraint("prioridad IN ('principal', 'alternativo')", name='chk_obra_social_autorizador_prioridad'),
+        db.UniqueConstraint('id_obra_social', 'id_autorizador', name='uq_obra_social_autorizador'),
+        {'schema': 'public'}
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_obra_social = db.Column(db.Integer, db.ForeignKey('public.obra_social.id', ondelete='CASCADE'), nullable=False)
+    id_autorizador = db.Column(db.Integer, db.ForeignKey('public.autorizador.id', ondelete='RESTRICT'), nullable=False)
+    prioridad = db.Column(db.String(20), nullable=False, default='principal')
+    usuario = db.Column(db.String(150), nullable=True)
+    password = db.Column(db.String(255), nullable=True)
+    observacion = db.Column(db.Text, nullable=True)
+
+    autorizador = db.relationship('Autorizador')

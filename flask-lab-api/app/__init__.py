@@ -23,6 +23,10 @@ def create_app():
     from app.routes.auth import bp as auth_bp
     from app.routes.usuarios import bp as usuarios_bp
     from app.routes.faq import bp as faq_bp
+    from app.routes.tarifarios import bp as tarifarios_bp
+    from app.routes.nomencladores import bp as nomencladores_bp
+    from app.routes.autorizadores import bp as autorizadores_bp
+    from app.routes.obras_sociales import bp as obras_sociales_bp
 
     app.register_blueprint(colegas_bp)
     app.register_blueprint(estudios_bp)
@@ -39,5 +43,9 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(usuarios_bp)
     app.register_blueprint(faq_bp)
+    app.register_blueprint(tarifarios_bp)
+    app.register_blueprint(nomencladores_bp)
+    app.register_blueprint(autorizadores_bp)
+    app.register_blueprint(obras_sociales_bp)
 
     return app
