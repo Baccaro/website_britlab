@@ -1,0 +1,49 @@
+name: britlab_test_cargado
+
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_test_cargado
+    restart: always
+    environment:
+      POSTGRES_USER: flask_user
+      POSTGRES_PASSWORD: flask_password
+      POSTGRES_DB: lab_db_test_cargado
+    ports:
+      - "5434:5432"
+    # Sin volumen persistente en /var/lib/postgresql/data: al recrear el
+    # contenedor (down + up, o up --force-recreate) Postgres arranca con el
+    # directorio de datos vacío y vuelve a correr el dump de abajo, así que
+    # cada build queda con el esquema y los datos actualizados.
+    volumes:
+      - ../database/britlab_test_dump_cargado.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U flask_user -d lab_db_test_cargado"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    container_name: backend_test_cargado
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://flask_user:flask_password@db:5432/lab_db_test_cargado
+      # Fija la clave de firma de los JWT de sesión: sin esto, cada
+      # reinicio del contenedor generaría una clave al azar e invalidaría
+      # todas las sesiones activas.
+      - SECRET_KEY=1201481c3c06009c34ecd0d15a7f4e86befc79e594bfbf7713b37e57cf842d59
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    container_name: frontend_test_cargado
+    restart: always
+    ports:
+      - "8088:80"
+    depends_on:
+      - web
