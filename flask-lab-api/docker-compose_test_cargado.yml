@@ -1,7 +1,5 @@
 name: britlab_test_cargado
 
-version: '3.8'
-
 services:
   db:
     image: postgres:15-alpine
