@@ -1,5 +1,3 @@
-name: britlab_test_cargado
-
 version: '3.8'
 
 services:
