@@ -1,4 +1,3 @@
-name: britlab_test_cargado
 
 services:
   db:
