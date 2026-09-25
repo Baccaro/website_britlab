@@ -104,7 +104,7 @@ def make_crud_blueprint(name, url_prefix, model, create_schema, update_schema, o
             data = create_schema(**(request.get_json() or {}))
         except ValidationError as e:
             return jsonify(e.errors()), 400
-        error_response = _nombre_duplicado(getattr(data, unique_name_field, None))
+        error_response = _nombre_duplicado(getattr(data, unique_name_field, None) if unique_name_field else None)
         if error_response:
             return error_response
         new_item = model(**data.model_dump())

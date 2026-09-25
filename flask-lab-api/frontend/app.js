@@ -1,4 +1,4 @@
-const { createApp, ref, computed, watch, onMounted } = Vue;
+const { createApp, ref, computed, watch, onMounted, nextTick } = Vue;
 
 // Opción especial del selector de colega que muestra el catálogo completo de Estudios
 const ALL_ESTUDIOS = '__ALL_ESTUDIOS__';
@@ -272,8 +272,10 @@ const app = createApp({
       else if (currentView.value === 'crud') fetchItems(1);
     };
 
-    const login = async () => {
+    const login = async (event) => {
       authError.value = '';
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { authError.value = errorValidacion; return; }
       authLoading.value = true;
       try {
         const res = await axios.post(`${API_BASE}/auth/login`, {
@@ -292,8 +294,10 @@ const app = createApp({
       }
     };
 
-    const register = async () => {
+    const register = async (event) => {
       authError.value = '';
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { authError.value = errorValidacion; return; }
       if (authForm.value.password !== authForm.value.password2) {
         authError.value = 'Las contraseñas no coinciden';
         return;
@@ -319,9 +323,11 @@ const app = createApp({
       }
     };
 
-    const requestForgotPassword = async () => {
+    const requestForgotPassword = async (event) => {
       authError.value = '';
       forgotResult.value = null;
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { authError.value = errorValidacion; return; }
       if (!forgotUsername.value.trim()) {
         authError.value = 'Ingresá tu usuario';
         return;
@@ -337,9 +343,11 @@ const app = createApp({
       }
     };
 
-    const submitResetPassword = async () => {
+    const submitResetPassword = async (event) => {
       authError.value = '';
       resetResult.value = '';
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { authError.value = errorValidacion; return; }
       if (resetForm.value.password !== resetForm.value.password2) {
         authError.value = 'Las contraseñas no coinciden';
         return;
@@ -902,7 +910,9 @@ const app = createApp({
       fetchAdminUsuarios();
     };
 
-    const crearUsuarioAdmin = async () => {
+    const crearUsuarioAdmin = async (event) => {
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { showAlert(errorValidacion, 'danger'); return; }
       if (!adminUsuarioForm.value.username.trim() || !adminUsuarioForm.value.password) {
         showAlert('Usuario y contraseña son obligatorios', 'danger');
         return;
@@ -1131,7 +1141,9 @@ const app = createApp({
     };
     const cancelarFaqForm = () => { currentView.value = 'faq'; };
 
-    const guardarFaq = async () => {
+    const guardarFaq = async (event) => {
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { showAlert(errorValidacion, 'danger'); return; }
       if (!faqForm.value.pregunta || !faqForm.value.pregunta.trim()) {
         showAlert('La pregunta es obligatoria', 'danger'); return;
       }
@@ -1287,7 +1299,9 @@ const app = createApp({
     };
     const cancelarTarifarioForm = () => { currentView.value = 'tarifarios'; };
 
-    const guardarTarifario = async () => {
+    const guardarTarifario = async (event) => {
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { showAlert(errorValidacion, 'danger'); return; }
       if (!tarifarioForm.value.nombre || !tarifarioForm.value.nombre.trim()) {
         showAlert('El nombre es obligatorio', 'danger'); return;
       }
@@ -1357,7 +1371,9 @@ const app = createApp({
       ensureTarifarioItemModalInstance().show();
     };
 
-    const guardarTarifarioItem = async () => {
+    const guardarTarifarioItem = async (event) => {
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { showAlert(errorValidacion, 'danger'); return; }
       const f = tarifarioItemForm.value;
       if (!f.id_estudio) { showAlert('Elegí un Estudio de la lista', 'danger'); return; }
       if (tarifarioItemModalMode.value === 'create' && (!f.periodo || !f.periodo.trim())) {
@@ -1417,7 +1433,9 @@ const app = createApp({
       ensureTarifarioPrecioModalInstance().show();
     };
 
-    const guardarNuevoPrecio = async () => {
+    const guardarNuevoPrecio = async (event) => {
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { showAlert(errorValidacion, 'danger'); return; }
       const f = tarifarioPrecioForm.value;
       if (!f.periodo || !f.periodo.trim()) { showAlert('Ingresá el período de este precio', 'danger'); return; }
       if (f.precio === null || f.precio === '' || Number(f.precio) < 0) { showAlert('Ingresá un precio válido', 'danger'); return; }
@@ -1532,7 +1550,9 @@ const app = createApp({
         form.value = mode === 'edit' && item ? { ...item } : { ...camposDefault };
         ensureModal(modalId).show();
       };
-      const guardar = async (modalId) => {
+      const guardar = async (modalId, event) => {
+        const errorValidacion = validarFormulario(event?.target);
+        if (errorValidacion) { showAlert(errorValidacion, 'danger'); return; }
         if (!form.value.nombre || !form.value.nombre.trim()) { showAlert('El nombre es obligatorio', 'danger'); return; }
         guardando.value = true;
         try {
@@ -1590,9 +1610,9 @@ const app = createApp({
     // auto-desenvuelve (y v-model sólo funciona bien con) los refs que
     // quedan como propiedad de primer nivel del objeto que devuelve setup().
     const abrirNomencladorForm = (mode, item) => nom.abrirForm('nomencladorFormModal', mode, item);
-    const guardarNomenclador = () => nom.guardar('nomencladorFormModal');
+    const guardarNomenclador = (event) => nom.guardar('nomencladorFormModal', event);
     const abrirAutorizadorForm = (mode, item) => aut.abrirForm('autorizadorFormModal', mode, item);
-    const guardarAutorizador = () => aut.guardar('autorizadorFormModal');
+    const guardarAutorizador = (event) => aut.guardar('autorizadorFormModal', event);
 
     // --- Módulo Obras Sociales: Obra Social + Planes, historial de estados,
     // contactos, y relaciones con Nomencladores/Autorizadores (credenciales
@@ -1759,7 +1779,9 @@ const app = createApp({
     };
     const cancelarObraSocialForm = () => { currentView.value = 'obras_sociales'; };
 
-    const guardarObraSocial = async () => {
+    const guardarObraSocial = async (event) => {
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { showAlert(errorValidacion, 'danger'); return; }
       if (!obraSocialForm.value.nombre || !obraSocialForm.value.nombre.trim()) {
         showAlert('El nombre es obligatorio', 'danger'); return;
       }
@@ -1852,7 +1874,9 @@ const app = createApp({
       obraSocialEstadoForm.value = { estado: plan.estado, comunicado_por: currentUser.value?.username || '', motivo: '' };
       ensureObraSocialEstadoModal().show();
     };
-    const guardarCambioEstado = async () => {
+    const guardarCambioEstado = async (event) => {
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { showAlert(errorValidacion, 'danger'); return; }
       const ctx = obraSocialEstadoContexto.value;
       if (!ctx) return;
       obraSocialEstadoGuardando.value = true;
@@ -1916,7 +1940,9 @@ const app = createApp({
         : { nombre: '', codigo_datatech_gravado: 'S/C', codigo_datatech_exento: 'S/C', estado: 'activo', observacion: '' };
       ensureObraSocialPlanModal().show();
     };
-    const guardarObraSocialPlan = async () => {
+    const guardarObraSocialPlan = async (event) => {
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { showAlert(errorValidacion, 'danger'); return; }
       const f = obraSocialPlanForm.value;
       if (!f.nombre || !f.nombre.trim()) { showAlert('El nombre del plan es obligatorio', 'danger'); return; }
       obraSocialPlanGuardando.value = true;
@@ -1967,7 +1993,9 @@ const app = createApp({
         : { tipo: 'General', nombre: '', telefono: '', whatsapp: '', email: '', observacion: '' };
       ensureObraSocialContactoModal().show();
     };
-    const guardarObraSocialContacto = async () => {
+    const guardarObraSocialContacto = async (event) => {
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { showAlert(errorValidacion, 'danger'); return; }
       obraSocialContactoGuardando.value = true;
       try {
         const f = obraSocialContactoForm.value;
@@ -2022,7 +2050,9 @@ const app = createApp({
         nomencladoresDisponibles.value = [];
       }
     };
-    const guardarObraSocialNomenclador = async () => {
+    const guardarObraSocialNomenclador = async (event) => {
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { showAlert(errorValidacion, 'danger'); return; }
       if (!obraSocialNomencladorSeleccionadoId.value) { showAlert('Elegí un nomenclador', 'danger'); return; }
       obraSocialNomencladorGuardando.value = true;
       try {
@@ -2081,7 +2111,9 @@ const app = createApp({
         }
       }
     };
-    const guardarObraSocialAutorizador = async () => {
+    const guardarObraSocialAutorizador = async (event) => {
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { showAlert(errorValidacion, 'danger'); return; }
       const f = obraSocialAutorizadorForm.value;
       obraSocialAutorizadorGuardando.value = true;
       try {
@@ -2806,8 +2838,10 @@ const app = createApp({
       return est ? est.codigo_hexalis : '';
     });
 
-    const saveItem = async () => {
+    const saveItem = async (event) => {
       const entity = modalEntity.value;
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { showAlert(errorValidacion, 'danger'); return; }
       try {
         if (needsNewEstudio.value) {
           if (!newEstudioCodigo.value.trim()) {
@@ -2894,7 +2928,84 @@ const app = createApp({
       return texto.length > maxLen ? texto.slice(0, maxLen) + '…' : texto;
     };
 
+    // Foco automático de formularios: al abrirse un modal o entrar a una
+    // pantalla de carga, el foco va directo al primer campo para no obligar
+    // a hacer click antes de poder escribir.
+    const enfocarPrimerCampo = (contenedor) => {
+      if (!contenedor) return;
+      const campo = contenedor.querySelector(
+        'input:not([type=hidden]):not([disabled]), select:not([disabled]), textarea:not([disabled])'
+      );
+      if (campo) campo.focus();
+    };
+
+    // Etiqueta legible de un campo inválido para listarlo en el cartel de
+    // alerta: primero busca un <label for="..."> asociado, si no hay usa el
+    // <label> que lo acompaña en el mismo contenedor (el patrón usado en casi
+    // todos los formularios de la app), y como último recurso el placeholder.
+    const obtenerEtiquetaCampo = (el) => {
+      if (el.id) {
+        const lbl = document.querySelector(`label[for="${el.id}"]`);
+        if (lbl) return lbl.textContent.replace('*', '').trim();
+      }
+      const wrapper = el.closest('div');
+      const lbl = wrapper ? wrapper.querySelector('label') : null;
+      if (lbl) return lbl.textContent.replace('*', '').trim();
+      return el.getAttribute('placeholder') || el.name || 'Campo requerido';
+    };
+
+    // Validación genérica de un <form> antes de guardar: se apoya en los
+    // atributos "required" (y demás validaciones nativas de HTML5) que ya
+    // tienen los campos. Si falta algo, resalta en rojo los campos
+    // incompletos (clase "was-validated" de Bootstrap) y hace scroll + foco
+    // al primero. Devuelve el mensaje a mostrar en el cartel de alerta (cada
+    // pantalla decide dónde: showAlert() en la app, authError en el login),
+    // o null si el formulario está OK para seguir guardando.
+    const validarFormulario = (formEl) => {
+      if (!formEl || typeof formEl.checkValidity !== 'function') return null;
+      formEl.classList.add('was-validated');
+      if (formEl.checkValidity()) return null;
+      const invalidos = Array.from(formEl.querySelectorAll(':invalid'));
+      if (!invalidos.length) return null;
+      const etiquetas = [...new Set(invalidos.map(obtenerEtiquetaCampo))];
+      const primero = invalidos[0];
+      primero.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      primero.focus();
+      return `Faltan completar campos obligatorios: ${etiquetas.join(', ')}`;
+    };
+
+    // Pantallas de carga a página completa (no modal): al entrar, foco en el
+    // primer campo. Los modales de Bootstrap se manejan aparte (evento
+    // "shown.bs.modal" más abajo), que cubre a todos por igual.
+    const VISTAS_CON_FOCO_AUTOMATICO = ['estudio_colega_form', 'obra_social_form', 'tarifario_form', 'faq_form', 'admin_usuarios'];
+    watch(currentView, async (v) => {
+      if (!VISTAS_CON_FOCO_AUTOMATICO.includes(v)) return;
+      await nextTick();
+      const main = document.querySelector('main');
+      if (!main) return;
+      main.querySelectorAll('form.was-validated').forEach(f => f.classList.remove('was-validated'));
+      enfocarPrimerCampo(main);
+    });
+    watch(authView, async () => {
+      await nextTick();
+      const card = document.querySelector('.auth-card');
+      if (!card) return;
+      card.querySelectorAll('form.was-validated').forEach(f => f.classList.remove('was-validated'));
+      enfocarPrimerCampo(card);
+    });
+
     onMounted(async () => {
+      // Foco automático al abrirse CUALQUIER modal de Bootstrap: un solo
+      // listener delegado en document (los eventos de modal burbujean hasta
+      // ahí) cubre a todos los modales de la app por igual, sin tener que
+      // engancharlo a mano en cada uno. También limpia el resaltado en rojo
+      // de una validación anterior, para que un modal reabierto (o abierto
+      // para otro registro) arranque limpio.
+      document.addEventListener('shown.bs.modal', (e) => {
+        e.target.querySelectorAll('form.was-validated').forEach(f => f.classList.remove('was-validated'));
+        enfocarPrimerCampo(e.target);
+      });
+
       // Sin token guardado, se queda en la pantalla de login sin pedir nada
       // a la API. Con token, se valida contra /api/auth/me antes de cargar
       // el resto de la app (puede haber expirado o el usuario fue deshabilitado).

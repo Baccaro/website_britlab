@@ -674,7 +674,7 @@
         <template v-if="authView === 'login'">
           <h5 class="text-center font-bold text-primary mb-1">Gestión de Laboratorio</h5>
           <p class="text-center text-on-surface-variant text-xs mb-4">Iniciá sesión para continuar</p>
-          <form @submit.prevent="login">
+          <form @submit.prevent="login($event)" novalidate>
             <div class="mb-3">
               <label class="form-label text-xs font-semibold">Usuario</label>
               <input class="form-control form-control-sm rounded-lg" required type="text" v-model="authForm.username"
@@ -704,7 +704,7 @@
           <p class="text-center text-on-surface-variant text-xs mb-4">
             Se crea con acceso de sólo lectura ("consulta"); un administrador puede ampliarlo luego.
           </p>
-          <form @submit.prevent="register">
+          <form @submit.prevent="register($event)" novalidate>
             <div class="mb-2">
               <label class="form-label text-xs font-semibold">Usuario *</label>
               <input class="form-control form-control-sm rounded-lg" required type="text" v-model="authForm.username" />
@@ -746,7 +746,7 @@
             muestra directo acá abajo, en vez de enviarse por correo.
           </p>
           <template v-if="!forgotResult">
-            <form @submit.prevent="requestForgotPassword">
+            <form @submit.prevent="requestForgotPassword($event)" novalidate>
               <div class="mb-3">
                 <label class="form-label text-xs font-semibold">Usuario</label>
                 <input class="form-control form-control-sm rounded-lg" required type="text" v-model="forgotUsername"
@@ -783,7 +783,7 @@
           <p class="text-center text-on-surface-variant text-xs mb-4">Pegá el token recibido y elegí una contraseña
             nueva.</p>
           <div class="alert alert-success rounded-lg text-xs" v-if="resetResult">{{ resetResult }}</div>
-          <form @submit.prevent="submitResetPassword" v-else>
+          <form @submit.prevent="submitResetPassword($event)" v-else novalidate>
             <div class="mb-2">
               <label class="form-label text-xs font-semibold">Token</label>
               <textarea class="form-control form-control-sm rounded-lg" required rows="2"
@@ -1618,7 +1618,7 @@
             <!-- Alta de usuario -->
             <div class="bg-white rounded-xl shadow-sm border border-outline-variant p-4 mb-4">
               <h6 class="font-bold text-on-surface mb-3">Nuevo usuario</h6>
-              <form @submit.prevent="crearUsuarioAdmin" class="row g-2 align-items-end">
+              <form @submit.prevent="crearUsuarioAdmin($event)" class="row g-2 align-items-end" novalidate>
                 <div class="col-md-2">
                   <label class="form-label text-xs font-semibold mb-1">Usuario *</label>
                   <input class="form-control form-control-sm rounded-lg" required type="text"
@@ -2280,7 +2280,7 @@
               </button>
             </div>
 
-            <form @submit.prevent="guardarObraSocial">
+            <form @submit.prevent="guardarObraSocial($event)" novalidate>
               <div class="border border-outline-variant rounded-lg mb-3 overflow-hidden">
                 <div class="section-toggle section-toggle-open p-3">
                   <span class="d-block font-bold text-primary">Datos generales</span>
@@ -2973,7 +2973,7 @@
               </button>
             </div>
 
-            <form @submit.prevent="guardarTarifario">
+            <form @submit.prevent="guardarTarifario($event)" novalidate>
               <div class="border border-outline-variant rounded-lg mb-3 overflow-hidden">
                 <div class="section-toggle section-toggle-open p-3">
                   <span class="d-block font-bold text-primary">Datos generales</span>
@@ -3258,7 +3258,7 @@
               </button>
             </div>
 
-            <form @submit.prevent="guardarFaq">
+            <form @submit.prevent="guardarFaq($event)" novalidate>
               <div class="border border-outline-variant rounded-lg mb-3 overflow-hidden">
                 <div class="section-toggle section-toggle-open p-3">
                   <span class="d-block font-bold text-primary">Identificación</span>
@@ -3375,7 +3375,7 @@
               </button>
             </div>
 
-            <form @submit.prevent="saveItem">
+            <form @submit.prevent="saveItem($event)" novalidate>
               <div :key="section.key" class="border border-outline-variant rounded-lg mb-3 overflow-hidden"
                 v-for="section in ESTUDIO_COLEGA_SECCIONES">
                 <button @click="toggleSection(section.key)"
@@ -3693,7 +3693,7 @@
               <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
             </div>
             <div class="modal-body p-4">
-              <form @submit.prevent="saveItem">
+              <form @submit.prevent="saveItem($event)" novalidate>
 
                 <!-- Estudio x Laboratorio Procesante ya no usa este modal (tiene su
                    propia pantalla completa): esto evita ids duplicados en el DOM
@@ -3778,7 +3778,7 @@
       <div aria-hidden="true" class="modal fade" id="tarifarioItemModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content border-0 shadow-lg rounded-xl">
-            <form @submit.prevent="guardarTarifarioItem">
+            <form @submit.prevent="guardarTarifarioItem($event)" novalidate>
               <div class="modal-header bg-surface-container-low border-b border-outline-variant rounded-t-xl">
                 <h5 class="modal-title font-bold text-primary text-base">{{ tarifarioItemModalMode === 'create' ?
                   'Agregar ítem' : 'Editar ítem' }}</h5>
@@ -3857,7 +3857,7 @@
       <div aria-hidden="true" class="modal fade" id="tarifarioPrecioModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content border-0 shadow-lg rounded-xl">
-            <form @submit.prevent="guardarNuevoPrecio">
+            <form @submit.prevent="guardarNuevoPrecio($event)" novalidate>
               <div class="modal-header bg-surface-container-low border-b border-outline-variant rounded-t-xl">
                 <h5 class="modal-title font-bold text-primary text-base">Actualizar precio</h5>
                 <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
@@ -3967,7 +3967,7 @@
       <div aria-hidden="true" class="modal fade" id="nomencladorFormModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content border-0 shadow-lg rounded-xl">
-            <form @submit.prevent="guardarNomenclador">
+            <form @submit.prevent="guardarNomenclador($event)" novalidate>
               <div class="modal-header bg-surface-container-low border-b border-outline-variant rounded-t-xl">
                 <h5 class="modal-title font-bold text-primary text-base">{{ nomencladorModalMode === 'create' ? 'Nuevo nomenclador' : 'Editar nomenclador' }}</h5>
                 <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
@@ -4035,7 +4035,7 @@
       <div aria-hidden="true" class="modal fade" id="autorizadorFormModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content border-0 shadow-lg rounded-xl">
-            <form @submit.prevent="guardarAutorizador">
+            <form @submit.prevent="guardarAutorizador($event)" novalidate>
               <div class="modal-header bg-surface-container-low border-b border-outline-variant rounded-t-xl">
                 <h5 class="modal-title font-bold text-primary text-base">{{ autorizadorModalMode === 'create' ? 'Nuevo autorizador' : 'Editar autorizador' }}</h5>
                 <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
@@ -4095,7 +4095,7 @@
       <div aria-hidden="true" class="modal fade" id="obraSocialEstadoModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content border-0 shadow-lg rounded-xl">
-            <form @submit.prevent="guardarCambioEstado">
+            <form @submit.prevent="guardarCambioEstado($event)" novalidate>
               <div class="modal-header bg-surface-container-low border-b border-outline-variant rounded-t-xl">
                 <h5 class="modal-title font-bold text-primary text-base">Cambiar estado del plan</h5>
                 <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
@@ -4192,7 +4192,7 @@
       <div aria-hidden="true" class="modal fade" id="obraSocialPlanModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content border-0 shadow-lg rounded-xl">
-            <form @submit.prevent="guardarObraSocialPlan">
+            <form @submit.prevent="guardarObraSocialPlan($event)" novalidate>
               <div class="modal-header bg-surface-container-low border-b border-outline-variant rounded-t-xl">
                 <h5 class="modal-title font-bold text-primary text-base">{{ obraSocialPlanModalMode === 'create' ?
                   'Agregar plan' : 'Editar plan' }}</h5>
@@ -4238,7 +4238,7 @@
       <div aria-hidden="true" class="modal fade" id="obraSocialContactoModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content border-0 shadow-lg rounded-xl">
-            <form @submit.prevent="guardarObraSocialContacto">
+            <form @submit.prevent="guardarObraSocialContacto($event)" novalidate>
               <div class="modal-header bg-surface-container-low border-b border-outline-variant rounded-t-xl">
                 <h5 class="modal-title font-bold text-primary text-base">{{ obraSocialContactoModalMode === 'create' ?
                   'Agregar contacto' : 'Editar contacto' }}</h5>
@@ -4298,7 +4298,7 @@
       <div aria-hidden="true" class="modal fade" id="obraSocialNomencladorModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content border-0 shadow-lg rounded-xl">
-            <form @submit.prevent="guardarObraSocialNomenclador">
+            <form @submit.prevent="guardarObraSocialNomenclador($event)" novalidate>
               <div class="modal-header bg-surface-container-low border-b border-outline-variant rounded-t-xl">
                 <h5 class="modal-title font-bold text-primary text-base">Asociar nomenclador</h5>
                 <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
@@ -4330,7 +4330,7 @@
       <div aria-hidden="true" class="modal fade" id="obraSocialAutorizadorModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content border-0 shadow-lg rounded-xl">
-            <form @submit.prevent="guardarObraSocialAutorizador">
+            <form @submit.prevent="guardarObraSocialAutorizador($event)" novalidate>
               <div class="modal-header bg-surface-container-low border-b border-outline-variant rounded-t-xl">
                 <h5 class="modal-title font-bold text-primary text-base">{{ obraSocialAutorizadorModalMode === 'create'
                   ? 'Asociar autorizador' : 'Editar autorizador' }}</h5>
