@@ -4,6 +4,7 @@ from sqlalchemy import or_
 from app.crud import _commit_or_400
 from app.database import db
 from app.models import Tarifario, TarifarioItem, TarifarioItemPeriodo, Estudio
+from app.utils import normalizar_nombre
 from app.schemas import (
     TarifarioCreate, TarifarioUpdate,
     TarifarioItemCreate, TarifarioItemUpdate,
@@ -108,6 +109,19 @@ def _validar_tarifario(tipo, estado):
     return None
 
 
+def _nombre_tarifario_duplicado(nombre, excluir_id=None):
+    if not nombre:
+        return None
+    objetivo = normalizar_nombre(nombre)
+    query = Tarifario.query
+    if excluir_id is not None:
+        query = query.filter(Tarifario.id != excluir_id)
+    for existente in query.all():
+        if normalizar_nombre(existente.nombre) == objetivo:
+            return jsonify({'error': f'Ya existe un Tarifario con ese nombre: "{existente.nombre}".'}), 409
+    return None
+
+
 @bp.route('', methods=['GET'])
 @modulo_lectura_required('obras_sociales')
 def list_items():
@@ -159,6 +173,10 @@ def create_item():
     if error:
         return jsonify({'error': error}), 400
 
+    error_response = _nombre_tarifario_duplicado(data.nombre)
+    if error_response:
+        return error_response
+
     nuevo = Tarifario(
         nombre=data.nombre.strip(),
         tipo=data.tipo or 'TARIFARIO',
@@ -190,6 +208,11 @@ def update_item(id):
     error = _validar_tarifario(campos.get('tipo'), campos.get('estado'))
     if error:
         return jsonify({'error': error}), 400
+
+    if 'nombre' in campos:
+        error_response = _nombre_tarifario_duplicado(campos['nombre'], excluir_id=id)
+        if error_response:
+            return error_response
 
     for field, value in campos.items():
         if field in ('nombre', 'entidad') and isinstance(value, str):

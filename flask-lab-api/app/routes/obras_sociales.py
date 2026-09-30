@@ -4,6 +4,7 @@ from sqlalchemy import or_
 
 from app.crud import _commit_or_400, _redactar_sensibles
 from app.database import db
+from app.utils import normalizar_nombre
 from app.models import (
     ObraSocial, ObraSocialAlias, ObraSocialPlan, ObraSocialHistorialEstado,
     ObraSocialContacto, ObraSocialNomenclador, ObraSocialAutorizador,
@@ -125,6 +126,19 @@ def _set_alias(obra_social, alias_list):
             obra_social.alias.append(ObraSocialAlias(alias=a))
 
 
+def _nombre_obra_social_duplicado(nombre, excluir_id=None):
+    if not nombre:
+        return None
+    objetivo = normalizar_nombre(nombre)
+    query = ObraSocial.query
+    if excluir_id is not None:
+        query = query.filter(ObraSocial.id != excluir_id)
+    for existente in query.all():
+        if normalizar_nombre(existente.nombre) == objetivo:
+            return jsonify({'error': f'Ya existe una Obra Social con ese nombre: "{existente.nombre}".'}), 409
+    return None
+
+
 @bp.route('', methods=['GET'])
 @modulo_lectura_required('obras_sociales')
 def list_items():
@@ -180,6 +194,10 @@ def create_item():
     if error:
         return jsonify({'error': error}), 400
 
+    error_response = _nombre_obra_social_duplicado(data.nombre)
+    if error_response:
+        return error_response
+
     nuevo = ObraSocial(
         nombre=data.nombre.strip(),
         estado=data.estado or 'activo',
@@ -214,6 +232,11 @@ def update_item(id):
              _validar_estado(campos.get('estado_informacion'), ESTADOS_INFORMACION, 'estado_informacion'))
     if error:
         return jsonify({'error': error}), 400
+
+    if 'nombre' in campos:
+        error_response = _nombre_obra_social_duplicado(campos['nombre'], excluir_id=id)
+        if error_response:
+            return error_response
 
     alias = campos.pop('alias', None)
     if alias is not None:

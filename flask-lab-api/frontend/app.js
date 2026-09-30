@@ -2928,6 +2928,24 @@ const app = createApp({
       return texto.length > maxLen ? texto.slice(0, maxLen) + '…' : texto;
     };
 
+    // Alto de los paneles de listado/detalle de un split view (Obras
+    // Sociales, etc.): en vez de un "calc(100vh - Npx)" fijo en el CSS —que
+    // sólo queda bien en el ancho de ventana con el que se lo midió, porque
+    // arriba (filtros, título) puede pasar de una a varias líneas según el
+    // ancho disponible—, se mide en JS dónde arranca cada panel de verdad y
+    // se le da exactamente el alto que queda hasta el borde de la ventana.
+    // Se recalcula solo: al mostrar el panel y cada vez que la ventana
+    // cambia de tamaño (no hace falta tocar esto de nuevo si el día de
+    // mañana se agrega un split view en otra pantalla, sólo hay que ponerle
+    // la clase "split-scroll-pane").
+    const ajustarAlturaScrollPanes = () => {
+      document.querySelectorAll('.split-scroll-pane').forEach((el) => {
+        const top = el.getBoundingClientRect().top;
+        el.style.maxHeight = `${Math.max(240, Math.round(window.innerHeight - top - 16))}px`;
+      });
+    };
+    window.addEventListener('resize', ajustarAlturaScrollPanes);
+
     // Foco automático de formularios: al abrirse un modal o entrar a una
     // pantalla de carga, el foco va directo al primer campo para no obligar
     // a hacer click antes de poder escribir.
@@ -2992,6 +3010,14 @@ const app = createApp({
       if (!card) return;
       card.querySelectorAll('form.was-validated').forEach(f => f.classList.remove('was-validated'));
       enfocarPrimerCampo(card);
+    });
+    // Los paneles ".split-scroll-pane" recién existen en el DOM cuando se
+    // entra a la pantalla y se está en modo split: hay que recalcular su
+    // alto en ese momento (el listener de "resize" ya cubre los cambios de
+    // ancho de ventana estando ahí adentro).
+    watch([currentView, obrasSocialesVistaModo], async () => {
+      await nextTick();
+      ajustarAlturaScrollPanes();
     });
 
     onMounted(async () => {
