@@ -33,6 +33,16 @@ services:
       # reinicio del contenedor generaría una clave al azar e invalidaría
       # todas las sesiones activas.
       - SECRET_KEY=1201481c3c06009c34ecd0d15a7f4e86befc79e594bfbf7713b37e57cf842d59
+      - FILES_DIR=/app/files
+    # Carpeta de los PDF adjuntos: adentro del contenedor siempre es
+    # /app/files, lo único que cambia entre entornos es a qué carpeta del
+    # HOST la mapea FILES_HOST_PATH. Sin definirla (como acá en dev) usa
+    # ./files, una carpeta dentro de flask-lab-api. En el server de
+    # producción hay que poner, en un .env al lado de este archivo (nunca
+    # committeado):
+    #   FILES_HOST_PATH=/srv/britlab/files
+    volumes:
+      - ${FILES_HOST_PATH:-./files}:/app/files
     depends_on:
       db:
         condition: service_healthy

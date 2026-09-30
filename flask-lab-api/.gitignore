@@ -1,0 +1,6 @@
+# PDFs subidos por los usuarios (estudio_colega_modelo): nunca se commitean,
+# son documentos reales, potencialmente con datos sensibles de laboratorio.
+# En producción esta carpeta ni siquiera existe acá (el docker-compose la
+# monta desde /srv/britlab/files vía FILES_HOST_PATH).
+files/
+files_test_cargado/

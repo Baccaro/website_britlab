@@ -281,7 +281,7 @@ CREATE TABLE public.estudio_colega_modelo (
     id integer NOT NULL,
     id_estudio_colega integer NOT NULL,
     nombre_archivo character varying(255) NOT NULL,
-    contenido bytea NOT NULL,
+    ruta_archivo character varying(500) NOT NULL,
     tamanio_bytes integer NOT NULL,
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     categoria character varying(20) DEFAULT 'colega'::character varying NOT NULL,
@@ -1574,7 +1574,7 @@ COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_
 -- Data for Name: estudio_colega_modelo; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.estudio_colega_modelo (id, id_estudio_colega, nombre_archivo, contenido, tamanio_bytes, created_at, categoria, descripcion) FROM stdin;
+COPY public.estudio_colega_modelo (id, id_estudio_colega, nombre_archivo, ruta_archivo, tamanio_bytes, created_at, categoria, descripcion) FROM stdin;
 \.
 
 

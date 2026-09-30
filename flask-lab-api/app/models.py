@@ -271,14 +271,18 @@ class EstudioColegaMuestraAlternativa(db.Model):
 
 class EstudioColegaModelo(db.Model):
     """Modelo de informe (PDF) que el colega adjunta a un Estudio x Colega:
-    1..N por registro, guardados como bytea en la BD."""
+    1..N por registro. El archivo se guarda en disco (bajo Config.FILES_DIR,
+    ver app/config.py) directamente, sin subcarpeta; 'ruta_archivo' es el
+    nombre de archivo (p.ej. '660352_LABMED_B__md_1.pdf', ver
+    app/routes/estudio_colega_modelo.py: _nombre_archivo_disco), no la ruta
+    absoluta ni la del host."""
     __tablename__ = 'estudio_colega_modelo'
     __table_args__ = {'schema': 'public'}
 
     id = db.Column(db.Integer, primary_key=True)
     id_estudio_colega = db.Column(db.Integer, db.ForeignKey('public.estudio_colega.id', ondelete='CASCADE'), nullable=False)
     nombre_archivo = db.Column(db.String(255), nullable=False)
-    contenido = db.Column(db.LargeBinary, nullable=False)
+    ruta_archivo = db.Column(db.String(500), nullable=False)
     tamanio_bytes = db.Column(db.Integer, nullable=False)
     # A qué dropdown pertenece: 'preanalitico', 'paciente' o 'colega' (Modelo
     # Derivante). 'descripcion' es el comentario propio de cada archivo

@@ -294,7 +294,14 @@ CREATE TABLE public.estudio_colega_modelo (
 	id serial4 NOT NULL,
 	id_estudio_colega int4 NOT NULL,
 	nombre_archivo varchar(255) NOT NULL,
-	contenido bytea NOT NULL,
+	-- El PDF ya NO se guarda acá (era "contenido bytea"): vive en disco, bajo
+	-- Config.FILES_DIR (ver app/config.py) directamente, sin subcarpeta. Esta
+	-- columna guarda el nombre de archivo: CODIGOHEXALIS_LABORATORIO_pre|md_N.pdf
+	-- (N correlativo por Estudio+Laboratorio+categoría, ver
+	-- app/routes/estudio_colega_modelo.py: _nombre_archivo_disco). Qué carpeta
+	-- del host es FILES_DIR en cada entorno lo decide el "volumes:" del
+	-- docker-compose correspondiente (migracion_pdfs_a_disco_paso1/2.sql).
+	ruta_archivo varchar(500) NOT NULL,
 	tamanio_bytes int4 NOT NULL,
 	-- categoria: a qué dropdown pertenece este PDF ('preanalitico', 'paciente'
 	-- o 'colega'/Modelo Derivante). descripcion: comentario propio del archivo
