@@ -315,6 +315,22 @@ CREATE TABLE public.estudio_colega_modelo (
 );
 CREATE INDEX idx_ecm_id_estudio_colega ON public.estudio_colega_modelo (id_estudio_colega);
 
+-- public.cv definition
+-- Postulaciones recibidas desde "Trabajá con Nosotros" en la web pública:
+-- alta SIN login (único endpoint público de toda la API, ver app/routes/cv.py
+-- y el CORS acotado a esa ruta en app/__init__.py). El PDF se guarda en disco
+-- bajo Config.FILES_DIR, igual que estudio_colega_modelo.
+CREATE TABLE public.cv (
+	id serial4 NOT NULL,
+	nombre_completo varchar(255) NOT NULL,
+	email varchar(255) NOT NULL,
+	nombre_archivo varchar(255) NOT NULL,
+	ruta_archivo varchar(500) NOT NULL,
+	tamanio_bytes int4 NOT NULL,
+	created_at timestamptz DEFAULT CURRENT_TIMESTAMP NULL,
+	CONSTRAINT cv_pkey PRIMARY KEY (id)
+);
+
 -- public.usuario definition
 -- Cuentas de acceso al sistema. rol 'superadmin' = administración íntegra
 -- (todos los módulos + administración de usuarios/roles/permisos); rol
@@ -454,6 +470,31 @@ CREATE TABLE public.tarifario_item_periodo (
 	CONSTRAINT tarifario_item_periodo_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL
 );
 CREATE INDEX idx_tarifario_item_periodo_item ON public.tarifario_item_periodo (id_tarifario_item, created_at);
+
+-- public.noticia definition
+-- Contenido de "Noticias" (Web BritLab, módulo 'web'): alta/edición sólo
+-- desde el panel, pero de LECTURA PÚBLICA (la consume la web sin login, ver
+-- app/routes/noticias.py y el CORS para GET en app/__init__.py). La imagen
+-- se guarda en disco bajo Config.FILES_DIR, igual que estudio_colega_modelo
+-- y cv. "categoria" es texto libre autocompletable, mismo criterio que
+-- Faq.categoria (sin ABM separado).
+CREATE TABLE public.noticia (
+	id serial4 NOT NULL,
+	titulo varchar(255) NOT NULL,
+	descripcion text NOT NULL,
+	cuerpo text NOT NULL,
+	categoria varchar(150) NOT NULL,
+	fecha date NOT NULL,
+	imagen_nombre_archivo varchar(255) NULL,
+	imagen_ruta varchar(500) NULL,
+	creado_por_id int4 NULL,
+	actualizado_por_id int4 NULL,
+	created_at timestamptz DEFAULT CURRENT_TIMESTAMP NULL,
+	updated_at timestamptz DEFAULT CURRENT_TIMESTAMP NULL,
+	CONSTRAINT noticia_pkey PRIMARY KEY (id),
+	CONSTRAINT noticia_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL,
+	CONSTRAINT noticia_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL
+);
 
 
 -- public.nomenclador / autorizador / obra_social* definition

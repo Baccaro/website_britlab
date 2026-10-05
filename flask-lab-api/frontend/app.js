@@ -221,6 +221,11 @@ const app = createApp({
     // la ve SuperAdmin (isSuperAdmin), ni siquiera un Administrador de este
     // módulo, ver periodosConAuditoria más abajo.
     const puedeEscribirTarifarios = computed(() => rolEnModulo('obras_sociales') === 'administrador');
+    // Puede crear/editar/eliminar noticias (módulo Web BritLab). Las
+    // postulaciones (CV) de Trabajá con Nosotros son de sólo lectura para
+    // todo el mundo con acceso al módulo 'web' (el alta la hace cualquier
+    // visitante de la web, sin login), así que no necesitan su propio check.
+    const puedeEscribirWeb = computed(() => rolEnModulo('web') === 'administrador');
 
     const misPermisos = computed(() => (currentUser.value && currentUser.value.permisos) || {});
     const pantallaPermitida = (key) => {
@@ -1041,11 +1046,169 @@ const app = createApp({
       'obras_sociales', 'obra_social_form', 'tarifarios', 'tarifario_form', 'nomencladores', 'autorizadores',
     ];
     const obrasSocialesDropdownActive = computed(() => VISTAS_DROPDOWN_OBRAS_SOCIALES.includes(currentView.value));
+    // El nav "Web BritLab" agrupa Trabajá con Nosotros (CV) y Noticias.
+    const VISTAS_DROPDOWN_WEB_BRITLAB = ['web_britlab', 'noticias', 'noticia_form'];
+    const webBritlabDropdownActive = computed(() => VISTAS_DROPDOWN_WEB_BRITLAB.includes(currentView.value));
     // "Web BritLab": pantalla propia, todavía sin contenido funcional
     // (placeholder explícito, no simula datos).
     const switchToPlaceholder = (view) => {
       if (!pantallaPermitida(view)) return;
       currentView.value = view;
+    };
+
+    // --- Web BritLab > Trabajá con Nosotros: postulaciones (CV) recibidas
+    // desde el formulario público, sólo lectura/descarga desde acá (el alta
+    // la hace cualquier visitante de la web, sin login, ver app/routes/cv.py) ---
+    const cvs = ref([]);
+    const cvsLoading = ref(false);
+    const cvsPagination = ref({ page: 1, limit: 25, total: 0, total_pages: 1 });
+
+    const fetchCvs = async (page = 1) => {
+      cvsLoading.value = true;
+      try {
+        const res = await axios.get(`${API_BASE}/cv`, { params: { page, limit: cvsPagination.value.limit } });
+        cvs.value = res.data.items;
+        cvsPagination.value = { page: res.data.page, limit: res.data.limit, total: res.data.total, total_pages: res.data.total_pages };
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudieron cargar las postulaciones'), 'danger');
+      } finally {
+        cvsLoading.value = false;
+      }
+    };
+    const cambiarPaginaCvs = (page) => { if (page >= 1 && page <= cvsPagination.value.total_pages) fetchCvs(page); };
+
+    const switchToWebBritlab = () => {
+      if (!pantallaPermitida('web_britlab')) return;
+      currentView.value = 'web_britlab';
+      fetchCvs(1);
+    };
+
+    // Mismo patrón que abrirModelo (estudio_colega_modelo): pide el PDF como
+    // blob vía axios (manda el JWT) y lo abre en una pestaña ya abierta antes
+    // del await, para que el browser no bloquee la ventana emergente.
+    const abrirCv = async (cv) => {
+      const nuevaVentana = window.open('', '_blank');
+      try {
+        const res = await axios.get(`${API_BASE}/cv/${cv.id}/descargar`, { responseType: 'blob' });
+        const blobUrl = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+        if (nuevaVentana) nuevaVentana.location.href = blobUrl;
+        else window.open(blobUrl, '_blank');
+      } catch (err) {
+        if (nuevaVentana) nuevaVentana.close();
+        showAlert(apiErrorMessage(err, 'No se pudo abrir el CV'), 'danger');
+      }
+    };
+
+    // --- Web BritLab > Noticias: alta/edición acá, lectura pública en la   --
+    // --- web sin login (ver app/routes/noticias.py). La imagen se manda   --
+    // --- como multipart/form-data (FormData), igual que el resto de los   --
+    // --- adjuntos de este proyecto; axios le arma el Content-Type solo.   --
+    const noticias = ref([]);
+    const noticiasLoading = ref(false);
+    const noticiasPagination = ref({ page: 1, limit: 25, total: 0, total_pages: 1 });
+    const noticiasCategoriasDisponibles = ref([]);
+    const noticiaForm = ref({});
+    const noticiaModalMode = ref('create');
+    const noticiaGuardando = ref(false);
+    const noticiaImagenArchivo = ref(null);
+    const noticiaImagenPreviewUrl = ref('');
+
+    const fetchNoticiasCategorias = async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/noticias/categorias`);
+        noticiasCategoriasDisponibles.value = res.data;
+      } catch (err) {
+        noticiasCategoriasDisponibles.value = [];
+      }
+    };
+
+    const fetchNoticias = async (page = 1) => {
+      noticiasLoading.value = true;
+      try {
+        const res = await axios.get(`${API_BASE}/noticias`, { params: { page, limit: noticiasPagination.value.limit } });
+        noticias.value = res.data.items;
+        noticiasPagination.value = { page: res.data.page, limit: res.data.limit, total: res.data.total, total_pages: res.data.total_pages };
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudieron cargar las noticias'), 'danger');
+      } finally {
+        noticiasLoading.value = false;
+      }
+    };
+    const cambiarPaginaNoticias = (page) => { if (page >= 1 && page <= noticiasPagination.value.total_pages) fetchNoticias(page); };
+
+    const switchToNoticias = () => {
+      if (!pantallaPermitida('web_britlab')) return;
+      currentView.value = 'noticias';
+      fetchNoticias(1);
+    };
+
+    const abrirNoticiaForm = async (mode, item = null) => {
+      if (!pantallaPermitida('web_britlab')) return;
+      noticiaModalMode.value = mode;
+      noticiaImagenArchivo.value = null;
+      if (mode === 'edit' && item) {
+        try {
+          const res = await axios.get(`${API_BASE}/noticias/${item.id}`);
+          noticiaForm.value = { ...res.data };
+          noticiaImagenPreviewUrl.value = res.data.tiene_imagen ? `${API_BASE}/noticias/${item.id}/imagen` : '';
+        } catch (err) {
+          showAlert(apiErrorMessage(err, 'No se pudo cargar la noticia'), 'danger');
+          return;
+        }
+      } else {
+        noticiaForm.value = { titulo: '', descripcion: '', cuerpo: '', categoria: '', fecha: new Date().toISOString().slice(0, 10) };
+        noticiaImagenPreviewUrl.value = '';
+      }
+      fetchNoticiasCategorias();
+      currentView.value = 'noticia_form';
+    };
+
+    const onNoticiaImagenChange = (event) => {
+      const file = event.target.files[0];
+      noticiaImagenArchivo.value = file || null;
+      if (file) noticiaImagenPreviewUrl.value = URL.createObjectURL(file);
+    };
+
+    const cancelarNoticiaForm = () => { currentView.value = 'noticias'; };
+
+    const guardarNoticia = async (event) => {
+      const errorValidacion = validarFormulario(event?.target);
+      if (errorValidacion) { showAlert(errorValidacion, 'danger'); return; }
+      noticiaGuardando.value = true;
+      try {
+        const fd = new FormData();
+        fd.append('titulo', noticiaForm.value.titulo);
+        fd.append('descripcion', noticiaForm.value.descripcion);
+        fd.append('cuerpo', noticiaForm.value.cuerpo || '');
+        fd.append('categoria', noticiaForm.value.categoria);
+        fd.append('fecha', noticiaForm.value.fecha);
+        if (noticiaImagenArchivo.value) fd.append('imagen', noticiaImagenArchivo.value);
+
+        if (noticiaModalMode.value === 'create') {
+          await axios.post(`${API_BASE}/noticias`, fd);
+          showAlert('Noticia creada correctamente');
+        } else {
+          await axios.put(`${API_BASE}/noticias/${noticiaForm.value.id}`, fd);
+          showAlert('Noticia actualizada correctamente');
+        }
+        currentView.value = 'noticias';
+        fetchNoticias(noticiasPagination.value.page);
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo guardar la noticia'), 'danger');
+      } finally {
+        noticiaGuardando.value = false;
+      }
+    };
+
+    const eliminarNoticia = async (item) => {
+      if (!confirm(`¿Eliminar la noticia "${item.titulo}"?`)) return;
+      try {
+        await axios.delete(`${API_BASE}/noticias/${item.id}`);
+        showAlert('Noticia eliminada correctamente');
+        fetchNoticias(noticiasPagination.value.page);
+      } catch (err) {
+        showAlert(apiErrorMessage(err, 'No se pudo eliminar la noticia'), 'danger');
+      }
     };
 
     // --- Módulo FAQ (Preguntas Frecuentes) ---
@@ -3145,6 +3308,28 @@ const app = createApp({
       switchCrudEntity,
       switchToIndicaciones,
       switchToPlaceholder,
+      cvs,
+      cvsLoading,
+      cvsPagination,
+      cambiarPaginaCvs,
+      switchToWebBritlab,
+      abrirCv,
+      webBritlabDropdownActive,
+      noticias,
+      noticiasLoading,
+      noticiasPagination,
+      noticiasCategoriasDisponibles,
+      noticiaForm,
+      noticiaModalMode,
+      noticiaGuardando,
+      noticiaImagenPreviewUrl,
+      cambiarPaginaNoticias,
+      switchToNoticias,
+      abrirNoticiaForm,
+      onNoticiaImagenChange,
+      cancelarNoticiaForm,
+      guardarNoticia,
+      eliminarNoticia,
       puedeEscribirFaq,
       ESTADOS_FAQ,
       faqItems,
@@ -3171,6 +3356,7 @@ const app = createApp({
       guardarFaq,
       eliminarFaq,
       puedeEscribirTarifarios,
+      puedeEscribirWeb,
       TIPOS_TARIFARIO,
       TIPOS_TARIFARIO_LABEL,
       TIPOS_RELACIONADO_TARIFARIO,

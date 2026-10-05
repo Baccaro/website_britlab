@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict 7aDz1iwPdClkLz87Ctq1GDFLkjJudOxP9dxbsHw51g1Z4o2od1Xf1QcXX9PxkUA
+\restrict wTh2Cdz7FwaxXYSiWeFBkpbrk3B6P1iZlI93thEwZkieBnJof9rB5ZAKd2VPw7a
 
 -- Dumped from database version 15.18
 -- Dumped by pg_dump version 15.18
@@ -207,6 +207,41 @@ CREATE SEQUENCE public.conservacion_id_seq
 --
 
 ALTER SEQUENCE public.conservacion_id_seq OWNED BY public.conservacion.id;
+
+
+--
+-- Name: cv; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.cv (
+    id integer NOT NULL,
+    nombre_completo character varying(255) NOT NULL,
+    email character varying(255) NOT NULL,
+    nombre_archivo character varying(255) NOT NULL,
+    ruta_archivo character varying(500) NOT NULL,
+    tamanio_bytes integer NOT NULL,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+--
+-- Name: cv_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.cv_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: cv_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.cv_id_seq OWNED BY public.cv.id;
 
 
 --
@@ -588,6 +623,46 @@ CREATE SEQUENCE public.nomenclador_id_seq
 --
 
 ALTER SEQUENCE public.nomenclador_id_seq OWNED BY public.nomenclador.id;
+
+
+--
+-- Name: noticia; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.noticia (
+    id integer NOT NULL,
+    titulo character varying(255) NOT NULL,
+    descripcion text NOT NULL,
+    cuerpo text NOT NULL,
+    categoria character varying(150) NOT NULL,
+    fecha date NOT NULL,
+    imagen_nombre_archivo character varying(255),
+    imagen_ruta character varying(500),
+    creado_por_id integer,
+    actualizado_por_id integer,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+--
+-- Name: noticia_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.noticia_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: noticia_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.noticia_id_seq OWNED BY public.noticia.id;
 
 
 --
@@ -1312,6 +1387,13 @@ ALTER TABLE ONLY public.conservacion ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
+-- Name: cv id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cv ALTER COLUMN id SET DEFAULT nextval('public.cv_id_seq'::regclass);
+
+
+--
 -- Name: estudio id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1379,6 +1461,13 @@ ALTER TABLE ONLY public.muestra ALTER COLUMN id SET DEFAULT nextval('public.mues
 --
 
 ALTER TABLE ONLY public.nomenclador ALTER COLUMN id SET DEFAULT nextval('public.nomenclador_id_seq'::regclass);
+
+
+--
+-- Name: noticia id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.noticia ALTER COLUMN id SET DEFAULT nextval('public.noticia_id_seq'::regclass);
 
 
 --
@@ -1555,6 +1644,14 @@ COPY public.conservacion (id, nombre) FROM stdin;
 
 
 --
+-- Data for Name: cv; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.cv (id, nombre_completo, email, nombre_archivo, ruta_archivo, tamanio_bytes, created_at) FROM stdin;
+\.
+
+
+--
 -- Data for Name: estudio; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -1595,6 +1692,14 @@ COPY public.estudio_colega_muestra_alternativa (id, id_estudio_colega_muestra, i
 
 
 --
+-- Data for Name: faq; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.faq (id, pregunta, respuesta, categoria, disponible_web, disponible_ia, estado, creado_por_id, actualizado_por_id, created_at, updated_at) FROM stdin;
+\.
+
+
+--
 -- Data for Name: metodo; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -1623,6 +1728,14 @@ COPY public.muestra (id, nombre, observacion) FROM stdin;
 --
 
 COPY public.nomenclador (id, nombre, tipo, version_o_fecha, vigencia, link, observacion, estado, creado_por_id, actualizado_por_id, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: noticia; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.noticia (id, titulo, descripcion, cuerpo, categoria, fecha, imagen_nombre_archivo, imagen_ruta, creado_por_id, actualizado_por_id, created_at, updated_at) FROM stdin;
 \.
 
 
@@ -1687,6 +1800,14 @@ COPY public.obra_social_plan (id, id_obra_social, nombre, codigo_datatech_gravad
 --
 
 COPY public.password_reset_token (id, id_usuario, token, expira, usado, created_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: prioridad_envio; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.prioridad_envio (id, nombre) FROM stdin;
 \.
 
 
@@ -1812,6 +1933,13 @@ SELECT pg_catalog.setval('public.conservacion_id_seq', 1, false);
 
 
 --
+-- Name: cv_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.cv_id_seq', 1, false);
+
+
+--
 -- Name: estudio_colega_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
@@ -1879,6 +2007,13 @@ SELECT pg_catalog.setval('public.muestra_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('public.nomenclador_id_seq', 1, false);
+
+
+--
+-- Name: noticia_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.noticia_id_seq', 1, false);
 
 
 --
@@ -2079,6 +2214,14 @@ ALTER TABLE ONLY public.conservacion
 
 
 --
+-- Name: cv cv_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cv
+    ADD CONSTRAINT cv_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: estudio estudio_codigo_hexalis_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2188,6 +2331,14 @@ ALTER TABLE ONLY public.muestra
 
 ALTER TABLE ONLY public.nomenclador
     ADD CONSTRAINT nomenclador_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: noticia noticia_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.noticia
+    ADD CONSTRAINT noticia_pkey PRIMARY KEY (id);
 
 
 --
@@ -2790,6 +2941,22 @@ ALTER TABLE ONLY public.nomenclador
 
 
 --
+-- Name: noticia noticia_actualizado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.noticia
+    ADD CONSTRAINT noticia_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL;
+
+
+--
+-- Name: noticia noticia_creado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.noticia
+    ADD CONSTRAINT noticia_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL;
+
+
+--
 -- Name: obra_social obra_social_actualizado_por_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2977,5 +3144,5 @@ ALTER TABLE ONLY public.valor_estudio_sector
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 7aDz1iwPdClkLz87Ctq1GDFLkjJudOxP9dxbsHw51g1Z4o2od1Xf1QcXX9PxkUA
+\unrestrict wTh2Cdz7FwaxXYSiWeFBkpbrk3B6P1iZlI93thEwZkieBnJof9rB5ZAKd2VPw7a
 

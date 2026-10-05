@@ -931,11 +931,25 @@
                   </li>
                 </ul>
               </li>
-              <li class="nav-item" v-if="pantallaPermitida('web_britlab')">
-                <button :class="['nav-btn', currentView === 'web_britlab' ? 'active' : '']"
-                  @click="switchToPlaceholder('web_britlab')" type="button">
+              <li class="nav-item dropdown hover-dropdown" v-if="pantallaPermitida('web_britlab')">
+                <button :class="['nav-btn dropdown-toggle', webBritlabDropdownActive ? 'active' : '']" type="button">
                   Web BritLab
                 </button>
+                <ul class="dropdown-menu shadow-sm">
+                  <li>
+                    <button class="dropdown-item" :class="currentView === 'web_britlab' ? 'active' : ''"
+                      @click="switchToWebBritlab" type="button">
+                      Trabajá con Nosotros
+                    </button>
+                  </li>
+                  <li>
+                    <button class="dropdown-item"
+                      :class="(currentView === 'noticias' || currentView === 'noticia_form') ? 'active' : ''"
+                      @click="switchToNoticias" type="button">
+                      Noticias
+                    </button>
+                  </li>
+                </ul>
               </li>
               <li class="nav-item" v-if="pantallaPermitida('faq')">
                 <button :class="['nav-btn', (currentView === 'faq' || currentView === 'faq_form') ? 'active' : '']"
@@ -1832,19 +1846,244 @@
           </div>
 
           <!-- ========================================================= -->
-          <!-- VISTA: Web BritLab                                           -->
-          <!-- Todavía sin contenido funcional: placeholder honesto, no     -->
-          <!-- simula datos que no existen.                                 -->
+          <!-- VISTA: Web BritLab > Trabajá con Nosotros                    -->
+          <!-- Postulaciones (CV) recibidas desde el formulario público de  -->
+          <!-- la web; acá sólo se listan y se abren, el alta la hace      -->
+          <!-- cualquier visitante sin login (ver app/routes/cv.py).       -->
           <!-- ========================================================= -->
           <div v-if="currentView === 'web_britlab'">
-            <h4 class="mb-4 text-primary font-bold text-xl">
-              <i class="bi bi-globe me-2"></i>Web BritLab
-            </h4>
-            <div
-              class="bg-white rounded-xl shadow-sm border border-outline-variant p-5 text-center text-on-surface-variant">
-              <i class="bi bi-cone-striped text-4xl d-block mb-2 text-tertiary-fixed-dim"></i>
-              <span class="font-medium text-sm">Esta sección todavía no tiene contenido cargado.</span>
+            <h4 class="mb-0 text-primary font-bold text-xl">Web BritLab</h4>
+            <p class="text-on-surface-variant text-sm mb-3">Trabajá con Nosotros</p>
+
+            <div class="table-container-fixed mb-4">
+              <div class="overflow-auto">
+                <table class="table table-hover table-auto-layout">
+                  <thead class="table-dark">
+                    <tr>
+                      <th>Nombre y Apellido</th>
+                      <th>Correo electrónico</th>
+                      <th>Fecha de postulación</th>
+                      <th class="text-center">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-if="cvsLoading">
+                      <td class="text-center py-5" colspan="4">
+                        <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
+                      </td>
+                    </tr>
+                    <tr v-else-if="!cvs.length">
+                      <td class="text-center text-on-surface-variant py-5" colspan="4">Todavía no se recibió ninguna
+                        postulación.</td>
+                    </tr>
+                    <tr :key="cv.id" v-else v-for="cv in cvs">
+                      <td class="font-semibold text-primary">{{ cv.nombre_completo }}</td>
+                      <td>{{ cv.email }}</td>
+                      <td>{{ cv.created_at ? new Date(cv.created_at).toLocaleString() : '-' }}</td>
+                      <td class="text-center">
+                        <button @click="abrirCv(cv)" class="btn btn-xs btn-outline-secondary" title="Ver CV">
+                          <i class="bi bi-file-earmark-pdf me-1"></i>Ver CV
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
+
+            <nav class="d-flex justify-content-end align-items-center bg-white p-3 rounded-lg border border-outline-variant shadow-sm mb-4"
+              v-if="cvsPagination.total_pages > 1">
+              <ul class="pagination pagination-sm mb-0">
+                <li :class="['page-item', cvsPagination.page === 1 ? 'disabled' : '']">
+                  <button @click="cambiarPaginaCvs(cvsPagination.page - 1)"
+                    class="page-link text-primary border-outline-variant">Anterior</button>
+                </li>
+                <li :class="['page-item', cvsPagination.page === cvsPagination.total_pages ? 'disabled' : '']">
+                  <button @click="cambiarPaginaCvs(cvsPagination.page + 1)"
+                    class="page-link text-primary border-outline-variant">Siguiente</button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+
+          <!-- ========================================================= -->
+          <!-- VISTA: Web BritLab > Noticias                                -->
+          <!-- Alta/edición acá; la lee la web pública sin login (ver      -->
+          <!-- app/routes/noticias.py).                                    -->
+          <!-- ========================================================= -->
+          <div v-if="currentView === 'noticias'">
+            <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
+              <div>
+                <h4 class="mb-0 text-primary font-bold text-xl">Web BritLab</h4>
+                <p class="text-on-surface-variant text-sm mb-0">Noticias</p>
+              </div>
+              <button @click="abrirNoticiaForm('create')" v-if="puedeEscribirWeb"
+                class="btn btn-primary bg-primary border-primary shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors rounded-lg px-3 py-1.5 text-sm flex-shrink-0">
+                <i class="bi bi-plus-lg me-1"></i> Nueva noticia
+              </button>
+            </div>
+
+            <div class="table-container-fixed mb-4">
+              <div class="overflow-auto">
+                <table class="table table-hover table-auto-layout">
+                  <thead class="table-dark">
+                    <tr>
+                      <th>Título</th>
+                      <th>Categoría</th>
+                      <th>Fecha</th>
+                      <th class="text-center">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-if="noticiasLoading">
+                      <td class="text-center py-5" colspan="4">
+                        <div class="spinner-border spinner-border-sm text-primary-container" role="status"></div>
+                      </td>
+                    </tr>
+                    <tr v-else-if="!noticias.length">
+                      <td class="text-center text-on-surface-variant py-5" colspan="4">Todavía no se cargó ninguna
+                        noticia.</td>
+                    </tr>
+                    <tr :key="n.id" v-else v-for="n in noticias">
+                      <td class="font-semibold text-primary">{{ n.titulo }}</td>
+                      <td><span class="badge rounded-pill badge-xs bg-tertiary">{{ n.categoria }}</span></td>
+                      <td>{{ n.fecha ? new Date(n.fecha + 'T00:00:00').toLocaleDateString() : '-' }}</td>
+                      <td class="text-center">
+                        <div class="d-flex justify-content-center gap-1" v-if="puedeEscribirWeb">
+                          <button @click="abrirNoticiaForm('edit', n)" class="btn btn-xs btn-outline-secondary"
+                            title="Editar"><i class="bi bi-pencil"></i></button>
+                          <button @click="eliminarNoticia(n)" class="btn btn-xs btn-outline-danger" title="Eliminar"><i
+                              class="bi bi-trash"></i></button>
+                        </div>
+                        <span class="text-britlab-gray" v-else>&mdash;</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <nav class="d-flex justify-content-end align-items-center bg-white p-3 rounded-lg border border-outline-variant shadow-sm mb-4"
+              v-if="noticiasPagination.total_pages > 1">
+              <ul class="pagination pagination-sm mb-0">
+                <li :class="['page-item', noticiasPagination.page === 1 ? 'disabled' : '']">
+                  <button @click="cambiarPaginaNoticias(noticiasPagination.page - 1)"
+                    class="page-link text-primary border-outline-variant">Anterior</button>
+                </li>
+                <li :class="['page-item', noticiasPagination.page === noticiasPagination.total_pages ? 'disabled' : '']">
+                  <button @click="cambiarPaginaNoticias(noticiasPagination.page + 1)"
+                    class="page-link text-primary border-outline-variant">Siguiente</button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+
+          <!-- ========================================================= -->
+          <!-- VISTA: ALTA / EDICIÓN DE NOTICIA (pantalla completa, mismo  -->
+          <!-- criterio que Preguntas Frecuentes)                          -->
+          <!-- ========================================================= -->
+          <div v-if="currentView === 'noticia_form'">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="mb-0 text-primary font-bold text-xl">{{ noticiaModalMode === 'create' ? 'Nueva noticia' :
+                'Editar noticia' }}</h4>
+              <button @click="cancelarNoticiaForm"
+                class="btn btn-sm btn-light border-outline-variant text-on-surface rounded-lg px-3" type="button">
+                <i class="bi bi-arrow-left me-1"></i>Volver
+              </button>
+            </div>
+
+            <form @submit.prevent="guardarNoticia($event)" novalidate>
+              <div class="border border-outline-variant rounded-lg mb-3 overflow-hidden">
+                <div class="section-toggle section-toggle-open p-3">
+                  <span class="d-block font-bold text-primary">Identificación</span>
+                </div>
+                <div class="section-content p-3">
+                  <div class="row g-3">
+                    <div class="col-md-12">
+                      <label class="form-label text-xs font-semibold text-on-surface mb-1">Título *</label>
+                      <input class="form-control form-control-sm rounded-lg border-outline-variant" required
+                        type="text" v-model="noticiaForm.titulo" />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label text-xs font-semibold text-on-surface mb-1">Categoría *</label>
+                      <input list="dl_noticia_categoria"
+                        class="form-control form-control-sm rounded-lg border-outline-variant"
+                        placeholder="Escribí para buscar o creá una nueva..." required type="text"
+                        v-model="noticiaForm.categoria" />
+                      <datalist id="dl_noticia_categoria">
+                        <option :key="c" :value="c" v-for="c in noticiasCategoriasDisponibles"></option>
+                      </datalist>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label text-xs font-semibold text-on-surface mb-1">Fecha *</label>
+                      <input class="form-control form-control-sm rounded-lg border-outline-variant" required
+                        type="date" v-model="noticiaForm.fecha" />
+                    </div>
+                    <div class="col-md-12">
+                      <label class="form-label text-xs font-semibold text-on-surface mb-1">Descripción *</label>
+                      <textarea class="form-control form-control-sm rounded-lg border-outline-variant" required
+                        rows="2" v-model="noticiaForm.descripcion"></textarea>
+                      <div class="text-xs text-britlab-gray mt-1">Resumen corto que se muestra en el listado de
+                        noticias de la web.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border border-outline-variant rounded-lg mb-3 overflow-hidden">
+                <div class="section-toggle section-toggle-open p-3">
+                  <span class="d-block font-bold text-primary">Imagen</span>
+                </div>
+                <div class="section-content p-3">
+                  <img :src="noticiaImagenPreviewUrl" class="rounded-lg border border-outline-variant mb-2"
+                    style="max-height: 180px;" v-if="noticiaImagenPreviewUrl" />
+                  <input accept=".jpg,.jpeg,.png,.webp"
+                    class="form-control form-control-sm rounded-lg border-outline-variant" type="file"
+                    @change="onNoticiaImagenChange" />
+                  <div class="text-xs text-britlab-gray mt-1">JPG, PNG o WEBP. Si editás una noticia y no elegís un
+                    archivo nuevo, se conserva la imagen actual.</div>
+                </div>
+              </div>
+
+              <div class="border border-outline-variant rounded-lg mb-3 overflow-hidden">
+                <div class="section-toggle section-toggle-open p-3">
+                  <span class="d-block font-bold text-primary">Cuerpo</span>
+                </div>
+                <div class="section-content p-3">
+                  <rich-editor links placeholder="Escribí el contenido completo de la noticia..."
+                    v-model="noticiaForm.cuerpo"></rich-editor>
+                </div>
+              </div>
+
+              <div class="border border-outline-variant rounded-lg mb-3 overflow-hidden" v-if="noticiaModalMode === 'edit'">
+                <div class="section-toggle section-toggle-open p-3">
+                  <span class="d-block font-bold text-primary">Auditoría</span>
+                </div>
+                <div class="section-content p-3">
+                  <dl class="mb-0 text-xs row">
+                    <dt class="col-md-3 text-on-surface-variant">Usuario de creación</dt>
+                    <dd class="col-md-3">{{ noticiaForm.creado_por || '-' }}</dd>
+                    <dt class="col-md-3 text-on-surface-variant">Fecha de creación</dt>
+                    <dd class="col-md-3">{{ noticiaForm.created_at ? new Date(noticiaForm.created_at).toLocaleString()
+                      : '-' }}</dd>
+                    <dt class="col-md-3 text-on-surface-variant">Usuario de última edición</dt>
+                    <dd class="col-md-3">{{ noticiaForm.actualizado_por || '-' }}</dd>
+                    <dt class="col-md-3 text-on-surface-variant">Fecha de última edición</dt>
+                    <dd class="col-md-3">{{ noticiaForm.updated_at ? new
+                      Date(noticiaForm.updated_at).toLocaleString() : '-' }}</dd>
+                  </dl>
+                </div>
+              </div>
+
+              <div class="mt-4 text-end pt-3 border-t border-outline-variant">
+                <button @click="cancelarNoticiaForm"
+                  class="btn btn-sm btn-light border-outline-variant text-on-surface me-2 rounded-lg px-3"
+                  type="button">Cancelar</button>
+                <button :disabled="noticiaGuardando"
+                  class="btn btn-sm btn-primary bg-primary border-primary shadow-sm rounded-lg px-3" type="submit">{{
+                  noticiaGuardando ? 'Guardando...' : 'Guardar' }}</button>
+              </div>
+            </form>
           </div>
 
           <!-- ========================================================= -->

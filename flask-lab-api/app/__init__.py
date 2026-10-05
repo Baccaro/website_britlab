@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from app.config import Config
 from app.database import db
 
@@ -7,6 +8,18 @@ def create_app():
     app.config.from_object(Config)
 
     db.init_app(app)
+
+    # CORS SOLO donde la web pública (otro dominio, ver Config.CORS_ORIGINS)
+    # necesita pegarle a la API sin login: el alta de CV (POST /api/cv) y la
+    # lectura de noticias (GET /api/noticias, para la lista, el detalle y la
+    # imagen de cada una). El resto de la API no lo necesita: el panel admin
+    # siempre llega vía el mismo origen (proxy de nginx), y todo lo demás
+    # exige JWT igual.
+    cors_origins = [o.strip() for o in app.config['CORS_ORIGINS'].split(',') if o.strip()]
+    CORS(app, resources={
+        r'^/api/cv$': {'origins': cors_origins, 'methods': ['POST']},
+        r'^/api/noticias(/.*)?$': {'origins': cors_origins, 'methods': ['GET']},
+    })
 
     # Registrar Blueprints
     from app.routes.colegas import bp as colegas_bp
@@ -27,6 +40,8 @@ def create_app():
     from app.routes.nomencladores import bp as nomencladores_bp
     from app.routes.autorizadores import bp as autorizadores_bp
     from app.routes.obras_sociales import bp as obras_sociales_bp
+    from app.routes.cv import bp as cv_bp
+    from app.routes.noticias import bp as noticias_bp
 
     app.register_blueprint(colegas_bp)
     app.register_blueprint(estudios_bp)
@@ -47,5 +62,7 @@ def create_app():
     app.register_blueprint(nomencladores_bp)
     app.register_blueprint(autorizadores_bp)
     app.register_blueprint(obras_sociales_bp)
+    app.register_blueprint(cv_bp)
+    app.register_blueprint(noticias_bp)
 
     return app

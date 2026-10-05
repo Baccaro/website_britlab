@@ -28,7 +28,7 @@ services:
     container_name: flask_lab_api
     restart: always
     environment:
-      - DATABASE_URL=postgresql://flask_user:flask_password@db:5432/lab_db
+      - DATABASE_URL=postgresql+psycopg2://flask_user:flask_password@db:5432/lab_db
       # Fija la clave de firma de los JWT de sesión: sin esto, cada
       # reinicio del contenedor generaría una clave al azar e invalidaría
       # todas las sesiones activas.

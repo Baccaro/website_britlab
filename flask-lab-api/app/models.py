@@ -292,6 +292,51 @@ class EstudioColegaModelo(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
+class Cv(db.Model):
+    """Postulación recibida desde "Trabajá con Nosotros" en la web pública
+    (alta sin login, ver app/routes/cv.py). El PDF se guarda en disco igual
+    que estudio_colega_modelo: bajo Config.FILES_DIR, 'ruta_archivo' guarda
+    el nombre de archivo, no la ruta absoluta."""
+    __tablename__ = 'cv'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre_completo = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), nullable=False)
+    nombre_archivo = db.Column(db.String(255), nullable=False)
+    ruta_archivo = db.Column(db.String(500), nullable=False)
+    tamanio_bytes = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class Noticia(db.Model):
+    """Noticia de "Web BritLab" (módulo 'web'): alta/edición sólo desde el
+    panel, pero de lectura pública (la consume la web pública sin login, ver
+    app/routes/noticias.py y el CORS para GET en app/__init__.py). La imagen
+    se guarda en disco igual que estudio_colega_modelo/cv: bajo
+    Config.FILES_DIR, 'imagen_ruta' guarda el nombre de archivo, no la ruta
+    absoluta. 'categoria' es texto libre autocompletable, mismo criterio que
+    Faq.categoria (sin ABM separado)."""
+    __tablename__ = 'noticia'
+    __table_args__ = {'schema': 'public'}
+
+    id = db.Column(db.Integer, primary_key=True)
+    titulo = db.Column(db.String(255), nullable=False)
+    descripcion = db.Column(db.Text, nullable=False)
+    cuerpo = db.Column(db.Text, nullable=False)
+    categoria = db.Column(db.String(150), nullable=False)
+    fecha = db.Column(db.Date, nullable=False)
+    imagen_nombre_archivo = db.Column(db.String(255), nullable=True)
+    imagen_ruta = db.Column(db.String(500), nullable=True)
+    creado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    actualizado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    creado_por = db.relationship('Usuario', foreign_keys=[creado_por_id])
+    actualizado_por = db.relationship('Usuario', foreign_keys=[actualizado_por_id])
+
+
 class Usuario(db.Model):
     """Cuenta de acceso al sistema. 'admin' tiene acceso total (incluye este
     panel de usuarios); 'user' es de sólo lectura, acotado a las pantallas y
