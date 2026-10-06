@@ -23,11 +23,6 @@ const services = [
   },
 ]
 
-const news = [
-  { category: 'Innovación', image: '/new_1.png' },
-  { category: 'Salud', image: '/new_2.png' },
-  { category: 'Diagnóstico', image: '/new_3.png' },
-]
 </script>
 
 <template>
@@ -59,9 +54,5 @@ const news = [
     </section>
 
     <section class="w-full py-16"><div class="w-full h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden"><img alt="Laboratorio Sanatorio Británico" class="w-full h-full object-cover" src="/lab_horizontal.png"></div></section>
-    <section class="w-full max-w-6xl mx-auto px-6 md:px-12 py-16">
-      <h2 class="text-2xl md:text-3xl font-bold text-brit-teal mb-8">Artículos de expertos</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8"><article v-for="item in news" :key="item.category" class="flex flex-col"><div class="w-full h-48 bg-[#E5E5E5] relative mb-4 rounded-lg overflow-hidden"><img :src="item.image" :alt="`Artículo de ${item.category}`" class="w-full h-full object-cover"><span class="absolute bottom-3 left-3 bg-white text-brit-teal text-[10px] font-bold px-3 py-1 rounded-full shadow-sm">{{ item.category }}</span></div><span class="text-gray-400 text-xs mb-2 font-medium">Julio 28, 2026</span><h4 class="text-lg font-bold text-gray-700 mb-3 leading-snug">Estudios Genéticos de Nueva Generación.</h4><span class="text-brit-teal text-sm font-semibold">Leer más &gt;&gt;</span></article></div>
-    </section>
   </div>
 </template>

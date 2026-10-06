@@ -1,10 +1,77 @@
 <script setup>
 import { ref } from 'vue'
+import { API_BASE } from '@/config'
 
 const cvSent = ref(false)
+const cvSending = ref(false)
+const cvError = ref('')
+const cvForm = ref({ nombre_completo: '', email: '' })
+const cvArchivo = ref(null)
 
-function submitCv() {
-  cvSent.value = true
+function onCvArchivoChange(event) {
+  cvArchivo.value = event.target.files[0] || null
+}
+
+const diagnosticAreas = [
+  {
+    name: 'Bioquímica Clínica',
+    specialties: [
+      'Química sanguínea',
+      'Medio interno',
+      'Hematología',
+      'Endocrinología',
+      'Inmunología',
+      'Marcadores tumorales',
+      'Monitoreo terapéutico de drogas',
+      'Metabolismo',
+    ],
+  },
+  {
+    name: 'Microbiología',
+    specialties: [
+      'Bacteriología',
+      'Virología',
+      'Micología',
+      'Parasitología',
+      'Vigilancia epidemiológica institucional',
+    ],
+  },
+  {
+    name: 'Biología Molecular',
+    specialties: [
+      'Diagnóstico molecular de enfermedades infecciosas',
+      'Estudios de enfermedades genéticas',
+    ],
+  },
+]
+
+async function submitCv() {
+  cvError.value = ''
+  if (!cvArchivo.value) {
+    cvError.value = 'Adjuntá tu CV en PDF'
+    return
+  }
+  cvSending.value = true
+  try {
+    const formData = new FormData()
+    formData.append('nombre_completo', cvForm.value.nombre_completo)
+    formData.append('email', cvForm.value.email)
+    formData.append('archivo', cvArchivo.value)
+
+    const res = await fetch(`${API_BASE}/cv`, { method: 'POST', body: formData })
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) {
+      cvError.value = data.error || 'No se pudo enviar tu postulación. Probá de nuevo en unos minutos.'
+      return
+    }
+    cvSent.value = true
+    cvForm.value = { nombre_completo: '', email: '' }
+    cvArchivo.value = null
+  } catch (err) {
+    cvError.value = 'No se pudo enviar tu postulación. Probá de nuevo en unos minutos.'
+  } finally {
+    cvSending.value = false
+  }
 }
 </script>
 
@@ -22,33 +89,15 @@ function submitCv() {
         </div>
         <div class="bg-gray-50 border-l-4 border-brit-teal p-8 rounded-r-2xl">
           <h2 class="text-2xl font-bold text-gray-800 mb-6">Áreas diagnósticas</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-gray-600">
-            <span>Bioquímica Clínica</span><span>Química sanguínea</span>
-            <span>Medio interno</span><span>Hematología</span>
-            <span>Endocrinología</span><span>Inmunología</span>
-            <span>Marcadores tumorales</span><span>Monitoreo terapéutico de drogas</span>
-            <span>Metabolismo</span><span>Microbiología</span>
-            <span>Bacteriología</span><span>Virología</span>
-            <span>Micología</span><span>Parasitología</span>
-            <span>Vigilancia epidemiológica institucional</span><span>Biología Molecular</span>
-            <span>Diagnóstico molecular de enfermedades infecciosas</span><span>Estudios de enfermedades genéticas</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="britgen" class="institutional-anchor bg-gray-50 px-6 md:px-12 py-24">
-      <div class="max-w-6xl mx-auto grid gap-12 lg:grid-cols-[0.8fr_1.2fr] items-center">
-        <div class="bg-white rounded-2xl shadow-sm p-8 md:p-12">
-          <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / BritGEN</span>
-          <h2 class="text-4xl font-bold text-gray-800 mt-4 mb-6">Unidad de Medicina Genómica</h2>
-          <p class="text-gray-600 text-lg leading-relaxed mb-8">BritGen forma parte de la propuesta de servicios especializados de BritLab y constituye la Unidad de Medicina Genómica del Sanatorio Británico, orientada al estudio y aplicación de la genética y la genómica en diferentes áreas de la medicina.</p>
-          <a class="inline-flex items-center bg-brit-teal hover:bg-brit-teal-dark text-white font-bold px-6 py-3 rounded-full transition-colors" href="https://britgen.com.ar/" target="_blank" rel="noopener noreferrer">Conocé BritGen <span class="ml-2" aria-hidden="true">→</span></a>
-        </div>
-        <div>
-          <h3 class="text-2xl font-bold text-brit-teal mb-6">Principales áreas de trabajo</h3>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div v-for="area in ['Oncogenética', 'Neurogenética', 'Cardiogenética', 'Farmacogenética', 'Genómica reproductiva', 'Genómica del bienestar']" :key="area" class="bg-white border border-gray-100 p-5 rounded-xl shadow-sm text-gray-700 font-semibold">{{ area }}</div>
+          <div class="space-y-6">
+            <section v-for="area in diagnosticAreas" :key="area.name" class="border-t border-gray-200 pt-5 first:border-0 first:pt-0">
+              <h3 class="text-lg font-bold text-brit-teal mb-3">{{ area.name }}</h3>
+              <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-gray-600">
+                <li v-for="specialty in area.specialties" :key="specialty" class="flex gap-2">
+                  <span class="text-brit-teal" aria-hidden="true">•</span>{{ specialty }}
+                </li>
+              </ul>
+            </section>
           </div>
         </div>
       </div>
@@ -85,14 +134,37 @@ function submitCv() {
           <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mt-4 mb-6">Trabajá con Nosotros</h2>
           <p class="text-gray-600 text-lg leading-relaxed">Creemos en el desarrollo de equipos profesionales comprometidos con la ciencia, la innovación y la mejora continua.</p>
         </div>
-        <form class="bg-gray-50 rounded-2xl p-8 space-y-5" @submit.prevent="submitCv">
+        <form class="bg-gray-50 rounded-2xl p-8 space-y-5" @submit.prevent="submitCv" v-if="!cvSent">
           <h3 class="text-2xl font-bold text-gray-800">Enviá tu CV</h3>
-          <input class="w-full rounded-lg border-gray-200 px-4 py-3" required type="text" placeholder="Nombre y apellido">
-          <input class="w-full rounded-lg border-gray-200 px-4 py-3" required type="email" placeholder="Correo electrónico">
-          <input class="w-full rounded-lg border-gray-200 px-4 py-3" required type="file" accept=".pdf,.doc,.docx">
-          <button class="w-full bg-brit-teal hover:bg-brit-teal-dark text-white font-bold py-3 rounded-full transition-colors" type="submit">Enviar CV</button>
-          <p v-if="cvSent" class="text-brit-teal font-semibold" role="status">Gracias. Recibimos tu postulación.</p>
+          <input class="w-full rounded-lg border-gray-200 px-4 py-3" required type="text" placeholder="Nombre y apellido" v-model="cvForm.nombre_completo">
+          <input class="w-full rounded-lg border-gray-200 px-4 py-3" required type="email" placeholder="Correo electrónico" v-model="cvForm.email">
+          <input class="w-full rounded-lg border-gray-200 px-4 py-3" required type="file" accept=".pdf" @change="onCvArchivoChange">
+          <p class="text-xs text-gray-500">Sólo se aceptan archivos PDF.</p>
+          <p v-if="cvError" class="text-red-600 text-sm font-semibold" role="alert">{{ cvError }}</p>
+          <button class="w-full bg-brit-teal hover:bg-brit-teal-dark text-white font-bold py-3 rounded-full transition-colors disabled:opacity-60" type="submit" :disabled="cvSending">{{ cvSending ? 'Enviando...' : 'Enviar CV' }}</button>
         </form>
+        <div class="bg-gray-50 rounded-2xl p-8" v-else>
+          <p class="text-brit-teal font-semibold text-lg" role="status">Gracias. Recibimos tu postulación.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="britgen" class="institutional-anchor bg-gray-50 px-6 md:px-12 py-24">
+      <div class="max-w-6xl mx-auto grid gap-12 lg:grid-cols-[0.8fr_1.2fr] items-center">
+        <div class="bg-white rounded-2xl shadow-sm p-8 md:p-12">
+          <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / BritGEN</span>
+          <h2 class="mt-4 mb-6">
+            <img class="w-full max-w-[440px] h-auto" src="/images/britgen-logo.svg" alt="BritGen, Unidad de Medicina Genómica del Sanatorio Británico">
+          </h2>
+          <p class="text-gray-600 text-lg leading-relaxed mb-8">BritGen forma parte de la propuesta de servicios especializados de BritLab y constituye la Unidad de Medicina Genómica del Sanatorio Británico, orientada al estudio y aplicación de la genética y la genómica en diferentes áreas de la medicina.</p>
+          <a class="inline-flex items-center bg-brit-teal hover:bg-brit-teal-dark text-white font-bold px-6 py-3 rounded-full transition-colors" href="https://britgen.com.ar/" target="_blank" rel="noopener noreferrer">Conocé BritGen <span class="ml-2" aria-hidden="true">→</span></a>
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold text-brit-teal mb-6">Principales áreas de trabajo</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div v-for="area in ['Oncogenética', 'Neurogenética', 'Cardiogenética', 'Farmacogenética', 'Genómica reproductiva', 'Genómica del bienestar']" :key="area" class="bg-white border border-gray-100 p-5 rounded-xl shadow-sm text-gray-700 font-semibold">{{ area }}</div>
+          </div>
+        </div>
       </div>
     </section>
   </div>

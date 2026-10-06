@@ -32,9 +32,196 @@
       </div>
     </section>
     <section id="equipo" class="institutional-anchor w-full bg-gray-50 py-24 px-6 md:px-12">
-      <div class="max-w-4xl mx-auto text-center">
-        <h2 class="text-brit-teal text-4xl md:text-5xl font-extrabold uppercase tracking-tight mb-8">Nuestro equipo</h2>
-        <p class="text-gray-600 text-lg leading-relaxed">Profesionales especializados y un equipo capacitado trabajan de manera coordinada para acompañar cada proceso diagnóstico con responsabilidad y cercanía.</p>
+      <div class="max-w-6xl mx-auto">
+        <div class="max-w-4xl mx-auto text-center mb-16">
+          <h2 class="text-brit-teal text-4xl md:text-5xl font-extrabold uppercase tracking-tight mb-8">Nuestro equipo</h2>
+          <p class="text-gray-600 text-lg leading-relaxed">BritLab cuenta con un equipo multidisciplinario integrado por
+            profesionales de Bioquímica, Microbiología, Biotecnología, Biología Molecular y gestión, con formación y
+            actualización permanente.</p>
+        </div>
+
+        <!-- Dirección: los dos roles de conducción, destacados por separado del resto del equipo -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-10 max-w-2xl mx-auto mb-16 pb-16 border-b border-gray-200">
+          <div class="text-center">
+            <p class="text-brit-teal text-xs font-bold uppercase tracking-wider mb-2">Dirección General</p>
+            <p class="font-semibold text-gray-800">Sergio Chialina</p>
+            <p class="text-sm text-gray-500">Bioquímico. Doctor en Ciencias Biomédicas</p>
+          </div>
+          <div class="text-center">
+            <p class="text-brit-teal text-xs font-bold uppercase tracking-wider mb-2">Dirección Técnica</p>
+            <p class="font-semibold text-gray-800">Mariángel Rinaudo</p>
+            <p class="text-sm text-gray-500">Bioquímica. Especialista en Bacteriología Clínica</p>
+          </div>
+        </div>
+
+        <!-- Resto del equipo, agrupado por área -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
+          <div>
+            <h3 class="text-gray-800 font-bold uppercase tracking-wider text-sm mb-4 pb-2 border-b-2 border-brit-teal/20">
+              Bioquímica Clínica</h3>
+            <ul class="divide-y divide-gray-100">
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Carlos Panzeri</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímico</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Gustavo Valenzuela</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímico</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Clarisa Boffelli</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Marilina Di Loreto</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Lorena Capriotti</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Ana Paula Luna</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Marina Del Río</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Antonella Marchetti</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-gray-800 font-bold uppercase tracking-wider text-sm mb-4 pb-2 border-b-2 border-brit-teal/20">
+              Microbiología</h3>
+            <ul class="divide-y divide-gray-100">
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Mariángel Rinaudo</span>
+                <span class="text-gray-400 text-xs text-right">Bioquímica. Esp. en Bacteriología Clínica</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Miguel Dumas</span>
+                <span class="text-gray-400 text-xs text-right">Bioquímico. Esp. en Microbiología</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Rocío Magalí Bonifacio</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Carla Scipione</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Daiana Carolina Leguizamón</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Matilde Pallota</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Ernestina Feser</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Biotecnóloga</span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-gray-800 font-bold uppercase tracking-wider text-sm mb-4 pb-2 border-b-2 border-brit-teal/20">
+              Biología Molecular</h3>
+            <ul class="divide-y divide-gray-100">
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Sergio Chialina</span>
+                <span class="text-gray-400 text-xs text-right">Bioquímico. Doctor en Ciencias Biomédicas</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Soledad Mellado</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Biotecnóloga</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Laura Giro</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Biotecnóloga</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Ernestina Feser</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Biotecnóloga</span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-gray-800 font-bold uppercase tracking-wider text-sm mb-4 pb-2 border-b-2 border-brit-teal/20">
+              Guardia</h3>
+            <ul class="divide-y divide-gray-100">
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Ricardo Gasparri</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímico</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Nicolás Palma</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímico</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Macarena Mendiondo</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Carolina López Andreoli</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Fiorella Moro</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Lorena Capriotti</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Matilde Pallota</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Ernestina Zanello</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Valentina Traverso</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-gray-800 font-bold uppercase tracking-wider text-sm mb-4 pb-2 border-b-2 border-brit-teal/20">
+              Asesorías</h3>
+            <ul class="divide-y divide-gray-100">
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Abel Pallares</span>
+                <span class="text-gray-400 text-xs text-right">Bioquímico. Esp. en Gestión</span>
+              </li>
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Santiago Chialina</span>
+                <span class="text-gray-400 text-xs text-right">Lic. en Administración de Empresas</span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-gray-800 font-bold uppercase tracking-wider text-sm mb-4 pb-2 border-b-2 border-brit-teal/20">
+              Responsable de Calidad</h3>
+            <ul class="divide-y divide-gray-100">
+              <li class="flex items-baseline justify-between gap-6 py-2">
+                <span class="text-gray-700 text-sm">Celia Castellarin</span>
+                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -65,7 +252,7 @@
                   </div>
                 </div>
                 <div class="p-5">
-                  <h3 class="font-bold text-gray-800 mb-1">&nbsp;ITAES</h3>
+                  <h3 href="https://www.itaes.org.ar/Inicio.aspx" class="font-bold text-gray-800 mb-1">&nbsp;ITAES</h3>
                   <p class="text-xs text-gray-500">
                   <span class="block">Instituto Técnico de Establecimientos de la</span>
                   <span class="block">Salud</span>
@@ -85,7 +272,7 @@
                   </div>
                 </div>
                 <div class="p-5">
-                  <h3 class="font-bold text-gray-800 mb-1">PEEC</h3>
+                  <h3 href="https://www.fba.org.ar/programas-de-la-fba/peec/" class="font-bold text-gray-800 mb-1">PEEC</h3>
                   <p class="text-xs text-gray-500">Programa de Evaluación Externa de Calidad&nbsp;de la Fundación
                     Bioquímica Argentina (FBA)</p>
                 </div>
@@ -103,7 +290,7 @@
                   </div>
                 </div>
                 <div class="p-5">
-                  <h3 class="font-bold text-gray-800 mb-1">Referencia Malbrán</h3>
+                  <h3 href="https://www.argentina.gob.ar/salud/anlis/inei" class="font-bold text-gray-800 mb-1">Referencia Malbrán</h3>
                   <p class="text-xs text-gray-500">
                   <span class="block">Programa Nacional de Control</span>
                   <span class="block">de Calidad en Bacteriología del Instituto Nacional de Enfermedades</span>
@@ -124,7 +311,7 @@
                   </div>
                 </div>
                 <div class="p-5">
-                  <h3 class="font-bold text-gray-800 mb-1">Laboratorio Central de Córdoba</h3>
+                  <h3 href="https://www.cba.gov.ar/" class="font-bold text-gray-800 mb-1">Laboratorio Central de Córdoba</h3>
                   <p class="text-xs text-gray-500">
                   <span class="block">Controles de Calidad externos</span>
                   <span class="block">con paneles serológicos del Laboratorio Central de Córdoba</span>

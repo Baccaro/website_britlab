@@ -18,7 +18,7 @@ services:
       context: .
       target: production
     ports:
-      - "8080:80"
+      - "8081:80"
 
 volumes:
   node_modules:
