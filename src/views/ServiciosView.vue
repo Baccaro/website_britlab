@@ -154,7 +154,7 @@ async function submitCv() {
         <div class="bg-white rounded-2xl shadow-sm p-8 md:p-12">
           <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / BritGEN</span>
           <h2 class="mt-4 mb-6">
-            <img class="w-full max-w-[440px] h-auto" src="/images/britgen-logo.svg" alt="BritGen, Unidad de Medicina Genómica del Sanatorio Británico">
+            <img class="w-full max-w-[440px] h-auto" src="/images/britgen.png" alt="BritGen, Unidad de Medicina Genómica del Sanatorio Británico">
           </h2>
           <p class="text-gray-600 text-lg leading-relaxed mb-8">BritGen forma parte de la propuesta de servicios especializados de BritLab y constituye la Unidad de Medicina Genómica del Sanatorio Británico, orientada al estudio y aplicación de la genética y la genómica en diferentes áreas de la medicina.</p>
           <a class="inline-flex items-center bg-brit-teal hover:bg-brit-teal-dark text-white font-bold px-6 py-3 rounded-full transition-colors" href="https://britgen.com.ar/" target="_blank" rel="noopener noreferrer">Conocé BritGen <span class="ml-2" aria-hidden="true">→</span></a>
