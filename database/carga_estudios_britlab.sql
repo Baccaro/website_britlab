@@ -1,6 +1,7 @@
 -- Script generado a partir de britlab.csv (LISTADO DE ESTUDIOS LOCALES Y DERIVADOS)
 -- Campos extraidos: nemonico, paridad, codigo hexalis, estudio, status, metodo, dias
--- Colega destino: BRITLAB (colega_id = 49, es_propio = true)
+-- Colega destino: BRITLAB (se busca por descripcion, no por id fijo:
+-- el id de BRITLAB puede variar entre bases distintas).
 -- Es un UPSERT: no duplica datos ya cargados, sincroniza valores si cambiaron en el CSV.
 BEGIN;
 
@@ -624,16 +625,16 @@ INSERT INTO public.metodo (nombre) VALUES ('Enz.URICASA-PAP')
 INSERT INTO public.metodo (nombre) VALUES ('Floculación')
   ON CONFLICT (nombre) DO NOTHING;
 
--- 3) Upsert de estudio_colega para el colega BRITLAB (id 49)
+-- 3) Upsert de estudio_colega para el colega BRITLAB (buscado por descripcion)
 --    Si ya existe una fila con ese nemonico para este colega, se actualiza.
 --    Si no existe, se inserta (con revisor/colega_id obligatorios por defecto).
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'FOLICO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'FOLICO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660352'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FOLICO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FOLICO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -641,15 +642,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FOLICO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FOLICO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'ACLAC', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático amperimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'ACLAC', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático amperimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660592'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ACLAC'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ACLAC'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -657,15 +658,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático amperimétrico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ACLAC';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ACLAC';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'AC.BILIA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático colorimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'AC.BILIA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático colorimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '662367'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AC.BILIA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AC.BILIA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -673,15 +674,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático colorimétrico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AC.BILIA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AC.BILIA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'ADD', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento en cámara'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'ADD', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento en cámara'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660007'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ADD'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ADD'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -689,15 +690,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Recuento en cámara')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ADD';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ADD';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'ALB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Colorimétrico con BCF'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'ALB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Colorimétrico con BCF'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660015'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ALB'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ALB'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -705,15 +706,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Colorimétrico con BCF')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ALB';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ALB';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'AFP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'AFP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660020'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AFP'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AFP'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -721,15 +722,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AFP';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AFP';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'AMLB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático colorimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'AMLB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático colorimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660422A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AMLB'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AMLB'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -737,15 +738,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático colorimétrico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AMLB';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AMLB';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'AM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático colorimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'AM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático colorimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660022'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AM'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AM'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -753,15 +754,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático colorimétrico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AM';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AM';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'AMONIO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático con GLDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'AMONIO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático con GLDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660031'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AMONIO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AMONIO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -769,15 +770,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático con GLDH')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AMONIO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AMONIO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'LUPICO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'LUPICO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '662709'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LUPICO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LUPICO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -785,15 +786,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 2,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LUPICO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LUPICO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'ASO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Turbidimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'ASO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Turbidimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660051'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ASO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ASO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -801,15 +802,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Turbidimétrico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ASO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ASO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'AEP-NBU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'AEP-NBU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661000'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AEP-NBU'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AEP-NBU'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -817,15 +818,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AEP-NBU';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AEP-NBU';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'AEP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'AEP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = 'AEP'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AEP'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AEP'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -833,15 +834,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AEP';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AEP';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'AEP-LNBU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'AEP-LNBU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661000A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AEP-LNBU'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AEP-LNBU'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -849,15 +850,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AEP-LNBU';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AEP-LNBU';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'AEPL', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'AEPL', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '662734'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AEPL'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AEPL'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -865,15 +866,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AEPL';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AEPL';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'ATIII', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cromogénico cinético a 405 nm'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'ATIII', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cromogénico cinético a 405 nm'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '662803'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ATIII'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ATIII'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -881,15 +882,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 2,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Cromogénico cinético a 405 nm')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ATIII';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ATIII';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'APOA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'APOA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '662811'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'APOA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'APOA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -897,15 +898,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'APOA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'APOA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'APOB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'APOB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '662811B'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'APOB'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'APOB'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -913,15 +914,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'APOB';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'APOB';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'ATPO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'ATPO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '668315'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ATPO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ATPO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -929,15 +930,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ATPO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ATPO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'BETA-2', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'BETA-2', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '667503'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'BETA-2'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'BETA-2'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -945,15 +946,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'BETA-2';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'BETA-2';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'BICAR/SU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Fórmula de Astrup'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'BICAR/SU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Fórmula de Astrup'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660004'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'BICAR/SU'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'BICAR/SU'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -961,15 +962,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Fórmula de Astrup')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'BICAR/SU';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'BICAR/SU';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'BT', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Reacción diazo'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'BT', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Reacción diazo'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660110'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'BT'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'BT'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -977,15 +978,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Reacción diazo')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'BT';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'BT';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CA-125', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CA-125', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661115'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CA-125'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CA-125'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -993,15 +994,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CA-125';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CA-125';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CA15-3NB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CA15-3NB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = 'CA15-3'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CA15-3NB'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CA15-3NB'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1009,15 +1010,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CA15-3NB';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CA15-3NB';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CA19-9', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CA19-9', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661125'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CA19-9'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CA19-9'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1025,15 +1026,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CA19-9';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CA19-9';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CA19-9NB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CA19-9NB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661125B'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CA19-9NB'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CA19-9NB'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1041,15 +1042,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CA19-9NB';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CA19-9NB';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CAO1', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Arsenazo III'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CAO1', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Arsenazo III'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660136B'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CAO1'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CAO1'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1057,15 +1058,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Arsenazo III')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CAO1';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CAO1';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CAI', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Ión-electrodo selectivo'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CAI', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Ión-electrodo selectivo'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660134'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CAI'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CAI'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1073,15 +1074,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Ión-electrodo selectivo')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CAI';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CAI';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Arsenazo III'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Arsenazo III'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660133'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1089,15 +1090,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Arsenazo III')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CAO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Arsenazo III'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CAO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Arsenazo III'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660136'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CAO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CAO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1105,15 +1106,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Arsenazo III')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CAO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CAO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CAUR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Placa para manchas'), 8, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CAUR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Placa para manchas'), 8, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660138'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CAUR'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CAUR'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1121,15 +1122,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 8,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Placa para manchas')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CAUR';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CAUR';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CARBO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Espectrométrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CARBO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Espectrométrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '663375'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CARBO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CARBO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1137,15 +1138,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Espectrométrico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CARBO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CARBO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CEA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CEA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660144'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CEA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CEA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1153,15 +1154,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CEA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CEA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CERU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunodifusión radial'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CERU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunodifusión radial'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660151'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CERU'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CERU'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1169,15 +1170,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunodifusión radial')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CERU';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CERU';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CETONE', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Nitroprusiato'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CETONE', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Nitroprusiato'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '050'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CETONE'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CETONE'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1185,15 +1186,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Nitroprusiato')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CETONE';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CETONE';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CETONU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Nitroprusiato'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CETONU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Nitroprusiato'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '051'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CETONU'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CETONU'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1201,15 +1202,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Nitroprusiato')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CETONU';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CETONU';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CHAEIA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CHAEIA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660242'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CHAEIA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CHAEIA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1217,15 +1218,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CHAEIA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CHAEIA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CHAHAI', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'HAI'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CHAHAI', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'HAI'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660241'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CHAHAI'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CHAHAI'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1233,15 +1234,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 2,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'HAI')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CHAHAI';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CHAHAI';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'ACITOG', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'ACITOG', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661025'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ACITOG'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ACITOG'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1249,15 +1250,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ACITOG';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ACITOG';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'ACITOM-N', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'ACITOM-N', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661030'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ACITOM-N'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ACITOM-N'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1265,15 +1266,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ACITOM-N';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ACITOM-N';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'ACITOM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'ACITOM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661030A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ACITOM'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ACITOM'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1281,15 +1282,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ACITOM';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ACITOM';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'RCO', 'listo'::estado_paridad_enum, est.id, NULL, 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'RCO', 'listo'::estado_paridad_enum, est.id, NULL, 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660170'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'RCO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'RCO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1297,15 +1298,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 2,
   estado = 'listo'::estado_registro_enum,
   id_metodo = NULL
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'RCO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'RCO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'COAGU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'COAGU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '300'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'COAGU'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'COAGU'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1313,15 +1314,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'COAGU';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'COAGU';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HDL', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Deterg. acelerador especifico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HDL', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Deterg. acelerador especifico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661035'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HDL'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HDL'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1329,15 +1330,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Deterg. acelerador especifico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HDL';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HDL';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'LDL', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Deterg. selectivo líquido'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'LDL', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Deterg. selectivo líquido'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661040'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LDL'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LDL'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1345,15 +1346,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Deterg. selectivo líquido')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LDL';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LDL';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'C', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático CHOD-PAP'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'C', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático CHOD-PAP'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660174'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'C'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'C'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1361,15 +1362,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático CHOD-PAP')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'C';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'C';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'VLDL', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'VLDL', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '669918'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'VLDL'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'VLDL'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1377,15 +1378,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'VLDL';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'VLDL';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'VLDL-NBU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'VLDL-NBU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '669918A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'VLDL-NBU'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'VLDL-NBU'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1393,15 +1394,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'VLDL-NBU';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'VLDL-NBU';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'LDL-NBU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Deterg. selectivo líquido'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'LDL-NBU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Deterg. selectivo líquido'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661040B'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LDL-NBU'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LDL-NBU'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1409,15 +1410,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Deterg. selectivo líquido')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LDL-NBU';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LDL-NBU';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CHE', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Butirilcolina segun DGKC 37ºC'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CHE', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Butirilcolina segun DGKC 37ºC'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660772'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CHE'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CHE'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1425,15 +1426,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Butirilcolina segun DGKC 37ºC')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CHE';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CHE';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'C3', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'C3', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660180'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'C3'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'C3'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1441,15 +1442,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'C3';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'C3';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'C4', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'C4', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660180A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'C4'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'C4'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1457,15 +1458,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'C4';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'C4';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TH50', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Hemólisis al 50% (Grimberg)'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TH50', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Hemólisis al 50% (Grimberg)'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660179'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TH50'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TH50'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1473,15 +1474,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Hemólisis al 50% (Grimberg)')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TH50';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TH50';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'COR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'COR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660189'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'COR'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'COR'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1489,15 +1490,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'COR';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'COR';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'COR-18', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'COR-18', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660189P'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'COR-18'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'COR-18'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1505,15 +1506,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'COR-18';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'COR-18';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'COR-ES', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'COR-ES', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660189D'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'COR-ES'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'COR-ES'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1521,15 +1522,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'COR-ES';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'COR-ES';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CPK', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cinetico UV a 37ªC con NAC'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CPK', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cinetico UV a 37ªC con NAC'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660190'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CPK'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CPK'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1537,15 +1538,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Cinetico UV a 37ªC con NAC')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CPK';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CPK';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CKMBMASA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CKMBMASA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660190B'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CKMBMASA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CKMBMASA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1553,15 +1554,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CKMBMASA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CKMBMASA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CRLB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Picrato alcalino cinético'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CRLB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Picrato alcalino cinético'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660192D'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CRLB'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CRLB'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1569,15 +1570,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Picrato alcalino cinético')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CRLB';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CRLB';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CRO1', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Picrato alcalino cinético'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CRO1', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Picrato alcalino cinético'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660192B'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CRO1'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CRO1'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1585,15 +1586,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Picrato alcalino cinético')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CRO1';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CRO1';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Picrato alcalino cinético'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Picrato alcalino cinético'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660192'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CR'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CR'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1601,15 +1602,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Picrato alcalino cinético')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CR';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CR';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CRO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Picrato alcalino cinético'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CRO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Picrato alcalino cinético'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660192A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CRO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CRO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1617,15 +1618,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Picrato alcalino cinético')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CRO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CRO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'DCE', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Picrato alcalino cinético'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'DCE', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Picrato alcalino cinético'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '193'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'DCE'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'DCE'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1633,15 +1634,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Picrato alcalino cinético')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'DCE';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'DCE';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CRIO', 'listo'::estado_paridad_enum, est.id, NULL, 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CRIO', 'listo'::estado_paridad_enum, est.id, NULL, 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660195A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CRIO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CRIO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1649,15 +1650,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 2,
   estado = 'listo'::estado_registro_enum,
   id_metodo = NULL
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CRIO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CRIO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CRIOGLO', 'listo'::estado_paridad_enum, est.id, NULL, 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CRIOGLO', 'listo'::estado_paridad_enum, est.id, NULL, 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660195'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CRIOGLO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CRIOGLO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1665,15 +1666,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 2,
   estado = 'listo'::estado_registro_enum,
   id_metodo = NULL
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CRIOGLO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CRIOGLO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'DHEA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'DHEA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660262'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'DHEA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'DHEA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1681,15 +1682,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'DHEA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'DHEA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TD-DIF', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TD-DIF', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661135E'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TD-DIF'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TD-DIF'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1697,15 +1698,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TD-DIF';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TD-DIF';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'DIMERO D', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoensayo turbidimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'DIMERO D', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoensayo turbidimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '664419A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'DIMERO D'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'DIMERO D'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1713,15 +1714,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoensayo turbidimétrico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'DIMERO D';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'DIMERO D';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'DROGAS', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunocromatografía'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'DROGAS', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunocromatografía'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661050A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'DROGAS'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'DROGAS'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1729,15 +1730,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunocromatografía')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'DROGAS';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'DROGAS';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'AE-B', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'AE-B', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661055'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AE-B'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AE-B'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1745,15 +1746,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AE-B';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AE-B';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'AEBCM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'AEBCM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661060'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AEBCM'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AEBCM'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1761,15 +1762,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AEBCM';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AEBCM';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'E', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Westergreen'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'E', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Westergreen'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660297'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'E'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'E'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1777,15 +1778,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Westergreen')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'E';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'E';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'EAB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Electrométrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'EAB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Electrométrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660005'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'EAB'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'EAB'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1793,15 +1794,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Electrométrico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'EAB';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'EAB';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'EABI', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Electrométrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'EABI', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Electrométrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '66005A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'EABI'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'EABI'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1809,15 +1810,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Electrométrico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'EABI';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'EABI';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'E2', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'E2', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660300'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'E2'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'E2'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1825,15 +1826,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'E2';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'E2';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TLE2', 'listo'::estado_paridad_enum, est.id, NULL, 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TLE2', 'listo'::estado_paridad_enum, est.id, NULL, 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '665050'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TLE2'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TLE2'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1841,15 +1842,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = NULL
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TLE2';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TLE2';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TLE1', 'listo'::estado_paridad_enum, est.id, NULL, 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TLE1', 'listo'::estado_paridad_enum, est.id, NULL, 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '665050A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TLE1'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TLE1'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1857,15 +1858,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = NULL
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TLE1';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TLE1';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'FR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'FR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660598'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FR'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FR'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1873,15 +1874,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FR';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FR';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'FE', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Compleximétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'FE', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Compleximétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660343'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FE'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FE'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1889,15 +1890,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Compleximétrico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FE';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FE';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'FERR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'FERR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '665230'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FERR'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FERR'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1905,15 +1906,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FERR';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FERR';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'FIB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico, Clauss modificado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'FIB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico, Clauss modificado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660345'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FIB'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FIB'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1921,15 +1922,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico, Clauss modificado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FIB';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FIB';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'FLA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'FLA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660354A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FLA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FLA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1937,15 +1938,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FLA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FLA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'FOH', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cinét.405 nm a 37ªC con p-NPP'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'FOH', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cinét.405 nm a 37ªC con p-NPP'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660357'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FOH'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FOH'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1953,15 +1954,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Cinét.405 nm a 37ªC con p-NPP')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FOH';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FOH';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'P', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Fosfomolibdato'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'P', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Fosfomolibdato'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660362'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'P'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'P'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1969,15 +1970,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Fosfomolibdato')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'P';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'P';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Fosfomolibdato'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Fosfomolibdato'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660363'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -1985,15 +1986,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Fosfomolibdato')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PO1', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Fosfomolibdato'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PO1', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Fosfomolibdato'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660363A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PO1'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PO1'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2001,15 +2002,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Fosfomolibdato')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PO1';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PO1';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'RTP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Varios'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'RTP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Varios'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660367A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'RTP'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'RTP'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2017,15 +2018,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Varios')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'RTP';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'RTP';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'FRUCTO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Colorimetría con NBT/formazán'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'FRUCTO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Colorimetría con NBT/formazán'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661065'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FRUCTO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FRUCTO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2033,15 +2034,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Colorimetría con NBT/formazán')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FRUCTO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FRUCTO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'FSH', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'FSH', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660370'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FSH'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FSH'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2049,15 +2050,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FSH';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FSH';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'GGT', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Colorimétrico enzimático'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'GGT', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Colorimétrico enzimático'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660420'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GGT'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GGT'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2065,15 +2066,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Colorimétrico enzimático')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GGT';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GGT';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'GLOBTRAN', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'GLOBTRAN', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '665632'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GLOBTRAN'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GLOBTRAN'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2081,15 +2082,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GLOBTRAN';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GLOBTRAN';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'GB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'GB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660409'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GB'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GB'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2097,15 +2098,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GB';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GB';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'GR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'GR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660410'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GR'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GR'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2113,15 +2114,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GR';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GR';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'G', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'G', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660412'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'G'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'G'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2129,15 +2130,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'G';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'G';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'GCIR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático (GOD)-amperimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'GCIR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático (GOD)-amperimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660412A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GCIR'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GCIR'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2145,15 +2146,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático (GOD)-amperimétrico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GCIR';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GCIR';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'GPP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'GPP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660506'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GPP'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GPP'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2161,15 +2162,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GPP';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GPP';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'GP120MIN', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'GP120MIN', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660504'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GP120MIN'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GP120MIN'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2177,15 +2178,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GP120MIN';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GP120MIN';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'GP180MIN', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'GP180MIN', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660505'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GP180MIN'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GP180MIN'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2193,15 +2194,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GP180MIN';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GP180MIN';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'GP 30MIN', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'GP 30MIN', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660501'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GP 30MIN'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GP 30MIN'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2209,15 +2210,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GP 30MIN';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GP 30MIN';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'GP 60MIN', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'GP 60MIN', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660502'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GP 60MIN'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GP 60MIN'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2225,15 +2226,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GP 60MIN';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GP 60MIN';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'GP 90MIN', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'GP 90MIN', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660503'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GP 90MIN'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GP 90MIN'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2241,15 +2242,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GP 90MIN';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GP 90MIN';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'GLU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'GLU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660412C'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GLU'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GLU'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2257,15 +2258,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático hexocinasa/G6PDH')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GLU';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GLU';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HAM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento en cámara'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HAM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento en cámara'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660007A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HAM'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HAM'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2273,15 +2274,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Recuento en cámara')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HAM';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HAM';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HAP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HAP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '665734'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HAP'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HAP'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2289,15 +2290,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HAP';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HAP';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HE4', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HE4', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '668627'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HE4'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HE4'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2305,15 +2306,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HE4';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HE4';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Microscopía óptica'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Microscopía óptica'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = 'HU'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HU'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HU'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2321,15 +2322,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Microscopía óptica')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HU';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HU';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HTO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HTO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660466'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HTO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HTO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2337,15 +2338,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HTO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HTO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HGL1', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HGL1', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661070'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HGL1'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HGL1'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2353,15 +2354,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HGL1';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HGL1';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660470'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HB'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HB'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2369,15 +2370,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HB';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HB';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HC', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HC', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660475'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HC'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HC'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2385,15 +2386,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HC';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HC';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HS', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HS', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660475B'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HS'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HS'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2401,15 +2402,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HS';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HS';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HEP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cinético cromogénico a 405 nm'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HEP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cinético cromogénico a 405 nm'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '665871'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEP'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEP'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2417,15 +2418,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Cinético cromogénico a 405 nm')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEP';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEP';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HEPAG', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HEPAG', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '665888'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEPAG'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEPAG'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2433,15 +2434,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEPAG';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEPAG';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HEPAM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HEPAM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661075'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEPAM'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEPAM'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2449,15 +2450,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEPAM';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEPAM';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HEPBCM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HEPBCM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '665905'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEPBCM'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEPBCM'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2465,15 +2466,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEPBCM';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEPBCM';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HEPBCTO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HEPBCTO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661080'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEPBCTO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEPBCTO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2481,15 +2482,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEPBCTO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEPBCTO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HEPBSAC', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HEPBSAC', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661086'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEPBSAC'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEPBSAC'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2497,15 +2498,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEPBSAC';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEPBSAC';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HEPBSAG', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HEPBSAG', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661090'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEPBSAG'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEPBSAG'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2513,15 +2514,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEPBSAG';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEPBSAG';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HEPCAC', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HEPCAC', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661095'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEPCAC'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEPCAC'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2529,15 +2530,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEPCAC';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEPCAC';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HEC1', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cinético, reacción diazo.'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HEC1', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cinético, reacción diazo.'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660481'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEC1'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEC1'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2545,15 +2546,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Cinético, reacción diazo.')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HEC1';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HEC1';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HERP1G', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HERP1G', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '666042'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HERP1G'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HERP1G'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2561,15 +2562,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HERP1G';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HERP1G';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HERP2G', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HERP2G', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '666067'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HERP2G'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HERP2G'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2577,15 +2578,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HERP2G';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HERP2G';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HIVEIA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HIVEIA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660063'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HIVEIA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HIVEIA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2593,15 +2594,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HIVEIA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HIVEIA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TEST-HIV', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoanálisis cualitativo'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TEST-HIV', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoanálisis cualitativo'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660063A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TEST-HIV'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TEST-HIV'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2609,15 +2610,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoanálisis cualitativo')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TEST-HIV';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TEST-HIV';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HOMA', 'listo'::estado_paridad_enum, est.id, NULL, 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HOMA', 'listo'::estado_paridad_enum, est.id, NULL, 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '666708'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HOMA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HOMA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2625,15 +2626,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = NULL
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HOMA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HOMA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HOMOC', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HOMOC', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '666452'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HOMOC'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HOMOC'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2641,15 +2642,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HOMOC';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HOMOC';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HTLV I', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HTLV I', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '666537'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HTLV I'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HTLV I'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2657,15 +2658,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HTLV I';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HTLV I';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'HUD', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Aglutinación en placa'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'HUD', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Aglutinación en placa'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660494'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HUD'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HUD'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2673,15 +2674,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 2,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Aglutinación en placa')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'HUD';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'HUD';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'IGA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'IGA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660537'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'IGA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'IGA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2689,15 +2690,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'IGA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'IGA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'IGAS', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmundifusión radial'), 5, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'IGAS', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmundifusión radial'), 5, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '666589'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'IGAS'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'IGAS'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2705,15 +2706,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 5,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmundifusión radial')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'IGAS';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'IGAS';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'IGE', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Turbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'IGE', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Turbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660539'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'IGE'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'IGE'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2721,15 +2722,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Turbidimetría')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'IGE';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'IGE';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'IGG', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'IGG', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660540'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'IGG'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'IGG'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2737,15 +2738,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'IGG';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'IGG';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'IGM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'IGM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660541'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'IGM'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'IGM'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2753,15 +2754,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'IGM';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'IGM';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'INS', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'INS', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660543'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'INS'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'INS'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2769,15 +2770,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'INS';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'INS';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'INSPP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'INSPP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660543A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'INSPP'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'INSPP'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2785,15 +2786,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'INSPP';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'INSPP';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'INSPP120', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'INSPP120', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660543E'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'INSPP120'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'INSPP120'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2801,15 +2802,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'INSPP120';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'INSPP120';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'INSPP180', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'INSPP180', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660543H'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'INSPP180'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'INSPP180'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2817,15 +2818,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'INSPP180';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'INSPP180';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'INS PP30', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'INS PP30', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660543A2'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'INS PP30'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'INS PP30'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2833,15 +2834,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'INS PP30';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'INS PP30';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'INS PP60', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'INS PP60', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660543B'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'INS PP60'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'INS PP60'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2849,15 +2850,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'INS PP60';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'INS PP60';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'INS PP90', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'INS PP90', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660543C'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'INS PP90'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'INS PP90'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2865,15 +2866,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'INS PP90';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'INS PP90';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'I/OA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Ión selectivo'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'I/OA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Ión selectivo'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660547A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'I/OA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'I/OA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2881,15 +2882,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Ión selectivo')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'I/OA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'I/OA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'I', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Ión selectivo'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'I', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Ión selectivo'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660546'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'I'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'I'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2897,15 +2898,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Ión selectivo')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'I';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'I';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'IOO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Ión selectivo'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'IOO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Ión selectivo'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660547'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'IOO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'IOO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2913,15 +2914,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Ión selectivo')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'IOO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'IOO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'KPTT', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'KPTT', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660887'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'KPTT'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'KPTT'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2929,15 +2930,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'KPTT';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'KPTT';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CORRKPTT', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CORRKPTT', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '663994'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CORRKPTT'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CORRKPTT'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2945,15 +2946,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CORRKPTT';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CORRKPTT';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'LDH', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cinético UV a 37ªC (IFCC)'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'LDH', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cinético UV a 37ªC (IFCC)'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660597'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LDH'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LDH'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2961,15 +2962,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Cinético UV a 37ªC (IFCC)')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LDH';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LDH';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'LAZO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Rumpel-Leede'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'LAZO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Rumpel-Leede'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660603'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LAZO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LAZO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2977,15 +2978,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Rumpel-Leede')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LAZO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LAZO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'LEUCMF', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Microscopía óptica'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'LEUCMF', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Microscopía óptica'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '5291'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LEUCMF'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LEUCMF'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -2993,15 +2994,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Microscopía óptica')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LEUCMF';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LEUCMF';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'LH', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'LH', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660612'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LH'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LH'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3009,15 +3010,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LH';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LH';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'LIP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático colorimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'LIP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático colorimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660313'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LIP'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LIP'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3025,15 +3026,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático colorimétrico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LIP';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LIP';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'LIPO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'LIPO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimétrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '667187'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LIPO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LIPO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3041,15 +3042,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimétrico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'LIPO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'LIPO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'L.C.R.', 'listo'::estado_paridad_enum, est.id, NULL, 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'L.C.R.', 'listo'::estado_paridad_enum, est.id, NULL, 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660619'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'L.C.R.'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'L.C.R.'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3057,15 +3058,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = NULL
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'L.C.R.';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'L.C.R.';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PUNCION', 'listo'::estado_paridad_enum, est.id, NULL, 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PUNCION', 'listo'::estado_paridad_enum, est.id, NULL, 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660619A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PUNCION'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PUNCION'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3073,15 +3074,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = NULL
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PUNCION';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PUNCION';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'MGS', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'MGS', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660653'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'MGS'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'MGS'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3089,15 +3090,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'MGS';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'MGS';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'MGO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'MGO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660654'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'MGO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'MGO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3105,15 +3106,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'MGO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'MGO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PPD', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'SCLAVO-TEST-PPD: 2 UI/0.1 ml'), 4, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PPD', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'SCLAVO-TEST-PPD: 2 UI/0.1 ml'), 4, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660656'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PPD'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PPD'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3121,15 +3122,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 4,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'SCLAVO-TEST-PPD: 2 UI/0.1 ml')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PPD';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PPD';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'MDRD-4', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Calculado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'MDRD-4', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Calculado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '666711'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'MDRD-4'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'MDRD-4'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3137,15 +3138,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Calculado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'MDRD-4';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'MDRD-4';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'META', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Electrométrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'META', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Electrométrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '667409'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'META'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'META'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3153,15 +3154,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Electrométrico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'META';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'META';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'METO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'METO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '667486'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'METO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'METO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3169,15 +3170,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'METO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'METO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'MICRO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'MICRO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661130'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'MICRO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'MICRO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3185,15 +3186,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'MICRO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'MICRO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'A/C', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría, cinético'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'A/C', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría, cinético'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661130A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'A/C'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'A/C'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3201,15 +3202,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría, cinético')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'A/C';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'A/C';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'MOC', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Microscopía óptica'), 4, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'MOC', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Microscopía óptica'), 4, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660668'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'MOC'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'MOC'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3217,15 +3218,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 4,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Microscopía óptica')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'MOC';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'MOC';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'MON', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Aglutinación en placa'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'MON', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Aglutinación en placa'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660669'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'MON'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'MON'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3233,15 +3234,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 2,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Aglutinación en placa')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'MON';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'MON';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'NOTA', 'listo'::estado_paridad_enum, est.id, NULL, 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'NOTA', 'listo'::estado_paridad_enum, est.id, NULL, 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = 'NOTA'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'NOTA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'NOTA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3249,15 +3250,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = NULL
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'NOTA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'NOTA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'O', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Tira react., microscop. optica'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'O', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Tira react., microscop. optica'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660711'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'O'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'O'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3265,15 +3266,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Tira react., microscop. optica')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'O';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'O';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'OSMO/O', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Osmolalidad por cálculo'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'OSMO/O', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Osmolalidad por cálculo'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '667926'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'OSMO/O'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'OSMO/O'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3281,15 +3282,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Osmolalidad por cálculo')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'OSMO/O';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'OSMO/O';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PTH', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PTH', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660739'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PTH'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PTH'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3297,15 +3298,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PTH';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PTH';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PTH-B', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PTH-B', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660739A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PTH-B'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PTH-B'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3313,15 +3314,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PTH-B';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PTH-B';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PTH-M', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PTH-M', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660739B'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PTH-M'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PTH-M'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3329,15 +3330,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PTH-M';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PTH-M';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PTH-PE', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PTH-PE', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660739C'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PTH-PE'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PTH-PE'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3345,15 +3346,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PTH-PE';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PTH-PE';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'ANTI-CCP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'ANTI-CCP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '668284'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ANTI-CCP'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ANTI-CCP'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3361,15 +3362,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ANTI-CCP';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ANTI-CCP';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'BNP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'BNP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '663094'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'BNP'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'BNP'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3377,15 +3378,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'BNP';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'BNP';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PH LIQ', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Electrométrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PH LIQ', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Electrométrico'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660005B'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PH LIQ'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PH LIQ'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3393,15 +3394,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Electrométrico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PH LIQ';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PH LIQ';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PQ', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PQ', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660746'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PQ'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PQ'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3409,15 +3410,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PQ';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PQ';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PROCALCI', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PROCALCI', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '668563'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PROCALCI'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PROCALCI'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3425,15 +3426,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PROCALCI';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PROCALCI';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PRG', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PRG', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660758'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PRG'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PRG'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3441,15 +3442,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PRG';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PRG';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PRL', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PRL', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660759'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PRL'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PRL'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3457,15 +3458,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PRL';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PRL';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'POOL PRL', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'POOL PRL', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660759D'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'POOL PRL'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'POOL PRL'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3473,15 +3474,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'POOL PRL';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'POOL PRL';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PCR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PCR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660761'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PCR'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PCR'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3489,15 +3490,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetría')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PCR';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PCR';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PC', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cromogénico cinético a  405 nm'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PC', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cromogénico cinético a  405 nm'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '668614'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PC'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PC'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3505,15 +3506,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Cromogénico cinético a  405 nm')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PC';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PC';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'A/G', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Colorimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'A/G', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Colorimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660764A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'A/G'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'A/G'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3521,15 +3522,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Colorimetría')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'A/G';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'A/G';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PT', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Biuret'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PT', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Biuret'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660763'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PT'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PT'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3537,15 +3538,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Biuret')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PT';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PT';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PTO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Turbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PTO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Turbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660767'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PTO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PTO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3553,15 +3554,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Turbidimetría')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PTO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PTO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'PRO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Turbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'PRO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Turbidimetría'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660767A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PRO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PRO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3569,15 +3570,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Turbidimetría')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'PRO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'PRO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'FIET', 'listo'::estado_paridad_enum, est.id, NULL, 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'FIET', 'listo'::estado_paridad_enum, est.id, NULL, 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '000003'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FIET'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FIET'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3585,15 +3586,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = NULL
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'FIET';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'FIET';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'REC TSH', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'REC TSH', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '668802'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'REC TSH'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'REC TSH'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3601,15 +3602,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'REC TSH';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'REC TSH';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'RPCA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'RPCA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '668828'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'RPCA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'RPCA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3617,15 +3618,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 2,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'RPCA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'RPCA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'RET', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'RET', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660818'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'RET'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'RET'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3633,15 +3634,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Recuento automatizado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'RET';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'RET';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'RR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Aglutinación directa'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'RR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Aglutinación directa'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660820'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'RR'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'RR'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3649,15 +3650,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 2,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Aglutinación directa')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'RR';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'RR';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'AARIGG', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'AARIGG', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661145'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AARIGG'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AARIGG'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3665,15 +3666,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AARIGG';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AARIGG';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'AARIGM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'AARIGM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661150'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AARIGM'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AARIGM'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3681,15 +3682,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AARIGM';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AARIGM';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'SOMF', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunocromatografía'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'SOMF', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunocromatografía'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '5290'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'SOMF'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'SOMF'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3697,15 +3698,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunocromatografía')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'SOMF';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'SOMF';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TC', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Lee-Whyte y Duke'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TC', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Lee-Whyte y Duke'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660169'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TC'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TC'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3713,15 +3714,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Lee-Whyte y Duke')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TC';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TC';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'SUB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'SUB', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661175'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'SUB'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'SUB'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3729,15 +3730,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'SUB';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'SUB';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'DAP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunocromatrografía'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'DAP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunocromatrografía'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661170'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'DAP'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'DAP'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3745,15 +3746,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunocromatrografía')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'DAP';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'DAP';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'GRAVI', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunocromatrografía'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'GRAVI', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunocromatrografía'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661170A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GRAVI'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GRAVI'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3761,15 +3762,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunocromatrografía')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'GRAVI';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'GRAVI';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TACRO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TACRO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '665298'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TACRO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TACRO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3777,15 +3778,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TACRO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TACRO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TES', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TES', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660863'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TES'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TES'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3793,15 +3794,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TES';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TES';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TES-BIO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Formula de Vermeulen'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TES-BIO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Formula de Vermeulen'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '661185'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TES-BIO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TES-BIO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3809,15 +3810,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Formula de Vermeulen')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TES-BIO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TES-BIO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TESL', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Formula de Vermeulen'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TESL', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Formula de Vermeulen'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '669375'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TESL'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TESL'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3825,15 +3826,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Formula de Vermeulen')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TESL';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TESL';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660771'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TP'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TP'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3841,15 +3842,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TP';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TP';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TT', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TT', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660880'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TT'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TT'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3857,15 +3858,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 2,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TT';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TT';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TIROGLO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TIROGLO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '669443'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TIROGLO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TIROGLO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3873,15 +3874,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TIROGLO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TIROGLO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'ANTI-TG', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'ANTI-TG', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '669460'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ANTI-TG'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ANTI-TG'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3889,15 +3890,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'ANTI-TG';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'ANTI-TG';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TSH', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TSH', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660865'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TSH'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TSH'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3905,15 +3906,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TSH';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TSH';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TSH30', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TSH30', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660865E'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TSH30'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TSH30'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3921,15 +3922,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TSH30';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TSH30';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TSH60', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TSH60', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660865G'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TSH60'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TSH60'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3937,15 +3938,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TSH60';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TSH60';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'T4L', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'T4L', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660867'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'T4L'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'T4L'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3953,15 +3954,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'T4L';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'T4L';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'T4', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'T4', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660866'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'T4'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'T4'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3969,15 +3970,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'T4';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'T4';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TDM', 'listo'::estado_paridad_enum, est.id, NULL, NULL, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TDM', 'listo'::estado_paridad_enum, est.id, NULL, NULL, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = 'TDM'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TDM'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TDM'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -3985,15 +3986,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = NULL,
   estado = 'listo'::estado_registro_enum,
   id_metodo = NULL
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TDM';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TDM';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TOXIGG', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TOXIGG', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '1057A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TOXIGG'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TOXIGG'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4001,15 +4002,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TOXIGG';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TOXIGG';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TOXIGM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TOXIGM', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '1056A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TOXIGM'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TOXIGM'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4017,15 +4018,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TOXIGM';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TOXIGM';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CORRTP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CORRTP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '663996'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CORRTP'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CORRTP'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4033,15 +4034,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Coagulométrico automatizado')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CORRTP';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CORRTP';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TGO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cinético U.V. a 37·C'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TGO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cinético U.V. a 37·C'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660873'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TGO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TGO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4049,15 +4050,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Cinético U.V. a 37·C')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TGO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TGO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TGP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cinético U.V. a 37·C'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TGP', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Cinético U.V. a 37·C'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660874'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TGP'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TGP'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4065,15 +4066,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Cinético U.V. a 37·C')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TGP';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TGP';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TRA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetria'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TRA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetria'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660875'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TRA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TRA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4081,15 +4082,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Inmunoturbidimetria')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TRA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TRA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'SAT', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Ferene'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'SAT', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Ferene'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660875A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'SAT'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'SAT'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4097,15 +4098,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Ferene')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'SAT';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'SAT';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'SYPHILIS', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'SYPHILIS', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660933'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'SYPHILIS'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'SYPHILIS'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4113,15 +4114,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'SYPHILIS';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'SYPHILIS';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TGL', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático GPO-PAP'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TGL', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático GPO-PAP'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660876'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TGL'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TGL'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4129,15 +4130,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático GPO-PAP')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TGL';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TGL';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'T3LIBRE', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'T3LIBRE', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '669661'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'T3LIBRE'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'T3LIBRE'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4145,15 +4146,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'T3LIBRE';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'T3LIBRE';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'T3', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'T3', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660878'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'T3'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'T3'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4161,15 +4162,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'T3';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'T3';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'TPA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'TPA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '669735'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TPA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TPA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4177,15 +4178,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'TPA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'TPA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'UREA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'UREA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '69759'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'UREA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'UREA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4193,15 +4194,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'UREA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'UREA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'U/OA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'U/OA', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660902B'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'U/OA'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'U/OA'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4209,15 +4210,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'U/OA';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'U/OA';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'UO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'UO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660902A'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'UO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'UO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4225,15 +4226,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'UO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'UO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'U', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'U', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660902'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'U'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'U'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4241,15 +4242,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'U';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'U';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'UES', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'UES', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660902P'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'UES'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'UES'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4257,15 +4258,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'UES';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'UES';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'CLU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'CLU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660901'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CLU'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CLU'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4273,15 +4274,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enzimático UV')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'CLU';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'CLU';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'AU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enz.URICASA-PAP'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'AU', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enz.URICASA-PAP'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660904'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AU'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AU'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4289,15 +4290,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enz.URICASA-PAP')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AU';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AU';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'AUO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enz.URICASA-PAP'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'AUO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Enz.URICASA-PAP'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660905'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AUO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AUO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4305,15 +4306,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Enz.URICASA-PAP')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'AUO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'AUO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'VD/LCR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Floculación'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'VD/LCR', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Floculación'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '1229'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'VD/LCR'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'VD/LCR'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4321,15 +4322,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Floculación')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'VD/LCR';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'VD/LCR';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'VD', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Floculación'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'VD', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Floculación'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660934'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'VD'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'VD'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4337,15 +4338,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 2,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Floculación')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'VD';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'VD';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'VANCO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'VANCO', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '669793'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'VANCO'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'VANCO'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4353,15 +4354,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'VANCO';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'VANCO';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'VIT B12', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'VIT B12', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660938'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'VIT B12'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'VIT B12'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4369,15 +4370,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'VIT B12';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'VIT B12';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'VIT-D3', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'VIT-D3', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'CMIA'), 1, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '669913'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'VIT-D3'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'VIT-D3'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4385,15 +4386,15 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 1,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'CMIA')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'VIT-D3';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'VIT-D3';
 
 INSERT INTO public.estudio_colega (nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, dias_demora, estado, revisor, colega_id)
-SELECT 'WID', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Aglutinación en placa'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', 49
+SELECT 'WID', 'listo'::estado_paridad_enum, est.id, (SELECT id FROM public.metodo WHERE nombre = 'Aglutinación en placa'), 2, 'listo'::estado_registro_enum, 'Laboratorio SBLab', (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB')
 FROM public.estudio est
 WHERE est.codigo_hexalis = '660953'
   AND NOT EXISTS (
     SELECT 1 FROM public.estudio_colega ec
-    WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'WID'
+    WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'WID'
   );
 
 UPDATE public.estudio_colega ec SET
@@ -4401,6 +4402,6 @@ UPDATE public.estudio_colega ec SET
   dias_demora = 2,
   estado = 'listo'::estado_registro_enum,
   id_metodo = (SELECT id FROM public.metodo WHERE nombre = 'Aglutinación en placa')
-WHERE ec.colega_id = 49 AND ec.nemonico_datatech = 'WID';
+WHERE ec.colega_id = (SELECT id FROM public.colega WHERE descripcion = 'BRITLAB') AND ec.nemonico_datatech = 'WID';
 
 COMMIT;
