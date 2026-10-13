@@ -140,6 +140,17 @@
       --bs-btn-focus-shadow-rgb: 60, 186, 214;
     }
 
+    /* Toda la app es de tema claro siempre (no hay modo oscuro propio): sin
+       esto, en un sistema/navegador con dark mode activado, los controles
+       NATIVOS del browser (el popup de las listas <datalist> de los campos
+       "Escribí para buscar...", el desplegable de los <select>, el date
+       picker, etc. — elementos que el CSS de la página no puede re-pintar)
+       se renderizan con la paleta oscura del sistema: fondo negro, texto
+       claro, totalmente fuera de tono con el resto, que sigue en claro. */
+    html {
+      color-scheme: light;
+    }
+
     body {
       background-color: #f8fafc;
       font-family: Manrope, Inter, "Segoe UI", Roboto, Arial, sans-serif;
@@ -895,6 +906,13 @@
                         </button>
                       </li>
                     </ul>
+                  </li>
+                  <li v-if="pantallaPermitida('sectores')">
+                    <button class="dropdown-item"
+                      :class="(currentView === 'crud' && currentEntityKey === 'sectores') ? 'active' : ''"
+                      @click="switchCrudEntity('sectores')" type="button">
+                      Áreas
+                    </button>
                   </li>
                 </ul>
               </li>

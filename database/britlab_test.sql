@@ -117,6 +117,11 @@ CREATE TABLE public.estudio_colega (
 	id_estudio int4 NOT NULL,
 	id_metodo int4 NULL,
 	id_muestra int4 NULL,
+	-- id_sector_laboratorio ("Área"): apunta directo a sector (catálogo
+	-- simple). Antes apuntaba a valor_estudio_sector (Estudio + Sector +
+	-- Posición en informe + Rango, otra cosa totalmente distinta) y por eso
+	-- el desplegable de "Área" mostraba nombres de ESTUDIOS en vez de
+	-- áreas (migracion_area_estudio_colega.sql).
 	id_sector_laboratorio int4 NULL,
 	-- indicaciones_pacientes: texto del dropdown "Indicaciones Pacientes"
 	-- (ya no admite subida de PDF nuevos, sólo descripción). indicaciones_colega:
@@ -151,7 +156,7 @@ CREATE TABLE public.estudio_colega (
 	CONSTRAINT estudio_colega_id_estudio_fkey FOREIGN KEY (id_estudio) REFERENCES public.estudio(id) ON DELETE RESTRICT,
 	CONSTRAINT estudio_colega_id_metodo_fkey FOREIGN KEY (id_metodo) REFERENCES public.metodo(id) ON DELETE SET NULL,
 	CONSTRAINT estudio_colega_id_muestra_fkey FOREIGN KEY (id_muestra) REFERENCES public.muestra(id) ON DELETE SET NULL,
-	CONSTRAINT estudio_colega_id_sector_laboratorio_fkey FOREIGN KEY (id_sector_laboratorio) REFERENCES public.valor_estudio_sector(id) ON DELETE SET NULL,
+	CONSTRAINT estudio_colega_id_sector_laboratorio_fkey FOREIGN KEY (id_sector_laboratorio) REFERENCES public.sector(id) ON DELETE SET NULL,
 	CONSTRAINT estudio_colega_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL,
 	CONSTRAINT estudio_colega_actualizado_por_id_fkey FOREIGN KEY (actualizado_por_id) REFERENCES public.usuario(id) ON DELETE SET NULL,
 	CONSTRAINT fk_estudio_colega_colega FOREIGN KEY (colega_id) REFERENCES public.colega(id) ON DELETE RESTRICT ON UPDATE CASCADE

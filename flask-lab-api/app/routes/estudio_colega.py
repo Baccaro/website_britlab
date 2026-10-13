@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, g
 from app.crud import _commit_or_400
 from app.database import db
-from app.models import EstudioColega, Estudio, Colega, Metodo, Muestra, ValorEstudioSector, EstudioColegaMuestra, EstudioColegaModelo
+from app.models import EstudioColega, Estudio, Colega, Metodo, Muestra, Sector, EstudioColegaMuestra, EstudioColegaModelo
 from app.schemas import EstudioColegaCreate, EstudioColegaUpdate, EstudioColegaOut
 from app.utils import paginate_query
 from app.auth import modulo_lectura_required, modulo_escritura_required
@@ -124,18 +124,18 @@ def _listar_estudios_colega(colega_id=None):
     autorizado en 2 colegas aparece 2 veces, una por cada uno (nunca se
     combina en una sola fila)."""
     query = (
-        db.session.query(EstudioColega, Estudio, Colega)
+        db.session.query(EstudioColega, Estudio, Colega, Sector)
         .join(Estudio, EstudioColega.id_estudio == Estudio.id)
         .join(Colega, EstudioColega.colega_id == Colega.id)
         .outerjoin(Metodo, EstudioColega.id_metodo == Metodo.id)
         .outerjoin(Muestra, EstudioColega.id_muestra == Muestra.id)
-        .outerjoin(ValorEstudioSector, EstudioColega.id_sector_laboratorio == ValorEstudioSector.id)
+        .outerjoin(Sector, EstudioColega.id_sector_laboratorio == Sector.id)
     )
     if colega_id is not None:
         query = query.filter(EstudioColega.colega_id == colega_id)
     resultados = query.order_by(Estudio.descripcion.asc(), Colega.descripcion.asc()).all()
 
-    ids_regs = [reg.id for reg, _, _ in resultados]
+    ids_regs = [reg.id for reg, _, _, _ in resultados]
     muestras_por_registro = {}
     if ids_regs:
         muestras_query = (
@@ -165,7 +165,7 @@ def _listar_estudios_colega(colega_id=None):
             pdfs_por_registro.setdefault(id_ec, {})[categoria] = cantidad
 
     respuesta = []
-    for reg, estudio, colega in resultados:
+    for reg, estudio, colega, sector in resultados:
         muestras_texto = '; '.join(
             _componer_texto_muestra(m) for m in muestras_por_registro.get(reg.id, [])
         ) or None
@@ -199,10 +199,8 @@ def _listar_estudios_colega(colega_id=None):
             'version': reg.version,
             'revisor': reg.revisor,
             'observacion': reg.observacion,
-            'sector': reg.sector_laboratorio.sector.nombre if (reg.sector_laboratorio and reg.sector_laboratorio.sector) else None,
+            'sector': sector.nombre if sector else None,
             'id_sector_laboratorio': reg.id_sector_laboratorio,
-            'posicion_informe': reg.sector_laboratorio.posicion_informe if reg.sector_laboratorio else None,
-            'rango': reg.sector_laboratorio.rango if reg.sector_laboratorio else None,
             'creado_por': reg.creado_por_username,
             'actualizado_por': reg.actualizado_por_username,
             'created_at': reg.created_at.isoformat() if reg.created_at else None,

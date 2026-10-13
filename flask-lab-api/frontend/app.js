@@ -28,7 +28,7 @@ const ROLES_MODULO_DISPONIBLES = [
   { key: 'administrador', label: 'Administrador (lectura y escritura)' },
 ];
 const MODULO_POR_PANTALLA = {
-  estudios: 'estudios', colegas: 'estudios', metodos: 'estudios',
+  estudios: 'estudios', colegas: 'estudios', metodos: 'estudios', sectores: 'estudios',
   tipos_muestra: 'estudios', aditivos: 'estudios', unidades_medida: 'estudios', recipientes: 'estudios',
   modalidades_recoleccion: 'estudios', tecnicas_recoleccion: 'estudios', conservaciones: 'estudios',
   condiciones_especiales: 'estudios', prioridades_envio: 'estudios',
@@ -711,15 +711,17 @@ const app = createApp({
         ]
       },
       sectores: {
-        label: 'Sectores',
-        singular: 'Sector',
+        label: 'Áreas',
+        singular: 'Área',
         endpoint: 'sectores',
         icon: 'bi-grid-3x3-gap',
+        searchable: true,
+        searchPlaceholder: 'Buscar por nombre...',
         columns: [
           { field: 'nombre', label: 'Nombre' }
         ],
         fields: [
-          { field: 'nombre', label: 'Nombre del Sector', type: 'text', required: true }
+          { field: 'nombre', label: 'Nombre del Área', type: 'text', required: true }
         ]
       },
       valores_estudio_sector: {
@@ -859,7 +861,7 @@ const app = createApp({
           { field: 'id_estudio', label: 'Estudio', type: 'fk', ref: 'estudios', required: true, allowCreateNew: true },
           { field: 'colega_id', label: 'Laboratorio Procesante', type: 'fk', ref: 'colegas', required: true },
           { field: 'id_metodo', label: 'Método', type: 'fk', ref: 'metodos' },
-          { field: 'id_sector_laboratorio', label: 'Área', type: 'fk', ref: 'valores_estudio_sector' },
+          { field: 'id_sector_laboratorio', label: 'Área', type: 'fk', ref: 'sectores' },
           { field: 'paridad_datatech_hexalis', label: 'Paridad', type: 'select', options: ESTADOS_PARIDAD, default: 'No' },
           { field: 'estado', label: 'Estado', type: 'select', options: ESTADOS_REGISTRO, default: 'pendiente' },
           { field: 'preanalitico_descripcion', label: 'Descripción', type: 'richtext' },
@@ -1034,11 +1036,11 @@ const app = createApp({
     const isAllEstudiosMode = computed(() => currentView.value === 'indicaciones' && selectedColegaId.value === ALL_ESTUDIOS);
     const muestrasDropdownActive = computed(() => currentView.value === 'crud' && MUESTRAS_CATALOGO_KEYS.includes(currentEntityKey.value));
     // El nav "Estudios" agrupa Estudios + Laboratorios Procesantes + Métodos +
-    // Muestras (con su propio sub-menú): queda "activo" si la vista actual es
-    // cualquiera de esas.
+    // Muestras (con su propio sub-menú) + Áreas: queda "activo" si la vista
+    // actual es cualquiera de esas.
     const estudiosDropdownActive = computed(() =>
       currentView.value === 'indicaciones' ||
-      (currentView.value === 'crud' && (TOP_NAV_ENTITY_KEYS.includes(currentEntityKey.value) || MUESTRAS_CATALOGO_KEYS.includes(currentEntityKey.value)))
+      (currentView.value === 'crud' && (TOP_NAV_ENTITY_KEYS.includes(currentEntityKey.value) || MUESTRAS_CATALOGO_KEYS.includes(currentEntityKey.value) || currentEntityKey.value === 'sectores'))
     );
     // El nav "Obras Sociales" agrupa Obras Sociales, Nomencladores,
     // Autorizadores y Tarifarios.

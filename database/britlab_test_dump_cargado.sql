@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict wTh2Cdz7FwaxXYSiWeFBkpbrk3B6P1iZlI93thEwZkieBnJof9rB5ZAKd2VPw7a
+\restrict qTEX223gfnoPGMewqJttX7UOh6RrtLiPSz7AdIZgshzGbxMF4k1S8AIvWTScH49
 
 -- Dumped from database version 15.18
 -- Dumped by pg_dump version 15.18
@@ -2897,7 +2897,7 @@ ALTER TABLE ONLY public.estudio_colega
 --
 
 ALTER TABLE ONLY public.estudio_colega
-    ADD CONSTRAINT estudio_colega_id_sector_laboratorio_fkey FOREIGN KEY (id_sector_laboratorio) REFERENCES public.valor_estudio_sector(id) ON DELETE SET NULL;
+    ADD CONSTRAINT estudio_colega_id_sector_laboratorio_fkey FOREIGN KEY (id_sector_laboratorio) REFERENCES public.sector(id) ON DELETE SET NULL;
 
 
 --
@@ -3144,5 +3144,5 @@ ALTER TABLE ONLY public.valor_estudio_sector
 -- PostgreSQL database dump complete
 --
 
-\unrestrict wTh2Cdz7FwaxXYSiWeFBkpbrk3B6P1iZlI93thEwZkieBnJof9rB5ZAKd2VPw7a
+\unrestrict qTEX223gfnoPGMewqJttX7UOh6RrtLiPSz7AdIZgshzGbxMF4k1S8AIvWTScH49
 

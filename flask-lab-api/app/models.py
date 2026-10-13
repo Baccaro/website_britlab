@@ -87,7 +87,10 @@ class EstudioColega(db.Model):
     id_estudio = db.Column(db.Integer, db.ForeignKey('public.estudio.id', ondelete='RESTRICT'), nullable=False)
     id_metodo = db.Column(db.Integer, db.ForeignKey('public.metodo.id', ondelete='SET NULL'), nullable=True)
     id_muestra = db.Column(db.Integer, db.ForeignKey('public.muestra.id', ondelete='SET NULL'), nullable=True)
-    id_sector_laboratorio = db.Column(db.Integer, db.ForeignKey('public.valor_estudio_sector.id', ondelete='SET NULL'), nullable=True)
+    # "Área" del estudio en este laboratorio procesante: apunta directo al
+    # catálogo simple de áreas (sector), no a valor_estudio_sector (eso es
+    # otra cosa: posición/rango del Estudio dentro de un informe por sector).
+    id_sector_laboratorio = db.Column(db.Integer, db.ForeignKey('public.sector.id', ondelete='SET NULL'), nullable=True)
     indicaciones_pacientes = db.Column(db.Text, nullable=True)
     indicaciones_colega = db.Column(db.Text, nullable=True)
     # Descripción propia del dropdown "Preanalítico" (ya no hay catálogo
@@ -114,7 +117,7 @@ class EstudioColega(db.Model):
     estudio = db.relationship('Estudio')
     metodo = db.relationship('Metodo')
     muestra = db.relationship('Muestra')
-    sector_laboratorio = db.relationship('ValorEstudioSector')
+    sector_laboratorio = db.relationship('Sector')
     colega = db.relationship('Colega')
     creado_por = db.relationship('Usuario', foreign_keys=[creado_por_id])
     actualizado_por = db.relationship('Usuario', foreign_keys=[actualizado_por_id])
