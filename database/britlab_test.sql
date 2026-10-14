@@ -128,14 +128,26 @@ CREATE TABLE public.estudio_colega (
 	-- texto del dropdown "Indicaciones al Profesional/Derivante".
 	-- preanalitico_descripcion: texto propio del dropdown "Preanalítico" (ya no
 	-- hay catálogo id_preanalitico: se eliminó junto con la tabla preanalitico
-	-- y con valor_referencia). modelo_derivante_observaciones: texto propio del
-	-- dropdown "Modelo Derivante".
+	-- y con valor_referencia). modelo_derivante_observaciones y
+	-- modelo_derivante_valor_referencia: texto propio del dropdown "Modelo de
+	-- Informe" (antes "Modelo Derivante"; se mantiene el nombre de columna
+	-- igual aunque la sección se renombró en la UI).
 	indicaciones_pacientes text NULL,
 	indicaciones_colega text NULL,
 	preanalitico_descripcion text NULL,
 	modelo_derivante_observaciones text NULL,
+	modelo_derivante_valor_referencia text NULL,
 	dias_demora int4 DEFAULT 0 NULL,
-	estado public.estado_registro_enum DEFAULT 'pendiente'::estado_registro_enum NOT NULL,
+	-- estado_registro_enum: borrador (default, inicio de carga) / pendiente
+	-- (incompleto) / activo (completo y habilitado) / inactivo (fuera de uso
+	-- temporalmente) / discontinuado (no se va a volver a usar). Sólo 'activo'
+	-- habilita la publicación en Web/IA (junto con habilitar_web/habilitar_ia
+	-- respectivamente). Antes era listo/pendiente/revisar/verificado/borrador:
+	-- 'listo' se renombró a 'activo' (y absorbió 'verificado'), 'revisar' se
+	-- fusionó en 'pendiente' (migracion_estados_estudio_colega.sql). Los
+	-- labels 'verificado'/'revisar' quedan huérfanos en el tipo de Postgres
+	-- (no se pueden borrar), pero inalcanzables desde la UI.
+	estado public.estado_registro_enum DEFAULT 'borrador'::estado_registro_enum NOT NULL,
 	codigo_laboratorio varchar(50) DEFAULT NULL::character varying NULL,
 	-- codigo_ams: reemplaza al placeholder "Tharsis" (nunca persistido).
 	-- habilitar_web/habilitar_ia: antes sólo placeholders visuales, ahora
@@ -144,9 +156,10 @@ CREATE TABLE public.estudio_colega (
 	habilitar_web bool DEFAULT false NOT NULL,
 	habilitar_ia bool DEFAULT false NOT NULL,
 	"version" int4 DEFAULT 1 NOT NULL,
-	revisor varchar(100) NOT NULL,
 	observacion text NULL,
-	-- Auditoría de creación/edición (mismo patrón que public.faq).
+	-- Auditoría de creación/edición (mismo patrón que public.faq). Es la
+	-- única: el campo "revisor" (texto libre) se eliminó por pedido
+	-- explícito (migracion_eliminar_revisor.sql).
 	creado_por_id int4 NULL,
 	actualizado_por_id int4 NULL,
 	created_at timestamptz DEFAULT CURRENT_TIMESTAMP NULL,

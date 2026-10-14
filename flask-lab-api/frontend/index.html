@@ -324,6 +324,47 @@
       white-space: normal !important;
     }
 
+    /* Barra de scroll propia arriba de las 3 cards del detalle desplegable:
+       el <td> de la fila de detalle no se achica con el scroll horizontal
+       (las cards quedan ancladas a la izquierda via translateX, ver
+       tablaScrollLeft más abajo), así que la scrollbar nativa de la tabla
+       queda lejos (al pie de todas las filas). Esta barra mini, sincronizada
+       en ambos sentidos con el scroll real de la tabla, deja mover el
+       scroll horizontal sin tener que ir a buscarla. */
+    /* Barra propia (no la scrollbar nativa: en Linux/Chrome suele ser un
+       overlay que queda invisible hasta scrollear, y acá se la necesita bien
+       visible para agarrarla con el mouse a propósito). Track + thumb en
+       porcentaje, arrastre a mano (ver iniciarArrastreScrollFila en app.js),
+       mismo patrón que el resize de columnas (startResize/onResizeMove). */
+    .fila-detalle-scrollbar-track {
+      width: 100cqw;
+      box-sizing: border-box;
+      height: 10px;
+      /* margin-bottom generoso a propósito: ".row.g-3" (fila-detalle-contenido,
+         el sibling de abajo) trae un margin-top negativo (gutter de Bootstrap)
+         que de otro modo monta esa card físicamente encima de esta barra y le
+         roba los eventos de mouse (confirmado con elementFromPoint). */
+      margin: .5rem 0 1.5rem 0;
+      background: #e2e8f0;
+      border-radius: 5px;
+      position: relative;
+      z-index: 2;
+      cursor: pointer;
+    }
+
+    .fila-detalle-scrollbar-thumb {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      background: #94a3b8;
+      border-radius: 5px;
+      cursor: grab;
+    }
+
+    .fila-detalle-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+
     /* Vista previa acotada (2 líneas, con "…") de un texto largo dentro de
        las tarjetas del detalle: para ver el resto hay que abrir el panel
        lateral con el botón "Ver". */
@@ -1086,13 +1127,13 @@
               </div>
             </div>
 
-            <!-- Alerta: mismo estudio "listo" (activo) en 2+ colegas a la vez (sólo en "Todos los Estudios") -->
+            <!-- Alerta: mismo estudio "activo" en 2+ colegas a la vez (sólo en "Todos los Estudios") -->
             <div class="alert alert-warning rounded-lg shadow-sm mb-3 text-xs" role="alert"
               v-if="isAllEstudiosMode && gruposConflicto.length">
               <div class="d-flex justify-content-between align-items-start gap-2">
                 <div>
                   <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                  <strong>{{ gruposConflicto.length }}</strong> estudio(s) figuran "listo" (activo) en más de un
+                  <strong>{{ gruposConflicto.length }}</strong> estudio(s) figuran "activo" en más de un
                   laboratorio procesante al mismo tiempo
                 </div>
                 <button @click="toggleSoloConflictos" class="btn btn-xs btn-outline-dark flex-shrink-0" type="button">
@@ -1179,11 +1220,17 @@
                             v-if="col.field === 'estado'">{{ item.estado || '-' }}<i
                               class="bi bi-exclamation-triangle-fill ms-1" v-if="filaEnConflicto(item)"></i></span>
 
-                          <!-- Disponibilidad: badges Web/IA según los switches del registro -->
+                          <!-- Disponibilidad: Web/IA sólo se publican de verdad con estado "activo"
+                           (regla de negocio). Si está habilitada pero el estudio no está activo,
+                           se muestra atenuada para que quede claro que no se está publicando. -->
                           <span v-else-if="col.field === 'disponibilidad'">
-                            <span class="badge rounded-pill badge-xs bg-primary-container text-primary me-1"
+                            <span
+                              :class="['badge rounded-pill badge-xs me-1', item.estado === 'activo' ? 'bg-primary-container text-primary' : 'bg-tertiary text-britlab-gray']"
+                              :title="item.estado === 'activo' ? 'Publicado en Web' : 'Habilitada para Web, pero no se publica: el estudio no está en estado Activo'"
                               v-if="item.habilitar_web">Web</span>
-                            <span class="badge rounded-pill badge-xs bg-tertiary-container text-tertiary"
+                            <span
+                              :class="['badge rounded-pill badge-xs', item.estado === 'activo' ? 'bg-tertiary-container text-tertiary' : 'bg-tertiary text-britlab-gray']"
+                              :title="item.estado === 'activo' ? 'Publicado en IA' : 'Habilitada para IA, pero no se publica: el estudio no está en estado Activo'"
                               v-if="item.habilitar_ia">IA</span>
                             <span class="text-britlab-gray font-medium"
                               v-if="!item.habilitar_web && !item.habilitar_ia">-</span>
@@ -1191,7 +1238,9 @@
 
                           <!-- Procesador: nombre del colega + Propio/Derivado según es_propio -->
                           <span v-else-if="col.field === 'colega_descripcion'">
-                            <span class="font-semibold text-primary d-block">{{ item.colega_descripcion || '-' }}</span>
+                            <span :title="item.colega_descripcion"
+                              class="font-semibold text-primary d-block text-truncate" style="max-width: 100%;">{{
+                              item.colega_descripcion || '-' }}</span>
                             <span
                               :class="['text-xs', item.colega_es_propio ? 'text-success-teal' : 'text-britlab-gray']">
                               {{ item.colega_es_propio ? 'Propio' : 'Derivado' }}
@@ -1231,7 +1280,7 @@
                           <!-- Modelo Colega: ojo para ver observaciones + PDFs del derivante (y las indicaciones al profesional), o "No disponible" en gris -->
                           <span v-else-if="col.field === 'indicaciones_colega'">
                             <button
-                              v-if="item.pdfs_colega_count > 0 || item.indicaciones_colega || item.modelo_derivante_observaciones"
+                              v-if="item.pdfs_colega_count > 0 || item.indicaciones_colega || item.modelo_derivante_observaciones || item.modelo_derivante_valor_referencia"
                               @click.stop="openModeloColegaPanel(item)" class="btn btn-xs btn-light border"
                               title="Ver modelo de informe del laboratorio procesante" type="button">
                               <i class="bi bi-eye"></i><span class="badge rounded-pill bg-tertiary ms-1"
@@ -1265,82 +1314,97 @@
                            scroll horizontal a mano con translateX (tablaScrollLeft,
                            actualizado por @scroll en #tablaEstudiosScroll) en vez de
                            depender de .fila-detalle-contenido (sticky) acá. -->
+                          <!-- Barra de scroll propia: la scrollbar nativa de la tabla queda
+                           al pie de todas las filas (este <td> no se achica con el scroll,
+                           ver arriba), así que se repite acá arriba, sincronizada con
+                           #tablaEstudiosScroll, para mover el scroll horizontal y ver
+                           columnas no visibles sin tener que ir a buscarla. -->
+                          <div :style="{ position: 'static', transform: 'translateX(' + tablaScrollLeft + 'px)' }"
+                            v-if="tablaScrollWidth > tablaScrollViewport" @mousedown="iniciarArrastreScrollFila"
+                            class="fila-detalle-scrollbar-track">
+                            <div :style="filaScrollThumbStyle" class="fila-detalle-scrollbar-thumb"></div>
+                          </div>
                           <div :style="{ position: 'static', transform: 'translateX(' + tablaScrollLeft + 'px)' }"
                             class="row g-3 p-3 fila-detalle-contenido">
-                            <!-- Información General: 1/5 del ancho (el resto se reparte entre
-                             Muestras y Documentación e Indicaciones). -->
-                            <div class="col" style="flex: 0 0 20%; max-width: 20%;">
+                            <!-- Información General: más ancha que las otras dos (el resto se
+                             reparte entre Muestras y Documentación e Indicaciones), con dos
+                             columnas propias: datos generales a la izquierda, Observaciones +
+                             auditoría (Creado por / Última edición) a la derecha. -->
+                            <div class="col" style="flex: 0 0 36%; max-width: 36%;">
                               <div class="bg-white border border-outline-variant rounded-lg p-3 h-100">
                                 <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">
                                   INFORMACIÓN GENERAL</h6>
-                                <dl class="mb-0 text-xs">
-                                  <div class="d-flex justify-content-between py-1">
-                                    <dt class="text-on-surface-variant">Cód. Hexa</dt>
-                                    <dd class="mb-0 font-medium">{{ item.codigo_hexalis || '-' }}</dd>
+                                <div class="row g-3">
+                                  <div class="col-6">
+                                    <dl class="mb-0 text-xs">
+                                      <div class="d-flex justify-content-between py-1">
+                                        <dt class="text-on-surface-variant">Cód. Hexa</dt>
+                                        <dd class="mb-0 font-medium">{{ item.codigo_hexalis || '-' }}</dd>
+                                      </div>
+                                      <div class="d-flex justify-content-between py-1">
+                                        <dt class="text-on-surface-variant">Nemónico Datatech</dt>
+                                        <dd class="mb-0 font-medium">{{ item.nemonico_datatech || '-' }}</dd>
+                                      </div>
+                                      <div class="d-flex justify-content-between py-1">
+                                        <dt class="text-on-surface-variant">Cód. Lab. externo</dt>
+                                        <dd class="mb-0 font-medium">{{ item.codigo_laboratorio || '-' }}</dd>
+                                      </div>
+                                      <div class="d-flex justify-content-between py-1">
+                                        <dt class="text-on-surface-variant">Cód. AMS</dt>
+                                        <dd class="mb-0 font-medium">{{ item.codigo_ams || '-' }}</dd>
+                                      </div>
+                                      <div class="d-flex justify-content-between py-1">
+                                        <dt class="text-on-surface-variant">Paridad</dt>
+                                        <dd class="mb-0 font-medium">{{ item.paridad_datatech_hexalis || '-' }}</dd>
+                                      </div>
+                                      <div class="d-flex justify-content-between py-1">
+                                        <dt class="text-on-surface-variant">Método</dt>
+                                        <dd class="mb-0 font-medium">{{ item.metodo || '-' }}</dd>
+                                      </div>
+                                      <div class="d-flex justify-content-between py-1">
+                                        <dt class="text-on-surface-variant">Demora</dt>
+                                        <dd class="mb-0 font-medium">{{ item.dias_demora ?? '-' }} días</dd>
+                                      </div>
+                                      <div class="d-flex justify-content-between py-1">
+                                        <dt class="text-on-surface-variant">Área / Sector (ID)</dt>
+                                        <dd class="mb-0 font-medium">{{ item.sector || '-' }}{{
+                                          item.id_sector_laboratorio ? ' (#' + item.id_sector_laboratorio + ')' : ''
+                                          }}</dd>
+                                      </div>
+                                      <div class="d-flex justify-content-between py-1">
+                                        <dt class="text-on-surface-variant">Disponibilidad (Web/IA)</dt>
+                                        <dd class="mb-0 font-medium">{{ [item.habilitar_web ? 'Web' : null,
+                                          item.habilitar_ia ? 'IA' : null].filter(Boolean).join(' / ') || '-' }}</dd>
+                                      </div>
+                                    </dl>
                                   </div>
-                                  <div class="d-flex justify-content-between py-1">
-                                    <dt class="text-on-surface-variant">Nemónico Datatech</dt>
-                                    <dd class="mb-0 font-medium">{{ item.nemonico_datatech || '-' }}</dd>
+                                  <div class="col-6">
+                                    <div class="pb-2">
+                                      <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-xs font-bold text-on-surface">Observaciones</span>
+                                        <button v-if="item.observacion" @click="openObservacionPanel(item)"
+                                          class="btn btn-xs btn-link text-primary p-0 text-decoration-none"
+                                          type="button">Ver &rarr;</button>
+                                        <span class="text-xs text-britlab-gray" v-else>No disponible</span>
+                                      </div>
+                                      <p class="text-xs text-on-surface-variant mb-0 mt-1 texto-recortado-2"
+                                        v-if="item.observacion">{{ textoPlano(item.observacion, 200) }}</p>
+                                    </div>
+                                    <hr class="my-2">
+                                    <p class="text-xs text-on-surface-variant mb-1">Creado por <strong>{{
+                                        item.creado_por || '-' }}</strong><span v-if="item.created_at"> el {{ new
+                                        Date(item.created_at).toLocaleString() }}</span></p>
+                                    <p class="text-xs text-on-surface-variant mb-0">Última edición por <strong>{{
+                                        item.actualizado_por || '-' }}</strong><span v-if="item.updated_at"> el {{ new
+                                        Date(item.updated_at).toLocaleString() }}</span></p>
                                   </div>
-                                  <div class="d-flex justify-content-between py-1">
-                                    <dt class="text-on-surface-variant">Cód. Lab. externo</dt>
-                                    <dd class="mb-0 font-medium">{{ item.codigo_laboratorio || '-' }}</dd>
-                                  </div>
-                                  <div class="d-flex justify-content-between py-1">
-                                    <dt class="text-on-surface-variant">Cód. AMS</dt>
-                                    <dd class="mb-0 font-medium">{{ item.codigo_ams || '-' }}</dd>
-                                  </div>
-                                  <div class="d-flex justify-content-between py-1">
-                                    <dt class="text-on-surface-variant">Paridad</dt>
-                                    <dd class="mb-0 font-medium">{{ item.paridad_datatech_hexalis || '-' }}</dd>
-                                  </div>
-                                  <div class="d-flex justify-content-between py-1">
-                                    <dt class="text-on-surface-variant">Método</dt>
-                                    <dd class="mb-0 font-medium">{{ item.metodo || '-' }}</dd>
-                                  </div>
-                                  <div class="d-flex justify-content-between py-1">
-                                    <dt class="text-on-surface-variant">Demora</dt>
-                                    <dd class="mb-0 font-medium">{{ item.dias_demora ?? '-' }} días</dd>
-                                  </div>
-                                  <div class="d-flex justify-content-between py-1">
-                                    <dt class="text-on-surface-variant">Área / Sector (ID)</dt>
-                                    <dd class="mb-0 font-medium">{{ item.sector || '-' }}{{ item.id_sector_laboratorio ?
-                                      ' (#' + item.id_sector_laboratorio + ')' : '' }}</dd>
-                                  </div>
-                                  <div class="d-flex justify-content-between py-1">
-                                    <dt class="text-on-surface-variant">Disponibilidad (Web/IA)</dt>
-                                    <dd class="mb-0 font-medium">{{ [item.habilitar_web ? 'Web' : null,
-                                      item.habilitar_ia ? 'IA' : null].filter(Boolean).join(' / ') || '-' }}</dd>
-                                  </div>
-                                  <div class="d-flex justify-content-between py-1">
-                                    <dt class="text-on-surface-variant">Revisor</dt>
-                                    <dd class="mb-0 font-medium">{{ item.revisor || '-' }}</dd>
-                                  </div>
-                                </dl>
-                                <div class="py-2 border-top border-outline-variant mt-2">
-                                  <div class="d-flex justify-content-between align-items-center">
-                                    <span class="text-xs font-bold text-on-surface">Observaciones</span>
-                                    <button v-if="item.observacion" @click="openObservacionPanel(item)"
-                                      class="btn btn-xs btn-link text-primary p-0 text-decoration-none"
-                                      type="button">Ver &rarr;</button>
-                                    <span class="text-xs text-britlab-gray" v-else>No disponible</span>
-                                  </div>
-                                  <p class="text-xs text-on-surface-variant mb-0 mt-1 texto-recortado-2"
-                                    v-if="item.observacion">{{ textoPlano(item.observacion, 200) }}</p>
                                 </div>
-                                <hr class="my-2">
-                                <p class="text-xs text-on-surface-variant mb-1">Creado por <strong>{{ item.creado_por ||
-                                    '-' }}</strong><span v-if="item.created_at"> el {{ new
-                                    Date(item.created_at).toLocaleString() }}</span></p>
-                                <p class="text-xs text-on-surface-variant mb-0">Última edición por <strong>{{
-                                    item.actualizado_por || '-' }}</strong><span v-if="item.updated_at"> el {{ new
-                                    Date(item.updated_at).toLocaleString() }}</span></p>
                               </div>
                             </div>
 
                             <!-- Muestras: un botón "paginado" por muestra (elige cuál mostrar
                              abajo) + "Todas" para verlas todas, en orden, en el panel lateral. -->
-                            <div class="col" style="flex: 0 0 40%; max-width: 40%;">
+                            <div class="col" style="flex: 0 0 32%; max-width: 32%;">
                               <div class="bg-white border border-outline-variant rounded-lg p-3 h-100">
                                 <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">
                                   MUESTRAS</h6>
@@ -1456,7 +1520,7 @@
                              COLEGAS (Preanalítico, Indicaciones Profesional/Derivante y Modelo
                              Derivante), cada uno con su "Ver →" al panel lateral y una vista
                              previa del texto cargado. -->
-                            <div class="col" style="flex: 0 0 40%; max-width: 40%;">
+                            <div class="col" style="flex: 0 0 32%; max-width: 32%;">
                               <div class="bg-white border border-outline-variant rounded-lg p-3 h-100">
                                 <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">
                                   DOCUMENTACIÓN E INDICACIONES</h6>
@@ -1506,8 +1570,9 @@
 
                                 <div class="py-2">
                                   <div class="d-flex justify-content-between align-items-center">
-                                    <span class="text-xs font-bold text-on-surface">Modelo Derivante</span>
-                                    <button v-if="item.modelo_derivante_observaciones || item.pdfs_colega_count"
+                                    <span class="text-xs font-bold text-on-surface">Modelo de Informe</span>
+                                    <button
+                                      v-if="item.modelo_derivante_observaciones || item.modelo_derivante_valor_referencia || item.pdfs_colega_count"
                                       @click="openModeloColegaPanel(item)"
                                       class="btn btn-xs btn-link text-primary p-0 text-decoration-none" type="button">
                                       Ver &rarr;<span class="badge rounded-pill bg-tertiary ms-1"
@@ -3902,11 +3967,11 @@
                   </div>
 
                   <!-- Documentación (PDF) de este dropdown: Preanalítico, Indicaciones
-                   Paciente y Modelo Derivante admiten 1..N archivos cada uno (por
+                   Paciente y Modelo de Informe admiten 1..N archivos cada uno (por
                    categoría propia). Si el registro todavía no se guardó, los
                    elegidos quedan bufferados y se suben recién al guardar (igual
                    que las muestras); si ya existe, se suben al toque. Sólo
-                   "Modelo Derivante" permite ponerle una descripción a cada PDF. -->
+                   "Modelo de Informe" permite ponerle una descripción a cada PDF. -->
                   <div class="mt-3 pt-3 border-top border-outline-variant"
                     v-if="SECCIONES_CON_PDF.includes(section.key)">
                     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -4725,7 +4790,7 @@
                 <p class="text-on-surface-variant text-xs mb-4" v-else>Sin descripción cargada.</p>
               </template>
 
-              <!-- Modelo Colega: Indicaciones al Profesional/Derivante + Observaciones de Modelo Derivante + PDFs (con descripción propia) -->
+              <!-- Modelo Colega: Indicaciones al Profesional/Derivante + Observaciones de Modelo de Informe + PDFs (con descripción propia) -->
               <template v-if="sidePanel.kind === 'colega'">
                 <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">INDICACIONES AL
                   PROFESIONAL / DERIVANTE</h6>
@@ -4734,10 +4799,16 @@
                 <p class="text-on-surface-variant text-xs mb-4" v-else>Sin indicaciones cargadas.</p>
 
                 <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">OBSERVACIONES DEL
-                  MODELO DERIVANTE</h6>
+                  MODELO DE INFORME</h6>
                 <div class="rich-display mb-4" v-if="sidePanel.item.modelo_derivante_observaciones"
                   v-html="sidePanel.item.modelo_derivante_observaciones"></div>
                 <p class="text-on-surface-variant text-xs mb-4" v-else>Sin observaciones cargadas.</p>
+
+                <h6 class="text-xs font-bold text-britlab-gray mb-2" style="letter-spacing: .05em;">VALOR DE
+                  REFERENCIA</h6>
+                <div class="rich-display mb-4" v-if="sidePanel.item.modelo_derivante_valor_referencia"
+                  v-html="sidePanel.item.modelo_derivante_valor_referencia"></div>
+                <p class="text-on-surface-variant text-xs mb-4" v-else>Sin valor de referencia cargado.</p>
               </template>
 
               <!-- Observaciones generales del registro (sin PDFs propios) -->

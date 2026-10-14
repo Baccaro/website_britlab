@@ -133,14 +133,14 @@ class EstudioColegaBase(BaseModel):
     indicaciones_colega: Optional[str] = None
     preanalitico_descripcion: Optional[str] = None
     modelo_derivante_observaciones: Optional[str] = None
+    modelo_derivante_valor_referencia: Optional[str] = None
     dias_demora: Optional[int] = 0
-    estado: Optional[str] = 'pendiente'
+    estado: Optional[str] = 'borrador'
     codigo_laboratorio: Optional[str] = None
     codigo_ams: Optional[str] = None
     habilitar_web: Optional[bool] = False
     habilitar_ia: Optional[bool] = False
     version: Optional[int] = 1
-    revisor: str
     observacion: Optional[str] = None
     colega_id: int
 
@@ -158,6 +158,7 @@ class EstudioColegaUpdate(BaseModel):
     indicaciones_colega: Optional[str] = None
     preanalitico_descripcion: Optional[str] = None
     modelo_derivante_observaciones: Optional[str] = None
+    modelo_derivante_valor_referencia: Optional[str] = None
     dias_demora: Optional[int] = None
     estado: Optional[str] = None
     codigo_laboratorio: Optional[str] = None
@@ -165,7 +166,6 @@ class EstudioColegaUpdate(BaseModel):
     habilitar_web: Optional[bool] = None
     habilitar_ia: Optional[bool] = None
     version: Optional[int] = None
-    revisor: Optional[str] = None
     observacion: Optional[str] = None
     colega_id: Optional[int] = None
 

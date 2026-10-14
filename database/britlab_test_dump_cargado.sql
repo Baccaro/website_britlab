@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict qTEX223gfnoPGMewqJttX7UOh6RrtLiPSz7AdIZgshzGbxMF4k1S8AIvWTScH49
+\restrict 0Y56oyddEaZBXiKBQshQhLjQZFA9M0LYvGbC3fIrbKv3ktlF35WQHUJGC2cK2is
 
 -- Dumped from database version 15.18
 -- Dumped by pg_dump version 15.18
@@ -36,11 +36,13 @@ CREATE TYPE public.estado_paridad_enum AS ENUM (
 --
 
 CREATE TYPE public.estado_registro_enum AS ENUM (
-    'listo',
+    'activo',
     'pendiente',
     'revisar',
     'verificado',
-    'borrador'
+    'borrador',
+    'inactivo',
+    'discontinuado'
 );
 
 
@@ -269,10 +271,9 @@ CREATE TABLE public.estudio_colega (
     id_sector_laboratorio integer,
     indicaciones_pacientes text,
     dias_demora integer DEFAULT 0,
-    estado public.estado_registro_enum DEFAULT 'pendiente'::public.estado_registro_enum NOT NULL,
+    estado public.estado_registro_enum DEFAULT 'borrador'::public.estado_registro_enum NOT NULL,
     codigo_laboratorio character varying(50) DEFAULT NULL::character varying,
     version integer DEFAULT 1 NOT NULL,
-    revisor character varying(100) NOT NULL,
     observacion text,
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -284,7 +285,8 @@ CREATE TABLE public.estudio_colega (
     habilitar_web boolean DEFAULT false NOT NULL,
     habilitar_ia boolean DEFAULT false NOT NULL,
     creado_por_id integer,
-    actualizado_por_id integer
+    actualizado_por_id integer,
+    modelo_derivante_valor_referencia text
 );
 
 
@@ -1326,7 +1328,6 @@ CREATE VIEW public.v_estudios_colegas AS
     ec.estado,
     ec.codigo_laboratorio,
     ec.version,
-    ec.revisor,
     ec.observacion,
     ec.created_at,
     ec.updated_at
@@ -1663,7 +1664,7 @@ COPY public.estudio (id, codigo_hexalis, descripcion) FROM stdin;
 -- Data for Name: estudio_colega; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, id_muestra, id_sector_laboratorio, indicaciones_pacientes, dias_demora, estado, codigo_laboratorio, version, revisor, observacion, created_at, updated_at, colega_id, indicaciones_colega, preanalitico_descripcion, modelo_derivante_observaciones, codigo_ams, habilitar_web, habilitar_ia, creado_por_id, actualizado_por_id) FROM stdin;
+COPY public.estudio_colega (id, nemonico_datatech, paridad_datatech_hexalis, id_estudio, id_metodo, id_muestra, id_sector_laboratorio, indicaciones_pacientes, dias_demora, estado, codigo_laboratorio, version, observacion, created_at, updated_at, colega_id, indicaciones_colega, preanalitico_descripcion, modelo_derivante_observaciones, codigo_ams, habilitar_web, habilitar_ia, creado_por_id, actualizado_por_id, modelo_derivante_valor_referencia) FROM stdin;
 \.
 
 
@@ -3144,5 +3145,5 @@ ALTER TABLE ONLY public.valor_estudio_sector
 -- PostgreSQL database dump complete
 --
 
-\unrestrict qTEX223gfnoPGMewqJttX7UOh6RrtLiPSz7AdIZgshzGbxMF4k1S8AIvWTScH49
+\unrestrict 0Y56oyddEaZBXiKBQshQhLjQZFA9M0LYvGbC3fIrbKv3ktlF35WQHUJGC2cK2is
 

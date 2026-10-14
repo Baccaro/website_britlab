@@ -95,18 +95,25 @@ class EstudioColega(db.Model):
     indicaciones_colega = db.Column(db.Text, nullable=True)
     # Descripción propia del dropdown "Preanalítico" (ya no hay catálogo
     # id_preanalitico: se eliminó junto con la tabla preanalitico) y
-    # Observaciones del dropdown "Modelo Derivante" (independiente de
-    # indicaciones_colega, que quedó sólo texto).
+    # Observaciones/Valor de Referencia del dropdown "Modelo de Informe"
+    # (antes "Modelo Derivante"; independiente de indicaciones_colega, que
+    # quedó sólo texto). Los nombres de columna se mantienen igual aunque la
+    # sección se renombró en la UI, para no tocar el esquema de más.
     preanalitico_descripcion = db.Column(db.Text, nullable=True)
     modelo_derivante_observaciones = db.Column(db.Text, nullable=True)
+    modelo_derivante_valor_referencia = db.Column(db.Text, nullable=True)
     dias_demora = db.Column(db.Integer, default=0)
-    estado = db.Column(db.String(20), nullable=False, default='pendiente')
+    # Enum estado_registro_enum: 'borrador' (default, inicio de carga),
+    # 'pendiente' (incompleto), 'activo' (completo y habilitado), 'inactivo'
+    # (fuera de uso temporalmente, ej. falta de reactivo), 'discontinuado'
+    # (no se va a volver a usar). Sólo 'activo' habilita la publicación en
+    # Web/IA (junto con habilitar_web/habilitar_ia respectivamente).
+    estado = db.Column(db.String(20), nullable=False, default='borrador')
     codigo_laboratorio = db.Column(db.String(50), nullable=True)
     codigo_ams = db.Column(db.String(100), nullable=True)
     habilitar_web = db.Column(db.Boolean, nullable=False, default=False)
     habilitar_ia = db.Column(db.Boolean, nullable=False, default=False)
     version = db.Column(db.Integer, nullable=False, default=1)
-    revisor = db.Column(db.String(100), nullable=False)
     observacion = db.Column(db.Text, nullable=True)
     creado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)
     actualizado_por_id = db.Column(db.Integer, db.ForeignKey('public.usuario.id', ondelete='SET NULL'), nullable=True)

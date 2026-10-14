@@ -19,17 +19,19 @@ bp = make_crud_blueprint(
 @modulo_escritura_required('estudios')
 def deshabilitar(id):
     """Deshabilita un colega (no se borra: dejaría huérfanos sus estudios).
-    Opcionalmente pasa a 'pendiente' todos sus registros Estudio x Colega."""
+    Opcionalmente pasa a 'inactivo' todos sus registros Estudio x Colega
+    (estado temporal, no 'discontinuado': vuelven a estar disponibles si el
+    colega se rehabilita)."""
     colega = Colega.query.get_or_404(id)
     colega.habilitado = False
 
-    marcar_pendiente = bool((request.get_json(silent=True) or {}).get('marcar_pendiente'))
+    marcar_inactivo = bool((request.get_json(silent=True) or {}).get('marcar_inactivo'))
     afectados = 0
-    if marcar_pendiente:
+    if marcar_inactivo:
         afectados = (
             EstudioColega.query
             .filter_by(colega_id=id)
-            .update({'estado': 'pendiente'}, synchronize_session=False)
+            .update({'estado': 'inactivo'}, synchronize_session=False)
         )
 
     error_response = _commit_or_400()
@@ -38,7 +40,7 @@ def deshabilitar(id):
     return jsonify({
         'id': colega.id,
         'habilitado': colega.habilitado,
-        'estudios_marcados_pendiente': afectados,
+        'estudios_marcados_inactivo': afectados,
     }), 200
 
 

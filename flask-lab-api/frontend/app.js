@@ -37,16 +37,14 @@ const MODULO_POR_PANTALLA = {
 };
 
 // Clase de color del badge de estado, tanto en los filtros como en la
-// columna "Estado" de la tabla.
+// columna "Estado" de la tabla. Mismos 5 estados para Estudio x Colega
+// (estado_registro_enum) y para FAQ (RN-FAQ-04: sólo borrador/activo/inactivo).
 const ESTADO_CHIP_CLASS = {
-  listo: 'bg-success-teal',
-  verificado: 'bg-blue-600',
-  pendiente: 'bg-tertiary',
-  revisar: 'bg-warning text-dark',
   borrador: 'bg-white text-on-surface-variant border border-outline-variant',
-  // Estados propios de FAQ (RN-FAQ-04): 'borrador' ya está definido arriba.
+  pendiente: 'bg-tertiary',
   activo: 'bg-success-teal',
-  inactivo: 'bg-tertiary'
+  inactivo: 'bg-warning text-dark',
+  discontinuado: 'bg-dark text-white'
 };
 
 
@@ -72,57 +70,58 @@ const MUESTRA_CAMPOS = [
 const ESTUDIO_COLEGA_SECCIONES = [
   {
     key: 'general', title: 'Identificación',
-    desc: 'Estudio, laboratorio procesante, área y método.',
+    desc: 'Identifica el estudio, quién lo procesa, el área responsable y el método utilizado.',
     fields: ['id_estudio', 'colega_id', 'id_sector_laboratorio', 'id_metodo']
   },
-  { key: 'muestras', title: 'Muestras', desc: 'Una o varias muestras admitidas, cada una con su recolección y conservación.' },
+  { key: 'muestras', title: 'Muestras', desc: 'Cargá una o más muestras admitidas, indicando tipo, recipiente, volumen, recolección, conservación y transporte.' },
   {
     key: 'preanalitico', title: 'Preanalítico',
-    desc: 'Descripción y documentación adjunta.',
+    desc: 'Cargá únicamente requisitos técnicos adicionales para el procesamiento de la muestra que no estén informados en Muestras.',
     fields: ['preanalitico_descripcion']
   },
   {
     key: 'indicaciones_pacientes', title: 'Indicaciones Pacientes',
-    desc: 'Descripción de las indicaciones y documentación adjunta para el paciente.',
+    desc: 'Indicá qué debe hacer o tener en cuenta el paciente antes de realizarse el estudio.',
     fields: ['indicaciones_pacientes']
   },
   {
     key: 'indicaciones_colega', title: 'Indicaciones al Profesional / Derivante',
-    desc: 'Descripción de las indicaciones para el laboratorio procesante.',
+    desc: 'Indicá qué información, documentación o condición debe cumplir el profesional o laboratorio que deriva la muestra.',
     fields: ['indicaciones_colega']
   },
   {
-    key: 'modelo_derivante', title: 'Modelo Derivante',
-    desc: 'Observaciones y modelos de informe (PDF) del laboratorio derivante, cada uno con su propia descripción.',
-    fields: ['modelo_derivante_observaciones']
+    key: 'modelo_derivante', title: 'Modelo de Informe',
+    desc: 'Cargá observaciones y el modelo de informe en PDF asociado al estudio.',
+    fields: ['modelo_derivante_observaciones', 'modelo_derivante_valor_referencia']
   },
   {
     key: 'procesamiento', title: 'Procesamiento y Tiempos',
-    desc: 'Demora y observaciones operativas.',
+    desc: 'Indica la demora del estudio y cualquier aclaración operativa sobre días o condiciones de procesamiento.',
     fields: ['dias_demora', 'observaciones_operativas']
   },
   {
     key: 'paridad_publicacion', title: 'Paridad y Publicación',
-    desc: 'Identificadores del registro y visibilidad.',
+    desc: 'Completá los códigos de identificación, definí la paridad y seleccioná dónde estará disponible el estudio.',
     // 'codigo_hexalis' no es un campo propio (pertenece al Estudio elegido):
     // se muestra aparte, de sólo lectura, antes de estos campos.
     fields: ['nemonico_datatech', 'codigo_ams', 'codigo_laboratorio', 'paridad_datatech_hexalis', 'habilitar_ia', 'habilitar_web']
   },
   {
     key: 'estado_observaciones', title: 'Estado y Observaciones',
-    desc: 'Estado del registro y observaciones generales.',
+    desc: 'Definí el estado del registro y agregá observaciones internas que ayuden a completar o revisar la información.',
     fields: ['estado', 'observacion']
   }
 ];
 
 // Qué secciones del formulario llevan además un cargador de PDFs (1..N), y a
 // qué categoría de estudio_colega_modelo corresponde cada una. Sólo
-// 'modelo_derivante' permite ponerle una descripción propia a cada archivo.
+// 'modelo_derivante' (sección "Modelo de Informe") permite ponerle una
+// descripción propia a cada archivo.
 const CATEGORIA_PDF_POR_SECCION = { preanalitico: 'preanalitico', modelo_derivante: 'colega' };
 const SECCIONES_CON_PDF = Object.keys(CATEGORIA_PDF_POR_SECCION);
 const LABEL_PDF_POR_SECCION = {
   preanalitico: 'Documentación de Preanalítico (PDF)',
-  modelo_derivante: 'Modelos de Informe del Derivante (PDF)',
+  modelo_derivante: 'Modelos de Informe (PDF)',
 };
 
 let _muestraKeySeq = 0;
@@ -135,22 +134,21 @@ const nextMuestraKey = () => `m${_muestraKeySeq++}`;
 // horizontal (ver .col-pin en index.html y pinStyle/getColWidth más abajo).
 const INDICACIONES_COLUMNAS = [
   { field: 'estudio_descripcion', label: 'Estudio', fija: true },
-  { field: 'colega_descripcion', label: 'Laboratorio Procesante', fija: true },
+  { field: 'colega_descripcion', label: 'Laboratorio', fija: true },
   { field: 'estado', label: 'Estado', fija: true },
   { field: 'codigo_hexalis', label: 'Cód. Hexa' },
   { field: 'nemonico_datatech', label: 'Nemónico' },
-  { field: 'codigo_laboratorio', label: 'Cód. Lab. Externo' },
+  { field: 'codigo_laboratorio', label: 'Cód. Lab. Ext.' },
   { field: 'codigo_ams', label: 'Cód AMS' },
   { field: 'metodo', label: 'Método' },
   { field: 'muestra', label: 'Muestra' },
   { field: 'dias_demora', label: 'Demora' },
-  { field: 'indicaciones_pacientes', label: 'Indicaciones Paciente' },
-  { field: 'preanalitico_descripcion', label: 'Pre-Analítico' },
-  { field: 'indicaciones_colega', label: 'Indicaciones Profesional / Derivante' },
+  { field: 'indicaciones_pacientes', label: 'Ind. Paciente' },
+  { field: 'preanalitico_descripcion', label: 'Preanalítico' },
+  { field: 'indicaciones_colega', label: 'Prof./Derivante' },
   { field: 'sector', label: 'Área' },
-  { field: 'disponibilidad', label: 'Disponibilidad (Web/IA)' },
+  { field: 'disponibilidad', label: 'Web/IA' },
   { field: 'paridad_datatech_hexalis', label: 'Paridad' },
-  { field: 'revisor', label: 'Revisor' },
   { field: 'observacion', label: 'Observaciones' }
 ];
 // Orden de las columnas "fija" (para calcular el "left" acumulado de cada
@@ -159,15 +157,36 @@ const INDICACIONES_COLUMNAS = [
 const PINNED_FIELDS_ORDER = ['estudio_descripcion', 'colega_descripcion', 'estado'];
 const CHEVRON_WIDTH = 32; // 2rem, la columna del ">" para expandir la fila
 const DEFAULT_COL_WIDTH = 150;
+// Ancho inicial de cada columna, medido contra el contenido real (badge,
+// botón "Ver", texto corto) en vez de depender del fallback genérico de
+// arriba para todas. Estudio/Método/Área/Observaciones son la excepción
+// deliberada: llevan texto libre de largo muy variable, así que se les deja
+// un ancho cómodo típico en vez de perseguir el caso extremo (que igual
+// trunca con "..." y tooltip al pasar el mouse). El usuario igual lo puede
+// resizear a mano.
 const DEFAULT_COL_WIDTHS = {
   estudio_descripcion: 200,
-  colega_descripcion: 170,
+  colega_descripcion: 115,
   estado: 90,
+  codigo_hexalis: 85,
+  nemonico_datatech: 85,
+  codigo_laboratorio: 100,
+  codigo_ams: 75,
+  metodo: 130,
+  muestra: 95,
+  dias_demora: 50,
+  indicaciones_pacientes: 100,
+  preanalitico_descripcion: 100,
+  indicaciones_colega: 100,
+  sector: 130,
+  disponibilidad: 80,
+  paridad_datatech_hexalis: 90,
+  observacion: 160,
 };
 const INDICACIONES_COLUMNAS_DEFAULT = [
   'estudio_descripcion', 'colega_descripcion', 'estado', 'codigo_hexalis', 'nemonico_datatech', 'codigo_laboratorio',
   'codigo_ams', 'metodo', 'muestra', 'dias_demora', 'indicaciones_pacientes', 'preanalitico_descripcion',
-  'indicaciones_colega', 'sector', 'disponibilidad', 'paridad_datatech_hexalis', 'revisor', 'observacion'
+  'indicaciones_colega', 'sector', 'disponibilidad', 'paridad_datatech_hexalis', 'observacion'
 ];
 
 // Tamaños de página disponibles para los listados paginados (Estudios,
@@ -486,6 +505,9 @@ const app = createApp({
     // Columnas que sí se pueden tildar/destildar desde el selector "Columnas"
     // (las fijas ni siquiera se listan ahí).
     const columnasTogglables = computed(() => INDICACIONES_COLUMNAS.filter(c => !c.fija));
+    // Al tildar/destildar una columna cambia el ancho total scrolleable de la
+    // tabla: recalcula la barra de scroll propia de la fila de detalle.
+    watch(visibleColumnasList, () => nextTick(actualizarTablaScrollWidth));
 
     // Ancho de cada columna de "Todos los Estudios": el usuario lo puede
     // cambiar arrastrando el borde derecho del encabezado (ver
@@ -530,6 +552,7 @@ const app = createApp({
       document.removeEventListener('mousemove', onResizeMove);
       document.removeEventListener('mouseup', onResizeEnd);
       persistColumnWidths();
+      actualizarTablaScrollWidth();
     };
     const startResize = (event, field) => {
       event.preventDefault();
@@ -554,9 +577,64 @@ const app = createApp({
     // con translateX (position:sticky no calza bien ahí con el
     // table-layout:fixed + colgroup del resize de columnas).
     const tablaScrollLeft = ref(0);
+    // Ancho total scrolleable de la tabla (todas las columnas sumadas) y
+    // ancho visible (viewport) de #tablaEstudiosScroll: los usa la barra de
+    // scroll propia de la fila de detalle (track + thumb, ver más abajo) para
+    // calcular el tamaño del thumb y a qué posición real corresponde cada
+    // punto del arrastre.
+    const tablaScrollWidth = ref(0);
+    const tablaScrollViewport = ref(0);
+    const actualizarTablaScrollWidth = () => {
+      const el = document.getElementById('tablaEstudiosScroll');
+      tablaScrollWidth.value = el ? el.scrollWidth : 0;
+      tablaScrollViewport.value = el ? el.clientWidth : 0;
+    };
     const onTablaEstudiosScroll = (e) => { tablaScrollLeft.value = e.target.scrollLeft; };
 
-    const ESTADOS_REGISTRO = ['listo', 'pendiente', 'revisar', 'verificado', 'borrador'];
+    // Barra de scroll propia de la fila de detalle (no la nativa de la
+    // tabla: en Linux/Chrome suele ser un overlay invisible hasta que se
+    // scrollea, y acá hace falta que se vea para agarrarla a propósito).
+    // Mismo patrón de arrastre que startResize/onResizeMove/onResizeEnd para
+    // las columnas: un listener global de mousemove/mouseup mientras dura el
+    // drag, en vez de depender del scroll nativo de un elemento.
+    const filaScrollThumbStyle = computed(() => {
+      const total = tablaScrollWidth.value;
+      const viewport = tablaScrollViewport.value;
+      if (!total || !viewport || total <= viewport) return { width: '100%', left: '0%' };
+      const widthPct = Math.max(5, (viewport / total) * 100);
+      const maxScroll = total - viewport;
+      const leftPct = maxScroll > 0 ? (tablaScrollLeft.value / maxScroll) * (100 - widthPct) : 0;
+      return { width: widthPct + '%', left: leftPct + '%' };
+    });
+    let arrastreScrollFila = null;
+    const onArrastreScrollFilaMove = (e) => {
+      if (!arrastreScrollFila) return;
+      const { startX, startScrollLeft, trackWidth, thumbWidthPx, maxScroll } = arrastreScrollFila;
+      const scrollableTrack = Math.max(1, trackWidth - thumbWidthPx);
+      const deltaScroll = (e.clientX - startX) * (maxScroll / scrollableTrack);
+      const real = document.getElementById('tablaEstudiosScroll');
+      if (real) real.scrollLeft = Math.min(maxScroll, Math.max(0, startScrollLeft + deltaScroll));
+    };
+    const onArrastreScrollFilaEnd = () => {
+      arrastreScrollFila = null;
+      document.removeEventListener('mousemove', onArrastreScrollFilaMove);
+      document.removeEventListener('mouseup', onArrastreScrollFilaEnd);
+    };
+    const iniciarArrastreScrollFila = (e) => {
+      const real = document.getElementById('tablaEstudiosScroll');
+      const total = tablaScrollWidth.value;
+      const viewport = tablaScrollViewport.value;
+      const maxScroll = total - viewport;
+      if (!real || maxScroll <= 0) return;
+      const trackWidth = e.currentTarget.getBoundingClientRect().width;
+      const thumbWidthPx = Math.max(trackWidth * 0.05, (viewport / total) * trackWidth);
+      arrastreScrollFila = { startX: e.clientX, startScrollLeft: real.scrollLeft, trackWidth, thumbWidthPx, maxScroll };
+      document.addEventListener('mousemove', onArrastreScrollFilaMove);
+      document.addEventListener('mouseup', onArrastreScrollFilaEnd);
+      e.preventDefault();
+    };
+
+    const ESTADOS_REGISTRO = ['borrador', 'pendiente', 'activo', 'inactivo', 'discontinuado'];
     // "Paridad" (campo paridad_datatech_hexalis): sólo Sí/No.
     const ESTADOS_PARIDAD = ['Sí', 'No'];
 
@@ -853,8 +931,7 @@ const app = createApp({
           { field: 'id_estudio', label: 'Estudio', type: 'fk', ref: 'estudios' },
           { field: 'colega_id', label: 'Laboratorio Procesante', type: 'fk', ref: 'colegas' },
           { field: 'estado', label: 'Estado' },
-          { field: 'paridad_datatech_hexalis', label: 'Paridad' },
-          { field: 'revisor', label: 'Revisor' }
+          { field: 'paridad_datatech_hexalis', label: 'Paridad' }
         ],
         fields: [
           { field: 'nemonico_datatech', label: 'Nemónico Datatech', type: 'text', required: true },
@@ -863,11 +940,12 @@ const app = createApp({
           { field: 'id_metodo', label: 'Método', type: 'fk', ref: 'metodos' },
           { field: 'id_sector_laboratorio', label: 'Área', type: 'fk', ref: 'sectores' },
           { field: 'paridad_datatech_hexalis', label: 'Paridad', type: 'select', options: ESTADOS_PARIDAD, default: 'No' },
-          { field: 'estado', label: 'Estado', type: 'select', options: ESTADOS_REGISTRO, default: 'pendiente' },
+          { field: 'estado', label: 'Estado', type: 'select', options: ESTADOS_REGISTRO, default: 'borrador' },
           { field: 'preanalitico_descripcion', label: 'Descripción', type: 'richtext' },
           { field: 'indicaciones_pacientes', label: 'Descripción', type: 'richtext' },
           { field: 'indicaciones_colega', label: 'Descripción', type: 'richtext' },
           { field: 'modelo_derivante_observaciones', label: 'Observaciones', type: 'richtext' },
+          { field: 'modelo_derivante_valor_referencia', label: 'Valor de Referencia', type: 'richtext' },
           { field: 'dias_demora', label: 'Días de Demora', type: 'number', default: 0 },
           // Placeholder visual, sin backend todavía: no se persiste (el schema
           // del servidor ignora cualquier campo que no reconoce).
@@ -877,7 +955,6 @@ const app = createApp({
           { field: 'habilitar_ia', label: '¿Habilitar para Asistente IA?', type: 'switch', default: false },
           { field: 'habilitar_web', label: '¿Habilitar para Página Web?', type: 'switch', default: false },
           { field: 'version', label: 'Versión', type: 'number', default: 1 },
-          { field: 'revisor', label: 'Revisor', type: 'text', required: true, default: 'Laboratorio SBLab' },
           { field: 'observacion', label: 'Observación', type: 'richtext' }
         ]
       }
@@ -2309,15 +2386,15 @@ const app = createApp({
       }
     };
 
-    // Un estudio está "en conflicto" cuando figura como 'listo' (activo) en
-    // más de un colega a la vez: normalmente debería estar activo en uno solo.
+    // Un estudio está "en conflicto" cuando figura como 'activo' en más de
+    // un colega a la vez: normalmente debería estar activo en uno solo.
     // Se agrupa por código hexalis sobre la lista SIN filtrar (siempre refleja
     // el estado real de los datos, more allá de qué esté filtrado en pantalla).
     const gruposConflicto = computed(() => {
       if (!isAllEstudiosMode.value) return [];
       const porCodigo = {};
       colegaEstudios.value.forEach(e => {
-        if (e.estado !== 'listo') return;
+        if (e.estado !== 'activo') return;
         const grupo = (porCodigo[e.codigo_hexalis] = porCodigo[e.codigo_hexalis] || {
           codigo_hexalis: e.codigo_hexalis, estudio_descripcion: e.estudio_descripcion, filas: []
         });
@@ -2418,18 +2495,19 @@ const app = createApp({
 
     // Habilitar/deshabilitar un colega en vez de borrarlo (borrarlo dejaría
     // huérfanos sus estudios). Al deshabilitar, se ofrece pasar todos sus
-    // estudios a 'pendiente' para que dejen de figurar como vigentes.
+    // estudios a 'inactivo' (temporalmente fuera de uso, no 'discontinuado')
+    // para que dejen de figurar como vigentes/publicados.
     const toggleColegaHabilitado = async (item) => {
       try {
         if (item.habilitado) {
           if (!confirm(`¿Deshabilitar "${item.descripcion}"?`)) return;
-          const marcarPendiente = confirm(
-            `¿Pasar todos los estudios de "${item.descripcion}" a estado "pendiente"?\n\nAceptar: sí, marcarlos pendientes.\nCancelar: no, dejarlos como están.`
+          const marcarInactivo = confirm(
+            `¿Pasar todos los estudios de "${item.descripcion}" a estado "inactivo"?\n\nAceptar: sí, marcarlos inactivos.\nCancelar: no, dejarlos como están.`
           );
-          const res = await axios.post(`${API_BASE}/colegas/${item.id}/deshabilitar`, { marcar_pendiente: marcarPendiente });
+          const res = await axios.post(`${API_BASE}/colegas/${item.id}/deshabilitar`, { marcar_inactivo: marcarInactivo });
           showAlert(
-            marcarPendiente
-              ? `Laboratorio procesante deshabilitado. ${res.data.estudios_marcados_pendiente} estudio(s) pasaron a "pendiente".`
+            marcarInactivo
+              ? `Laboratorio procesante deshabilitado. ${res.data.estudios_marcados_inactivo} estudio(s) pasaron a "inactivo".`
               : 'Laboratorio procesante deshabilitado correctamente.'
           );
         } else {
@@ -2513,6 +2591,7 @@ const app = createApp({
         }
       }
       expandedRows.value = next;
+      nextTick(actualizarTablaScrollWidth);
     };
 
     const fetchRowMuestras = async (idEstudioColega) => {
@@ -2540,7 +2619,7 @@ const app = createApp({
 
     // --- Panel lateral (desde la derecha) para ver, sin salir de la tabla,
     // el contenido de cada dropdown de documentación de una fila: Preanalítico,
-    // Indicaciones Paciente, o Modelo Derivante (éste último con las
+    // Indicaciones Paciente, o Modelo de Informe (éste último con las
     // Indicaciones al Profesional/Derivante también, ya que están relacionadas). ---
     const sidePanel = ref({ open: false, kind: null, item: null, modelos: [], muestras: [], loadingModelos: false });
 
@@ -2802,7 +2881,7 @@ const app = createApp({
 
     // --- Modelos de informe (PDF), 1..N por Estudio x Colega, agrupados por
     // categoría (una por cada dropdown que admite documentación: Preanalítico,
-    // Indicaciones Paciente y Modelo Derivante). Editando un registro ya
+    // Indicaciones Paciente y Modelo de Informe). Editando un registro ya
     // guardado se suben al toque (requieren un id_estudio_colega real).
     // Creando uno nuevo, todavía no existe ese id: los PDF elegidos se
     // bufferan en memoria (como las muestras) y recién se suben al guardar,
@@ -2892,7 +2971,7 @@ const app = createApp({
       }
     };
 
-    // Editar la descripción de un PDF de "Modelo Derivante" ya subido (el
+    // Editar la descripción de un PDF de "Modelo de Informe" ya subido (el
     // resto de categorías no muestran este input, aunque el backend lo acepta
     // para cualquiera).
     const actualizarDescripcionModelo = async (modelo) => {
@@ -3569,7 +3648,11 @@ const app = createApp({
       startResize,
       scrollTablaEstudios,
       tablaScrollLeft,
+      tablaScrollWidth,
+      tablaScrollViewport,
       onTablaEstudiosScroll,
+      filaScrollThumbStyle,
+      iniciarArrastreScrollFila,
       toggleColumn,
       showColumnPicker,
       expandedRows,
