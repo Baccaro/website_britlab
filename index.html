@@ -98,6 +98,18 @@
       padding-left: 1.25rem;
       margin-bottom: 0.5rem;
     }
+
+    /* Barra de partners: en pantallas muy angostas los logos no entran
+       aunque se achiquen, así que se permite scroll horizontal en vez de
+       partir la fila; se oculta la scrollbar para que se vea prolijo. */
+    .no-scrollbar {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
   </style>
 </head>
 
@@ -164,7 +176,7 @@
     <!-- Action Area -->
     <div class="flex items-center gap-4 md:gap-12 ml-8 md:ml-16">
       <button
-        class="bg-brit-teal hover:bg-brit-teal-dark text-white font-bold py-2.5 px-6 rounded-full transition-colors flex items-center gap-2">
+        class="bg-brit-teal hover:bg-brit-teal-dark text-white font-bold py-2 px-4 text-sm md:py-2.5 md:px-6 md:text-base rounded-full transition-colors flex items-center gap-1 md:gap-2 whitespace-nowrap shrink-0">
         Pregunta a <span class="font-extrabold">BritIA</span>
       </button>
       <button id="toggleBarraFlotante" type="button" aria-expanded="false" aria-controls="barraFlotante"
@@ -184,24 +196,24 @@
       <div id="barraFlotante" class="hidden relative z-10 w-[95%] max-w-5xl -mt-8">
         <!-- Barra de color azul, sobre los logos, pegada al navbar -->
         <div class="absolute -top-[3px] inset-x-0 z-20 h-[6px] bg-brit-teal rounded-full shadow-md"></div>
-        <div class="relative z-10 bg-white/90 backdrop-blur-sm rounded-b-2xl shadow-lg py-4 px-8 flex flex-wrap justify-center items-center gap-x-10 gap-y-4">
-          <a href="https://sanatoriobritanico.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex">
-            <img alt="Sanatorio Británico" class="h-6 md:h-7 object-contain" src="/images/sanatorio_britanico.svg">
+        <div class="no-scrollbar relative z-10 bg-white/90 backdrop-blur-sm rounded-b-2xl shadow-lg py-3 md:py-4 px-4 md:px-8 flex flex-nowrap justify-start sm:justify-center items-center gap-x-4 sm:gap-x-6 md:gap-x-10 overflow-x-auto">
+          <a href="https://sanatoriobritanico.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
+            <img alt="Sanatorio Británico" class="h-4 sm:h-5 md:h-6 lg:h-7 object-contain" src="/images/sanatorio_britanico.svg">
           </a>
-          <a href="https://consultoriosdelbritanico.com/" target="_blank" rel="noopener noreferrer" class="inline-flex">
-            <img alt="Consultorios del Británico" class="h-6 md:h-7 object-contain" src="/images/consultorios_britanico.svg">
+          <a href="https://consultoriosdelbritanico.com/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
+            <img alt="Consultorios del Británico" class="h-4 sm:h-5 md:h-6 lg:h-7 object-contain" src="/images/consultorios_britanico.svg">
           </a>
-          <a href="https://www.britanicasalud.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex">
-            <img alt="Británica Salud" class="h-4 md:h-5 object-contain" src="/images/britanica_salud.svg">
+          <a href="https://www.britanicasalud.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
+            <img alt="Británica Salud" class="h-3 sm:h-3.5 md:h-4 lg:h-5 object-contain" src="/images/britanica_salud.svg">
           </a>
-          <a href="https://public.britlab.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex">
-            <img alt="BritLab" class="h-6 md:h-7 object-contain" src="/images/britlab_bar.svg">
+          <a href="https://public.britlab.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
+            <img alt="BritLab" class="h-4 sm:h-5 md:h-6 lg:h-7 object-contain" src="/images/britlab_bar.svg">
           </a>
-          <a href="https://britgen.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex">
-            <img alt="BritGen" class="h-9 md:h-11 object-contain" src="/images/britgen_byw.svg">
+          <a href="https://britgen.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
+            <img alt="BritGen" class="h-6 sm:h-7 md:h-9 lg:h-11 object-contain" src="/images/britgen_byw.svg">
           </a>
-          <a href="https://turnos.cemyr.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex">
-            <img alt="CEMYRBS" class="h-7 md:h-8 object-contain" src="/images/cemyrbs.svg">
+          <a href="https://turnos.cemyr.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
+            <img alt="CEMYRBS" class="h-5 sm:h-6 md:h-7 lg:h-8 object-contain" src="/images/cemyrbs.svg">
           </a>
         </div>
       </div>
