@@ -60,6 +60,3 @@ Stop the containers with:
 ```sh
 docker compose down
 ```
-
-
-git remote set-url origin https://baccaro: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@github.com/Baccaro/brit_test.git
