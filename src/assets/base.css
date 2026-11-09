@@ -1,3 +1,14 @@
+/* Fuente de los títulos grandes del sitio (self-hosted, provista por el cliente) */
+@font-face {
+  font-family: 'Myriad Set Pro';
+  src:
+    url('/fonts/myriad-set-pro-semibold.woff2') format('woff2'),
+    url('/fonts/myriad-set-pro-semibold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
   --vt-c-white: #ffffff;
@@ -55,7 +66,6 @@
 *::after {
   box-sizing: border-box;
   margin: 0;
-  font-weight: normal;
 }
 
 body {
@@ -79,6 +89,7 @@ body {
     'Droid Sans',
     'Helvetica Neue',
     sans-serif;
+  font-weight: 500;
   font-size: 15px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

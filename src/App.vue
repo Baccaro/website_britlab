@@ -5,6 +5,13 @@ import InstitucionalView from './views/InstitucionalView.vue'
 import NoticiasView from './views/NoticiasView.vue'
 import NoticiaDetalleView from './views/NoticiaDetalleView.vue'
 import PacientesView from './views/PacientesView.vue'
+import IndicacionesView from './views/IndicacionesView.vue'
+import ObrasSocialesView from './views/ObrasSocialesView.vue'
+import FinanciadoresView from './views/FinanciadoresView.vue'
+import ContactoFacturacionView from './views/ContactoFacturacionView.vue'
+import TurnosView from './views/TurnosView.vue'
+import ContactoView from './views/ContactoView.vue'
+import ColegasView from './views/ColegasView.vue'
 import ServiciosView from './views/ServiciosView.vue'
 
 const currentPath = ref(window.location.pathname)
@@ -15,6 +22,13 @@ const routes = {
   '/servicios': ServiciosView,
   '/noticias': NoticiasView,
   '/pacientes': PacientesView,
+  '/pacientes/indicaciones': IndicacionesView,
+  '/pacientes/obras-sociales': ObrasSocialesView,
+  '/pacientes/financiadores': FinanciadoresView,
+  '/pacientes/contacto-facturacion': ContactoFacturacionView,
+  '/pacientes/turnos': TurnosView,
+  '/pacientes/contacto': ContactoView,
+  '/colegas': ColegasView,
 }
 
 // "/noticias/:id" no tiene una entrada fija en "routes" (no hay vue-router en

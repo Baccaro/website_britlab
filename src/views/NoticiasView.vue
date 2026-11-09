@@ -29,7 +29,7 @@ onMounted(async () => {
   <main class="w-full max-w-6xl mx-auto px-6 md:px-12 py-24 min-h-[600px]">
     <header class="mb-12 max-w-3xl">
       <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Noticias</span>
-      <h1 class="text-4xl md:text-6xl font-bold text-gray-800 mt-4 mb-6">Artículos de expertos</h1>
+      <h1 class="font-title text-3xl/[1] md:text-[53px]/[1] font-semibold tracking-normal text-gray-800 mt-4 mb-6">Artículos de expertos</h1>
       <p class="text-gray-500 text-lg leading-relaxed">Información y novedades de nuestros especialistas para cuidar tu salud.</p>
     </header>
 

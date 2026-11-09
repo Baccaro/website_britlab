@@ -81,7 +81,7 @@ async function submitCv() {
       <div class="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] items-start">
         <div>
           <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / BritLAB</span>
-          <h1 class="text-4xl md:text-6xl font-bold text-gray-800 mt-4 mb-8">Laboratorio del Sanatorio Británico</h1>
+          <h1 class="font-title text-3xl/[1] md:text-[53px]/[1] font-semibold tracking-normal text-gray-800 mt-4 mb-8">Laboratorio del Sanatorio Británico</h1>
           <div class="space-y-5 text-gray-600 text-lg leading-relaxed">
             <p>BritLab brinda servicios de diagnóstico bioquímico para pacientes internados y ambulatorios, profesionales médicos y laboratorios derivantes.</p>
             <p>Integra diferentes áreas diagnósticas para brindar resultados confiables, seguros y oportunos, coordinados con los equipos asistenciales del Sanatorio Británico.</p>
