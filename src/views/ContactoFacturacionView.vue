@@ -4,9 +4,9 @@ import ContactForm from '@/components/ContactForm.vue'
 
 <template>
   <section class="w-full bg-white py-24 px-6 md:px-12 min-h-[600px]">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-6xl mx-auto">
       <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Pacientes</span>
-      <h1 class="font-title text-3xl/[1] md:text-[53px]/[1] font-semibold tracking-normal text-gray-800 mt-4 mb-6">Contacto de facturación</h1>
+      <h1 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-6">Contacto de facturación</h1>
       <p class="text-gray-600 text-base md:text-lg leading-relaxed mb-10">Para consultas sobre facturación, comprobantes, notas de crédito o pagos a Obras Sociales, escribinos o llamanos directamente al área de facturación.</p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">

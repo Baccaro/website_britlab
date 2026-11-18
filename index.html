@@ -72,10 +72,6 @@
       scroll-margin-top: 110px;
     }
 
-    .institutional-anchor:target {
-      outline: 3px solid rgba(87, 190, 194, 0.35);
-      outline-offset: -3px;
-    }
 
     .site-nav a:hover {
       background-color: transparent;
@@ -115,11 +111,16 @@
 
 <body class="font-sans font-medium text-brit-dark antialiased bg-white flex flex-col min-h-screen">
   <!-- BEGIN: MainHeader -->
-  <header class="w-full bg-white shadow-sm z-50 relative py-4 px-6 md:px-12 flex items-center justify-center">
-    <!-- Logo Area -->
-    <div class="flex items-center gap-2 mr-8 md:mr-16">
+  <header class="w-full bg-transparent lg:bg-white shadow-none lg:shadow-sm fixed lg:relative top-0 inset-x-0 z-50 py-4 px-6 md:px-12 flex items-center justify-between lg:justify-center">
+    <!-- Mobile Logo (left, fades out once the page is scrolled) -->
+    <a id="mobileLogo" aria-label="Ir al inicio" class="lg:hidden flex items-center transition-opacity duration-200" href="/">
+      <img alt="BritLab Logo" class="h-8 object-contain"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA0WjXA0NFl6g8sg3U8gena_jy7KcHV4TxUNJ8GEa3CTK9O7VroYojm90ltBLEdfZgclCynvKjn2hCep0Cbu-9qXs6HRijOjdI2yd9N49iipoPlTlmeq3kLjNqaNCqCw-D9diEZfQT-30sqZuoeQkT1VA-b8cYghdp7hhIuRj4r7cz_pHqhKXsjfpJK9pI-R73tbI6A2njlQ3pk8unapnXPRxB0xJAfMpp_ZKWpPVJiCtkRH6rv3GJNQKYWIHlbrAOQcY">
+    </a>
+    <!-- Logo Area (desktop) -->
+    <div class="hidden lg:flex items-center gap-2 lg:mr-16">
       <a aria-label="Ir al inicio" class="site-logo inline-flex" href="/">
-        <img alt="BritLab Logo" class="h-10 object-contain my-auto"
+        <img alt="BritLab Logo" class="h-8 lg:h-10 object-contain my-auto"
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA0WjXA0NFl6g8sg3U8gena_jy7KcHV4TxUNJ8GEa3CTK9O7VroYojm90ltBLEdfZgclCynvKjn2hCep0Cbu-9qXs6HRijOjdI2yd9N49iipoPlTlmeq3kLjNqaNCqCw-D9diEZfQT-30sqZuoeQkT1VA-b8cYghdp7hhIuRj4r7cz_pHqhKXsjfpJK9pI-R73tbI6A2njlQ3pk8unapnXPRxB0xJAfMpp_ZKWpPVJiCtkRH6rv3GJNQKYWIHlbrAOQcY">
       </a>
     </div>
@@ -132,10 +133,10 @@
         </a>
         <div class="absolute left-0 top-[calc(100%-1px)] hidden group-hover:block group-focus-within:block min-w-52 z-[60]">
           <div class="bg-white rounded-lg shadow-xl border border-gray-100 py-2">
-            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/institucional#historia">Historia</a>
-            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/institucional#mision">Misión</a>
-            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/institucional#equipo">Equipo</a>
-            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/institucional#calidad">Calidad y Acreditaciones</a>
+            <a class="block px-5 py-2 font-sans text-sm font-normal text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/institucional#historia">Historia</a>
+            <a class="block px-5 py-2 font-sans text-sm font-normal text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/institucional#mision">Misión</a>
+            <a class="block px-5 py-2 font-sans text-sm font-normal text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/institucional#equipo">Equipo</a>
+            <a class="block px-5 py-2 font-sans text-sm font-normal text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/institucional#calidad">Calidad y Acreditaciones</a>
           </div>
         </div>
       </div>
@@ -146,14 +147,14 @@
         </a>
         <div class="absolute left-0 top-[calc(100%-1px)] hidden group-hover:block group-focus-within:block min-w-52 z-[60]">
           <div class="bg-white rounded-lg shadow-xl border border-gray-100 py-2">
-            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/servicios#britlab">BritLAB</a>
-            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/servicios#tecnologia">Tecnología e Innovación</a>
-            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/servicios#docencia">Docencia e Investigación</a>
-            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/servicios#trabaja">Trabajá con Nosotros</a>
-            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/servicios#britgen">BritGEN</a>
+            <a class="block px-5 py-2 font-sans text-sm font-normal text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/servicios#britlab">BritLAB</a>
+            <a class="block px-5 py-2 font-sans text-sm font-normal text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/servicios#tecnologia">Tecnología e Innovación</a>
+            <a class="block px-5 py-2 font-sans text-sm font-normal text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/servicios#docencia">Docencia e Investigación</a>
+            <a class="block px-5 py-2 font-sans text-sm font-normal text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/servicios#trabaja">Trabajá con Nosotros</a>
+            <a class="block px-5 py-2 font-sans text-sm font-normal text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/servicios#britgen">BritGEN</a>
           </div>
         </div>
-      </div>      
+      </div>
       <a class="text-black hover:text-brit-teal transition-colors" href="/noticias">Noticias</a>
       <div class="relative group">
         <a class="text-black hover:text-brit-teal transition-colors inline-flex items-center gap-1 py-2" href="/pacientes">
@@ -162,29 +163,140 @@
         </a>
         <div class="absolute left-0 top-[calc(100%-1px)] hidden group-hover:block group-focus-within:block min-w-52 z-[60]">
           <div class="bg-white rounded-lg shadow-xl border border-gray-100 py-2">
-            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/pacientes/indicaciones">Indicaciones</a>
-            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/pacientes/obras-sociales">Obras Sociales</a>
-            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/pacientes/financiadores">Financiadores</a>
-            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/pacientes/contacto-facturacion">Contacto de facturación</a>
-            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/pacientes/turnos">Turnos</a>
-            <a class="block px-5 py-2 text-sm text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/pacientes/contacto">Contacto</a>
+            <a class="block px-5 py-2 font-sans text-sm font-normal text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/pacientes/indicaciones">Indicaciones</a>
+            <a class="block px-5 py-2 font-sans text-sm font-normal text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/pacientes/obras-sociales">Obras Sociales</a>
+            <a class="block px-5 py-2 font-sans text-sm font-normal text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/pacientes/financiadores">Financiadores</a>
+            <a class="block px-5 py-2 font-sans text-sm font-normal text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/pacientes/contacto-facturacion">Contacto de facturación</a>
+            <a class="block px-5 py-2 font-sans text-sm font-normal text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/pacientes/turnos">Turnos</a>
+            <a class="block px-5 py-2 font-sans text-sm font-normal text-gray-700 hover:text-brit-teal hover:bg-gray-50 transition-colors" href="/pacientes/contacto">Contacto</a>
           </div>
         </div>
       </div>
       <a class="text-black hover:text-brit-teal transition-colors" href="/colegas">Colegas</a>
     </nav>
     <!-- Action Area -->
-    <div class="flex items-center gap-4 md:gap-12 ml-8 md:ml-16">
+    <div class="flex items-center gap-3 md:gap-4 lg:gap-12 lg:ml-16">
       <button
-        class="bg-brit-teal hover:bg-brit-teal-dark text-white font-bold py-2 px-4 text-sm md:py-2.5 md:px-6 md:text-base rounded-full transition-colors flex items-center gap-1 md:gap-2 whitespace-nowrap shrink-0">
+        class="hidden lg:flex bg-brit-teal hover:bg-brit-teal-dark text-white font-bold py-2 px-4 text-sm md:py-2.5 md:px-6 md:text-base rounded-full transition-colors items-center gap-1 md:gap-2 whitespace-nowrap shrink-0">
         Pregunta a <span class="font-extrabold">BritIA</span>
       </button>
       <button id="toggleBarraFlotante" type="button" aria-expanded="false" aria-controls="barraFlotante"
-        aria-label="Mostrar/ocultar barra flotante" class="w-10 h-10 hidden md:block">
+        aria-label="Mostrar/ocultar barra flotante" class="hidden lg:block w-10 h-10 shrink-0">
         <img alt="BritLab Icon" class="w-full h-full object-contain" src="icono_brit.svg">
+      </button>
+      <button id="toggleMobileNav" type="button" aria-expanded="false" aria-controls="mobileNav"
+        aria-label="Mostrar/ocultar menú" class="lg:hidden w-11 h-11 bg-brit-teal hover:bg-brit-teal-dark rounded-full flex items-center justify-center shrink-0 transition-colors shadow-md">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
       </button>
     </div>
   </header>
+  <!-- Mobile Navigation Drawer -->
+  <div id="mobileNavOverlay" class="hidden lg:hidden fixed inset-0 bg-black/40 z-[70]"></div>
+  <aside id="mobileNav" class="hidden lg:hidden fixed inset-y-0 left-0 z-[80] w-[82%] max-w-xs bg-brit-teal text-white flex flex-col overflow-y-auto shadow-2xl">
+    <div class="flex items-center justify-between px-6 py-5">
+      <div class="flex items-center gap-2">
+        <img src="/images/britlab-wordmark.png" alt="BritLab" class="h-7 object-contain brightness-0 invert">
+      </div>
+      <button id="closeMobileNav" type="button" aria-label="Cerrar menú"
+        class="w-9 h-9 bg-white rounded-full flex items-center justify-center shrink-0">
+        <svg class="w-5 h-5 text-brit-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <nav id="mobileNavMain" class="flex flex-col divide-y divide-white/20 px-6">
+      <details class="group/nav py-4">
+        <summary class="flex items-center justify-between cursor-pointer list-none font-sans text-lg font-semibold">
+          Institucional
+          <span aria-hidden="true" class="text-xs transition-transform group-open/nav:rotate-180">▾</span>
+        </summary>
+        <div class="flex flex-col pt-2 pb-1 pl-4">
+          <a class="py-2 font-sans text-sm font-normal text-white/90 hover:text-white transition-colors" href="/institucional#historia">Historia</a>
+          <a class="py-2 font-sans text-sm font-normal text-white/90 hover:text-white transition-colors" href="/institucional#mision">Misión</a>
+          <a class="py-2 font-sans text-sm font-normal text-white/90 hover:text-white transition-colors" href="/institucional#equipo">Equipo</a>
+          <a class="py-2 font-sans text-sm font-normal text-white/90 hover:text-white transition-colors" href="/institucional#calidad">Calidad y Acreditaciones</a>
+        </div>
+      </details>
+      <details class="group/nav py-4">
+        <summary class="flex items-center justify-between cursor-pointer list-none font-sans text-lg font-semibold">
+          Servicios
+          <span aria-hidden="true" class="text-xs transition-transform group-open/nav:rotate-180">▾</span>
+        </summary>
+        <div class="flex flex-col pt-2 pb-1 pl-4">
+          <a class="py-2 font-sans text-sm font-normal text-white/90 hover:text-white transition-colors" href="/servicios#britlab">BritLAB</a>
+          <a class="py-2 font-sans text-sm font-normal text-white/90 hover:text-white transition-colors" href="/servicios#tecnologia">Tecnología e Innovación</a>
+          <a class="py-2 font-sans text-sm font-normal text-white/90 hover:text-white transition-colors" href="/servicios#docencia">Docencia e Investigación</a>
+          <a class="py-2 font-sans text-sm font-normal text-white/90 hover:text-white transition-colors" href="/servicios#trabaja">Trabajá con Nosotros</a>
+          <a class="py-2 font-sans text-sm font-normal text-white/90 hover:text-white transition-colors" href="/servicios#britgen">BritGEN</a>
+        </div>
+      </details>
+      <a class="py-4 font-sans text-lg font-semibold text-white hover:text-white/80 transition-colors" href="/noticias">Noticias</a>
+      <details class="group/nav py-4">
+        <summary class="flex items-center justify-between cursor-pointer list-none font-sans text-lg font-semibold">
+          Pacientes
+          <span aria-hidden="true" class="text-xs transition-transform group-open/nav:rotate-180">▾</span>
+        </summary>
+        <div class="flex flex-col pt-2 pb-1 pl-4">
+          <a class="py-2 font-sans text-sm font-normal text-white/90 hover:text-white transition-colors" href="/pacientes/indicaciones">Indicaciones</a>
+          <a class="py-2 font-sans text-sm font-normal text-white/90 hover:text-white transition-colors" href="/pacientes/obras-sociales">Obras Sociales</a>
+          <a class="py-2 font-sans text-sm font-normal text-white/90 hover:text-white transition-colors" href="/pacientes/financiadores">Financiadores</a>
+          <a class="py-2 font-sans text-sm font-normal text-white/90 hover:text-white transition-colors" href="/pacientes/contacto-facturacion">Contacto de facturación</a>
+          <a class="py-2 font-sans text-sm font-normal text-white/90 hover:text-white transition-colors" href="/pacientes/turnos">Turnos</a>
+          <a class="py-2 font-sans text-sm font-normal text-white/90 hover:text-white transition-colors" href="/pacientes/contacto">Contacto</a>
+        </div>
+      </details>
+      <a class="py-4 font-sans text-lg font-semibold text-white hover:text-white/80 transition-colors" href="/colegas">Colegas</a>
+    </nav>
+
+    <div id="mobileNavMainExtra">
+      <div class="px-6 pb-4 pt-2">
+        <button id="toggleBarraFlotanteMobile" type="button" aria-expanded="false" aria-controls="mobileNavBrands"
+          class="w-full flex items-center gap-3 py-3 border-t border-white/20">
+          <span class="w-7 h-7 bg-white rounded-full flex items-center justify-center shrink-0">
+            <img src="/icono_brit.svg" alt="" aria-hidden="true" class="w-4 h-4">
+          </span>
+          <span class="font-sans text-sm font-semibold text-white">Nuestras empresas</span>
+        </button>
+      </div>
+
+      <div class="px-6 pb-8">
+        <button class="w-full bg-white hover:bg-gray-50 text-brit-teal font-bold py-2.5 px-6 text-sm rounded-full transition-colors flex items-center justify-center gap-1 whitespace-nowrap">
+          Pregunta a <span class="font-extrabold">BritIA</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Companies sub-view: swapped in by "Nuestras empresas" -->
+    <div id="mobileNavBrands" class="hidden flex-col px-6 pb-8">
+      <button id="backFromBrandsMobile" type="button"
+        class="flex items-center gap-2 text-white/90 hover:text-white font-sans text-sm font-semibold mb-6">
+        <span aria-hidden="true">←</span> Volver
+      </button>
+      <div class="flex flex-col items-center gap-8 border-l-4 border-white/40 pl-6 py-2">
+        <a href="https://sanatoriobritanico.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex">
+          <img alt="Sanatorio Británico" class="h-7 object-contain brightness-0 invert" src="/images/sanatorio_britanico.svg">
+        </a>
+        <a href="https://consultoriosdelbritanico.com/" target="_blank" rel="noopener noreferrer" class="inline-flex">
+          <img alt="Consultorios del Británico" class="h-7 object-contain brightness-0 invert" src="/images/consultorios_britanico.svg">
+        </a>
+        <a href="https://www.britanicasalud.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex">
+          <img alt="Británica Salud" class="h-5 object-contain brightness-0 invert" src="/images/britanica_salud.svg">
+        </a>
+        <a href="https://public.britlab.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex">
+          <img alt="BritLab" class="h-7 object-contain brightness-0 invert" src="/images/britlab_bar.svg">
+        </a>
+        <a href="https://britgen.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex">
+          <img alt="BritGen" class="h-11 object-contain brightness-0 invert" src="/images/britgen_byw.svg">
+        </a>
+        <a href="https://turnos.cemyr.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex">
+          <img alt="CEMYRBS" class="h-8 object-contain brightness-0 invert" src="/images/cemyrbs.svg">
+        </a>
+      </div>
+    </div>
+  </aside>
   <!-- END: MainHeader -->
   <!-- BEGIN: MainContent -->
   <main class="flex-grow relative flex flex-col">
@@ -196,24 +308,24 @@
       <div id="barraFlotante" class="hidden relative z-10 w-[95%] max-w-5xl -mt-8">
         <!-- Barra de color azul, sobre los logos, pegada al navbar -->
         <div class="absolute -top-[3px] inset-x-0 z-20 h-[6px] bg-brit-teal rounded-full shadow-md"></div>
-        <div class="no-scrollbar relative z-10 bg-white/90 backdrop-blur-sm rounded-b-2xl shadow-lg py-3 md:py-4 px-4 md:px-8 flex flex-nowrap justify-start sm:justify-center items-center gap-x-4 sm:gap-x-6 md:gap-x-10 overflow-x-auto">
+        <div class="no-scrollbar relative z-10 bg-white/90 backdrop-blur-sm rounded-b-2xl shadow-lg py-6 sm:py-3 md:py-4 px-4 md:px-8 flex flex-col sm:flex-nowrap sm:flex-row items-center gap-y-6 sm:gap-y-0 gap-x-4 sm:gap-x-6 md:gap-x-10 sm:overflow-x-auto">
           <a href="https://sanatoriobritanico.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
-            <img alt="Sanatorio Británico" class="h-4 sm:h-5 md:h-6 lg:h-7 object-contain" src="/images/sanatorio_britanico.svg">
+            <img alt="Sanatorio Británico" class="h-8 sm:h-5 md:h-6 lg:h-7 object-contain" src="/images/sanatorio_britanico.svg">
           </a>
           <a href="https://consultoriosdelbritanico.com/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
-            <img alt="Consultorios del Británico" class="h-4 sm:h-5 md:h-6 lg:h-7 object-contain" src="/images/consultorios_britanico.svg">
+            <img alt="Consultorios del Británico" class="h-8 sm:h-5 md:h-6 lg:h-7 object-contain" src="/images/consultorios_britanico.svg">
           </a>
           <a href="https://www.britanicasalud.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
-            <img alt="Británica Salud" class="h-3 sm:h-3.5 md:h-4 lg:h-5 object-contain" src="/images/britanica_salud.svg">
+            <img alt="Británica Salud" class="h-6 sm:h-3.5 md:h-4 lg:h-5 object-contain" src="/images/britanica_salud.svg">
           </a>
           <a href="https://public.britlab.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
-            <img alt="BritLab" class="h-4 sm:h-5 md:h-6 lg:h-7 object-contain" src="/images/britlab_bar.svg">
+            <img alt="BritLab" class="h-8 sm:h-5 md:h-6 lg:h-7 object-contain" src="/images/britlab_bar.svg">
           </a>
           <a href="https://britgen.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
-            <img alt="BritGen" class="h-6 sm:h-7 md:h-9 lg:h-11 object-contain" src="/images/britgen_byw.svg">
+            <img alt="BritGen" class="h-12 sm:h-7 md:h-9 lg:h-11 object-contain" src="/images/britgen_byw.svg">
           </a>
           <a href="https://turnos.cemyr.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
-            <img alt="CEMYRBS" class="h-5 sm:h-6 md:h-7 lg:h-8 object-contain" src="/images/cemyrbs.svg">
+            <img alt="CEMYRBS" class="h-10 sm:h-6 md:h-7 lg:h-8 object-contain" src="/images/cemyrbs.svg">
           </a>
         </div>
       </div>
@@ -225,20 +337,20 @@
       </div>
       <!-- Chatbot Interface Widget -->
       <div
-        class="relative z-20 w-[95%] max-w-4xl bg-white/95 backdrop-blur-md rounded-t-3xl shadow-2xl p-6 md:p-10 -mb-6 transform translate-y-12">
+        class="relative z-20 w-[95%] max-w-4xl bg-white/95 backdrop-blur-md rounded-t-3xl shadow-2xl p-5 md:p-10 -mb-6 transform translate-y-12">
         <!-- Chatbot Greeting -->
-        <div class="flex items-center justify-center gap-4 mb-8">
-          <div class="w-14 h-14 bg-brit-teal rounded-full flex items-center justify-center shadow-inner">
+        <div class="flex items-center justify-center gap-4 mb-5 md:mb-8">
+          <div class="w-10 h-10 md:w-14 md:h-14 bg-brit-teal rounded-full flex items-center justify-center shadow-inner">
             <!-- Placeholder for AI avatar icon if needed, currently just a teal circle in design -->
           </div>
           <div>
-            <h2 class="text-xl md:text-2xl font-bold text-gray-800">Hola, Soy <span class="text-brit-teal">BritIA</span>
+            <h2 class="text-lg md:text-2xl font-bold text-gray-800">Hola, Soy <span class="text-brit-teal">BritIA</span>
             </h2>
             <p class="text-gray-500 text-sm md:text-base">¿Como puedo ayudarte?</p>
           </div>
         </div>
         <!-- Search Input -->
-        <div class="relative w-full mb-8">
+        <div class="relative w-full mb-0 md:mb-8">
           <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
             <svg class="w-5 h-5 text-brit-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg">
@@ -251,15 +363,14 @@
             placeholder="Ingrese su consulta para asistirlo al instante..." type="text">
           <button
             class="absolute inset-y-0 right-2 my-auto h-10 w-10 bg-brit-teal hover:bg-brit-teal-dark text-white rounded-full flex items-center justify-center transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            <svg class="w-5 h-5" width="20" height="21" viewBox="0 0 20 21" fill="none"
               xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" stroke-linecap="round" stroke-linejoin="round"
-                stroke-width="2"></path>
+              <path d="M9.56055 15.6455L0 20.8604L9.56055 0V15.6455ZM19.5566 20.8604L9.99512 15.6455V0L19.5566 20.8604Z" fill="white"></path>
             </svg>
           </button>
         </div>
         <!-- Quick Action Buttons -->
-        <div class="flex flex-wrap justify-center gap-3 md:gap-4">
+        <div class="hidden md:flex flex-wrap justify-center gap-3 md:gap-4">
           <button
             class="bg-white border border-gray-200 hover:border-brit-teal text-gray-600 hover:text-brit-teal font-medium py-2 px-5 rounded-full text-sm transition-all shadow-sm">
             Quiero un Turno
@@ -306,8 +417,8 @@
             <img alt="BritLab Logo" class="h-12 object-contain mb-6"
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj3jdxMM4UyflXypLBpVD6gbpm58-X-exf23eTthaeFGdzcySfcBMomTpfolGjenXg-cZ4u0SXrlLkZiy-XD8SbAaX4h1vN4qbWrP_tgp-dCp1TpN2_K-EVgQaiK5AA3GVuNVZ2LaxrOsLhITqyM-mHCzBkKH2kmPurQxVlAIc1SzqWEwL1OgyT494Jq_4kv7z1cd9um_8iFR0O93nY4Q4gfovUCWBI2OWSLKVcvrrT4upEJ5NXpP4q9sizuEjz0nGszk">
             <div class="text-gray-500 text-sm space-y-1">
-              <p class="">Paraguay 40, S2000 Rosario, Santa Fe.</p>
-              <p class="">Teléfono: 341 420 5500.</p>
+              <p class="">Paraguay 40, S2000 Rosario, Santa Fe</p>
+              <p class="">Teléfono: 341 420 5500</p>
               <p class="">info@britlab.com.ar</p>
             </div>
           </div>
@@ -320,27 +431,27 @@
           <div class="min-w-0">
             <h4 class="font-bold text-gray-800 mb-6 text-sm uppercase tracking-wider">INSTITUCIÓN</h4>
             <ul class="text-black text-sm space-y-3">
-              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/institucional#historia">Historia.</a></li>
-              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/institucional#mision">Misión.</a></li>
-              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/institucional#equipo">Equipo.</a></li>
-              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/institucional#calidad">Calidad y Acreditaciones.</a></li>
+              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/institucional#historia">Historia</a></li>
+              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/institucional#mision">Misión</a></li>
+              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/institucional#equipo">Equipo</a></li>
+              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/institucional#calidad">Calidad y Acreditaciones</a></li>
             </ul>
           </div>
           <div class="min-w-0">
             <h4 class="font-bold text-gray-800 mb-6 text-sm uppercase tracking-wider">SERVICIOS</h4>
             <ul class="text-black text-sm space-y-3">
-              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/servicios#britlab">BritLAB.</a></li>
-              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/servicios#britgen">BritGEN.</a></li>
-              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/servicios#tecnologia">Tecnología e Innovación.</a></li>
+              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/servicios#britlab">BritLAB</a></li>
+              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/servicios#britgen">BritGEN</a></li>
+              <li><a class="text-black hover:text-brit-teal transition-colors break-words" href="/servicios#tecnologia">Tecnología e Innovación</a></li>
             </ul>
           </div>          
           <div class="min-w-0">
             <h4 class="font-bold text-gray-800 mb-6 text-sm uppercase tracking-wider">NOTICIAS</h4>
-            <a class="text-black hover:text-brit-teal transition-colors text-sm break-words" href="/noticias">Ver noticias.</a>
+            <a class="text-black hover:text-brit-teal transition-colors text-sm break-words" href="/noticias">Ver noticias</a>
           </div>
           <div class="min-w-0">
             <h4 class="font-bold text-gray-800 mb-6 text-sm uppercase tracking-wider">PACIENTES</h4>
-            <a class="text-black hover:text-brit-teal transition-colors text-sm break-words" href="/pacientes">Información para pacientes.</a>
+            <a class="text-black hover:text-brit-teal transition-colors text-sm break-words" href="/pacientes">Información para pacientes</a>
             <div class="flex flex-nowrap items-center gap-4 mt-8 whitespace-nowrap">
               <a aria-label="Instagram" class="text-black hover:text-brit-teal transition-colors" href="https://www.instagram.com/" rel="noopener noreferrer" target="_blank" title="Instagram">
                 <svg aria-hidden="true" class="w-6 h-6 shrink-0 fill-current" viewBox="0 0 24 24">
@@ -372,26 +483,68 @@
       </div>
     </div>
   </footer>
-  <!-- Accessibility Widget (Floating) -->
-  <button aria-label="Opciones de accesibilidad"
-    class="fixed bottom-6 right-6 w-14 h-14 bg-brit-teal hover:bg-brit-teal-dark text-white rounded-full shadow-lg flex items-center justify-center z-50 transition-colors">
-    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm7 11h-4v6h-6v-6H5v-2h14v2z">
-      </path>
-    </svg>
-  </button>
 
   <script>
     (function () {
-      var boton = document.getElementById('toggleBarraFlotante');
       var barra = document.getElementById('barraFlotante');
-      if (!boton || !barra) return;
-      boton.addEventListener('click', function () {
-        var visible = !barra.classList.contains('hidden');
-        barra.classList.toggle('hidden');
-        boton.setAttribute('aria-expanded', String(!visible));
-      });
+      var botonDesktop = document.getElementById('toggleBarraFlotante');
+      if (barra && botonDesktop) {
+        botonDesktop.addEventListener('click', function () {
+          var visible = barra.classList.contains('hidden');
+          barra.classList.toggle('hidden', !visible);
+          botonDesktop.setAttribute('aria-expanded', String(visible));
+        });
+      }
+    })();
+    (function () {
+      var hamburger = document.getElementById('toggleMobileNav');
+      var closeBtn = document.getElementById('closeMobileNav');
+      var menu = document.getElementById('mobileNav');
+      var overlay = document.getElementById('mobileNavOverlay');
+      var navMain = document.getElementById('mobileNavMain');
+      var navMainExtra = document.getElementById('mobileNavMainExtra');
+      var navBrands = document.getElementById('mobileNavBrands');
+      var brandsBtn = document.getElementById('toggleBarraFlotanteMobile');
+      var backBtn = document.getElementById('backFromBrandsMobile');
+      if (!menu) return;
+
+      function setMobileNavVisible(visible) {
+        menu.classList.toggle('hidden', !visible);
+        if (overlay) overlay.classList.toggle('hidden', !visible);
+        if (hamburger) hamburger.setAttribute('aria-expanded', String(visible));
+        document.body.classList.toggle('overflow-hidden', visible);
+        if (!visible) showBrands(false);
+      }
+
+      function showBrands(visible) {
+        if (!navMain || !navBrands) return;
+        navMain.classList.toggle('hidden', visible);
+        if (navMainExtra) navMainExtra.classList.toggle('hidden', visible);
+        navBrands.classList.toggle('hidden', !visible);
+        navBrands.classList.toggle('flex', visible);
+        if (brandsBtn) brandsBtn.setAttribute('aria-expanded', String(visible));
+      }
+
+      if (hamburger) {
+        hamburger.addEventListener('click', function () {
+          setMobileNavVisible(menu.classList.contains('hidden'));
+        });
+      }
+      if (closeBtn) closeBtn.addEventListener('click', function () { setMobileNavVisible(false); });
+      if (overlay) overlay.addEventListener('click', function () { setMobileNavVisible(false); });
+      if (brandsBtn) brandsBtn.addEventListener('click', function () { showBrands(true); });
+      if (backBtn) backBtn.addEventListener('click', function () { showBrands(false); });
+    })();
+    (function () {
+      var logo = document.getElementById('mobileLogo');
+      if (!logo) return;
+      function onScroll() {
+        var scrolled = window.scrollY > 24;
+        logo.style.opacity = scrolled ? '0' : '1';
+        logo.style.pointerEvents = scrolled ? 'none' : 'auto';
+      }
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
     })();
   </script>
   <script type="module" src="/src/main.js"></script>

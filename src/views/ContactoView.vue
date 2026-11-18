@@ -33,7 +33,7 @@ const redes = [
   <section class="w-full bg-white py-24 px-6 md:px-12 min-h-[600px]">
     <div class="max-w-6xl mx-auto">
       <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Pacientes</span>
-      <h1 class="font-title text-3xl/[1] md:text-[53px]/[1] font-semibold tracking-normal text-gray-800 mt-4 mb-6">Contacto</h1>
+      <h1 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-6">Contacto</h1>
       <p class="text-gray-600 text-base md:text-lg leading-relaxed mb-12 max-w-2xl">Estamos para ayudarte. Elegí el medio que prefieras o escribinos usando el formulario.</p>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">

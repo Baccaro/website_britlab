@@ -3,7 +3,7 @@
     <section id="historia" class="institutional-anchor w-full max-w-6xl mx-auto px-6 md:px-12 py-24 mt-12">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         <div class="flex flex-col gap-6">
-          <h2 class="text-brit-teal text-2xl md:text-3xl font-bold uppercase tracking-wider">Institucional</h2>
+          <h2 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal">Institucional</h2>
           <div class="space-y-4 text-gray-600 text-base md:text-lg leading-relaxed">
             <p class="">El Laboratorio del Sanatorio Británico es parte fundamental de una Institución fundada en el año
               1924.</p>
@@ -23,7 +23,7 @@
     </section>
     <section id="mision" class="institutional-anchor w-full bg-white py-24 px-6 md:px-12">
       <div class="max-w-4xl mx-auto text-center">
-        <h2 class="text-brit-teal text-4xl md:text-5xl font-extrabold uppercase tracking-tight mb-8">Nuestra misión</h2>
+        <h2 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal mb-8">Nuestra misión</h2>
         <p class="text-xl md:text-2xl font-medium text-gray-800 leading-relaxed italic">
           "Brindar atención integral en prestaciones bioquímicas al Sanatorio Británico de Rosario, a laboratorios de la
           región y a la comunidad en general, priorizando un servicio ágil, de alta calidad y respaldado por innovación
@@ -34,7 +34,7 @@
     <section id="equipo" class="institutional-anchor w-full bg-gray-50 py-24 px-6 md:px-12">
       <div class="max-w-6xl mx-auto">
         <div class="max-w-4xl mx-auto text-center mb-16">
-          <h2 class="text-brit-teal text-4xl md:text-5xl font-extrabold uppercase tracking-tight mb-8">Nuestro equipo</h2>
+          <h2 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal mb-8">Nuestro equipo</h2>
           <p class="text-gray-600 text-lg leading-relaxed">BritLab cuenta con un equipo multidisciplinario integrado por
             profesionales de Bioquímica, Microbiología, Biotecnología, Biología Molecular y gestión, con formación y
             actualización permanente.</p>
@@ -231,7 +231,7 @@
         <div class="w-full py-12">
           <div class="flex flex-col gap-8">
             <div class="flex items-center justify-between">
-              <h2 class="text-3xl font-bold text-brit-teal">Calidad y Acreditaciones</h2>
+              <h2 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal">Calidad y Acreditaciones</h2>
               <div class="h-[2px] flex-grow ml-8 bg-brit-teal/20"></div>
             </div>
             <p class="text-gray-600 max-w-3xl leading-relaxed">

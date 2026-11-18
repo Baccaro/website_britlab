@@ -68,9 +68,9 @@ function textoDemora(dias) {
 
 <template>
   <section class="w-full bg-gray-50 py-24 px-6 md:px-12 min-h-[600px]">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-6xl mx-auto">
       <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Pacientes</span>
-      <h1 class="font-title text-3xl/[1] md:text-[53px]/[1] font-semibold tracking-normal text-gray-800 mt-4 mb-4">Indicaciones para tu estudio</h1>
+      <h1 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-4">Indicaciones para tu estudio</h1>
       <p class="text-gray-600 text-base md:text-lg leading-relaxed mb-8">Buscá tu estudio por nombre para ver la preparación, las muestras necesarias y los días de demora.</p>
 
       <div class="relative mb-8">

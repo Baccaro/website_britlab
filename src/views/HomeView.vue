@@ -30,7 +30,7 @@ const services = [
     <section class="w-full max-w-6xl mx-auto px-6 md:px-12 pt-32 pb-16 mt-12">
       <div class="flex flex-col md:flex-row items-center gap-12">
         <div class="w-full md:w-1/2 pr-0 md:pr-12">
-          <h2 class="text-4xl md:text-5xl font-bold text-brit-teal leading-tight mb-6">Soluciones de<br>alta complejidad.</h2>
+          <h2 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal mb-6">Soluciones de<br>alta complejidad.</h2>
           <h3 class="text-lg font-bold text-gray-600 mb-4">Las respuestas correctas, desde el principio.</h3>
           <p class="text-gray-500 text-sm md:text-base leading-relaxed">La eficacia del tratamiento depende del diagnóstico correcto. Nuestros expertos diagnostican y tratan los problemas médicos más complicados.</p>
         </div>
