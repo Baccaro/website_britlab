@@ -41,16 +41,16 @@
         </div>
 
         <!-- Dirección: los dos roles de conducción, destacados por separado del resto del equipo -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-10 max-w-2xl mx-auto mb-16 pb-16 border-b border-gray-200">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-3xl mx-auto mb-16 pb-16 border-b border-gray-200">
           <div class="text-center">
             <p class="text-brit-teal text-xs font-bold uppercase tracking-wider mb-2">Dirección General</p>
             <p class="font-semibold text-gray-800">Sergio Chialina</p>
-            <p class="text-sm text-gray-500">Bioquímico. Doctor en Ciencias Biomédicas</p>
+            <p class="text-sm text-gray-500 whitespace-nowrap">Bioquímico. Doctor en Ciencias Biomédicas</p>
           </div>
           <div class="text-center">
             <p class="text-brit-teal text-xs font-bold uppercase tracking-wider mb-2">Dirección Técnica</p>
             <p class="font-semibold text-gray-800">Mariángel Rinaudo</p>
-            <p class="text-sm text-gray-500">Bioquímica. Especialista en Bacteriología&nbsp;Clínica</p>
+            <p class="text-sm text-gray-500 whitespace-nowrap">Bioquímica. Especialista en Bacteriología Clínica</p>
           </div>
         </div>
 
