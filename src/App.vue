@@ -7,7 +7,6 @@ import NoticiaDetalleView from './views/NoticiaDetalleView.vue'
 import PacientesView from './views/PacientesView.vue'
 import IndicacionesView from './views/IndicacionesView.vue'
 import ObrasSocialesView from './views/ObrasSocialesView.vue'
-import FinanciadoresView from './views/FinanciadoresView.vue'
 import ContactoFacturacionView from './views/ContactoFacturacionView.vue'
 import TurnosView from './views/TurnosView.vue'
 import ContactoView from './views/ContactoView.vue'
@@ -24,7 +23,7 @@ const routes = {
   '/pacientes': PacientesView,
   '/pacientes/indicaciones': IndicacionesView,
   '/pacientes/obras-sociales': ObrasSocialesView,
-  '/pacientes/financiadores': FinanciadoresView,
+  '/pacientes/financiadores': ObrasSocialesView,
   '/pacientes/contacto-facturacion': ContactoFacturacionView,
   '/pacientes/turnos': TurnosView,
   '/pacientes/contacto': ContactoView,

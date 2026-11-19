@@ -1,8 +1,7 @@
 <script setup>
 const secciones = [
   { href: '/pacientes/indicaciones', titulo: 'Indicaciones', descripcion: 'Preparación, muestras y días de demora de tu estudio.' },
-  { href: '/pacientes/obras-sociales', titulo: 'Obras Sociales', descripcion: 'Cobertura y requisitos de autorización.' },
-  { href: '/pacientes/financiadores', titulo: 'Financiadores', descripcion: 'Obras Sociales y prepagas con las que trabajamos.' },
+  { href: '/pacientes/obras-sociales', titulo: 'Obras Sociales', descripcion: 'Obras Sociales y prepagas con las que trabajamos, cobertura y requisitos de autorización.' },
   { href: '/pacientes/contacto-facturacion', titulo: 'Contacto de facturación', descripcion: 'Consultas sobre comprobantes y pagos.' },
   { href: '/pacientes/turnos', titulo: 'Turnos', descripcion: 'Cómo solicitar tu turno.' },
   { href: '/pacientes/contacto', titulo: 'Contacto', descripcion: 'Dirección, teléfono y email del laboratorio.' },

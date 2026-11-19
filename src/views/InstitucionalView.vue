@@ -24,7 +24,7 @@
     <section id="mision" class="institutional-anchor w-full bg-white py-24 px-6 md:px-12">
       <div class="max-w-4xl mx-auto text-center">
         <h2 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal mb-8">Nuestra misión</h2>
-        <p class="text-xl md:text-2xl font-medium text-gray-800 leading-relaxed italic">
+        <p class="text-lg md:text-xl font-medium text-gray-800 leading-relaxed italic">
           "Brindar atención integral en prestaciones bioquímicas al Sanatorio Británico de Rosario, a laboratorios de la
           región y a la comunidad en general, priorizando un servicio ágil, de alta calidad y respaldado por innovación
           tecnológica."
@@ -50,7 +50,7 @@
           <div class="text-center">
             <p class="text-brit-teal text-xs font-bold uppercase tracking-wider mb-2">Dirección Técnica</p>
             <p class="font-semibold text-gray-800">Mariángel Rinaudo</p>
-            <p class="text-sm text-gray-500">Bioquímica. Especialista en Bacteriología Clínica</p>
+            <p class="text-sm text-gray-500">Bioquímica. Especialista en Bacteriología&nbsp;Clínica</p>
           </div>
         </div>
 
@@ -60,37 +60,37 @@
             <h3 class="text-gray-800 font-bold uppercase tracking-wider text-sm mb-4 pb-2 border-b-2 border-brit-teal/20">
               Bioquímica Clínica</h3>
             <ul class="divide-y divide-gray-100">
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Carlos Panzeri</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímico</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Carlos Panzeri</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímico</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Gustavo Valenzuela</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímico</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Gustavo Valenzuela</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímico</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Clarisa Boffelli</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Clarisa Boffelli</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Marilina Di Loreto</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Marilina Di Loreto</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Lorena Capriotti</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Lorena Capriotti</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Ana Paula Luna</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Ana Paula Luna</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Marina Del Río</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Marina Del Río</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Antonella Marchetti</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Antonella Marchetti</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
             </ul>
           </div>
@@ -99,33 +99,33 @@
             <h3 class="text-gray-800 font-bold uppercase tracking-wider text-sm mb-4 pb-2 border-b-2 border-brit-teal/20">
               Microbiología</h3>
             <ul class="divide-y divide-gray-100">
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Mariángel Rinaudo</span>
-                <span class="text-gray-400 text-xs text-right">Bioquímica. Esp. en Bacteriología Clínica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Mariángel Rinaudo</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica. Esp. en Bacteriología Clínica</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Miguel Dumas</span>
-                <span class="text-gray-400 text-xs text-right">Bioquímico. Esp. en Microbiología</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Miguel Dumas</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímico. Esp. en Microbiología</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Rocío Magalí Bonifacio</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Rocío Magalí Bonifacio</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Carla Scipione</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Carla Scipione</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Daiana Carolina Leguizamón</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Daiana Carolina Leguizamón</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Matilde Pallota</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Matilde Pallota</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Ernestina Feser</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Biotecnóloga</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Ernestina Feser</p>
+                <p class="text-gray-400 text-xs mt-0.5">Biotecnóloga</p>
               </li>
             </ul>
           </div>
@@ -134,21 +134,21 @@
             <h3 class="text-gray-800 font-bold uppercase tracking-wider text-sm mb-4 pb-2 border-b-2 border-brit-teal/20">
               Biología Molecular</h3>
             <ul class="divide-y divide-gray-100">
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Sergio Chialina</span>
-                <span class="text-gray-400 text-xs text-right">Bioquímico. Doctor en Ciencias Biomédicas</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Sergio Chialina</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímico. Doctor en Ciencias Biomédicas</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Soledad Mellado</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Biotecnóloga</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Soledad Mellado</p>
+                <p class="text-gray-400 text-xs mt-0.5">Biotecnóloga</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Laura Giro</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Biotecnóloga</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Laura Giro</p>
+                <p class="text-gray-400 text-xs mt-0.5">Biotecnóloga</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Ernestina Feser</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Biotecnóloga</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Ernestina Feser</p>
+                <p class="text-gray-400 text-xs mt-0.5">Biotecnóloga</p>
               </li>
             </ul>
           </div>
@@ -157,41 +157,41 @@
             <h3 class="text-gray-800 font-bold uppercase tracking-wider text-sm mb-4 pb-2 border-b-2 border-brit-teal/20">
               Guardia</h3>
             <ul class="divide-y divide-gray-100">
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Ricardo Gasparri</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímico</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Ricardo Gasparri</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímico</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Nicolás Palma</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímico</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Nicolás Palma</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímico</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Macarena Mendiondo</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Macarena Mendiondo</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Carolina López Andreoli</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Carolina López Andreoli</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Fiorella Moro</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Fiorella Moro</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Lorena Capriotti</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Lorena Capriotti</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Matilde Pallota</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Matilde Pallota</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Ernestina Zanello</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Ernestina Zanello</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Valentina Traverso</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Valentina Traverso</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
             </ul>
           </div>
@@ -200,13 +200,13 @@
             <h3 class="text-gray-800 font-bold uppercase tracking-wider text-sm mb-4 pb-2 border-b-2 border-brit-teal/20">
               Asesorías</h3>
             <ul class="divide-y divide-gray-100">
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Abel Pallares</span>
-                <span class="text-gray-400 text-xs text-right">Bioquímico. Esp. en Gestión</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Abel Pallares</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímico. Esp. en Gestión</p>
               </li>
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Santiago Chialina</span>
-                <span class="text-gray-400 text-xs text-right">Lic. en Administración de Empresas</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Santiago Chialina</p>
+                <p class="text-gray-400 text-xs mt-0.5">Lic. en Administración de Empresas</p>
               </li>
             </ul>
           </div>
@@ -215,9 +215,9 @@
             <h3 class="text-gray-800 font-bold uppercase tracking-wider text-sm mb-4 pb-2 border-b-2 border-brit-teal/20">
               Responsable de Calidad</h3>
             <ul class="divide-y divide-gray-100">
-              <li class="flex items-baseline justify-between gap-6 py-2">
-                <span class="text-gray-700 text-sm">Celia Castellarin</span>
-                <span class="text-gray-400 text-xs whitespace-nowrap">Bioquímica</span>
+              <li class="py-2.5">
+                <p class="text-gray-800 text-sm font-medium">Celia Castellarin</p>
+                <p class="text-gray-400 text-xs mt-0.5">Bioquímica</p>
               </li>
             </ul>
           </div>
@@ -242,10 +242,8 @@
               <!-- Card 1: ITAES -->
               <div
                 class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-gray-100">
-                <div class="relative aspect-[4/3] overflow-hidden">
-                  <img alt="Acreditación ITAES"
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    src="https://labmedicina.com/wp-content/uploads/2024/08/Captura-de-pantalla-2024-08-01-a-las-10.22.15.png">
+                <div class="relative aspect-[4/3] overflow-hidden bg-brit-teal/5 flex items-center justify-center group-hover:bg-brit-teal/10 transition-colors duration-500">
+                  <span class="material-symbols-outlined text-6xl text-brit-teal/40" aria-hidden="true">workspace_premium</span>
                   <div
                     class="absolute top-3 right-3 bg-brit-teal text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-lg">
                     <span class="material-symbols-outlined text-xs">workspace_premium</span> Verificado
@@ -262,10 +260,8 @@
               <!-- Card 2: PEEC -->
               <div
                 class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-gray-100">
-                <div class="relative aspect-[4/3] overflow-hidden">
-                  <img alt="Control PEEC"
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    src="https://labmedicina.com/wp-content/uploads/2024/08/Captura-de-pantalla-2024-08-01-a-las-10.19.19.png">
+                <div class="relative aspect-[4/3] overflow-hidden bg-brit-teal/5 flex items-center justify-center group-hover:bg-brit-teal/10 transition-colors duration-500">
+                  <span class="material-symbols-outlined text-6xl text-brit-teal/40" aria-hidden="true">workspace_premium</span>
                   <div
                     class="absolute top-3 right-3 bg-brit-teal text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-lg">
                     <span class="material-symbols-outlined text-xs">workspace_premium</span> Verificado
@@ -280,10 +276,8 @@
               <!-- Card 3: Malbrán -->
               <div
                 class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-gray-100">
-                <div class="relative aspect-[4/3] overflow-hidden">
-                  <img alt="Referencia Malbrán"
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    src="https://labmedicina.com/wp-content/uploads/2026/02/Certificado_QUIMICA-CLINICA.jpg">
+                <div class="relative aspect-[4/3] overflow-hidden bg-brit-teal/5 flex items-center justify-center group-hover:bg-brit-teal/10 transition-colors duration-500">
+                  <span class="material-symbols-outlined text-6xl text-brit-teal/40" aria-hidden="true">workspace_premium</span>
                   <div
                     class="absolute top-3 right-3 bg-brit-teal text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-lg">
                     <span class="material-symbols-outlined text-xs">workspace_premium</span> Verificado
@@ -301,10 +295,8 @@
               <!-- Card 4: Córdoba -->
               <div
                 class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-gray-100">
-                <div class="relative aspect-[4/3] overflow-hidden">
-                  <img alt="Control Laboratorio Central de Córdoba"
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    src="https://labmedicina.com/wp-content/uploads/2024/08/Captura-de-pantalla-2024-08-01-a-las-10.19.19.png">
+                <div class="relative aspect-[4/3] overflow-hidden bg-brit-teal/5 flex items-center justify-center group-hover:bg-brit-teal/10 transition-colors duration-500">
+                  <span class="material-symbols-outlined text-6xl text-brit-teal/40" aria-hidden="true">workspace_premium</span>
                   <div
                     class="absolute top-3 right-3 bg-brit-teal text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-lg">
                     <span class="material-symbols-outlined text-xs">workspace_premium</span> Verificado
