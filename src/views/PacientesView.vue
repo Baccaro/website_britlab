@@ -11,14 +11,14 @@ const secciones = [
 <template>
   <section class="w-full max-w-6xl mx-auto px-6 md:px-12 py-24">
     <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Pacientes</span>
-    <h1 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-6 max-w-3xl">Todo lo que necesitás antes y después de tu estudio.</h1>
-    <p class="text-gray-500 text-lg max-w-2xl leading-relaxed mb-12">Consultá preparaciones, resultados, turnos y respuestas a las preguntas más frecuentes.</p>
+    <h1 class="font-title text-3xl/[1] md:text-[34px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-6 max-w-3xl">Todo lo que necesitás antes y después de tu estudio.</h1>
+    <p class="text-gray-600 text-lg max-w-2xl leading-relaxed mb-12">Consultá preparaciones, resultados, turnos y respuestas a las preguntas más frecuentes.</p>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <a v-for="s in secciones" :key="s.href" :href="s.href"
-        class="bg-white border border-gray-200 hover:border-brit-teal rounded-xl p-6 transition-colors shadow-sm">
+        class="bg-white border border-gray-200 hover:border-brit-teal p-6 transition-colors shadow-sm">
         <p class="font-bold text-gray-800 mb-2">{{ s.titulo }}</p>
-        <p class="text-gray-500 text-sm leading-relaxed">{{ s.descripcion }}</p>
+        <p class="text-gray-600 text-sm leading-relaxed">{{ s.descripcion }}</p>
       </a>
     </div>
   </section>

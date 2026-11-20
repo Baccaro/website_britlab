@@ -78,49 +78,57 @@ async function submitCv() {
 <template>
   <div class="w-full bg-white">
     <section id="britlab" class="institutional-anchor max-w-6xl mx-auto px-6 md:px-12 py-24">
-      <div class="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] items-start">
-        <div>
-          <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / BritLAB</span>
-          <h1 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-8">Laboratorio del Sanatorio Británico</h1>
-          <div class="space-y-5 text-gray-600 text-lg leading-relaxed">
-            <p>BritLab brinda servicios de diagnóstico bioquímico para pacientes internados y ambulatorios, profesionales médicos y laboratorios derivantes.</p>
-            <p>Integra diferentes áreas diagnósticas para brindar resultados confiables, seguros y oportunos, coordinados con los equipos asistenciales del Sanatorio Británico.</p>
-          </div>
+      <div>
+        <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / BRITLAB</span>
+        <h1 class="font-title text-3xl/[1] md:text-[34px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-8">Laboratorio del Sanatorio Británico</h1>
+        <div class="space-y-5 text-gray-600 text-lg leading-relaxed max-w-3xl">
+          <p>BRITLAB brinda servicios de diagnóstico bioquímico para pacientes internados y ambulatorios, profesionales médicos y laboratorios derivantes.</p>
+          <p>Integra diferentes áreas diagnósticas para brindar resultados confiables, seguros y oportunos, coordinados con los equipos asistenciales del Sanatorio Británico.</p>
         </div>
-        <div class="bg-gray-50 border-l-4 border-brit-teal p-8 rounded-r-2xl">
-          <h2 class="text-2xl font-bold text-gray-800 mb-6">Áreas diagnósticas</h2>
-          <div class="space-y-6">
-            <section v-for="area in diagnosticAreas" :key="area.name" class="border-t border-gray-200 pt-5 first:border-0 first:pt-0">
-              <h3 class="text-lg font-bold text-brit-teal mb-3">{{ area.name }}</h3>
-              <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-gray-600">
-                <li v-for="specialty in area.specialties" :key="specialty" class="flex gap-2">
-                  <span class="text-brit-teal" aria-hidden="true">•</span>{{ specialty }}
-                </li>
-              </ul>
-            </section>
-          </div>
+      </div>
+      <div class="bg-gray-50 border-l-4 border-brit-teal p-8 mt-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Áreas diagnósticas</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <section v-for="area in diagnosticAreas" :key="area.name">
+            <h3 class="text-lg font-bold text-brit-teal mb-3">{{ area.name }}</h3>
+            <ul class="space-y-2 text-gray-600">
+              <li v-for="specialty in area.specialties" :key="specialty" class="flex gap-2">
+                <span class="text-brit-teal" aria-hidden="true">•</span>{{ specialty }}
+              </li>
+            </ul>
+          </section>
         </div>
       </div>
     </section>
 
     <section id="tecnologia" class="institutional-anchor max-w-6xl mx-auto px-6 md:px-12 py-24">
-      <div class="max-w-4xl">
-        <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / Tecnología</span>
-        <h2 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-6">Tecnología e innovación</h2>
-        <p class="text-gray-600 text-lg leading-relaxed">BritLab destaca dentro de su evolución reciente la incorporación de tecnología de vanguardia, nuevas capacidades diagnósticas y una infraestructura orientada al desarrollo tecnológico. La información recibida hasta el momento no detalla cuáles son concretamente los equipos y tecnologías que respaldan esta evolución.</p>
+      <div class="grid gap-12 md:grid-cols-2 items-center">
+        <div>
+          <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / Tecnología</span>
+          <h2 class="font-title text-3xl/[1] md:text-[34px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-6">Tecnología e innovación</h2>
+          <p class="text-gray-600 text-lg leading-relaxed">BRITLAB destaca dentro de su evolución reciente la incorporación de tecnología de vanguardia, nuevas capacidades diagnósticas y una infraestructura orientada al desarrollo tecnológico. La información recibida hasta el momento no detalla cuáles son concretamente los equipos y tecnologías que respaldan esta evolución.</p>
+        </div>
+        <div class="w-full aspect-square overflow-hidden shadow-lg">
+          <img alt="Tecnología e innovación en BRITLAB" class="w-full h-full object-cover" src="/images/tecnologia-innovacion.jpg">
+        </div>
       </div>
     </section>
 
     <section id="docencia" class="institutional-anchor bg-gray-50 px-6 md:px-12 py-24">
-      <div class="max-w-6xl mx-auto grid gap-12 md:grid-cols-2">
-        <div>
-          <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / Formación</span>
-          <h2 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-6">Docencia e Investigación</h2>
-          <p class="text-gray-600 text-lg leading-relaxed">BritLab mantiene una participación activa en actividades académicas, formación profesional e investigación.</p>
-          <h3 class="text-xl font-bold text-brit-teal mt-8 mb-4">Docencia de grado y posgrado</h3>
-          <p class="text-gray-600 leading-relaxed">BritLab participa como Institución Coformadora de la Práctica Profesional Obligatoria (PPO) de estudiantes de la Carrera de Bioquímica de la Facultad de Ciencias Bioquímicas y Farmacéuticas de la Universidad Nacional de Rosario.</p>
+      <div class="max-w-6xl mx-auto">
+        <div class="grid gap-12 md:grid-cols-2 items-center mb-16">
+          <div>
+            <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / Formación</span>
+            <h2 class="font-title text-3xl/[1] md:text-[34px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-6">Docencia e Investigación</h2>
+            <p class="text-gray-600 text-lg leading-relaxed">BRITLAB mantiene una participación activa en actividades académicas, formación profesional e investigación.</p>
+            <h3 class="text-xl font-bold text-brit-teal mt-8 mb-4">Docencia de grado y posgrado</h3>
+            <p class="text-gray-600 leading-relaxed">BRITLAB participa como Institución Coformadora de la Práctica Profesional Obligatoria (PPO) de estudiantes de la Carrera de Bioquímica de la Facultad de Ciencias Bioquímicas y Farmacéuticas de la Universidad Nacional de Rosario.</p>
+          </div>
+          <div class="w-full aspect-square overflow-hidden shadow-lg">
+            <img alt="Docencia e investigación en BRITLAB" class="w-full h-full object-cover" src="/new_1.png">
+          </div>
         </div>
-        <div class="bg-white rounded-2xl p-8 shadow-sm space-y-8">
+        <div class="bg-white p-8 shadow-sm grid sm:grid-cols-2 gap-8">
           <div><h3 class="text-xl font-bold text-gray-800 mb-3">Actividades</h3><ul class="list-disc pl-5 text-gray-600 space-y-2"><li>Pasantías para estudiantes avanzados de Bioquímica.</li><li>Rotaciones en Microbiología para profesionales en formación en Infectología.</li><li>Formación y capacitación profesional continua.</li></ul></div>
           <div><h3 class="text-xl font-bold text-gray-800 mb-3">Investigación y desarrollo</h3><p class="text-gray-600 mb-3">El Laboratorio informa participación en:</p><ul class="list-disc pl-5 text-gray-600 space-y-2"><li>Investigación clínica.</li><li>Validación de tecnologías y tests de diagnóstico in vitro (IVD).</li><li>Publicaciones científicas.</li><li>Presentaciones en congresos y reuniones científicas.</li></ul></div>
         </div>
@@ -131,19 +139,19 @@ async function submitCv() {
       <div class="grid gap-12 lg:grid-cols-2 items-start">
         <div>
           <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Oportunidades</span>
-          <h2 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-6">Trabajá con Nosotros</h2>
+          <h2 class="font-title text-3xl/[1] md:text-[34px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-6">Trabajá con Nosotros</h2>
           <p class="text-gray-600 text-lg leading-relaxed">Creemos en el desarrollo de equipos profesionales comprometidos con la ciencia, la innovación y la mejora continua.</p>
         </div>
-        <form class="bg-gray-50 rounded-2xl p-8 space-y-5" @submit.prevent="submitCv" v-if="!cvSent">
+        <form class="bg-gray-50 p-8 space-y-5" @submit.prevent="submitCv" v-if="!cvSent">
           <h3 class="text-2xl font-bold text-gray-800">Enviá tu CV</h3>
           <input class="w-full rounded-lg border-gray-200 px-4 py-3" required type="text" placeholder="Nombre y apellido" v-model="cvForm.nombre_completo">
           <input class="w-full rounded-lg border-gray-200 px-4 py-3" required type="email" placeholder="Correo electrónico" v-model="cvForm.email">
           <input class="w-full rounded-lg border-gray-200 px-4 py-3" required type="file" accept=".pdf" @change="onCvArchivoChange">
-          <p class="text-xs text-gray-500">Sólo se aceptan archivos PDF.</p>
+          <p class="text-xs text-gray-600">Sólo se aceptan archivos PDF.</p>
           <p v-if="cvError" class="text-red-600 text-sm font-semibold" role="alert">{{ cvError }}</p>
-          <button class="w-full bg-brit-teal hover:bg-brit-teal-dark text-white font-bold py-3 rounded-full transition-colors disabled:opacity-60" type="submit" :disabled="cvSending">{{ cvSending ? 'Enviando...' : 'Enviar CV' }}</button>
+          <button class="inline-flex items-center justify-center bg-brit-teal hover:bg-brit-teal-dark text-white font-bold py-2.5 px-6 rounded-full transition-colors disabled:opacity-60" type="submit" :disabled="cvSending">{{ cvSending ? 'Enviando...' : 'Enviar CV' }}</button>
         </form>
-        <div class="bg-gray-50 rounded-2xl p-8" v-else>
+        <div class="bg-gray-50 p-8" v-else>
           <p class="text-brit-teal font-semibold text-lg" role="status">Gracias. Recibimos tu postulación.</p>
         </div>
       </div>
@@ -154,15 +162,15 @@ async function submitCv() {
         <div>
           <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / BritGEN</span>
           <h2 class="mt-4 mb-6">
-            <img class="w-full max-w-[440px] h-auto" src="/images/britgen.png" alt="BritGen, Unidad de Medicina Genómica del Sanatorio Británico">
+            <img class="w-full max-w-[205px] h-auto" src="/images/britgen.png" alt="BritGen, Unidad de Medicina Genómica del Sanatorio Británico">
           </h2>
-          <p class="text-gray-600 text-lg leading-relaxed mb-8">BritGen forma parte de la propuesta de servicios especializados de BritLab y constituye la Unidad de Medicina Genómica del Sanatorio Británico, orientada al estudio y aplicación de la genética y la genómica en diferentes áreas de la medicina.</p>
-          <a class="inline-flex items-center bg-brit-teal hover:bg-brit-teal-dark text-white font-bold px-6 py-3 rounded-full transition-colors" href="https://britgen.com.ar/" target="_blank" rel="noopener noreferrer">Conocé BritGen <span class="ml-2" aria-hidden="true">→</span></a>
+          <p class="text-gray-600 text-lg leading-relaxed mb-8">BritGen forma parte de la propuesta de servicios especializados de BRITLAB y constituye la Unidad de Medicina Genómica del Sanatorio Británico, orientada al estudio y aplicación de la genética y la genómica en diferentes áreas de la medicina.</p>
+          <a class="inline-flex items-center bg-[#918F94] hover:opacity-90 text-white font-bold px-6 py-3 rounded-full transition-opacity" href="https://britgen.com.ar/" target="_blank" rel="noopener noreferrer">Conocé BritGen <span class="ml-2" aria-hidden="true">→</span></a>
         </div>
         <div>
           <h3 class="text-2xl font-bold text-brit-teal mb-6">Principales áreas de trabajo</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div v-for="area in ['Oncogenética', 'Neurogenética', 'Cardiogenética', 'Farmacogenética', 'Genómica reproductiva', 'Genómica del bienestar']" :key="area" class="bg-white border border-gray-100 p-5 rounded-xl shadow-sm text-gray-700 font-semibold">{{ area }}</div>
+            <div v-for="area in ['Oncogenética', 'Neurogenética', 'Cardiogenética', 'Farmacogenética', 'Genómica reproductiva', 'Genómica del bienestar']" :key="area" class="bg-white border border-gray-100 p-5 shadow-sm text-gray-800 font-semibold">{{ area }}</div>
           </div>
         </div>
       </div>

@@ -1,14 +1,14 @@
 <script setup>
 const services = [
   {
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDNFbWcIr1Y7y4yozfFfk5d3grdzVN8-eYxpqcMpoLKN5km-93ivXJLz7HcDP-LblZ0PKqb9IUJAxsj16xL-_UwJi5-5yzOWoT8uEMcxfAc8cTvQtDVMj4Ro5Qf3HO1SJsonwZD4zNcTnSKGTkh2s6I4HmfimNBbUGIc7bBkPvFyCdyrG8KeA2g-KutHtK6QBRAoPLdvphh7mCXqk8mZFLWYQh_k0-AopJ2r9OhU1PVUgfBcHDZky9r-A',
+    image: '/images/turnos-obras-sociales.png',
     label: 'Servicios / Pacientes',
     title: 'Turnos Online y Obras Sociales',
     text: 'Para su mejor atención puede solicitar el turno de forma online desde aquí. Consulte con todas las obras sociales que trabajamos.',
     reverse: false,
   },
   {
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBlCczqKWXnHFjlJ2pLrh95xcOtD1fryBlqtsEIUEGrBXzZ0YkVTXygCA2cxSquvm6f89f7ZIRI4VEYBHgs0KA-DjG4c1uYAZ5RmVXQUKANl-V5rpQiH9I7244WUMYi14elEgluXgnox800qWD0PUdj9TdiDI1rm39XdZAYqMA93vovdmAncjwJGYOGukU5FmVRBaFTJrC5Lv_hpiOPbzAlS67aisLQb7iKBWla7df1zxwAiUjEtQux1A',
+    image: '/images/extraccion-domicilio.png',
     label: 'Servicios / Comodidad',
     title: 'Extracción a domicilio y Resultados',
     text: 'Realizamos una gran cantidad de estudios a domicilio. Para su mejor atención puede solicitar el turno de forma online desde aquí y recibir sus resultados por email.',
@@ -30,11 +30,12 @@ const services = [
     <section class="w-full max-w-6xl mx-auto px-6 md:px-12 pt-32 pb-16 mt-12">
       <div class="flex flex-col md:flex-row items-center gap-12">
         <div class="w-full md:w-1/2 pr-0 md:pr-12">
-          <h2 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal mb-6">Soluciones de<br>alta complejidad.</h2>
+          <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Inicio</span>
+          <h2 class="font-title text-3xl/[1] md:text-[34px]/[1] font-semibold tracking-normal text-brit-teal mb-6 mt-4">Soluciones de<br>alta complejidad.</h2>
           <h3 class="text-lg font-bold text-gray-600 mb-4">Las respuestas correctas, desde el principio.</h3>
-          <p class="text-gray-500 text-sm md:text-base leading-relaxed">La eficacia del tratamiento depende del diagnóstico correcto. Nuestros expertos diagnostican y tratan los problemas médicos más complicados.</p>
+          <p class="text-gray-600 text-sm md:text-base leading-relaxed">La eficacia del tratamiento depende del diagnóstico correcto. Nuestros expertos diagnostican y tratan los problemas médicos más complicados.</p>
         </div>
-        <div class="w-full md:w-1/2 h-[300px] md:h-[400px] overflow-hidden rounded-2xl shadow-lg">
+        <div class="w-full md:w-1/2 h-[300px] md:h-[400px] overflow-hidden shadow-lg">
           <img alt="Soluciones de alta complejidad" class="w-full h-full object-cover" src="/soluciones.png">
         </div>
       </div>
@@ -42,10 +43,10 @@ const services = [
 
     <section class="w-full max-w-6xl mx-auto px-6 md:px-12 py-16 space-y-24">
       <div v-for="service in services" :key="service.title" :class="['relative flex flex-col items-center', service.reverse ? 'md:flex-row-reverse' : 'md:flex-row']">
-        <div class="w-full md:w-2/3 h-64 md:h-[400px] rounded-2xl overflow-hidden shadow-lg bg-gray-100">
+        <div class="w-full md:w-2/3 h-64 md:h-[400px] overflow-hidden shadow-lg bg-gray-100">
           <img :alt="service.title" class="w-full h-full object-cover" :src="service.image">
         </div>
-        <div :class="['w-full md:w-1/2 bg-white p-8 md:p-12 rounded-2xl shadow-xl md:absolute md:top-1/2 md:-translate-y-1/2 z-10 mt-[-40px] md:mt-0', service.reverse ? 'md:left-0' : 'md:right-0']">
+        <div :class="['w-full md:w-1/2 bg-white p-8 md:p-12 shadow-xl md:absolute md:top-1/2 md:-translate-y-1/2 z-10 mt-[-40px] md:mt-0', service.reverse ? 'md:left-0' : 'md:right-0']">
           <span class="text-brit-teal text-xs font-bold uppercase tracking-wider mb-2 block">{{ service.label }}</span>
           <h3 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">{{ service.title }}</h3>
           <p class="text-gray-600 mb-6 leading-relaxed">{{ service.text }}</p>

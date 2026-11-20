@@ -28,21 +28,21 @@ onMounted(async () => {
 
 <template>
   <main class="w-full max-w-3xl mx-auto px-6 md:px-12 py-24 min-h-[600px]">
-    <p v-if="loading" class="text-gray-500">Cargando noticia...</p>
+    <p v-if="loading" class="text-gray-600">Cargando noticia...</p>
     <div v-else-if="error">
       <p class="text-red-600 mb-6">{{ error }}</p>
       <a href="/noticias" class="text-brit-teal text-sm font-semibold hover:underline">← Volver a noticias</a>
     </div>
     <article v-else>
       <a href="/noticias" class="text-brit-teal text-sm font-semibold hover:underline mb-8 inline-block">← Volver a noticias</a>
-      <span class="text-brit-teal text-xs font-bold uppercase tracking-wider block">{{ noticia.categoria }}</span>
-      <h1 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-4">{{ noticia.titulo }}</h1>
-      <time class="text-gray-400 text-sm font-medium block mb-8" :datetime="noticia.fecha">{{ formatearFecha(noticia.fecha) }}</time>
-      <div v-if="noticia.tiene_imagen" class="w-full aspect-[16/9] bg-gray-100 rounded-2xl overflow-hidden mb-10">
+      <span class="text-brit-teal text-xs font-bold uppercase tracking-wider block">Noticias / {{ noticia.categoria }}</span>
+      <h1 class="font-title text-3xl/[1] md:text-[34px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-4">{{ noticia.titulo }}</h1>
+      <time class="text-gray-600 text-sm font-medium block mb-8" :datetime="noticia.fecha">{{ formatearFecha(noticia.fecha) }}</time>
+      <div v-if="noticia.tiene_imagen" class="w-full aspect-[16/9] bg-gray-100 overflow-hidden mb-10">
         <img :src="`${API_BASE}/noticias/${noticia.id}/imagen`" :alt="noticia.titulo" class="w-full h-full object-cover">
       </div>
       <p class="text-gray-600 text-lg leading-relaxed mb-8">{{ noticia.descripcion }}</p>
-      <div class="rich-content text-gray-700 leading-relaxed" v-html="noticia.cuerpo"></div>
+      <div class="rich-content text-gray-800 leading-relaxed" v-html="noticia.cuerpo"></div>
     </article>
   </main>
 </template>

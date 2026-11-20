@@ -48,7 +48,7 @@ async function enviar() {
 </script>
 
 <template>
-  <div v-if="enviado" class="bg-brit-teal/10 border border-brit-teal/30 rounded-xl p-6 text-center">
+  <div v-if="enviado" class="bg-brit-teal/10 border border-brit-teal/30 p-6 text-center">
     <p class="font-bold text-gray-800 mb-1">¡Gracias por tu mensaje!</p>
     <p class="text-gray-600 text-sm">Lo vamos a leer y responder a la brevedad.</p>
   </div>

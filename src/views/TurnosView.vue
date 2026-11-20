@@ -4,11 +4,11 @@
 <template>
   <section class="w-full bg-gray-50 py-24 px-6 md:px-12 min-h-[600px]">
     <div class="max-w-6xl mx-auto">
-      <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Pacientes</span>
-      <h1 class="font-title text-3xl/[1] md:text-[62px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-6">Turnos</h1>
+      <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Pacientes / Turnos</span>
+      <h1 class="font-title text-3xl/[1] md:text-[34px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-6">Turnos</h1>
       <p class="text-gray-600 text-base md:text-lg leading-relaxed mb-10">Información relacionada a turnos y contacto con el Laboratorio del Sanatorio Británico.</p>
 
-      <div class="bg-white rounded-2xl shadow-sm p-8 mb-12">
+      <div class="bg-white shadow-sm p-8 mb-12">
         <h2 class="text-xl font-bold text-gray-800 mb-4">Gestión de Turnos</h2>
         <div class="text-gray-600 leading-relaxed space-y-3">
           <p>El Laboratorio del Sanatorio Británico atiende con y sin turno previo en su sede de extracciones, pero para evitar esperas te recomendamos solicitarlo con anticipación.</p>
