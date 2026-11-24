@@ -11,6 +11,17 @@ function formatearFecha(fecha) {
   return new Date(`${fecha}T00:00:00`).toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
+// Instagram no publica una miniatura estática accesible sin login (su endpoint
+// no oficial /media/ devuelve 404 incluso para reels públicos reales), así que
+// sólo YouTube puede resolver una miniatura real acá; para Instagram se cae al
+// "else" (imagen cargada a mano, o sólo la badge de categoría).
+function obtenerThumbnailVideo(url) {
+  if (!url) return null
+  const youtube = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
+  if (youtube) return `https://img.youtube.com/vi/${youtube[1]}/hqdefault.jpg`
+  return null
+}
+
 onMounted(async () => {
   try {
     const res = await fetch(`${API_BASE}/noticias?limit=50`)
@@ -40,7 +51,13 @@ onMounted(async () => {
     <section v-else aria-label="Artículos de expertos" class="grid grid-cols-1 md:grid-cols-3 gap-8">
       <article v-for="noticia in noticias" :key="noticia.id" class="flex flex-col">
         <a :href="`/noticias/${noticia.id}`" class="w-full aspect-[4/3] bg-gray-100 relative mb-4 overflow-hidden block">
-          <img v-if="noticia.tiene_imagen" :src="`${API_BASE}/noticias/${noticia.id}/imagen`" :alt="noticia.titulo" class="w-full h-full object-cover">
+          <img v-if="obtenerThumbnailVideo(noticia.video_url)" :src="obtenerThumbnailVideo(noticia.video_url)" :alt="noticia.titulo" class="w-full h-full object-cover" @error="$event.target.style.display = 'none'">
+          <img v-else-if="noticia.tiene_imagen" :src="`${API_BASE}/noticias/${noticia.id}/imagen`" :alt="noticia.titulo" class="w-full h-full object-cover">
+          <span v-if="noticia.video_url" class="absolute inset-0 flex items-center justify-center">
+            <span class="w-12 h-12 rounded-full bg-black/50 flex items-center justify-center">
+              <svg class="w-5 h-5 text-white ml-0.5" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+            </span>
+          </span>
           <span class="absolute bottom-3 left-3 bg-white text-brit-teal text-[10px] font-bold px-3 py-1 rounded-full shadow-sm">{{ noticia.categoria }}</span>
         </a>
         <time class="text-gray-600 text-xs mb-2 font-medium" :datetime="noticia.fecha">{{ formatearFecha(noticia.fecha) }}</time>

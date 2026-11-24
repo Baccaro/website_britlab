@@ -22,10 +22,10 @@ const horarios = [
 ]
 
 const redes = [
-  { nombre: 'Instagram', href: 'https://www.instagram.com/' },
-  { nombre: 'Facebook', href: 'https://www.facebook.com/' },
-  { nombre: 'LinkedIn', href: 'https://www.linkedin.com/' },
-  { nombre: 'YouTube', href: 'https://www.youtube.com/' },
+  { nombre: 'Instagram', href: 'https://www.instagram.com/sanatoriobritanico/' },
+  { nombre: 'Facebook', href: 'https://www.facebook.com/SanatorioBritanico/' },
+  { nombre: 'LinkedIn', href: 'https://www.linkedin.com/company/sanbrita/?viewAsMember=true' },
+  { nombre: 'YouTube', href: 'https://www.youtube.com/@sbsanatoriobritanico' },
 ]
 </script>
 

@@ -23,14 +23,16 @@
       </div>
     </section>
     <section id="mision" class="institutional-anchor w-full bg-white py-24 px-6 md:px-12">
-      <div class="max-w-4xl">
-        <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Institucional / Misión</span>
-        <h2 class="font-title text-3xl/[1] md:text-[34px]/[1] font-semibold tracking-normal text-brit-teal mb-8 mt-4">Nuestra misión</h2>
-        <p class="text-base md:text-lg font-medium text-gray-600 leading-relaxed italic">
-          "Brindar atención integral en prestaciones bioquímicas al Sanatorio Británico de Rosario, a laboratorios de la
-          región y a la comunidad en general, priorizando un servicio ágil, de alta calidad y respaldado por innovación
-          tecnológica."
-        </p>
+      <div class="max-w-6xl mx-auto">
+        <div class="max-w-4xl">
+          <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Institucional / Misión</span>
+          <h2 class="font-title text-3xl/[1] md:text-[34px]/[1] font-semibold tracking-normal text-brit-teal mb-8 mt-4">Nuestra misión</h2>
+          <p class="text-base md:text-lg font-medium text-gray-600 leading-relaxed italic">
+            "Brindar atención integral en prestaciones bioquímicas al Sanatorio Británico de Rosario, a laboratorios de la
+            región y a la comunidad en general, priorizando un servicio ágil, de alta calidad y respaldado por innovación
+            tecnológica."
+          </p>
+        </div>
       </div>
     </section>
     <section id="equipo" class="institutional-anchor w-full bg-gray-50 py-24 px-6 md:px-12">
@@ -38,7 +40,7 @@
         <div class="max-w-4xl mb-16">
           <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Institucional / Equipo</span>
           <h2 class="font-title text-3xl/[1] md:text-[34px]/[1] font-semibold tracking-normal text-brit-teal mb-8 mt-4">Nuestro equipo</h2>
-          <p class="text-gray-600 text-lg leading-relaxed">BRITLAB cuenta con un equipo multidisciplinario integrado por
+          <p class="text-gray-600 text-lg leading-relaxed">BritLab cuenta con un equipo multidisciplinario integrado por
             profesionales de Bioquímica, Microbiología, Biotecnología, Biología Molecular y gestión, con formación y
             actualización permanente.</p>
         </div>
@@ -241,7 +243,7 @@
               </div>
             </div>
             <p class="text-gray-600 max-w-3xl leading-relaxed">
-              BRITLAB mantiene los más altos estándares de calidad a través de acreditaciones nacionales e
+              BritLab mantiene los más altos estándares de calidad a través de acreditaciones nacionales e
               internacionales, garantizando la excelencia en cada proceso diagnóstico.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

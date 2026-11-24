@@ -79,10 +79,10 @@ async function submitCv() {
   <div class="w-full bg-white">
     <section id="britlab" class="institutional-anchor max-w-6xl mx-auto px-6 md:px-12 py-24">
       <div>
-        <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / BRITLAB</span>
+        <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / BritLab</span>
         <h1 class="font-title text-3xl/[1] md:text-[34px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-8">Laboratorio del Sanatorio Británico</h1>
         <div class="space-y-5 text-gray-600 text-lg leading-relaxed max-w-3xl">
-          <p>BRITLAB brinda servicios de diagnóstico bioquímico para pacientes internados y ambulatorios, profesionales médicos y laboratorios derivantes.</p>
+          <p>BritLab brinda servicios de diagnóstico bioquímico para pacientes internados y ambulatorios, profesionales médicos y laboratorios derivantes.</p>
           <p>Integra diferentes áreas diagnósticas para brindar resultados confiables, seguros y oportunos, coordinados con los equipos asistenciales del Sanatorio Británico.</p>
         </div>
       </div>
@@ -106,10 +106,10 @@ async function submitCv() {
         <div>
           <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / Tecnología</span>
           <h2 class="font-title text-3xl/[1] md:text-[34px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-6">Tecnología e innovación</h2>
-          <p class="text-gray-600 text-lg leading-relaxed">BRITLAB destaca dentro de su evolución reciente la incorporación de tecnología de vanguardia, nuevas capacidades diagnósticas y una infraestructura orientada al desarrollo tecnológico. La información recibida hasta el momento no detalla cuáles son concretamente los equipos y tecnologías que respaldan esta evolución.</p>
+          <p class="text-gray-600 text-lg leading-relaxed">BritLab destaca dentro de su evolución reciente la incorporación de tecnología de vanguardia, nuevas capacidades diagnósticas y una infraestructura orientada al desarrollo tecnológico. La información recibida hasta el momento no detalla cuáles son concretamente los equipos y tecnologías que respaldan esta evolución.</p>
         </div>
         <div class="w-full aspect-square overflow-hidden shadow-lg">
-          <img alt="Tecnología e innovación en BRITLAB" class="w-full h-full object-cover" src="/images/tecnologia-innovacion.jpg">
+          <img alt="Tecnología e innovación en BritLab" class="w-full h-full object-cover" src="/images/tecnologia-innovacion.jpg">
         </div>
       </div>
     </section>
@@ -120,12 +120,12 @@ async function submitCv() {
           <div>
             <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / Formación</span>
             <h2 class="font-title text-3xl/[1] md:text-[34px]/[1] font-semibold tracking-normal text-brit-teal mt-4 mb-6">Docencia e Investigación</h2>
-            <p class="text-gray-600 text-lg leading-relaxed">BRITLAB mantiene una participación activa en actividades académicas, formación profesional e investigación.</p>
+            <p class="text-gray-600 text-lg leading-relaxed">BritLab mantiene una participación activa en actividades académicas, formación profesional e investigación.</p>
             <h3 class="text-xl font-bold text-brit-teal mt-8 mb-4">Docencia de grado y posgrado</h3>
-            <p class="text-gray-600 leading-relaxed">BRITLAB participa como Institución Coformadora de la Práctica Profesional Obligatoria (PPO) de estudiantes de la Carrera de Bioquímica de la Facultad de Ciencias Bioquímicas y Farmacéuticas de la Universidad Nacional de Rosario.</p>
+            <p class="text-gray-600 leading-relaxed">BritLab participa como Institución Coformadora de la Práctica Profesional Obligatoria (PPO) de estudiantes de la Carrera de Bioquímica de la Facultad de Ciencias Bioquímicas y Farmacéuticas de la Universidad Nacional de Rosario.</p>
           </div>
           <div class="w-full aspect-square overflow-hidden shadow-lg">
-            <img alt="Docencia e investigación en BRITLAB" class="w-full h-full object-cover" src="/new_1.png">
+            <img alt="Docencia e investigación en BritLab" class="w-full h-full object-cover object-[18%_center]" src="/images/docencia-investigacion.png">
           </div>
         </div>
         <div class="bg-white p-8 shadow-sm grid sm:grid-cols-2 gap-8">
@@ -160,11 +160,11 @@ async function submitCv() {
     <section id="britgen" class="institutional-anchor bg-gray-50 px-6 md:px-12 py-24">
       <div class="max-w-6xl mx-auto grid gap-12 lg:grid-cols-[0.8fr_1.2fr] items-center">
         <div>
-          <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / BritGEN</span>
+          <span class="text-brit-teal text-xs font-bold uppercase tracking-wider">Servicios / BritGen</span>
           <h2 class="mt-4 mb-6">
             <img class="w-full max-w-[205px] h-auto" src="/images/britgen.png" alt="BritGen, Unidad de Medicina Genómica del Sanatorio Británico">
           </h2>
-          <p class="text-gray-600 text-lg leading-relaxed mb-8">BritGen forma parte de la propuesta de servicios especializados de BRITLAB y constituye la Unidad de Medicina Genómica del Sanatorio Británico, orientada al estudio y aplicación de la genética y la genómica en diferentes áreas de la medicina.</p>
+          <p class="text-gray-600 text-lg leading-relaxed mb-8">BritGen forma parte de la propuesta de servicios especializados de BritLab y constituye la Unidad de Medicina Genómica del Sanatorio Británico, orientada al estudio y aplicación de la genética y la genómica en diferentes áreas de la medicina.</p>
           <a class="inline-flex items-center bg-[#918F94] hover:opacity-90 text-white font-bold px-6 py-3 rounded-full transition-opacity" href="https://britgen.com.ar/" target="_blank" rel="noopener noreferrer">Conocé BritGen <span class="ml-2" aria-hidden="true">→</span></a>
         </div>
         <div>
