@@ -1,17 +1,3 @@
-<!--<!DOCTYPE html>
-<html lang="">
-  <head>
-    <meta charset="UTF-8">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vite App</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
-</html>
--->
 <!DOCTYPE html>
 <html lang="es">
 
@@ -77,6 +63,26 @@
 
     .site-logo:hover {
       background-color: transparent;
+    }
+
+    /* Grid de columnas del footer: en una clase propia (no utilities de
+       Tailwind) porque el CDN de Tailwind no estaba resolviendo bien
+       grid-cols-1/md:grid-cols-3/lg:grid-cols-5 juntas en este contenedor. */
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 768px) {
+      .footer-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .footer-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
     }
 
     /* Contenido guardado con el editor de texto enriquecido del panel admin
@@ -194,7 +200,7 @@
   <aside id="mobileNav" class="hidden lg:hidden fixed inset-y-0 left-0 z-[80] w-[82%] max-w-xs bg-white text-gray-800 flex flex-col overflow-y-auto shadow-2xl">
     <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
       <div class="flex items-center gap-2">
-        <img src="/images/britlab-wordmark.png" alt="BritLab" class="h-7 object-contain">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA0WjXA0NFl6g8sg3U8gena_jy7KcHV4TxUNJ8GEa3CTK9O7VroYojm90ltBLEdfZgclCynvKjn2hCep0Cbu-9qXs6HRijOjdI2yd9N49iipoPlTlmeq3kLjNqaNCqCw-D9diEZfQT-30sqZuoeQkT1VA-b8cYghdp7hhIuRj4r7cz_pHqhKXsjfpJK9pI-R73tbI6A2njlQ3pk8unapnXPRxB0xJAfMpp_ZKWpPVJiCtkRH6rv3GJNQKYWIHlbrAOQcY" alt="BritLab" class="h-7 object-contain">
       </div>
       <button id="closeMobileNav" type="button" aria-label="Cerrar menú"
         class="w-9 h-9 bg-gray-100 rounded-full flex items-center justify-center shrink-0">
@@ -299,38 +305,40 @@
   <!-- END: MainHeader -->
   <!-- BEGIN: MainContent -->
   <main class="flex-grow relative flex flex-col lg:pt-[72px]">
+    <!-- Partners Bar: se despliega sobre la imagen de portada al hacer click en la cruz del navbar.
+         Vive fuera de #globalHero/#compactHero (hijo directo de <main>, que es position:relative)
+         para que funcione igual en todas las páginas, no sólo en el Home. -->
+    <div id="barraFlotante" class="hidden absolute inset-x-0 top-[72px] z-30 mx-auto w-[95%] max-w-7xl">
+      <!-- Barra de color azul, sobre los logos, pegada al navbar -->
+      <div class="absolute -top-[3px] inset-x-0 z-20 h-[6px] bg-brit-teal rounded-full shadow-md"></div>
+      <div class="no-scrollbar relative z-10 bg-white/90 backdrop-blur-sm shadow-lg py-6 sm:py-3 md:py-4 px-4 md:px-8 flex flex-col sm:flex-nowrap sm:flex-row items-center gap-y-6 sm:gap-y-0 gap-x-4 sm:gap-x-6 md:gap-x-10 sm:overflow-x-auto">
+        <a href="https://sanatoriobritanico.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
+          <img alt="Sanatorio Británico" class="h-8 sm:h-5 md:h-6 lg:h-7 object-contain" src="/images/sanatorio_britanico.svg">
+        </a>
+        <a href="https://consultoriosdelbritanico.com/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
+          <img alt="Consultorios del Británico" class="h-8 sm:h-5 md:h-6 lg:h-7 object-contain" src="/images/consultorios_britanico.svg">
+        </a>
+        <a href="https://www.britanicasalud.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
+          <img alt="Británica Salud" class="h-6 sm:h-3.5 md:h-4 lg:h-5 object-contain" src="/images/britanica_salud.svg">
+        </a>
+        <a href="https://public.britlab.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
+          <img alt="BritLab" class="h-8 sm:h-5 md:h-6 lg:h-7 object-contain" src="/images/britlab_bar.svg">
+        </a>
+        <a href="https://britgen.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
+          <img alt="BritGen" class="h-12 sm:h-7 md:h-9 lg:h-11 object-contain" src="/images/britgen_byw.svg">
+        </a>
+        <span class="inline-flex shrink-0">
+          <img alt="CEMYRBS" class="h-10 sm:h-6 md:h-7 lg:h-8 object-contain" src="/images/cemyrbs.svg">
+        </span>
+        <span class="inline-flex shrink-0">
+          <img alt="Clínica Martins" class="h-10 sm:h-6 md:h-7 lg:h-8 object-contain" src="/images/clinica_martins.png">
+        </span>
+      </div>
+    </div>
     <!-- Hero Section -->
     <section id="globalHero" class="hero-background relative w-screen max-w-none self-center h-[600px] md:h-[700px] flex flex-col items-center pt-8 bg-gray-200 justify-between">
       <!-- Overlay to ensure text readability if needed, though design looks relatively clear -->
       <div class="absolute inset-0 bg-black/10"></div>
-      <!-- Partners Bar: se despliega sobre la imagen de portada al hacer click en la cruz del navbar -->
-      <div id="barraFlotante" class="hidden relative z-10 w-[95%] max-w-7xl -mt-8">
-        <!-- Barra de color azul, sobre los logos, pegada al navbar -->
-        <div class="absolute -top-[3px] inset-x-0 z-20 h-[6px] bg-brit-teal rounded-full shadow-md"></div>
-        <div class="no-scrollbar relative z-10 bg-white/90 backdrop-blur-sm shadow-lg py-6 sm:py-3 md:py-4 px-4 md:px-8 flex flex-col sm:flex-nowrap sm:flex-row items-center gap-y-6 sm:gap-y-0 gap-x-4 sm:gap-x-6 md:gap-x-10 sm:overflow-x-auto">
-          <a href="https://sanatoriobritanico.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
-            <img alt="Sanatorio Británico" class="h-8 sm:h-5 md:h-6 lg:h-7 object-contain" src="/images/sanatorio_britanico.svg">
-          </a>
-          <a href="https://consultoriosdelbritanico.com/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
-            <img alt="Consultorios del Británico" class="h-8 sm:h-5 md:h-6 lg:h-7 object-contain" src="/images/consultorios_britanico.svg">
-          </a>
-          <a href="https://www.britanicasalud.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
-            <img alt="Británica Salud" class="h-6 sm:h-3.5 md:h-4 lg:h-5 object-contain" src="/images/britanica_salud.svg">
-          </a>
-          <a href="https://public.britlab.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
-            <img alt="BritLab" class="h-8 sm:h-5 md:h-6 lg:h-7 object-contain" src="/images/britlab_bar.svg">
-          </a>
-          <a href="https://britgen.com.ar/" target="_blank" rel="noopener noreferrer" class="inline-flex shrink-0">
-            <img alt="BritGen" class="h-12 sm:h-7 md:h-9 lg:h-11 object-contain" src="/images/britgen_byw.svg">
-          </a>
-          <span class="inline-flex shrink-0">
-            <img alt="CEMYRBS" class="h-10 sm:h-6 md:h-7 lg:h-8 object-contain" src="/images/cemyrbs.svg">
-          </span>
-          <span class="inline-flex shrink-0">
-            <img alt="Clínica Martins" class="h-10 sm:h-6 md:h-7 lg:h-8 object-contain" src="/images/clinica_martins.png">
-          </span>
-        </div>
-      </div>
       <!-- Hero Headline -->
       <div class="relative z-10 text-center px-4 flex-grow flex items-center">
         <h1 class="font-title text-3xl/[1] md:text-4xl/[1] lg:text-[53px]/[1] font-semibold tracking-normal text-white drop-shadow-md">
@@ -424,9 +432,9 @@
     <!-- Main Footer Content -->
     <div class="bg-white py-10 md:py-16 px-6 md:px-12">
       <div class="max-w-6xl mx-auto">
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-6 lg:gap-x-8 gap-y-8 md:gap-y-12 mb-8 md:mb-16">
+        <div class="footer-grid gap-x-6 lg:gap-x-8 gap-y-8 md:gap-y-12 mb-8 md:mb-16">
           <!-- Logo and Contact -->
-          <div class="min-w-0 col-span-2 md:col-span-1">
+          <div class="min-w-0 md:col-span-1">
             <img alt="BritLab Logo" class="h-7 object-contain mb-4 md:mb-6"
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj3jdxMM4UyflXypLBpVD6gbpm58-X-exf23eTthaeFGdzcySfcBMomTpfolGjenXg-cZ4u0SXrlLkZiy-XD8SbAaX4h1vN4qbWrP_tgp-dCp1TpN2_K-EVgQaiK5AA3GVuNVZ2LaxrOsLhITqyM-mHCzBkKH2kmPurQxVlAIc1SzqWEwL1OgyT494Jq_4kv7z1cd9um_8iFR0O93nY4Q4gfovUCWBI2OWSLKVcvrrT4upEJ5NXpP4q9sizuEjz0nGszk">
             <div class="text-gray-600 text-sm space-y-1">
